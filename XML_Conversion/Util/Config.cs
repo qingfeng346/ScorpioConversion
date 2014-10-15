@@ -115,12 +115,7 @@ public class Config
     public void InitializeFromFile(string fileName)
     {
         m_FileName = fileName;
-        if (File.Exists(m_FileName) == false)
-        {
-            if (File.Create(m_FileName) == null)
-                throw new Exception("create file is fail : " + m_FileName);
-        }
-        InitializeFromString(FileUtil.GetFileString(m_FileName));
+        InitializeFromString(File.Exists(m_FileName) ? FileUtil.GetFileString(m_FileName) : "");
     }
     /// <summary>
     /// 根据BYTE[]初始化数据

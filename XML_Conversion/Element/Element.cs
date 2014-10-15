@@ -8,6 +8,15 @@ using System.IO;
 public abstract class Element
 {
     public abstract ElementType Type { get; }
+    protected string GetName() { return GetType().Name.Replace("Element", ""); }
+    protected MethodInfo GetWriteValue()
+    {
+        return typeof(TableWriter).GetMethod("Write" + GetName(), new Type[] { typeof(string) });
+    }
+    protected MethodInfo GetReadValue()
+    {
+        return typeof(TableReader).GetMethod("Read" + GetName());
+    }
     #region 获得代码中的数据类型
     /// <summary> 获得代码中的数据类型 </summary>
     public string GetVariable(PROGRAM program, bool bArray = false)
@@ -18,6 +27,8 @@ public abstract class Element
                 return bArray ? string.Format("List<{0}>", GetVariable_impl(program)) : GetVariable_impl(program);
             case PROGRAM.JAVA:
                 return bArray ? string.Format("ArrayList<{0}>", GetVariable_impl(program)) : GetVariable_impl(program);
+            case PROGRAM.CPP:
+                return bArray ? string.Format("vector<{0}>", GetVariable_impl(program)) : GetVariable_impl(program);
             case PROGRAM.PHP:
                 return GetVariable_impl(program);
         }
@@ -38,22 +49,25 @@ public abstract class Element
     }
     #endregion
     #region 写入数据到Data文件
-    public void WriteValueByType(string strValue, BinaryWriter writer, bool bArray)
+    public void WriteValueByType(string strValue, TableWriter writer, bool bArray)
     {
         if (bArray) {
             if (!Util.IsEmptyString(strValue)) {
                 string[] str = strValue.Split(new char[]{','});
-                writer.Write((Int32)str.Length);
+                writer.WriteInt32((Int32)str.Length);
                 for (int i = 0; i < str.Length;++i )
                     WriteValueByType_impl(str[i], writer);
             } else {
-                writer.Write((Int32)0);
+                writer.WriteInt32(0);
             }
         } else {
             WriteValueByType_impl(strValue, writer);
         }
     }
-    public virtual void WriteValueByType_impl(string strValue, BinaryWriter writer) { }
+    protected virtual void WriteValueByType_impl(string strValue, TableWriter writer)
+    {
+        GetWriteValue().Invoke(writer, new object[] { strValue });
+    }
     #endregion
     #region 获得读取数据的代码
     public string GetReadMemory(PROGRAM program, string strName, string fieldSimpleName, bool bArray)
@@ -74,6 +88,12 @@ public abstract class Element
             __Name.add(__ReadMemory);
         }";
                     break;
+                case PROGRAM.CPP:
+                    str += @"count = __IntElement.Read();
+        for (i = 0;i < count; ++i)  {
+            __Name.push_back(__ReadMemory);
+        }";
+                    break;
                 case PROGRAM.PHP:
                     str += @"$count = __IntElement.Read();
         for ($i = 0;$i < $count; ++$i) {
@@ -86,6 +106,7 @@ public abstract class Element
             {
                 case PROGRAM.CS:
                 case PROGRAM.JAVA:
+                case PROGRAM.CPP:
                 case PROGRAM.PHP:
                     str += @"__Name = __ReadMemory;";
                     break;
@@ -97,17 +118,11 @@ public abstract class Element
     }
     public virtual string GetReadMemory_impl(PROGRAM program, string strName = "") 
     {
-        if (program == PROGRAM.CS)
-            return string.Format("reader.Read{0}()", GetVariable_impl(program));
-        else if (program == PROGRAM.JAVA)
-            return string.Format("reader.Read{0}()", GetVariable_impl(program));
-        else if (program == PROGRAM.PHP)
-            return string.Format("reader.Read{0}()", GetVariable_impl(program));
-        return ""; 
+        return string.Format("reader.Read{0}()", GetName());
     }
     #endregion
     #region 从Data读取数据 返回Excel原始数据
-    public string ReadValueByType(BinaryReader reader, bool bArray)
+    public string ReadValueByType(TableReader reader, bool bArray)
     {
         string str = "";
         if (bArray) {
@@ -121,16 +136,18 @@ public abstract class Element
                     bFirst = false;
                 }
             } else {
-                str = "####";
+                str = Util.EmptyString;
             }
         } else {
             str = ReadValueByType_impl(reader);
         }
         return str;
     }
-    protected virtual string ReadValueByType_impl(BinaryReader reader) { return ""; }
+    protected virtual string ReadValueByType_impl(TableReader reader) { 
+        return GetReadValue().Invoke(reader, new object[0]).ToString();
+    }
     //自定义类型使用
-    public string ReadValueByType(BinaryReader reader, List<int> typeList, bool bArray)
+    public string ReadValueByType(TableReader reader, List<int> typeList, bool bArray)
     {
         string str = "";
         if (bArray) {
@@ -144,14 +161,14 @@ public abstract class Element
                     bFirst = false;
                 }
             } else {
-                str = "####";
+                str = Util.EmptyString;
             }
         } else {
             str = ReadValueByType_impl(reader,typeList);
         }
         return str;
     }
-    protected string ReadValueByType_impl(BinaryReader reader, List<int> typeList)
+    protected string ReadValueByType_impl(TableReader reader, List<int> typeList)
     {
         string str = "";
         bool bFirst = true;
@@ -179,30 +196,10 @@ class BoolElement : Element
                 return "bool";
             case PROGRAM.JAVA:
                 return "Boolean";
+            case PROGRAM.CPP:
+                return "bool";
         }
         return base.GetVariable_impl(program);
-    }
-    public override void WriteValueByType_impl(string strValue, BinaryWriter writer)
-    {
-        bool value = Util.IsEmptyString(strValue) ? Util.INVALID_BOOL : Util.ToBoolean(strValue);
-        writer.Write(value ? (sbyte)1 : (sbyte)0);
-    }
-    public override string GetReadMemory_impl(PROGRAM program, string strName)
-    {
-        switch (program)
-        {
-            case PROGRAM.CS:
-                return "(reader.ReadSByte().Equals((byte)1) ? true : false)";
-            case PROGRAM.JAVA:
-                return "(reader.get() == 1 ? true : false)";
-            case PROGRAM.PHP:
-                return "($reader->readChar() == 1 ? true : false)";
-        }
-        return base.GetReadMemory_impl(program, strName);
-    }
-    protected override string ReadValueByType_impl(BinaryReader reader)
-    {
-        return reader.ReadByte().ToString();
     }
 }
 class Int8Element : Element
@@ -216,29 +213,10 @@ class Int8Element : Element
                 return "sbyte";
             case PROGRAM.JAVA:
                 return "byte";
+            case PROGRAM.CPP:
+                return "char";
         }
         return base.GetVariable_impl(program);
-    }
-    public override void WriteValueByType_impl(string strValue, BinaryWriter writer)
-    {
-        writer.Write(Util.IsEmptyString(strValue) ? Util.INVALID_INT8 : Convert.ToSByte(strValue));
-    }
-    public override string GetReadMemory_impl(PROGRAM program, string strName)
-    {
-        switch (program)
-        {
-            case PROGRAM.CS:
-                return "reader.ReadSByte()";
-            case PROGRAM.JAVA:
-                return "reader.get()";
-            case PROGRAM.PHP:
-                return "$reader->readChar()";
-        }
-        return base.GetReadMemory_impl(program, strName);
-    }
-    protected override string ReadValueByType_impl(BinaryReader reader)
-    {
-        return reader.ReadSByte().ToString();
     }
 }
 class Int16Element : Element
@@ -250,30 +228,10 @@ class Int16Element : Element
         {
             case PROGRAM.CS:
             case PROGRAM.JAVA:
+            case PROGRAM.CPP:
                 return "short";
         }
         return base.GetVariable_impl(program);
-    }
-    public override void WriteValueByType_impl(string strValue, BinaryWriter writer)
-    {
-        writer.Write(Util.IsEmptyString(strValue) ? Util.INVALID_INT16 : Convert.ToInt16(strValue));
-    }
-    public override string GetReadMemory_impl(PROGRAM program, string strName)
-    {
-        switch (program)
-        {
-            case PROGRAM.CS:
-                return "reader.ReadInt16()";
-            case PROGRAM.JAVA:
-                return "reader.getShort()";
-            case PROGRAM.PHP:
-                return "$reader->readShort()";
-        }
-        return base.GetReadMemory_impl(program, strName);
-    }
-    protected override string ReadValueByType_impl(BinaryReader reader)
-    {
-        return reader.ReadInt16().ToString();
     }
 }
 class Int32Element : Element
@@ -285,50 +243,10 @@ class Int32Element : Element
         {
             case PROGRAM.CS:
             case PROGRAM.JAVA:
+            case PROGRAM.CPP:
                 return "int";
         }
         return base.GetVariable_impl(program);
-    }
-    public override void WriteValueByType_impl(string strValue, BinaryWriter writer)
-    {
-        if (Util.IsEmptyString(strValue))
-        {
-            writer.Write(Util.INVALID_INT32);
-        }
-        else
-        {
-            double dValue;
-            int value;
-            if (int.TryParse(strValue, out value))
-            {
-                writer.Write(value);
-            }
-            else if (double.TryParse(strValue, out dValue))
-            {
-                writer.Write(Convert.ToInt32(dValue));
-            }
-            else
-            {
-                throw new Exception("Int32Element 无法转换类型 " + strValue);
-            }
-        }
-    }
-    public override string GetReadMemory_impl(PROGRAM program, string strName)
-    {
-        switch (program)
-        {
-            case PROGRAM.CS:
-                return "reader.ReadInt32()";
-            case PROGRAM.JAVA:
-                return "reader.getInt()";
-            case PROGRAM.PHP:
-                return "$reader->readInt()";
-        }
-        return base.GetReadMemory_impl(program, strName);
-    }
-    protected override string ReadValueByType_impl(BinaryReader reader)
-    {
-        return reader.ReadInt32().ToString();
     }
 }
 class Int64Element : Element
@@ -340,30 +258,10 @@ class Int64Element : Element
         {
             case PROGRAM.CS:
             case PROGRAM.JAVA:
+            case PROGRAM.CPP:
                 return "long";
         }
         return base.GetVariable_impl(program);
-    }
-    public override void WriteValueByType_impl(string strValue, BinaryWriter writer)
-    {
-        writer.Write(Util.IsEmptyString(strValue) ? Util.INVALID_INT64 : Convert.ToInt64(strValue));
-    }
-    public override string GetReadMemory_impl(PROGRAM program, string strName)
-    {
-        switch (program)
-        {
-            case PROGRAM.CS:
-                return "reader.ReadInt64()";
-            case PROGRAM.JAVA:
-                return "reader.getLong()";
-            case PROGRAM.PHP:
-                return "$reader->readLong()";
-        }
-        return base.GetReadMemory_impl(program, strName);
-    }
-    protected override string ReadValueByType_impl(BinaryReader reader)
-    {
-        return reader.ReadInt64().ToString();
     }
 }
 class FloatElement : Element
@@ -375,30 +273,10 @@ class FloatElement : Element
         {
             case PROGRAM.CS:
             case PROGRAM.JAVA:
+            case PROGRAM.CPP:
                 return "float";
         }
         return base.GetVariable_impl(program);
-    }
-    public override void WriteValueByType_impl(string strValue, BinaryWriter writer)
-    {
-        writer.Write(Util.IsEmptyString(strValue) ? Util.INVALID_FLOAT : Convert.ToSingle(strValue));
-    }
-    public override string GetReadMemory_impl(PROGRAM program, string strName)
-    {
-        switch (program)
-        {
-            case PROGRAM.CS:
-                return "reader.ReadSingle()";
-            case PROGRAM.JAVA:
-                return "reader.getFloat()";
-            case PROGRAM.PHP:
-                return "$reader->readFloat()";
-        }
-        return base.GetReadMemory_impl(program, strName);
-    }
-    protected override string ReadValueByType_impl(BinaryReader reader)
-    {
-        return reader.ReadSingle().ToString();
     }
 }
 class DoubleElement : Element
@@ -410,30 +288,10 @@ class DoubleElement : Element
         {
             case PROGRAM.CS:
             case PROGRAM.JAVA:
+            case PROGRAM.CPP:
                 return "double";
         }
         return base.GetVariable_impl(program);
-    }
-    public override void WriteValueByType_impl(string strValue, BinaryWriter writer)
-    {
-        writer.Write(Util.IsEmptyString(strValue) ? Util.INVALID_DOUBLE : Convert.ToDouble(strValue));
-    }
-    public override string GetReadMemory_impl(PROGRAM program, string strName)
-    {
-        switch (program)
-        {
-            case PROGRAM.CS:
-                return "reader.ReadDouble()";
-            case PROGRAM.JAVA:
-                return "reader.getDouble()";
-            case PROGRAM.PHP:
-                return "$reader->readDouble()";
-        }
-        return base.GetReadMemory_impl(program, strName);
-    }
-    protected override string ReadValueByType_impl(BinaryReader reader)
-    {
-        return reader.ReadDouble().ToString();
     }
 }
 class StringElement : Element
@@ -446,31 +304,9 @@ class StringElement : Element
             case PROGRAM.CS:
             case PROGRAM.JAVA:
                 return "String";
+            case PROGRAM.CPP:
+                return "string";
         }
         return base.GetVariable_impl(program);
     }
-    public override void WriteValueByType_impl(string strValue, BinaryWriter writer)
-    {
-        Util.WriteString(writer, strValue);
-    }
-    public override string GetReadMemory_impl(PROGRAM program, string strName)
-    {
-        switch (program)
-        {
-            case PROGRAM.CS:
-                return "TableUtil.ReadString(reader)";
-            case PROGRAM.JAVA:
-                return "TableUtil.ReadString(reader)";
-            case PROGRAM.PHP:
-                return "$reader->readString()";
-        }
-        return base.GetReadMemory_impl(program, strName);
-    }
-    protected override string ReadValueByType_impl(BinaryReader reader)
-    {
-        return Util.ReadString(reader);
-    }
 }
-
-
-

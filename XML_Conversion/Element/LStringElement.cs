@@ -5,9 +5,9 @@ using System.IO;
 class LStringElement : StringElement
 {
     public override ElementType Type { get { return ElementType.LSTRING; } }
-    public override void WriteValueByType_impl(string strValue, BinaryWriter writer)
+    protected override void WriteValueByType_impl(string strValue, TableWriter writer)
     {
-        Util.WriteString(writer, "");
+        writer.WriteString("");
     }
     public override string GetReadMemory_impl(PROGRAM program, string strName)
     {

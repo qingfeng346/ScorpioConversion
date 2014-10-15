@@ -52,6 +52,23 @@ public static partial class Util
     public __Variable __FieldName() { return __Name; }";
                 }
             }
+            else if (program == PROGRAM.CPP)
+            {
+                temp += @"
+    private: __Variable __Name;";
+                if (bFirst && bData)
+                {
+                    temp += @"
+    /** __FieldNote */
+    public: __Variable ID() { return __Name; }";
+                }
+                if (!bArray)
+                {
+                    temp += @"
+    /** __FieldNote */
+    public: __Variable __FieldName() { return __Name; }";
+                }
+            }
             else if (program == PROGRAM.PHP)
             {
                 temp += @"
@@ -98,6 +115,12 @@ public static partial class Util
     private ArrayList<__Variable> m_Array = new ArrayList<__Variable>();
     public ArrayList<__Variable> Arrays() { return m_Array; }";
             }
+            else if (program == PROGRAM.CPP)
+            {
+                str += @"
+    private: vector<__Variable> m_Array;
+    public: vector<__Variable> Arrays() { return m_Array; }";
+            }
             else if (program == PROGRAM.PHP)
             {
                 str += @"
@@ -142,6 +165,18 @@ public static partial class Util
 ";
             }
         }
+        else if (program == PROGRAM.CPP)
+        {
+            str += @"
+    public: static __DataClass ReadMemory (char * reader, string fileName) {
+        __DataClass Data;
+";
+            if (hasArray)
+            {
+                str += @"        __IntElement count = 0, i = 0;
+";
+            }
+        }
         else if (program == PROGRAM.PHP)
         {
             str += @"
@@ -181,13 +216,16 @@ public static partial class Util
         }
         if (program == PROGRAM.PHP)
         {
-            str += string.Format("{0}return $Data;{1}", Util.GetTab(2), Util.ReturnString);
+            str += @"        return $Data;";
+        }
+        else if (program == PROGRAM.CPP)
+        {
+            str += @"        return Data;";
         }
         else
         {
             str += @"        Data.____DataString = Data.ToString_impl();
-        return Data;
-";
+        return Data;";
         }
         str += @"
     }";
@@ -199,7 +237,6 @@ public static partial class Util
     private static string GetDataIsInvalid(PROGRAM program, string strDataName, List<Variable> variables, bool bArray, bool bData, bool bUsable)
     {
         string str = "";
-        Element intElement = GetElement(ElementType.INT32);
         if (program == PROGRAM.CS)
         {
             str += @"
@@ -211,13 +248,16 @@ public static partial class Util
     @Override
     public boolean IsInvalid () {";
         }
+        else if (program == PROGRAM.CPP)
+        {
+            str += @"
+    public: bool IsInvalid() {";
+        }
         else if (program == PROGRAM.PHP)
         {
             str += @"
     public function IsInvalid () {";
         }
-        str = str.Replace("__IntElement", intElement.GetVariable(program));
-        str = str.Replace("__DataClass", strDataName);
         for (int i = 0; i < variables.Count; ++i)
         {
             Variable variable = variables[i];
@@ -225,6 +265,8 @@ public static partial class Util
             string fieldName = element.GetFieldName(program, variable.strFieldName);
             if (program == PROGRAM.PHP)
                 fieldName = "$this->" + fieldName;
+            else if (program == PROGRAM.CPP)
+                fieldName = "this->" + fieldName;
             else
                 fieldName = "this." + fieldName;
             if (variable.bArray == true)
@@ -235,6 +277,11 @@ public static partial class Util
         if (__FieldName.Count > 0) return false;";
                 }
                 else if (program == PROGRAM.JAVA)
+                {
+                    str += @"
+        if (__FieldName.size() > 0) return false;";
+                }
+                else if (program == PROGRAM.CPP)
                 {
                     str += @"
         if (__FieldName.size() > 0) return false;";
@@ -262,6 +309,7 @@ public static partial class Util
     /// </summary>
     private static string GetDataGetDataByString(PROGRAM program, List<Variable> variables, bool bArray)
     {
+        if (program == PROGRAM.CPP) return "";
         string str = "";
         if (program == PROGRAM.CS)
         {
@@ -317,6 +365,7 @@ public static partial class Util
     /// </summary>
     private static string GetDataToString(PROGRAM program, List<Variable> variables, bool bArray)
     {
+        if (program == PROGRAM.CPP) return "";
         string str = "";
         if (program == PROGRAM.CS)
         {
@@ -389,6 +438,11 @@ public class __DataClass extends MT_DataBase {
 class __DataClass {
     const MD5 = '__DataMD5Code';";
                 break;
+            case PROGRAM.CPP:
+                str += @"
+#define __DataClass_MD5 = ""__DataMD5Code"";
+class __DataClass : public MT_DataBase {";
+                break;
         }
         str += GetDataFields(program, strDataName, variables, bArray, bData, bUsable);
         str += GetDataIsInvalid(program, strDataName, variables, bArray, bData, bUsable);
@@ -407,8 +461,16 @@ class __DataClass {
         str = str.Replace("__BoolElement", boolElement.GetVariable(program));
         str = str.Replace("__DataClass", strDataName);
         str = str.Replace("__DataMD5Code", GetDataMD5Code(variables));
-        str += @"
+        if (program == PROGRAM.CPP)
+        {
+            str += @"
+};";
+        }
+        else
+        {
+            str += @"
 }";
+        }
         return str;
     }
 }

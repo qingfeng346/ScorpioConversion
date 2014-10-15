@@ -125,30 +125,20 @@ public static class FileUtil
     /// </summary>
     public static String GetFileString(string fileName)
     {
-        try {
-            return CharsetUtil.defaultEncoding.GetString(GetFileBuffer(fileName));
-        } catch (System.Exception ex) {
-            Logger.error("GetFileString is error : {0}", ex.ToString());
-        }
-        return null;
+        return CharsetUtil.defaultEncoding.GetString(GetFileBuffer(fileName));
     }
     /// <summary>
     /// 获得文件byte[]
     /// </summary>
     public static byte[] GetFileBuffer(string fileName)
     {
-        try {
-            if (!FileExist(fileName)) return null;
-            FileStream fs = new FileStream(fileName, FileMode.Open);
-            long length = fs.Length;
-            byte[] buffer = new byte[length];
-            fs.Read(buffer, 0, (int)length);
-            fs.Close();
-            return buffer;
-        } catch (System.Exception ex) {
-            Logger.error("GetFileBuffer is error : {0}", ex.ToString());
-        }
-        return null;
+        if (!FileExist(fileName)) return null;
+        FileStream fs = new FileStream(fileName, FileMode.Open);
+        long length = fs.Length;
+        byte[] buffer = new byte[length];
+        fs.Read(buffer, 0, (int)length);
+        fs.Close();
+        return buffer;
     }
     /// <summary>
     /// 获得路径下所有文件和文件夹

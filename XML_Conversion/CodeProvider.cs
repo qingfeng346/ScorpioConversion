@@ -25,8 +25,7 @@ public class CodeProvider
         Parameters.GenerateExecutable = false;
         Parameters.GenerateInMemory = true;
         Parameters.IncludeDebugInformation = true;
-        string aaa = AppDomain.CurrentDomain.BaseDirectory;
-        string[] fileNames = Directory.GetFiles(AppDomain.CurrentDomain.BaseDirectory, "*.conversion", SearchOption.AllDirectories);
+        string[] fileNames = Directory.GetFiles(Util.BaseDirectory, "*.conversion", SearchOption.AllDirectories);
         if (fileNames.Length <= 0) return;
         CompilerResults cr = Provider.CompileAssemblyFromFile(Parameters, fileNames);
         if (cr.Errors.HasErrors) {

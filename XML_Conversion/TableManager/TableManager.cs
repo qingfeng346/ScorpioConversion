@@ -57,7 +57,6 @@ public partial class TableManager
         return instance;
     }
 
-
     private Dictionary<String, CustomClass> mCustomClasses = new Dictionary<String, CustomClass>();
     private List<Variable> mArrayVariable = new List<Variable>();       //列数组
     private List<string> mTableEnumList = new List<string>();           //tableEnum
@@ -75,7 +74,8 @@ public partial class TableManager
     private bool mSpawns = false;                                       //是否是关键字类
     private string mSpawnsName = "";                                    //关键字名称
     private string mSpawnsFileName = "";                                //关键字文件名
-    
+    private string mKeyElement = "";                                    //Key值类型
+
     private bool mGetManager = false;                                   //是否生成Manager
     private bool mGetTableEnum = false;                                 //是否生成TableEnum
     private bool mGetLanguage = false;                                  //是否生成多国语言文件
@@ -168,8 +168,8 @@ public partial class TableManager
             string data = Util.GetConfig(strSection, program.ToString() + ConfigKey.DataDirectory, ConfigFile.TableConfig);
             string create = Util.GetConfig(strSection, program.ToString() + ConfigKey.Create, ConfigFile.TableConfig);
             ProgramInfo ret = info.Clone();
-            ret.CodeDirectory = string.IsNullOrEmpty(code) ? info.CodeDirectory : code;
-            ret.DataDirectory = string.IsNullOrEmpty(data) ? info.DataDirectory : data;
+            ret.CodeDirectory = string.IsNullOrEmpty(code) ? info.CodeDirectory : info.CodeDirectory + "/" + code;
+            ret.DataDirectory = string.IsNullOrEmpty(data) ? info.DataDirectory : info.DataDirectory + "/" + data;
             ret.Create = string.IsNullOrEmpty(create) ? info.Create : Util.ToBoolean(create);
             ret.Extension = info.Extension;
             mProgramInfos[program] = ret;
@@ -270,10 +270,15 @@ public partial class TableManager
                         info.CreateManager.Invoke(this, null);
                     if (mGetTableEnum && info.CreateEnum != null)
                         info.CreateEnum.Invoke(this, null);
-                    if (mGetBase && info.CreateBase != null)
-                        info.CreateBase.Invoke(this, null);
                     if (mGetCustom && info.CreateCustom != null)
                         info.CreateCustom.Invoke(this, null);
+                    if (mGetBase)
+                    {
+                        if (info.CreateBase != null)
+                            info.CreateBase.Invoke(this, null);
+                        if (info.CreateReader != null)
+                            info.CreateReader.Invoke(this, null);
+                    }
                 }
                 if (mGetLanguage)
                     CreateLanguage();
@@ -312,8 +317,8 @@ public partial class TableManager
                         throw new System.Exception(string.Format("第 {0:d} 列的字段类型不能识别 数据内容为 : \"{1}\"", i, str));
                     if (i == 0)
                     {
-                        if (variable.bArray == true || 
-                            (element.Type != ElementType.INT32 && element.Type != ElementType.STRING))
+                        mKeyElement = element.ToString();
+                        if (variable.bArray == true || (element.Type != ElementType.INT32 && element.Type != ElementType.STRING))
                             throw new System.Exception("第一列的数据类型必须为int32型或者string型");
                     }
                     variable.strFieldType = strFieldType;
@@ -356,16 +361,15 @@ public partial class TableManager
     {
         int iColums = mArrayVariable.Count;                 //数据列数
         int iRows = mDataTable.Count;                       //数据行数
-        MemoryStream stream = new MemoryStream();
-        BinaryWriter writer = new BinaryWriter(stream);
-        writer.Write((int)(iRows - 3));                     //写入行数
-        writer.Write((int)iColums);                         //写入列数
+        TableWriter writer = new TableWriter();
+        writer.WriteInt32((int)(iRows - 3));                //写入行数
+        writer.WriteInt32((int)iColums);                    //写入列数
 
         //////////////////////////////////////////////////////////////////////////
         Type[] types = CodeProvider.GetInstance().GetTypes();
         if (types != null && mCustomClasses.Count > 0)
         {
-            writer.Write(mCustomClasses.Count);
+            writer.WriteInt32(mCustomClasses.Count);
             foreach (Type type in types)
             {
                 if (!mCustomClasses.ContainsKey(type.Name))
@@ -382,29 +386,28 @@ public partial class TableManager
                     variables.Add(variable);
                 }
                 string strMD5 = Util.GetDataMD5Code(variables);
-                Util.WriteString(writer, strMD5);
+                writer.WriteString(strMD5);
             }
         }
         else
         {
-            writer.Write(0);
+            writer.WriteInt32(0);
         }
         //////////////////////////////////////////////////////////////////////////
-
-        Util.WriteString(writer, mStrMD5Code);    //写入文件MD5码
+        writer.WriteString(mStrMD5Code);     //写入文件MD5码
         for (int i = 0; i < iColums; ++i)
         {
             Element element = Util.GetElement(mArrayVariable[i].strFieldType);
             int index = (int)element.Type;
             int array = (int)(mArrayVariable[i].bArray ? 1 : 0);
-            writer.Write(index);
-            writer.Write(array);
+            writer.WriteInt32(index);
+            writer.WriteInt32(array);
             if (element.Type == ElementType.CLASS)
             {
-                Util.WriteString(writer, mArrayVariable[i].strFieldType);
-                writer.Write(mCustomClasses[mArrayVariable[i].strFieldType].fieldTypes.Count);
+                writer.WriteString(mArrayVariable[i].strFieldType);
+                writer.WriteInt32(mCustomClasses[mArrayVariable[i].strFieldType].fieldTypes.Count);
                 foreach (Element e in mCustomClasses[mArrayVariable[i].strFieldType].fieldTypes)
-                    writer.Write((int)e.Type);
+                    writer.WriteInt32((int)e.Type);
             }
         }
         List<string> keys = new List<string>();
@@ -446,10 +449,12 @@ public partial class TableManager
             }
             count++;
         }
-        writer.Seek(0, SeekOrigin.Begin);
-        writer.Write(count);
-        stream.Position = 0;
-        byte[] buffer = stream.ToArray();
+        writer.Seek(0);
+        writer.WriteInt32(count);
+        Create_impl(writer.ToArray());
+    }
+    public void Create_impl(byte[] buffer)
+    {
         byte[] bytes = GZipUtil.Compress(buffer);
         for (int i = (int)PROGRAM.NONE + 1; i < (int)PROGRAM.COUNT; ++i)
         {
@@ -521,5 +526,15 @@ require_once 'TableUtil.php';";
 require_once 'Custom.php';";
         }
         FileUtil.CreateFile(info.GetFile(mStrTableClass), strStream + strData + strTable, false, info.CodeDirectory.Split(';'));
+    }
+    public void CreateCodeCPP(string strData, string strTable, ProgramInfo info)
+    {
+        string strStream = @"#pragma once
+#include <string>
+#include <vector>
+#include <map>
+using namespace::std;
+#pragma warning disable 0219";
+        FileUtil.CreateFile(info.GetFile(mStrTableClass), strStream + strData + strTable, true, info.CodeDirectory.Split(';'));
     }
 }

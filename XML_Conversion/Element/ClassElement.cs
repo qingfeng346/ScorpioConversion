@@ -19,13 +19,13 @@ class ClassElement : Element
     {
         return mClassType.Name;
     }
-    public override void WriteValueByType_impl(string strValue, BinaryWriter writer)
+    protected override void WriteValueByType_impl(string strValue, TableWriter writer)
     {
         Type[] types = Util.GetElementTypes(mClassType);
         if (Util.IsEmptyString(strValue)) {
             for (int i = 0; i < types.Length; ++i) {
                 Element element = Util.GetPrimitiveElement(types[i]);
-                element.WriteValueByType("####", writer, false);
+                element.WriteValueByType(Util.EmptyString, writer, false);
             }
         } else {
             string[] values = strValue.Split(':');

@@ -24,10 +24,8 @@ public partial class TableManager
             try
             {
                 byte[] buffer = FileUtil.GetFileBuffer(fileName[i]);
-                MemoryStream stream = new MemoryStream(GZipUtil.Decompress(buffer));
-                BinaryReader reader = new BinaryReader(stream);
+                TableReader reader = new TableReader(GZipUtil.Decompress(buffer));
                 Rollback_impl(reader, fileName[i]);
-                stream.Close();
                 reader.Close();
                 Count++;
             }
@@ -40,7 +38,7 @@ public partial class TableManager
         if (Count > 0)
             MessageBox.Show("转换结束");
     }
-    private void Rollback_impl(BinaryReader reader, string fileName)
+    private void Rollback_impl(TableReader reader, string fileName)
     {
         string fileTitle = fileName.Substring(0, fileName.LastIndexOf("."));
         FileStream fs = new FileStream(fileTitle + ".xlt", FileMode.Create);
@@ -50,9 +48,9 @@ public partial class TableManager
         int iCodeNum = reader.ReadInt32();      //自定义类数量
         for (int i = 0; i < iCodeNum; ++i)      //读取所有自定义类MD5码
         {
-            Util.ReadString(reader);
+            reader.ReadString();
         }
-        string strMD5Code = Util.ReadString(reader);      //读取Table类MD5码
+        string strMD5Code = reader.ReadString();//读取Table类MD5码
         int[] fieldIndex = new int[iColums];
         int[] fieldArray = new int[iColums];
         string[] nameArray = new string[iColums];
@@ -64,7 +62,7 @@ public partial class TableManager
 
             if (fieldIndex[i] == (int)ElementType.CLASS)
             {
-                nameArray[i] = Util.ReadString(reader);       //取出
+                nameArray[i] = reader.ReadString(); //取出
                 if (!typeList.ContainsKey(nameArray[i]))
                     typeList[nameArray[i]] = new List<int>();
                 typeList[nameArray[i]].Clear();

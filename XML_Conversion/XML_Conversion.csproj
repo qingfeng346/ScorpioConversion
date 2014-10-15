@@ -68,6 +68,18 @@
   <ItemGroup>
     <Compile Include="Element\ClassElement.cs" />
     <Compile Include="CodeProvider.cs" />
+    <Compile Include="FormLog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormLog.Designer.cs">
+      <DependentUpon>FormLog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FormPath.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormPath.Designer.cs">
+      <DependentUpon>FormPath.cs</DependentUpon>
+    </Compile>
     <Compile Include="Logger.cs" />
     <Compile Include="SharpZip\Checksums\Adler32.cs" />
     <Compile Include="SharpZip\Checksums\CRC32.cs" />
@@ -114,10 +126,13 @@
     <Compile Include="SharpZip\Zip\ZipInputStream.cs" />
     <Compile Include="SharpZip\Zip\ZipNameTransform.cs" />
     <Compile Include="SharpZip\Zip\ZipOutputStream.cs" />
+    <Compile Include="TableManager\TableManagerReader.cs" />
     <Compile Include="Util\CharsetUtil.cs" />
     <Compile Include="Util\Config.cs" />
     <Compile Include="Util\FileUtil.cs" />
     <Compile Include="Util\GZipUtil.cs" />
+    <Compile Include="Util\TableReader.cs" />
+    <Compile Include="Util\TableWriter.cs" />
     <Compile Include="Util\UtilDataClass.cs" />
     <Compile Include="Util\UtilConfig.cs" />
     <Compile Include="Element\Element.cs" />
@@ -146,11 +161,17 @@
     <Compile Include="TableManager\TableManagerRollback.cs" />
     <Compile Include="TableManager\TableManagerTableClass.cs" />
     <Compile Include="TableManager\TableManagerTableEnum.cs" />
+    <EmbeddedResource Include="FormLog.resx">
+      <DependentUpon>FormLog.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="FormMain.resx">
       <DependentUpon>FormMain.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="FormLanguage.resx">
       <DependentUpon>FormLanguage.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FormPath.resx">
+      <DependentUpon>FormPath.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>

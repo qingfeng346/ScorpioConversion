@@ -35,6 +35,7 @@ public class ProgramInfo
     public MethodInfo CreateCode;       //生成代码函数
     public MethodInfo CreateManager;    //生成TableManager文件
     public MethodInfo CreateEnum;       //生成TableEnum文件
+    public MethodInfo CreateReader;     //生成TableReader文件
     public MethodInfo CreateBase;       //生成TableBase文件
     public MethodInfo CreateCustom;     //生成自定义类文件
     private ProgramInfo() { }
@@ -44,6 +45,7 @@ public class ProgramInfo
         CreateManager = TYPE_MANAGER.GetMethod("CreateManager" + program.ToString());
         CreateEnum = TYPE_MANAGER.GetMethod("CreateEnum" + program.ToString());
         CreateBase = TYPE_MANAGER.GetMethod("CreateBase" + program.ToString());
+        CreateReader = TYPE_MANAGER.GetMethod("CreateReader" + program.ToString());
         CreateCustom = TYPE_MANAGER.GetMethod("CreateCustom" + program.ToString());
     }
     public string GetFile(string filter)
@@ -62,6 +64,7 @@ public class ProgramInfo
         ret.CreateManager = CreateManager;
         ret.CreateEnum = CreateEnum;
         ret.CreateBase = CreateBase;
+        ret.CreateReader = CreateReader;
         ret.CreateCustom = CreateCustom;
         return ret;
     }
@@ -99,6 +102,7 @@ public static partial class Util
     private static Dictionary<ConfigFile, Config> m_Configs = new Dictionary<ConfigFile, Config>();
     private static Dictionary<PROGRAM, ProgramInfo> m_ProgramInfos = new Dictionary<PROGRAM, ProgramInfo>();
     private static Dictionary<object, AutoConfig> m_AutoConfigs = new Dictionary<object, AutoConfig>();
+    public static string BaseDirectory { get { return System.AppDomain.CurrentDomain.BaseDirectory; } }
     public static void Bind(TextBox textBox, string key, ConfigFile file)
     {
         Bind(textBox, PROGRAM.NONE, key, file);
@@ -122,7 +126,11 @@ public static partial class Util
     }
     public static bool ToBoolean(string str)
     {
-        if (string.IsNullOrEmpty(str)) return false;
+        return ToBoolean(str, false);
+    }
+    public static bool ToBoolean(string str, bool def)
+    {
+        if (string.IsNullOrEmpty(str)) return def;
         switch (str.ToLower())
         {
             case "1":
@@ -139,8 +147,7 @@ public static partial class Util
     {
         Config config = null;
         if (!m_Configs.ContainsKey(file)) {
-            string str = System.AppDomain.CurrentDomain.BaseDirectory;
-            config = new Config(str + file.ToString() + ".ini", true);
+            config = new Config(BaseDirectory + file.ToString() + ".ini", true);
             m_Configs.Add(file, config);
         } else {
             config = m_Configs[file];
@@ -178,9 +185,11 @@ public static partial class Util
         {
             PROGRAM program = (PROGRAM)i;
             ProgramInfo info = new ProgramInfo(program);
-            info.CodeDirectory = GetConfig(program, ConfigKey.CodeDirectory, ConfigFile.PathConfig);
-            info.DataDirectory = GetConfig(program, ConfigKey.DataDirectory, ConfigFile.PathConfig);
-            info.Create = ToBoolean(GetConfig(program, ConfigKey.Create, ConfigFile.InitConfig));
+            string CodeDirectory = GetConfig(program, ConfigKey.CodeDirectory, ConfigFile.PathConfig);
+            string DataDirectory = GetConfig(program, ConfigKey.DataDirectory, ConfigFile.PathConfig);
+            info.CodeDirectory = string.IsNullOrEmpty(CodeDirectory) ? BaseDirectory + program.ToString() : CodeDirectory;
+            info.DataDirectory = string.IsNullOrEmpty(DataDirectory) ? BaseDirectory + program.ToString() : DataDirectory;
+            info.Create = ToBoolean(GetConfig(program, ConfigKey.Create, ConfigFile.InitConfig), true);
             info.Compress = ToBoolean(GetConfig(program, ConfigKey.Compress, ConfigFile.InitConfig));
             if (program == PROGRAM.CS)
                 info.Extension = "cs";

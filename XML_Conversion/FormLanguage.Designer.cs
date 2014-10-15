@@ -95,8 +95,10 @@
             this.Controls.Add(this.textLanguage);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.textAll);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
+            this.MaximizeBox = false;
             this.Name = "FormLanguage";
-            this.Text = "Form2";
+            this.Text = "多国语言设置";
             this.Load += new System.EventHandler(this.FormLanguage_Load);
             this.ResumeLayout(false);
             this.PerformLayout();

@@ -27,6 +27,7 @@ public enum ElementType
 public static partial class Util
 {
     public static readonly Element BOOL_ELEMENT = GetElement(ElementType.BOOL);
+    public static readonly Element BYTE_ELEMENT = GetElement(ElementType.INT8);
     public static readonly Element INT_ELEMENT = GetElement(ElementType.INT32);
     public static readonly Element STRING_ELEMENT = GetElement(ElementType.STRING);
     
@@ -83,7 +84,6 @@ public static partial class Util
 
     public const bool INVALID_BOOL          = false;
     public const sbyte INVALID_INT8         = sbyte.MaxValue;
-    public const byte INVALID_UINT8         = byte.MaxValue;
     public const short INVALID_INT16        = short.MaxValue;
     public const int INVALID_INT32          = int.MaxValue;
     public const long INVALID_INT64         = long.MaxValue;
