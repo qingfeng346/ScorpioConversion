@@ -30,16 +30,6 @@ namespace XML_Conversion
             programBox.SelectedIndex = 0;
             new RichTextBox().Show();
             new FormLog().Show();
-
-            //buttonCode.
-            //ToolTip tip = new ToolTip();
-            //tip.InitialDelay = 0;
-            //tip.ReshowDelay = 0;
-            //tip.AutomaticDelay = 0;
-            //tip.AutoPopDelay = 3000000;
-            //tip.UseAnimation = false;
-            ////tip.ShowAlways = true;
-            //tip.SetToolTip(buttonCode, "ffffffffffffffffffff");
         }
         void OnQuit()
         {

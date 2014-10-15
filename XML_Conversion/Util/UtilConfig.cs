@@ -124,6 +124,24 @@ public static partial class Util
             SetConfig(config.program, config.key, ((TextBox)sender).Text, config.file);
         }
     }
+    public static void Bind(Button button, PROGRAM program, string key, ConfigFile file)
+    {
+        if (m_AutoConfigs.ContainsKey(button))
+            return;
+        AutoConfig config = new AutoConfig() { program = program, key = key, file = file };
+        button.Click += new System.EventHandler(ButtonClick);
+        m_AutoConfigs[button] = config;
+    }
+    private static void ButtonClick(object sender, EventArgs e)
+    {
+        if (m_AutoConfigs.ContainsKey(sender))
+        {
+            AutoConfig config = m_AutoConfigs[sender];
+            var form = new XML_Conversion.FormPath();
+            form.Initialize(config.program, config.key, config.file);
+            form.Show();
+        }
+    }
     public static bool ToBoolean(string str)
     {
         return ToBoolean(str, false);
