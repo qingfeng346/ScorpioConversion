@@ -18,6 +18,12 @@ namespace XML_Conversion
         {
             this.timer1.Enabled = true;
         }
+        protected override void OnFormClosing(FormClosingEventArgs e)
+        {
+            this.Hide();
+            e.Cancel = true;
+            base.OnFormClosing(e);
+        }
         private void FormLog_SizeChanged(object sender, EventArgs e)
         {
             this.richTextBox1.Size = new Size(this.Size.Width - 25, this.Size.Height - 75);

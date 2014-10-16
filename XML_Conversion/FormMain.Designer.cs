@@ -52,6 +52,7 @@
             this.buttonData = new System.Windows.Forms.Button();
             this.checkCreate = new System.Windows.Forms.CheckBox();
             this.buttonSpwan = new System.Windows.Forms.Button();
+            this.buttonLog = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // labelRollbackFiles
@@ -273,11 +274,22 @@
             this.buttonSpwan.UseVisualStyleBackColor = true;
             this.buttonSpwan.Click += new System.EventHandler(this.buttonSpwan_Click);
             // 
+            // buttonLog
+            // 
+            this.buttonLog.Location = new System.Drawing.Point(463, 9);
+            this.buttonLog.Name = "buttonLog";
+            this.buttonLog.Size = new System.Drawing.Size(75, 23);
+            this.buttonLog.TabIndex = 54;
+            this.buttonLog.Text = "打开日志";
+            this.buttonLog.UseVisualStyleBackColor = true;
+            this.buttonLog.Click += new System.EventHandler(this.buttonLog_Click);
+            // 
             // FormMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(557, 188);
+            this.Controls.Add(this.buttonLog);
             this.Controls.Add(this.buttonSpwan);
             this.Controls.Add(this.checkCreate);
             this.Controls.Add(this.buttonData);
@@ -337,6 +349,7 @@
         private System.Windows.Forms.Button buttonData;
         private System.Windows.Forms.CheckBox checkCreate;
         private System.Windows.Forms.Button buttonSpwan;
+        private System.Windows.Forms.Button buttonLog;
     }
 }
 

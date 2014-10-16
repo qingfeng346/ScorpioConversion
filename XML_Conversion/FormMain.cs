@@ -17,6 +17,8 @@ namespace XML_Conversion
         private bool timeEnable = false;                                        //计时器是否能使用
         private OnFinished m_Finished = null;                                   //结束回调
         private PROGRAM m_Program;                                              //当前选择的语言
+        private FormLog m_FormLog;                                              //日志显示
+        private FormLanguage m_FormLanguage;                                    //多国语言配置
         public FormMain()
         {
             InitializeComponent();
@@ -28,8 +30,8 @@ namespace XML_Conversion
                 programBox.Items.Add(((PROGRAM)i).ToString());
             }
             programBox.SelectedIndex = 0;
-            new RichTextBox().Show();
-            new FormLog().Show();
+            m_FormLog = new FormLog();
+            m_FormLanguage = new FormLanguage();
         }
         void OnQuit()
         {
@@ -37,6 +39,8 @@ namespace XML_Conversion
         }
         void SetEnable(bool enable)
         {
+            this.programBox.Enabled = enable;
+            this.buttonSpwan.Enabled = enable;
             this.buttonCode.Enabled = enable;
             this.buttonData.Enabled = enable;
             this.checkCreate.Enabled = enable;
@@ -76,6 +80,7 @@ namespace XML_Conversion
                 for (int i = 0; i < transformFileNames.Count; ++i)
                     strText += (transformFileNames[i] + ";");
                 this.textTransformFiles.Text = strText;
+                Util.SetToolTip(textTransformFiles, strText.Replace(";", "\n"));
                 this.progressLabel.Text = string.Format("{0}/{1}", 1, transformFileNames.Count);
             }
         }
@@ -162,8 +167,12 @@ namespace XML_Conversion
         //打开多国语言配置界面
         private void buttonLanguage_Click(object sender, EventArgs e)
         {
-            var form = new FormLanguage();
-            form.Show();
+            m_FormLanguage.Show();
+        }
+        //打开日志界面
+        private void buttonLog_Click(object sender, EventArgs e)
+        {
+            m_FormLog.Show();
         }
         private void buttonCode_Click(object sender, EventArgs e)
         {
@@ -192,7 +201,5 @@ namespace XML_Conversion
         {
             Util.SetConfig(m_Program, ConfigKey.Create, checkCreate.Checked ? "true" : "false", ConfigFile.PathConfig);
         }
-
-
     }
 }

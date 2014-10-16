@@ -14,6 +14,12 @@ namespace XML_Conversion
         {
             InitializeComponent();
         }
+        protected override void OnFormClosing(FormClosingEventArgs e)
+        {
+            this.Hide();
+            e.Cancel = true;
+            base.OnFormClosing(e);
+        }
         private void FormLanguage_Load(object sender, EventArgs e)
         {
             Util.Bind(this.textAll, ConfigKey.AllLanguage, ConfigFile.LanguageConfig);

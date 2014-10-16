@@ -23,10 +23,11 @@ namespace XML_Conversion
             m_Key = key;
             m_File = file;
             this.Text = m_Key + "[" + m_Program + "]" + "  分隔符为回车键!!!";
+            this.richTextBox1.Text = Util.GetConfig(program, key, file).Replace(";", "\n");
         }
         private void richTextBox1_TextChanged(object sender, EventArgs e)
         {
-            Util.SetConfig(m_Program, m_Key, richTextBox1.Text.Replace("\n", ";"), m_File); 
+            Util.SetConfig(m_Program, m_Key, richTextBox1.Text.Replace("\n", ";"), m_File);
         }
     }
 }

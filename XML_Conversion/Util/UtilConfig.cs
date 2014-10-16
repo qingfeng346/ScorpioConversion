@@ -4,6 +4,7 @@ using System.Text;
 using System.Windows.Forms;
 using System.IO;
 using System.Reflection;
+using XML_Conversion;
 //语言数量
 public enum PROGRAM
 {
@@ -93,6 +94,7 @@ public class ConfigKey
 }
 public static partial class Util
 {
+    public delegate PROGRAM GetProgram();
     private class AutoConfig
     {
         public PROGRAM program;
@@ -122,24 +124,6 @@ public static partial class Util
         {
             AutoConfig config = m_AutoConfigs[sender];
             SetConfig(config.program, config.key, ((TextBox)sender).Text, config.file);
-        }
-    }
-    public static void Bind(Button button, PROGRAM program, string key, ConfigFile file)
-    {
-        if (m_AutoConfigs.ContainsKey(button))
-            return;
-        AutoConfig config = new AutoConfig() { program = program, key = key, file = file };
-        button.Click += new System.EventHandler(ButtonClick);
-        m_AutoConfigs[button] = config;
-    }
-    private static void ButtonClick(object sender, EventArgs e)
-    {
-        if (m_AutoConfigs.ContainsKey(sender))
-        {
-            AutoConfig config = m_AutoConfigs[sender];
-            var form = new XML_Conversion.FormPath();
-            form.Initialize(config.program, config.key, config.file);
-            form.Show();
         }
     }
     public static bool ToBoolean(string str)
@@ -225,6 +209,14 @@ public static partial class Util
         if (m_ProgramInfos.ContainsKey(program))
             return m_ProgramInfos[program];
         return null;
+    }
+    public static void SetToolTip(Control control, string text)
+    {
+        var tips = new ToolTip();
+        tips.ShowAlways = true;
+        tips.InitialDelay = 1;
+        tips.IsBalloon = true;
+        tips.SetToolTip(control, text);
     }
 }
 
