@@ -191,7 +191,7 @@ public static partial class Util
             string DataDirectory = GetConfig(program, ConfigKey.DataDirectory, ConfigFile.PathConfig);
             info.CodeDirectory = string.IsNullOrEmpty(CodeDirectory) ? BaseDirectory + program.ToString() : CodeDirectory;
             info.DataDirectory = string.IsNullOrEmpty(DataDirectory) ? BaseDirectory + program.ToString() : DataDirectory;
-            info.Create = ToBoolean(GetConfig(program, ConfigKey.Create, ConfigFile.InitConfig), true);
+            info.Create = ToBoolean(GetConfig(program, ConfigKey.Create, ConfigFile.PathConfig), true);
             info.Compress = ToBoolean(GetConfig(program, ConfigKey.Compress, ConfigFile.InitConfig));
             if (program == PROGRAM.CS)
                 info.Extension = "cs";

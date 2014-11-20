@@ -117,7 +117,7 @@ namespace XML_Conversion
         }
         void ThreadTransform()
         {
-            TableManager.GetInstance().Transform(transformFileNames, this.getManager.Checked, this.tableEnum.Checked, 
+            TableManager.GetInstance().Transform(transformFileNames, this.getManager.Checked,
                 this.Language.Checked, this.getCustom.Checked, this.getBase.Checked);
             EndRun();
         }

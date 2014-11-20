@@ -67,6 +67,7 @@ public partial class TableManager
     public string mStrFiler = "";                                       //文件名称
     private string mStrTableClass = "";                                 //table类名称
     private string mStrDataClass = "";                                  //data类名称
+    private string mStrFieldClass = "";                                 //field类名称
     private string mStrMD5Code = "";                                    //文件MD5码
     private List<TableClass> mClasses = new List<TableClass>();         //所有普通table类
     private Dictionary<string, SpawnsClass> mSpawnsClasses = new Dictionary<string, SpawnsClass>();     //所有关键字table类
@@ -77,7 +78,6 @@ public partial class TableManager
     private string mKeyElement = "";                                    //Key值类型
 
     private bool mGetManager = false;                                   //是否生成Manager
-    private bool mGetTableEnum = false;                                 //是否生成TableEnum
     private bool mGetLanguage = false;                                  //是否生成多国语言文件
     private bool mGetCustom = false;                                    //是否生成自定义类
     private bool mGetBase = false;                                      //是否生成基础类
@@ -212,7 +212,7 @@ public partial class TableManager
         }
         mMaxRow = mDataTable.Count;
     }
-    public void Transform(List<string> fileNames,bool bGetManager, bool bGetTableEnum, bool bGetLanguage, bool bGetCustom, bool bGetBase)
+    public void Transform(List<string> fileNames,bool bGetManager, bool bGetLanguage, bool bGetCustom, bool bGetBase)
     {
         try {
             if (fileNames == null || fileNames.Count <= 0) {
@@ -224,7 +224,6 @@ public partial class TableManager
             fileNames.Sort();
             Progress.Count = fileNames.Count;
             mGetManager = bGetManager;
-            mGetTableEnum = bGetTableEnum;
             mGetLanguage = bGetLanguage;
             mGetCustom = bGetCustom;
             mGetBase = bGetBase;
@@ -243,12 +242,14 @@ public partial class TableManager
                     if (mSpawns) {
                         mStrTableClass = "MT_Table_" + mSpawnsName;
                         mStrDataClass = "MT_Data_" + mSpawnsName;
+                        mStrFieldClass = "Field" + mSpawnsName;
                         if (!mSpawnsClasses.ContainsKey(mSpawnsName))
                             mSpawnsClasses.Add(mSpawnsName, new SpawnsClass(mStrTableClass, mProgramInfos));
                         mSpawnsClasses[mSpawnsName].AddString(mStrFiler);
                     } else {
                         mStrTableClass = "MT_Table_" + mStrFiler;
                         mStrDataClass = "MT_Data_" + mStrFiler;
+                        mStrFieldClass = "Field" + mStrFiler;
                         mClasses.Add(new TableClass(mStrFiler, mStrTableClass, mProgramInfos));
                     }
                     Transform_impl();
@@ -268,8 +269,6 @@ public partial class TableManager
                     ProgramInfo info = mProgramInfos[program];
                     if (mGetManager && info.CreateManager != null)
                         info.CreateManager.Invoke(this, null);
-                    if (mGetTableEnum && info.CreateEnum != null)
-                        info.CreateEnum.Invoke(this, null);
                     if (mGetCustom && info.CreateCustom != null)
                         info.CreateCustom.Invoke(this, null);
                     if (mGetBase)
@@ -465,46 +464,19 @@ public partial class TableManager
             if (info.CreateCode == null) continue;
             string strData = Util.GetDataClass(program, mStrDataClass, mArrayVariable, mArray, true, false);
             string strTable = GetTableClass(program);
-            info.CreateCode.Invoke(this, new object[] { strData, strTable, info });
+            string strField = Util.GetFieldClass(program, mStrFieldClass, mArrayVariable);
+            info.CreateCode.Invoke(this, new object[] { strData, strTable, strField, info });
         }
     }
-    public void CreateCodeCS(string strData, string strTable, ProgramInfo info)
+    public void CreateCodeCS(string strData, string strTable, string strField, ProgramInfo info)
     {
         string strStream = @"using System;
 using System.IO;
 using System.Collections.Generic;
 #pragma warning disable 0219";
-        FileUtil.CreateFile(info.GetFile(mStrTableClass), strStream + strData + strTable, true, info.CodeDirectory.Split(';'));
-
-//        if (mSpawns) return;
-//        string str = @"#if UNITY_EDITOR
-//using System;
-//using UnityEngine;
-//public class __TableName_Debug : MonoBehaviour {";
-//        if (mArrayVariable[0].strFieldType.Equals("int"))
-//            str += @"
-//    public " + mArrayVariable[0].strFieldType + @" ID = 0;
-//    private " + mArrayVariable[0].strFieldType + @" oldID = 0;";
-//        else
-//            str += @"
-//    public " + mArrayVariable[0].strFieldType + @" ID = """";
-//    private " + mArrayVariable[0].strFieldType + @" oldID = """";";
-//        str += @"
-//    public __DataName data = null;
-//    void Update() {
-//        if (oldID != ID) {
-//            oldID = ID;
-//            data = TableManager.GetInstance().Table__ClassName.GetElement(oldID);
-//        }
-//    }
-//}
-//#endif";
-//        str = str.Replace("__DataName", mStrDataClass);
-//        str = str.Replace("__TableName", mStrTableClass);
-//        str = str.Replace("__ClassName", mStrFiler);
-//        FileUtil.CreateFile(string.Format("{0}_Debug.cs", mStrTableClass), str, true, mStrCodeCSDirectory.Split(';'));
+        FileUtil.CreateFile(info.GetFile(mStrTableClass), strStream + strField + strData + strTable, true, info.CodeDirectory.Split(';'));
     }
-    public void CreateCodeJAVA(string strData, string strTable, ProgramInfo info)
+    public void CreateCodeJAVA(string strData, string strTable, string strField, ProgramInfo info)
     {
         string strStream = @"package table;
 import java.nio.ByteBuffer;
@@ -512,10 +484,11 @@ import java.nio.ByteOrder;
 import java.util.ArrayList;
 import java.util.HashMap;
 @SuppressWarnings(""unused"")";
+        FileUtil.CreateFile(info.GetFile(mStrFieldClass), strStream + strField, false, info.CodeDirectory.Split(';'));
         FileUtil.CreateFile(info.GetFile(mStrDataClass), strStream + strData, false, info.CodeDirectory.Split(';'));
         FileUtil.CreateFile(info.GetFile(mStrTableClass), strStream + strTable, false, info.CodeDirectory.Split(';'));
     }
-    public void CreateCodePHP(string strData, string strTable, ProgramInfo info)
+    public void CreateCodePHP(string strData, string strTable, string strField, ProgramInfo info)
     {
         string strStream = @"<?php
 require_once 'TableUtil.php';";
@@ -527,7 +500,7 @@ require_once 'Custom.php';";
         }
         FileUtil.CreateFile(info.GetFile(mStrTableClass), strStream + strData + strTable, false, info.CodeDirectory.Split(';'));
     }
-    public void CreateCodeCPP(string strData, string strTable, ProgramInfo info)
+    public void CreateCodeCPP(string strData, string strTable, string strField, ProgramInfo info)
     {
         string strStream = @"#pragma once
 #include <string>

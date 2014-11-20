@@ -152,23 +152,6 @@ public class MT_TableManager {");
         return null;
     }");
 #endregion
-#region 生成返回所有table类的函数（调试使用）
-        builder.Append(@"
-    #if UNITY_EDITOR
-    public List<Type> getAllTypes() {
-        List<Type> types = new List<Type>();");
-        foreach (TableClass clazz in classes)
-        {
-            if (!clazz.IsCreate(program)) continue;
-            string str = @"
-        types.Add(typeof(__ClassName_Debug));";
-            builder.Append(str.Replace("__ClassName", clazz.strTableClass));
-        }
-        builder.Append(@"
-        return types;
-    }
-    #endif");
-#endregion
         builder.Append(@"
 }");
         FileUtil.CreateFile("MT_TableManager.cs", builder.ToString(), true, Util.GetProgramInfo(program).CodeDirectory.Split(';'));

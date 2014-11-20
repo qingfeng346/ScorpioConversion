@@ -12,18 +12,15 @@ public partial class TableManager
 public abstract class MT_DataBase {
     public abstract bool IsInvalid();
     public abstract object GetDataByString(string str);
-    public T GetDataByStringTemplate<T>(string str)
-    {
-        object obj = GetDataByString(str);
-        return (T)obj;
+    public T GetDataByStringTemplate<T>(string str) {
+        return (T)GetDataByString(str);
     }
 }
 ";
         FileUtil.CreateFile("MT_DataBase.cs", strDataBase, true, Util.GetProgramInfo(program).CodeDirectory.Split(';'));
 
         string strTableBase = @"using System;
-public abstract class MT_TableBase
-{
+public abstract class MT_TableBase {
     public virtual bool Contains(Int32 ID) { return false; }
     public virtual bool Contains(string ID) { return false; }
     public virtual MT_DataBase GetValue(int key) { return null; }
@@ -86,11 +83,8 @@ public class TableUtil
 
     private const Byte INVALID_BYTE = Byte.MaxValue;
     private const Int16 INVALID_INT16 = Int16.MaxValue;
-    private const UInt16 INVALID_UINT16 = UInt16.MaxValue;
     private const Int32 INVALID_INT32 = Int32.MaxValue;
-    private const UInt32 INVALID_UINT32 = UInt32.MaxValue;
     private const Int64 INVALID_INT64 = Int64.MaxValue;
-    private const UInt64 INVALID_UINT64 = UInt64.MaxValue;
     private const float INVALID_FLOAT = -1.0f;
     private const double INVALID_DOUBLE = -1.0;
 
@@ -102,25 +96,13 @@ public class TableUtil
     {
         return (val == INVALID_INT16);
     }
-    public static bool IsInvalidUint16(UInt16 val)
-    {
-        return (val == INVALID_UINT16);
-    }
     public static bool IsInvalidInt32(Int32 val)
     {
         return (val == INVALID_INT32);
     }
-    public static bool IsInvalidUint32(UInt32 val)
-    {
-        return (val == INVALID_UINT32);
-    }
     public static bool IsInvalidInt64(Int64 val)
     {
         return (val == INVALID_INT64);
-    }
-    public static bool IsInvalidUint64(UInt64 val)
-    {
-        return (val == INVALID_UINT64);
     }
     public static bool IsInvalidFloat(float val)
     {
@@ -137,33 +119,24 @@ public class TableUtil
     public static bool IsInvalid(object val)
     {
         if (val == null) return false;
-        if (val.GetType() == typeof(byte))
-            return TABLE.IsInvalidByte((byte)val);
-        else if (val.GetType() == typeof(Int16))
-            return TABLE.IsInvalidInt16((Int16)val);
-        else if (val.GetType() == typeof(UInt16))
-            return TABLE.IsInvalidUint16((UInt16)val);
-        else if (val.GetType() == typeof(Int32))
-            return TABLE.IsInvalidInt32((Int32)val);
-        else if (val.GetType() == typeof(UInt32))
-            return TABLE.IsInvalidUint32((UInt32)val);
-        else if (val.GetType() == typeof(Int64))
-            return TABLE.IsInvalidInt64((Int64)val);
-        else if (val.GetType() == typeof(UInt64))
-            return TABLE.IsInvalidUint64((UInt64)val);
-        else if (val.GetType() == typeof(float))
-            return TABLE.IsInvalidFloat((float)val);
-        else if (val.GetType() == typeof(double))
-            return TABLE.IsInvalidDouble((double)val);
-        else if (val.GetType() == typeof(string))
-            return TABLE.IsInvalidString((string)val);
-        if (!val.GetType().IsSubclassOf(typeof(MT_DataBase)))
-        {
-            Error(""错误的判断类型 "" + val.GetType().FullName);
-            return false;
-        }
-        MT_DataBase data = (MT_DataBase)val;
-        return data.IsInvalid();
+        if (val is byte)
+            return IsInvalidByte((byte)val);
+        else if (val is short)
+            return IsInvalidInt16((short)val);
+        else if (val is int)
+            return IsInvalidInt32((int)val);
+        else if (val is long)
+            return IsInvalidInt64((long)val);
+        else if (val is float)
+            return IsInvalidFloat((float)val);
+        else if (val is double)
+            return IsInvalidDouble((double)val);
+        else if (val is string)
+            return IsInvalidString((string)val);
+        else if (val is MT_DataBase)
+            return ((MT_DataBase)val).IsInvalid();
+        Error(""错误的判断类型 "" + val.GetType().FullName);
+        return false;
     }
 }
 ";

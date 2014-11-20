@@ -145,11 +145,10 @@ public static partial class Util
         if (program == PROGRAM.CS)
         {
             str += @"
-    public static __DataClass ReadMemory ( BinaryReader reader, string fileName ) {
+    public static __DataClass ReadMemory ( TableReader reader, string fileName ) {
         __DataClass Data = new __DataClass();
 ";
-            if (hasArray)
-            {
+            if (hasArray) {
                 str += @"        __IntElement count = 0, i = 0;
 ";
             }
@@ -157,7 +156,7 @@ public static partial class Util
         else if (program == PROGRAM.JAVA)
         {
             str += @"
-    public static __DataClass ReadMemory ( ByteBuffer reader, String fileName ) {
+    public static __DataClass ReadMemory ( TableReader reader, String fileName ) {
         __DataClass Data = new __DataClass();
 ";
             if (hasArray) {
@@ -168,11 +167,10 @@ public static partial class Util
         else if (program == PROGRAM.CPP)
         {
             str += @"
-    public: static __DataClass ReadMemory (char * reader, string fileName) {
+    public: static __DataClass ReadMemory (TableReader reader, string fileName) {
         __DataClass Data;
 ";
-            if (hasArray)
-            {
+            if (hasArray) {
                 str += @"        __IntElement count = 0, i = 0;
 ";
             }
@@ -180,7 +178,7 @@ public static partial class Util
         else if (program == PROGRAM.PHP)
         {
             str += @"
-    public static function ReadMemory ( ByteBuffer $reader, $fileName ) {
+    public static function ReadMemory ( TableReader $reader, $fileName ) {
         $Data = new __DataClass();
 ";
         }
@@ -197,34 +195,23 @@ public static partial class Util
             else
                 fieldName = "Data." + fieldName;
             str += string.Format("{0}{1}{2}", Util.GetTab(2), element.GetReadMemory(program, fieldName, variable.strFieldName, variable.bArray), Util.ReturnString);
-            if (bArray && bFirst == false)
-            {
-                if (program == PROGRAM.CS)
-                {
+            if (bArray && bFirst == false) {
+                if (program == PROGRAM.CS) {
                     str += string.Format("{0}Data.m_Array.Add({1});{2}", Util.GetTab(2), fieldName, Util.ReturnString);
-                }
-                else if (program == PROGRAM.JAVA)
-                {
+                } else if (program == PROGRAM.JAVA) {
                     str += string.Format("{0}Data.m_Array.add({1});{2}", Util.GetTab(2), fieldName, Util.ReturnString);
-                }
-                else if (program == PROGRAM.PHP)
-                {
+                } else if (program == PROGRAM.PHP) {
                     str += string.Format("{0}array_push($Data->m_Array,{1});{2}", Util.GetTab(2), fieldName, Util.ReturnString);
                 }
             }
             bFirst = false;
         }
-        if (program == PROGRAM.PHP)
-        {
+        if (program == PROGRAM.PHP) {
             str += @"        return $Data;";
-        }
-        else if (program == PROGRAM.CPP)
-        {
+        } else if (program == PROGRAM.CPP) {
             str += @"        return Data;";
-        }
-        else
-        {
-            str += @"        Data.____DataString = Data.ToString_impl();
+        } else {
+            str += @"        Data.__DataString = Data.ToString_impl();
         return Data;";
         }
         str += @"
@@ -326,9 +313,7 @@ public static partial class Util
             {
                 Element element = Util.GetElement(pair.strFieldType);
                 str += @"
-        if (str == """ + pair.strFieldName + @""")";
-                str += @"
-            return " + pair.strFieldName + ";";
+        if (str == """ + pair.strFieldName + @""") return " + pair.strFieldName + "();";
             }
             str += @"
         return null;
@@ -350,9 +335,7 @@ public static partial class Util
             {
                 Element element = Util.GetElement(pair.strFieldType);
                 str += @"
-        if (str.equals(""" + pair.strFieldName + @"""))";
-                str += @"
-            return " + pair.strFieldName + "();";
+        if (str.equals(""" + pair.strFieldName + @""")) return " + pair.strFieldName + "();";
             }
             str += @"
             return null;
@@ -373,14 +356,14 @@ public static partial class Util
     public override string ToString ( ) {
         return __DataString;
     }
-    private string ToString_impl ( )
+    private string ToString_impl ( ) {
         String str = """";";
             if (!bArray)
             {
                 foreach (Variable pair in variables)
                 {
                     string temp = @"
-        str += (""__FieldName ="" + __FieldName + '\n');";
+        str += (""__FieldName ="" + __FieldName() + '\n');";
                     str += temp.Replace("__FieldName", pair.strFieldName);
                 }
             }
@@ -419,10 +402,6 @@ public static partial class Util
         {
             case PROGRAM.CS:
                 str += @"
-#if UNITY_EDITOR
-using UnityEngine;
-[Serializable] 
-#endif
 public class __DataClass : MT_DataBase {
     public static __StringElement MD5 = ""__DataMD5Code"";
     private string __DataString = """";";
@@ -461,13 +440,10 @@ class __DataClass : public MT_DataBase {";
         str = str.Replace("__BoolElement", boolElement.GetVariable(program));
         str = str.Replace("__DataClass", strDataName);
         str = str.Replace("__DataMD5Code", GetDataMD5Code(variables));
-        if (program == PROGRAM.CPP)
-        {
+        if (program == PROGRAM.CPP) {
             str += @"
 };";
-        }
-        else
-        {
+        } else {
             str += @"
 }";
         }

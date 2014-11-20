@@ -160,7 +160,7 @@
     <Compile Include="TableManager\TableManagerManager.cs" />
     <Compile Include="TableManager\TableManagerRollback.cs" />
     <Compile Include="TableManager\TableManagerTableClass.cs" />
-    <Compile Include="TableManager\TableManagerTableEnum.cs" />
+    <Compile Include="Util\UtilFieldClass.cs" />
     <EmbeddedResource Include="FormLog.resx">
       <DependentUpon>FormLog.cs</DependentUpon>
     </EmbeddedResource>

@@ -41,7 +41,6 @@
             this.textTransformFiles = new System.Windows.Forms.TextBox();
             this.labelTransformFiles = new System.Windows.Forms.Label();
             this.getManager = new System.Windows.Forms.CheckBox();
-            this.tableEnum = new System.Windows.Forms.CheckBox();
             this.Language = new System.Windows.Forms.CheckBox();
             this.buttonLanguage = new System.Windows.Forms.Button();
             this.buttonRefreshLanguage = new System.Windows.Forms.Button();
@@ -163,20 +162,10 @@
             this.getManager.Text = "替换Manager";
             this.getManager.UseVisualStyleBackColor = true;
             // 
-            // tableEnum
-            // 
-            this.tableEnum.AutoSize = true;
-            this.tableEnum.Location = new System.Drawing.Point(110, 77);
-            this.tableEnum.Name = "tableEnum";
-            this.tableEnum.Size = new System.Drawing.Size(102, 16);
-            this.tableEnum.TabIndex = 43;
-            this.tableEnum.Text = "获取TableEnum";
-            this.tableEnum.UseVisualStyleBackColor = true;
-            // 
             // Language
             // 
             this.Language.AutoSize = true;
-            this.Language.Location = new System.Drawing.Point(218, 77);
+            this.Language.Location = new System.Drawing.Point(302, 77);
             this.Language.Name = "Language";
             this.Language.Size = new System.Drawing.Size(96, 16);
             this.Language.TabIndex = 44;
@@ -206,7 +195,7 @@
             // getCustom
             // 
             this.getCustom.AutoSize = true;
-            this.getCustom.Location = new System.Drawing.Point(320, 77);
+            this.getCustom.Location = new System.Drawing.Point(110, 77);
             this.getCustom.Name = "getCustom";
             this.getCustom.Size = new System.Drawing.Size(96, 16);
             this.getCustom.TabIndex = 47;
@@ -216,7 +205,7 @@
             // getBase
             // 
             this.getBase.AutoSize = true;
-            this.getBase.Location = new System.Drawing.Point(422, 77);
+            this.getBase.Location = new System.Drawing.Point(212, 77);
             this.getBase.Name = "getBase";
             this.getBase.Size = new System.Drawing.Size(84, 16);
             this.getBase.TabIndex = 48;
@@ -300,7 +289,6 @@
             this.Controls.Add(this.buttonRefreshLanguage);
             this.Controls.Add(this.buttonLanguage);
             this.Controls.Add(this.Language);
-            this.Controls.Add(this.tableEnum);
             this.Controls.Add(this.getManager);
             this.Controls.Add(this.progressLabel);
             this.Controls.Add(this.progressBar);
@@ -338,7 +326,6 @@
         private System.Windows.Forms.TextBox textTransformFiles;
         private System.Windows.Forms.Label labelTransformFiles;
         private System.Windows.Forms.CheckBox getManager;
-        private System.Windows.Forms.CheckBox tableEnum;
         private System.Windows.Forms.CheckBox Language;
         private System.Windows.Forms.Button buttonLanguage;
         private System.Windows.Forms.Button buttonRefreshLanguage;

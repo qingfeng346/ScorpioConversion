@@ -249,7 +249,7 @@ public partial class TableManager
         for (int i=0;i<languages.Count;++i) {
             files.Add(m_LanguageDirectory + "Language_" + languages[i] + ".xls");
         }
-        Transform(files, false, false, false, false, false);
+        Transform(files, false, false, false, false);
     }
 }
 

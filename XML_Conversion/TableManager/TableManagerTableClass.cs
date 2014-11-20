@@ -91,7 +91,7 @@ public partial class TableManager
                 throw new System.Exception(""文件["" + fileName + ""]有重复项 ID : "" + pData.ID());
             m_dataArray.Add(pData.ID(), pData);
         }
-        reader.Close()
+        reader.Close();
     }";
         }
         else if (program == PROGRAM.JAVA)
@@ -139,7 +139,7 @@ public partial class TableManager
                 throw new Exception(""文件"" + fileName + ""有重复项 ID : "" + pData.ID());
             m_dataArray.put(pData.ID(),pData);
         }
-        reader.Close()
+        reader.Close();
     }";
         }
         else if (program == PROGRAM.CPP)
