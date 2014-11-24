@@ -15,8 +15,7 @@ using System.Collections.Generic;
 public class MT_TableManager {");
 #region 生成Reset函数
         string resetStr = @"
-    public void Reset()
-    {";
+    public void Reset() {";
         foreach (TableClass clazz in classes)
         {
             if (!clazz.IsCreate(program)) continue;
@@ -24,7 +23,6 @@ public class MT_TableManager {");
         mTable__Filer = null;";
             resetStr = resetStr.Replace("__Filer", clazz.strFiler);
         }
-        resetStr += Util.ReturnString;
         foreach (var pair in spawnsClasses)
         {
             SpawnsClass clazz = pair.Value;
