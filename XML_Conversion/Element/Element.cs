@@ -242,9 +242,10 @@ class Int32Element : Element
         switch (program)
         {
             case PROGRAM.CS:
-            case PROGRAM.JAVA:
             case PROGRAM.CPP:
                 return "int";
+            case PROGRAM.JAVA: 
+                return "Integer";
         }
         return base.GetVariable_impl(program);
     }

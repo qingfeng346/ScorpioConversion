@@ -375,7 +375,7 @@ public static partial class Util
     public String toString ( ) {
         return __DataString;
     }
-    private string ToString_impl ( ) {
+    private String ToString_impl ( ) {
         String str = """";";
             if (!bArray)
             {
@@ -410,7 +410,7 @@ public class __DataClass : MT_DataBase {
                 str += @"
 public class __DataClass extends MT_DataBase {
     public static __StringElement MD5 = ""__DataMD5Code"";
-    private string __DataString = """";";
+    private String __DataString = """";";
                 break;
             case PROGRAM.PHP:
                 str += @"
