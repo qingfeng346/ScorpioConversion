@@ -8,8 +8,8 @@
     <ProjectGuid>{BCDCB7CC-94F6-469D-AC55-FE7734282E0C}</ProjectGuid>
     <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>XML_Conversion</RootNamespace>
-    <AssemblyName>XML_Conversion</AssemblyName>
+    <RootNamespace>ScorpioConversion</RootNamespace>
+    <AssemblyName>ScorpioConversion</AssemblyName>
     <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
     <TargetFrameworkProfile>
     </TargetFrameworkProfile>

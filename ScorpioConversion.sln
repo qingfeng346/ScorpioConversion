@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2012
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XML_Conversion", "XML_Conversion\XML_Conversion.csproj", "{BCDCB7CC-94F6-469D-AC55-FE7734282E0C}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ScorpioConversion", "ScorpioConversion\ScorpioConversion.csproj", "{BCDCB7CC-94F6-469D-AC55-FE7734282E0C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
