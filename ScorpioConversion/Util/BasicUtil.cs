@@ -2,14 +2,6 @@
 using System.Collections.Generic;
 using System.Text;
 using System.Reflection;
-//语言列表
-public enum Code
-{
-    NONE = -1,      //无语言
-    CSharp,         //C#(CSharp) 语言
-    Java,           //Java 语言
-    COUNT,
-}
 //变量类型
 public enum BasicEnum
 {

@@ -7,8 +7,8 @@ public abstract class IGenerate
     protected string m_Package;
     protected string m_ClassName;
     protected List<PackageField> m_Fields;
-    protected Code m_Code;
-    public IGenerate(string className, string package, List<PackageField> fields, Code code)
+    protected PROGRAM m_Code;
+    public IGenerate(string className, string package, List<PackageField> fields, PROGRAM code)
     {
         m_ClassName = className;
         m_Package = package;
@@ -18,7 +18,7 @@ public abstract class IGenerate
     public string GetCodeType(string type)
     {
         var b = BasicUtil.GetType(type);
-        return b != null ? b.Codes[(int)m_Code] : type;
+        return b != null ? b.GetCode(m_Code) : type;
     }
     public abstract string Generate();
 }
