@@ -140,7 +140,7 @@ public class TableUtil
     }
 }
 ";
-        strUtilBase = strUtilBase.Replace("__ClassValue", ((int)ElementType.CLASS).ToString());
+        strUtilBase = strUtilBase.Replace("__ClassValue", ((int)BasicEnum.CLASS).ToString());
         FileUtil.CreateFile("TableUtil.cs", strUtilBase, true, Util.GetProgramInfo(program).CodeDirectory.Split(';'));
     }
     public void CreateBaseJAVA()
@@ -261,7 +261,7 @@ public class TableUtil
     }
 }
 ";
-        strUtilBase = strUtilBase.Replace("__ClassValue", ((int)ElementType.CLASS).ToString());
+        strUtilBase = strUtilBase.Replace("__ClassValue", ((int)BasicEnum.CLASS).ToString());
         FileUtil.CreateFile("TableUtil.java", strUtilBase, false, Util.GetProgramInfo(program).CodeDirectory.Split(';'));
     }
     public void CreateBasePHP()

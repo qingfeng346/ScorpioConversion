@@ -5,14 +5,25 @@ using System.Windows.Forms;
 using System.IO;
 using System.Reflection;
 using XML_Conversion;
+
+public class DefaultInfo : Attribute
+{
+    public string Extension;        //文件后缀
+    public DefaultInfo(string ex)
+    {
+        Extension = ex;
+    }
+}
 //语言数量
 public enum PROGRAM
 {
-    NONE,           //无语言
+    NONE = -1,      //无语言
+    [DefaultInfo("cs")]
     CS,             //C#(CSharp) 语言
-    CPP,            //C++ 语言
+    [DefaultInfo("java")]
     JAVA,           //Java 语言
-    PHP,            //PHP 语言
+    [DefaultInfo("h")]
+    CPP,
     COUNT,
 }
 //所有配置文件
@@ -193,14 +204,8 @@ public static partial class Util
             info.DataDirectory = string.IsNullOrEmpty(DataDirectory) ? BaseDirectory + program.ToString() : DataDirectory;
             info.Create = ToBoolean(GetConfig(program, ConfigKey.Create, ConfigFile.PathConfig), true);
             info.Compress = ToBoolean(GetConfig(program, ConfigKey.Compress, ConfigFile.InitConfig));
-            if (program == PROGRAM.CS)
-                info.Extension = "cs";
-            else if (program == PROGRAM.JAVA)
-                info.Extension = "java";
-            else if (program == PROGRAM.PHP)
-                info.Extension = "php";
-            else if (program == PROGRAM.CPP)
-                info.Extension = "h";
+            DefaultInfo defaultInfo = (DefaultInfo)Attribute.GetCustomAttribute(program.GetType(), typeof(DefaultInfo));
+            info.Extension = defaultInfo.Extension;
             m_ProgramInfos.Add(program, info);
         }
     }

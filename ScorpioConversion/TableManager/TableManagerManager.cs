@@ -7,7 +7,7 @@ public partial class TableManager
     public void CreateManagerCS()
     {
         PROGRAM program = PROGRAM.CS;
-        var classes = mClasses;
+        var classes = mNormalClasses;
         var spawnsClasses = mSpawnsClasses;
         StringBuilder builder = new StringBuilder();
         builder.Append(@"using System;
@@ -21,7 +21,7 @@ public class MT_TableManager {");
             if (!clazz.IsCreate(program)) continue;
             resetStr += @"
         mTable__Filer = null;";
-            resetStr = resetStr.Replace("__Filer", clazz.strFiler);
+            resetStr = resetStr.Replace("__Filer", clazz.Filer);
         }
         foreach (var pair in spawnsClasses)
         {
@@ -51,7 +51,7 @@ public class MT_TableManager {");
         }
     }";
             str = str.Replace("__TableClass", clazz.strTableClass);
-            str = str.Replace("__Filer", clazz.strFiler);
+            str = str.Replace("__Filer", clazz.Filer);
             builder.Append(str);
         }
 #endregion
@@ -63,7 +63,7 @@ public class MT_TableManager {");
             string enumName = pair.Key;
             string classCode = @"
     public enum __enumName {";
-            foreach (string value in clazz.list)
+            foreach (string value in clazz.Files)
             {
                 string enumElement = @"
         __enumTtitle,";
@@ -121,7 +121,7 @@ public class MT_TableManager {");
             if (!clazz.IsCreate(program)) continue;
             string str = @"
         __Table,";
-            builder.Append(str.Replace("__Table", clazz.strFiler));
+            builder.Append(str.Replace("__Table", clazz.Filer));
         }
         builder.Append(@"
     }");
@@ -132,7 +132,7 @@ public class MT_TableManager {");
             if (!clazz.IsCreate(program)) continue;
             string str = @"
         if (key == TABLE_ENUM.__Table) return Table__Table;";
-            builder.Append(str.Replace("__Table", clazz.strFiler));
+            builder.Append(str.Replace("__Table", clazz.Filer));
         }
         builder.Append(@"
         return null;
@@ -144,7 +144,7 @@ public class MT_TableManager {");
             if (!clazz.IsCreate(program)) continue;
             string str = @"
         if (key == ""__Table"") return Table__Table;";
-            builder.Append(str.Replace("__Table", clazz.strFiler));
+            builder.Append(str.Replace("__Table", clazz.Filer));
         }
         builder.Append(@"
         return null;
@@ -157,7 +157,7 @@ public class MT_TableManager {");
     public void CreateManagerJAVA()
     {
         PROGRAM program = PROGRAM.JAVA;
-        var classes = mClasses;
+        var classes = mNormalClasses;
         var spawnsClasses = mSpawnsClasses;
         StringBuilder builder = new StringBuilder();
         builder.Append(@"package table;
@@ -180,7 +180,7 @@ public class MT_TableManager {");
         return mTable__Filer;
     }";
             str = str.Replace("__TableClass", clazz.strTableClass);
-            str = str.Replace("__Filer", clazz.strFiler);
+            str = str.Replace("__Filer", clazz.Filer);
             builder.Append(str);
         }
         foreach (var pair in spawnsClasses)
@@ -190,7 +190,7 @@ public class MT_TableManager {");
             string enumName = pair.Key;
             string classCode = @"
     public enum __enumName {";
-            foreach (string value in clazz.list)
+            foreach (string value in clazz.Files)
             {
                 string enumElement = @"
         __enumTtitle,";
@@ -255,7 +255,7 @@ public class MT_TableManager {");
     public void CreateManagerPHP()
     {
         PROGRAM program = PROGRAM.PHP;
-        var classes = mClasses;
+        var classes = mNormalClasses;
         var spawnsClasses = mSpawnsClasses;
         StringBuilder builder = new StringBuilder();
         builder.Append(@"<?php");
@@ -263,7 +263,7 @@ public class MT_TableManager {");
         {
             string classCode = @"
 class __enumName {";
-            foreach (string value in pair.Value.list)
+            foreach (string value in pair.Value.Files)
             {
                 string enumElement = @"
     const __enumTtitle = ""__enumTtitle"";";
@@ -289,7 +289,7 @@ class MT_TableManager {");
         return $this->mTable__Filer;
     }";
             str = str.Replace("__TableClass", clazz.strTableClass);
-            str = str.Replace("__Filer", clazz.strFiler);
+            str = str.Replace("__Filer", clazz.Filer);
             builder.Append(str);
         }
         foreach (var pair in spawnsClasses)

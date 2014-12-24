@@ -12,14 +12,21 @@ public class TableWriter
     {
         writer.Seek(offset, SeekOrigin.Begin);
     }
+    public void WriteBool(bool value)
+    {
+        writer.Write(value ? (sbyte)1 : (sbyte)0);
+    }
+    public void WriteByte(sbyte value)
+    {
+        writer.Write(value);
+    }
     public void WriteInt32(int value)
     {
         writer.Write(value);
     }
     public void WriteBool(string value)
     {
-        bool v = Util.IsEmptyString(value) ? Util.INVALID_BOOL : Util.ToBoolean(value);
-        writer.Write(v ? (sbyte)1 : (sbyte)0);
+        writer.Write((Util.IsEmptyString(value) ? Util.INVALID_BOOL : Util.ToBoolean(value)) ? (sbyte)1 : (sbyte)0);
     }
     public void WriteInt8(string value)
     {

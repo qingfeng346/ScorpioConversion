@@ -73,7 +73,7 @@ public static class FileUtil
     public static void CreateFile(string fileName, string buffer, bool bom)
     {
         try {
-            CreateFile(fileName, CharsetUtil.defaultEncoding.GetBytes(buffer), bom);
+            CreateFile(fileName, Encoding.UTF8.GetBytes(buffer), bom);
         } catch (System.Exception ex) {
             Logger.error("CreateFile is error : {0}", ex.ToString());
         }
@@ -125,7 +125,7 @@ public static class FileUtil
     /// </summary>
     public static String GetFileString(string fileName)
     {
-        return CharsetUtil.defaultEncoding.GetString(GetFileBuffer(fileName));
+        return Encoding.UTF8.GetString(GetFileBuffer(fileName));
     }
     /// <summary>
     /// 获得文件byte[]

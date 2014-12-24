@@ -3,69 +3,41 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Text;
 using System.IO;
-/// <summary>
-/// 单个模块数据
-/// </summary>
+/// <summary> 单个模块数据 </summary>
 public class SectionValue
 {
-    /// <summary>
-    /// 所有数据
-    /// </summary>
+    /// <summary> 所有数据 </summary>
     public Dictionary<string, ConfigValue> datas = new Dictionary<string, ConfigValue>();
-    /// <summary>
-    /// 设置值
-    /// </summary>
-    /// <param name="key"></param>
-    /// <param name="value"></param>
-    /// <param name="comment"></param>
+    /// <summary> 设置值 </summary>
     public void Set(string key, string value, string comment)
     {
         if (!datas.ContainsKey(key))
             datas.Add(key, new ConfigValue());
         datas[key].Set(value, comment);
     }
-    /// <summary>
-    /// 获得值
-    /// </summary>
-    /// <param name="key"></param>
-    /// <returns></returns>
+    /// <summary> 获得值 </summary>
     public ConfigValue Get(string key)
     {
         if (datas.ContainsKey(key))
             return datas[key];
         return null;
     }
-    /// <summary>
-    /// 删除值
-    /// </summary>
-    /// <param name="key"></param>
+    /// <summary> 删除值 </summary>
     public void Remove(string key)
     {
-        if (datas.ContainsKey(key))
-        {
+        if (datas.ContainsKey(key)) {
             datas.Remove(key);
         }
     }
-
 }
-/// <summary>
-/// 具体数据
-/// </summary>
+/// <summary> 具体数据 </summary>
 public class ConfigValue
 {
-    /// <summary>
-    /// 值
-    /// </summary>
+    /// <summary> 值 </summary>
     public string value;
-    /// <summary>
-    /// 注释
-    /// </summary>
+    /// <summary> 注释 </summary>
     public string comment;
-    /// <summary>
-    /// 设置值
-    /// </summary>
-    /// <param name="value"></param>
-    /// <param name="comment"></param>
+    /// <summary> 设置值 </summary>
     public void Set(string value,string comment)
     {
         if (value != null)
@@ -74,33 +46,21 @@ public class ConfigValue
             this.comment = comment;
     }
 }
-/// <summary>
-/// 读取ini文件
-/// </summary>
+/// <summary> 读取ini文件 </summary>
 public class Config
 {
-    /// <summary>
-    /// 文件名称
-    /// </summary>
+    /// <summary> 文件名称 </summary>
     private string m_FileName;
-    /// <summary>
-    /// 所有数据
-    /// </summary>
+    /// <summary> 所有数据 </summary>
     public Dictionary<string, SectionValue> m_ConfigData = new Dictionary<string, SectionValue>();
-    /// <summary>
-    /// 构造函数
-    /// </summary>
+    /// <summary> 构造函数 </summary>
     public Config() { }
-    /// <summary>
-    /// 构造函数
-    /// </summary>
-    public Config(byte[] bytes)
+    /// <summary> 构造函数 </summary>
+    public Config(byte[] bytes, Encoding encoding)
     {
-        InitializeFromBuffer(bytes);
+        InitializeFromBuffer(bytes, encoding);
     }
-    /// <summary>
-    /// 构造函数
-    /// </summary>
+    /// <summary> 构造函数 </summary>
     public Config(string data,bool file)
     {
         if (file)
@@ -108,29 +68,21 @@ public class Config
         else
             InitializeFromString(data);
     }
-    /// <summary>
-    /// 根据文件初始化数据
-    /// </summary>
-    /// <param name="fileName"></param>
+    /// <summary> 根据文件初始化数据 </summary>
     public void InitializeFromFile(string fileName)
     {
         m_FileName = fileName;
         InitializeFromString(File.Exists(m_FileName) ? FileUtil.GetFileString(m_FileName) : "");
     }
-    /// <summary>
-    /// 根据BYTE[]初始化数据
-    /// </summary>
-    public void InitializeFromBuffer(byte[] buffer)
+    /// <summary> 根据BYTE[]初始化数据 </summary>
+    public void InitializeFromBuffer(byte[] buffer, Encoding encoding)
     {
-        InitializeFromString(CharsetUtil.defaultEncoding.GetString(buffer));
+        InitializeFromString(encoding.GetString(buffer));
     }
-    /// <summary>
-    /// 根据string初始化数据
-    /// </summary>
+    /// <summary> 根据string初始化数据 </summary>
     public void InitializeFromString(string buffer)
     {
-        try
-        {
+        try {
             m_ConfigData.Clear();
             string[] datas = buffer.Split('\n');
             string section = "";
@@ -203,47 +155,29 @@ public class Config
             Logger.error("Config initialize is error : {0}", ex.ToString());
         }
     }
-    /// <summary>
-    /// 返回所有数据
-    /// </summary>
-    /// <returns></returns>
+    /// <summary> 返回所有数据 </summary>
     public Dictionary<string, SectionValue> GetData()
     {
         return m_ConfigData;
     }
-    /// <summary>
-    /// 返回单个模块的数据
-    /// </summary>
-    /// <returns></returns>
+    /// <summary> 返回单个模块的数据 </summary>
     public SectionValue GetSection()
     {
         return GetSection("");
     }
-    /// <summary>
-    /// 返回单个模块的数据
-    /// </summary>
-    /// <returns></returns>
+    /// <summary> 返回单个模块的数据 </summary>
     public SectionValue GetSection(string section)
     {
         if (!m_ConfigData.ContainsKey(section))
             return null;
         return m_ConfigData[section];
     }
-    /// <summary>
-    /// 获得Value
-    /// </summary>
-    /// <param name="key"></param>
-    /// <returns></returns>
+    /// <summary> 获得Value </summary>
     public string Get(string key)
     {
         return Get("", key);
     }
-    /// <summary>
-    /// 设置Value
-    /// </summary>
-    /// <param name="section"></param>
-    /// <param name="key"></param>
-    /// <returns></returns>
+    /// <summary> 设置Value </summary>
     public string Get(string section,string key)
     {
         if (m_ConfigData.Count <= 0)
@@ -256,84 +190,51 @@ public class Config
             return configValue.value;
         return "";
     }
-    /// <summary>
-    /// 设置Value
-    /// </summary>
-    /// <param name="key"></param>
-    /// <param name="value"></param>
+    /// <summary> 设置Value </summary>
     public void Set(string key, string value)
     {
         Set("", key, value);
     }
-    /// <summary>
-    /// 设置Value
-    /// </summary>
-    /// <param name="section"></param>
-    /// <param name="key"></param>
-    /// <param name="value"></param>
+    /// <summary> 设置Value </summary>
     public void Set(string section, string key, string value)
     {
         Set(section, key, value, null);
     }
-    /// <summary>
-    /// 设置Value
-    /// </summary>
-    /// <param name="section"></param>
-    /// <param name="key"></param>
-    /// <param name="value"></param>
-    /// <param name="comment"></param>
+    /// <summary> 设置Value </summary>
     public void Set(string section, string key, string value, string comment)
     {
         if (!m_ConfigData.ContainsKey(section))
             m_ConfigData.Add(section, new SectionValue());
         m_ConfigData[section].Set(key, value, comment);
     }
-    /// <summary>
-    /// 删除Key
-    /// </summary>
-    /// <param name="key"></param>
-    /// <returns></returns>
+    /// <summary> 删除Key </summary>
     public void Remove(string key)
     {
         Remove("", key);
     }
-    /// <summary>
-    /// 删除Key
-    /// </summary>
-    /// <param name="section"></param>
-    /// <param name="key"></param>
+    /// <summary> 删除Key </summary>
     public void Remove(string section, string key)
     {
         if (m_ConfigData.ContainsKey(section))
             m_ConfigData[section].Remove(key);
     }
-    /// <summary>
-    /// 清空一个模块
-    /// </summary>
+    /// <summary> 清空一个模块 </summary>
     public void ClearSection()
     {
         ClearSection("");
     }
-    /// <summary>
-    /// 清空一个模块
-    /// </summary>
-    /// <param name="section"></param>
+    /// <summary> 清空一个模块 </summary>
     public void ClearSection(string section)
     {
         if (m_ConfigData.ContainsKey(section))
             m_ConfigData.Remove(section);
     }
-    /// <summary>
-    /// 清空所有数据
-    /// </summary>
+    /// <summary> 清空所有数据 </summary>
     public void ClearData()
     {
         m_ConfigData.Clear();
     }
-    /// <summary>
-    /// 返回数据字符串
-    /// </summary>
-    /// <returns></returns>
+    /// <summary> 返回数据字符串 </summary>
     string GetString()
     {
         SortedDictionary<string, SectionValue> data = new SortedDictionary<string, SectionValue>(m_ConfigData);
@@ -363,20 +264,13 @@ public class Config
         }
         return builder.ToString();
     }
-    /// <summary>
-    /// 保存到读取时候的文件
-    /// </summary>
-    /// <param name="bom"></param>
+    /// <summary> 保存到读取时候的文件 </summary>
     public void Save(bool bom)
     {
         if (!string.IsNullOrEmpty(m_FileName))
             Save(m_FileName, bom);
     }
-    /// <summary>
-    /// 保存到文件
-    /// </summary>
-    /// <param name="fileName"></param>
-    /// <param name="bom"></param>
+    /// <summary> 保存到文件 </summary>
     public void Save(string fileName, bool bom)
     {
         FileUtil.CreateFile(fileName, GetString(), bom);
