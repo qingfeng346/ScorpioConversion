@@ -2,40 +2,50 @@
 using System.Collections.Generic;
 using System.Text;
 using System.IO;
-public class GenerateMessageCS : IGenerate
+public class GenerateJava : IGenerate
 {
-    public GenerateMessageCS(string className, string package, List<PackageField> fields) : 
-        base(className, package, fields, Code.CSharp)
-    { }
-    public override string Generate()
+    public GenerateJava() : base(PROGRAM.Java) { }
+    protected override string Generate_impl()
     {
         StringBuilder builder = new StringBuilder();
         builder.Append(@"
-public class __ClassName : IData {");
+public class __ClassName extends IData {");
         builder.Append(GenerateMessageFields());
         builder.Append(GenerateMessageRead());
         builder.Append(@"
 }");
         builder.Replace("__ClassName", m_ClassName);
-        builder.Replace("__Package", m_Package);
         return builder.ToString();
     }
     string GenerateMessageFields()
     {
         StringBuilder builder = new StringBuilder();
+        bool first = true;
         foreach (var field in m_Fields)
         {
             string str = "";
-            if (field.Array) {
+            if (field.Array)
+            {
                 str = @"
-    private ReadOnlyCollection<__Type> ___Name;
-    public ReadOnlyCollection<__Type> get__Name() { return ___Name; }";
-            } else {
+    private List<__Type> ___Name;
+    /** __Note */
+    public List<__Type> get__Name() { return ___Name; }";
+            }
+            else
+            {
                 str = @"
     private __Type ___Name;
+    /** __Note */
     public __Type get__Name() { return ___Name; }";
+                if (first)
+                {
+                    first = false;
+                    str += @"
+    public __Type ID() { return ___Name; }";
+                }
             }
             str = str.Replace("__Name", field.Name);
+            str = str.Replace("__Note", field.Note);
             str = str.Replace("__Type", GetCodeType(field.Type));
             builder.Append(str);
         }
@@ -47,22 +57,26 @@ public class __ClassName : IData {");
         builder.Append(@"
     public static __ClassName Read(ScorpioReader reader) {
         __ClassName ret = new __ClassName();");
-        foreach (var field in m_Fields) {
+        foreach (var field in m_Fields)
+        {
             string str = "";
-            if (field.Array) {
+            if (field.Array)
+            {
                 str = @"
         {
-            List<__TypeName> list = new List<__TypeName> ();
-            for (int i = 0;i < reader.ReadInt32(); ++i) { list.Add(__FieldRead); }
-            ret.___Name = list.AsReadOnly();
+            ArrayList<__Type> list = new ArrayList<__Type>();
+            for (int i = 0;i < reader.ReadInt32(); ++i) { list.add(__FieldRead); }
+            ret.___Name = Collections.unmodifiableList(list);
         }";
-            } else {
+            }
+            else
+            {
                 str = @"
         ret.___Name = __FieldRead;";
             }
-            str = str.Replace("__FieldRead", !field.IsBasic ? "__TypeName.Read(reader)" : "reader.__Read()");
+            str = str.Replace("__FieldRead", !field.IsBasic ? "__Type.Read(reader)" : "reader.__Read()");
             str = str.Replace("__Read", field.IsBasic ? field.Info.ReadFunction : "");
-            str = str.Replace("__TypeName", GetCodeType(field.Type));
+            str = str.Replace("__Type", GetCodeType(field.Type));
             str = str.Replace("__Index", field.Index.ToString());
             str = str.Replace("__Name", field.Name);
             builder.Append(str);

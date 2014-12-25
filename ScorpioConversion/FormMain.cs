@@ -117,8 +117,7 @@ namespace XML_Conversion
         }
         void ThreadTransform()
         {
-            TableManager.GetInstance().Transform(transformFileNames, this.getManager.Checked,
-                this.Language.Checked, this.getCustom.Checked, this.getBase.Checked);
+            TableManager.GetInstance().Transform(transformFileNames);
             EndRun();
         }
         //点击反转
@@ -134,7 +133,7 @@ namespace XML_Conversion
         }
         void ThreadRollback()
         {
-            TableManager.GetInstance().Rollback(rollbackFileNames.ToArray());
+            //TableManager.GetInstance().Rollback(rollbackFileNames.ToArray());
             EndRun();
         }
         //进度计时器
@@ -161,7 +160,7 @@ namespace XML_Conversion
         }
         void ThreadRefreshLanguage()
         {
-            TableManager.GetInstance().RefreshLanguage();
+            //TableManager.GetInstance().RefreshLanguage();
             EndRun();
         }
         //打开多国语言配置界面

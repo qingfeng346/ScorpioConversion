@@ -4,15 +4,11 @@ using System.Text;
 
 public abstract class IGenerate
 {
-    protected string m_Package;
     protected string m_ClassName;
     protected List<PackageField> m_Fields;
     protected PROGRAM m_Code;
-    public IGenerate(string className, string package, List<PackageField> fields, PROGRAM code)
+    public IGenerate(PROGRAM code)
     {
-        m_ClassName = className;
-        m_Package = package;
-        m_Fields = fields;
         m_Code = code;
     }
     public string GetCodeType(string type)
@@ -20,6 +16,12 @@ public abstract class IGenerate
         var b = BasicUtil.GetType(type);
         return b != null ? b.GetCode(m_Code) : type;
     }
-    public abstract string Generate();
+    public string Generate(string className, List<PackageField> fields)
+    {
+        m_ClassName = className;
+        m_Fields = fields;
+        return Generate_impl();
+    }
+    protected abstract string Generate_impl();
 }
 

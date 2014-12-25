@@ -162,6 +162,7 @@ public partial class TableManager
                 if (field.Array == true || field.Type != "int32")
                     throw new System.Exception("第一列的数据类型必须为int32类型");
             }
+            mFields.Add(field);
         }
         if (mFields.Count == 0)
             throw new System.Exception("字段个数为0");
@@ -304,53 +305,49 @@ public partial class TableManager
             FileUtil.CreateFile(mStrFiler + ".data", info.Compress ? bytes : buffer, false, info.DataDirectory.Split(';'));
             if (info.CreateCode == null) continue;
             string strTable = GetTableClass(program);
-            //string strData = 
-            string strData = Util.GetDataClass(program, mStrDataClass, mArrayVariable, mArray, true, false);
-            
-            string strField = Util.GetFieldClass(program, mStrFieldClass, mArrayVariable);
-            info.CreateCode.Invoke(this, new object[] { strData, strTable, strField, info });
+            string strData = info.Generate.Generate(DataClassName, mFields);
+            info.CreateCode.Invoke(this, new object[] { strData, strTable, info });
         }
     }
-    public void CreateCodeCS(string strData, string strTable, string strField, ProgramInfo info)
+    /// <summary> 获得Table类的代码 </summary>
+    private string GetTableClass(PROGRAM program)
+    {
+        var info = Util.GetProgramInfo(program);
+        string file = CurrentDirectory + "/Template/Table." + info.Extension;
+        if (FileUtil.FileExist(file))
+        {
+            var template = FileUtil.GetFileString(file);
+            template = template.Replace("__TableName", TableClassName);
+            template = template.Replace("__DataName", DataClassName);
+            template = template.Replace("__Key", BasicUtil.GetType(BasicEnum.INT32).GetCode(program));
+            template = template.Replace("__MD5", GetClassMD5Code());
+            return template.ToString();
+        }
+        return null;
+    }
+    public void CreateCodeCSharp(string strData, string strTable, ProgramInfo info)
     {
         string strStream = @"using System;
 using System.IO;
 using System.Collections.Generic;
 #pragma warning disable 0219";
-        FileUtil.CreateFile(info.GetFile(mStrTableClass), strStream + strField + strData + strTable, true, info.CodeDirectory.Split(';'));
+        FileUtil.CreateFile(info.GetFile(TableClassName), strStream + strTable, true, info.CodeDirectory.Split(';'));
+        FileUtil.CreateFile(info.GetFile(DataClassName), strStream + strData, true, info.CodeDirectory.Split(';'));
     }
-    public void CreateCodeJAVA(string strData, string strTable, string strField, ProgramInfo info)
+    public void CreateCodeJava(string strData, string strTable, ProgramInfo info)
     {
-        string strStream = @"package table;
+        string strStream = @"package __Package;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.util.ArrayList;
 import java.util.HashMap;
 @SuppressWarnings(""unused"")";
-        FileUtil.CreateFile(info.GetFile(mStrFieldClass), strStream + strField, false, info.CodeDirectory.Split(';'));
-        FileUtil.CreateFile(info.GetFile(mStrDataClass), strStream + strData, false, info.CodeDirectory.Split(';'));
-        FileUtil.CreateFile(info.GetFile(mStrTableClass), strStream + strTable, false, info.CodeDirectory.Split(';'));
+        strStream = strStream.Replace("__Package", "table");
+        FileUtil.CreateFile(info.GetFile(TableClassName), strStream + strTable, false, info.CodeDirectory.Split(';'));
+        FileUtil.CreateFile(info.GetFile(DataClassName), strStream + strData, false, info.CodeDirectory.Split(';'));
     }
-    public void CreateCodePHP(string strData, string strTable, string strField, ProgramInfo info)
+    public void CreateCodeScorpio(string strData, string strTable, ProgramInfo info)
     {
-        string strStream = @"<?php
-require_once 'TableUtil.php';";
-        Type[] types = CodeProvider.GetInstance().GetTypes();
-        if (types != null && types.Length > 0)
-        {
-            strStream += @"
-require_once 'Custom.php';";
-        }
-        FileUtil.CreateFile(info.GetFile(mStrTableClass), strStream + strData + strTable, false, info.CodeDirectory.Split(';'));
-    }
-    public void CreateCodeCPP(string strData, string strTable, string strField, ProgramInfo info)
-    {
-        string strStream = @"#pragma once
-#include <string>
-#include <vector>
-#include <map>
-using namespace::std;
-#pragma warning disable 0219";
-        FileUtil.CreateFile(info.GetFile(mStrTableClass), strStream + strData + strTable, true, info.CodeDirectory.Split(';'));
+        FileUtil.CreateFile(info.GetFile(DataClassName), strData, false, info.CodeDirectory.Split(';'));
     }
 }

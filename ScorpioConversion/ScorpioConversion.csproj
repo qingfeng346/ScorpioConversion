@@ -78,8 +78,8 @@
     <Compile Include="FormPath.Designer.cs">
       <DependentUpon>FormPath.cs</DependentUpon>
     </Compile>
-    <Compile Include="Generate\GenerateMessageCS.cs" />
-    <Compile Include="Generate\GenerateMessageJava.cs" />
+    <Compile Include="Generate\GenerateCSharp.cs" />
+    <Compile Include="Generate\GenerateJava.cs" />
     <Compile Include="Generate\GenerateScorpio.cs" />
     <Compile Include="Generate\IGenerate.cs" />
     <Compile Include="Logger.cs" />
@@ -154,7 +154,6 @@
     <Compile Include="TableManager\TableManagerBase.cs" />
     <Compile Include="TableManager\TableManagerManager.cs" />
     <Compile Include="TableManager\TableManagerRollback.cs" />
-    <Compile Include="TableManager\TableManagerTableClass.cs" />
     <EmbeddedResource Include="FormLog.resx">
       <DependentUpon>FormLog.cs</DependentUpon>
     </EmbeddedResource>

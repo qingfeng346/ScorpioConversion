@@ -33,16 +33,6 @@ public static partial class Util
             str += TabString;
         return str;
     }
-    //根据字符串获得基本类型 (不包含 class )
-    private static BasicType GetType(string key)
-    {
-        foreach (var info in BasicTypes)
-        {
-            if (info.ScorpioName == key)
-                return info;
-        }
-        return null;
-    }
     //是不是非法字符串 ####
     public static bool IsEmptyString(string str)
     {
