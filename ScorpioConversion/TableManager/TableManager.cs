@@ -9,6 +9,7 @@ using System.IO;
 using System.Threading;
 using NPOI.SS.UserModel;
 using NPOI.HSSF.UserModel;
+using Scorpio;
 public partial class TableManager
 {
     public static TableManager _Instance = null;
@@ -16,36 +17,39 @@ public partial class TableManager
     public static string CurrentDirectory { get { return AppDomain.CurrentDomain.BaseDirectory; } }
 
     private List<PackageField> mFields = new List<PackageField>();              //列数组
+    private Dictionary<string, List<PackageField>> mCustoms = new Dictionary<string, List<PackageField>>();             //所有自定义类
     private int mMaxRow = -1;                                                   //最大行数
     private int mMaxColumn = -1;                                                //最大列数
     private List<List<string>> mDataTable = new List<List<string>>();           //Excel表数据
-    private string mStrFiler = "";                                              //文件名称
+    private string mStrFiler = "";                                              //文件名称(去掉后缀名)
     private bool mSpawns = false;                                               //是否是关键字类
     private string mSpawnsName = "";                                            //关键字名称
-    //Table类名称
-    private string TableClassName { get { return "Table" + (mSpawns ? mSpawnsName : mStrFiler); } }
-    //Data类名称
-    private string DataClassName { get { return "Data" + (mSpawns ? mSpawnsName : mStrFiler); } }
+    private Script mScript;                                                     //脚本
+    private string TableClassName { get { return "Table" + (mSpawns ? mSpawnsName : mStrFiler); } }     //Table类名称
+    private string DataClassName { get { return "Data" + (mSpawns ? mSpawnsName : mStrFiler); } }       //Data类名称
     private Dictionary<PROGRAM, ProgramInfo> mProgramInfos = new Dictionary<PROGRAM, ProgramInfo>();    //所有生成语言配置
-
     private List<TableClass> mNormalClasses = new List<TableClass>();                                   //所有普通table类
     private Dictionary<string, SpawnsClass> mSpawnsClasses = new Dictionary<string, SpawnsClass>();     //所有关键字table类
 
     private class TableClass
     {
         public string Filer { get; private set; }
-        public TableClass(string filer)
+        public Dictionary<PROGRAM, ProgramInfo> Info { get; private set; }
+        public TableClass(string filer, Dictionary<PROGRAM, ProgramInfo> info)
         {
             Filer = filer;
+            Info = info;
         }
     }
     private class SpawnsClass
     {
         public string MD5 { get; private set; }         //文件结构MD5
+        public Dictionary<PROGRAM, ProgramInfo> Info { get; private set; }
         public List<string> Files = new List<string>(); //此关键字的所有文件
-        public SpawnsClass(string md5)
+        public SpawnsClass(string md5, Dictionary<PROGRAM, ProgramInfo> info)
         {
             MD5 = md5;
+            Info = info;
         }
         public void AddString(string str)
         {
@@ -62,6 +66,55 @@ public partial class TableManager
             builder.Append(mFields[i].Array ? "1" : "0").Append(":");
         }
         return FileUtil.GetMD5FromString(builder.ToString());
+    }
+    //加载所有自定义类
+    private void LoadAllCustom()
+    {
+        mCustoms.Clear();
+        mScript = new Script();
+        mScript.LoadLibrary();
+        List<ScriptObject> GlobalBasic = new List<ScriptObject>();
+        {
+            var itor = mScript.GetGlobalTable().GetIterator();
+            while (itor.MoveNext())
+                GlobalBasic.Add(itor.Current.Value);
+        }
+        string[] files = System.IO.Directory.GetFiles(CurrentDirectory + "/Custom", "*.js", SearchOption.AllDirectories);
+        foreach (var file in files) {
+            mScript.LoadFile(file);
+        }
+        {
+            var itor = mScript.GetGlobalTable().GetIterator();
+            while (itor.MoveNext())
+            {
+                if (GlobalBasic.Contains(itor.Current.Value)) continue;
+                string name = itor.Current.Key as string;
+                ScriptTable table = itor.Current.Value as ScriptTable;
+                if (name == null || table == null) continue;
+                List<PackageField> fields = new List<PackageField>();
+                var tItor = table.GetIterator();
+                while (tItor.MoveNext())
+                {
+                    string fieldName = itor.Current.Key as string;
+                    ScriptString val = itor.Current.Value as ScriptString;
+                    if (string.IsNullOrEmpty(fieldName) || val == null) throw new Exception(string.Format("Message:{0} Field:{1} 参数出错 参数模版 \"索引,类型,是否数组=false\"", name, fieldName));
+                    string[] infos = val.Value.Split(',');
+                    if (infos.Length < 2) throw new Exception(string.Format("Message:{0} Field:{1} 参数出错 参数模版 \"索引,类型,是否数组=false\"", name, fieldName));
+                    bool array = infos.Length > 2 && infos[2] == "true";
+                    string note = infos.Length > 3 ? infos[3] : "";
+                    fields.Add(new PackageField()
+                    {
+                        Index = int.Parse(infos[0]),
+                        Type = infos[1],
+                        Name = fieldName,
+                        Array = array,
+                        Note = note,
+                    });
+                }
+                fields.Sort((m1, m2) => { return m1.Index.CompareTo(m2.Index); });
+                mCustoms[name] = fields;
+            }
+        }
     }
     //初始化此文件的配置
     private void Initialize(string fileName)
@@ -80,7 +133,7 @@ public partial class TableManager
                 break;
             }
         }
-        mProgramInfos.Clear();
+        mProgramInfos = new Dictionary<PROGRAM, ProgramInfo>();
         for (int i=(int)PROGRAM.NONE + 1;i < (int)PROGRAM.COUNT;++i)
         {
             PROGRAM program = (PROGRAM)i;
@@ -175,6 +228,7 @@ public partial class TableManager
                 return;
             }
             Util.InitializeProgram();
+            LoadAllCustom();
             fileNames.Sort();
             mNormalClasses.Clear();
             mSpawnsClasses.Clear();
@@ -190,12 +244,12 @@ public partial class TableManager
                     ParseLayout();
                     if (mSpawns) {
                         if (!mSpawnsClasses.ContainsKey(mSpawnsName))
-                            mSpawnsClasses.Add(mSpawnsName, new SpawnsClass(GetClassMD5Code()));
+                            mSpawnsClasses.Add(mSpawnsName, new SpawnsClass(GetClassMD5Code(), mProgramInfos));
                         else if (mSpawnsClasses[mSpawnsName].MD5 != GetClassMD5Code())
                             throw new System.Exception("关键字文件[" + fileName + "]结构跟之前文件不一致");
                         mSpawnsClasses[mSpawnsName].AddString(mStrFiler);
                     } else {
-                        mNormalClasses.Add(new TableClass(mStrFiler));
+                        mNormalClasses.Add(new TableClass(mStrFiler, mProgramInfos));
                     }
                     Progress.Value = 0f;
                     Transform_impl();
@@ -330,6 +384,7 @@ public partial class TableManager
         string strStream = @"using System;
 using System.IO;
 using System.Collections.Generic;
+using Scorpio;
 #pragma warning disable 0219";
         FileUtil.CreateFile(info.GetFile(TableClassName), strStream + strTable, true, info.CodeDirectory.Split(';'));
         FileUtil.CreateFile(info.GetFile(DataClassName), strStream + strData, true, info.CodeDirectory.Split(';'));

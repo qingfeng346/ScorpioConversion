@@ -58,6 +58,9 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>libs\NPOI.dll</HintPath>
     </Reference>
+    <Reference Include="Scorpio">
+      <HintPath>..\..\..\Scorpio-CSharp\trunk\Scorpio\bin\Debug\Scorpio.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Deployment" />
@@ -154,6 +157,8 @@
     <Compile Include="TableManager\TableManagerBase.cs" />
     <Compile Include="TableManager\TableManagerManager.cs" />
     <Compile Include="TableManager\TableManagerRollback.cs" />
+    <Compile Include="Value\Value.cs" />
+    <Compile Include="Value\ValueUtil.cs" />
     <EmbeddedResource Include="FormLog.resx">
       <DependentUpon>FormLog.cs</DependentUpon>
     </EmbeddedResource>

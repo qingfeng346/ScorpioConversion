@@ -44,8 +44,6 @@
             this.Language = new System.Windows.Forms.CheckBox();
             this.buttonLanguage = new System.Windows.Forms.Button();
             this.buttonRefreshLanguage = new System.Windows.Forms.Button();
-            this.getCustom = new System.Windows.Forms.CheckBox();
-            this.getBase = new System.Windows.Forms.CheckBox();
             this.buttonCode = new System.Windows.Forms.Button();
             this.programBox = new System.Windows.Forms.ComboBox();
             this.buttonData = new System.Windows.Forms.Button();
@@ -57,7 +55,7 @@
             // labelRollbackFiles
             // 
             this.labelRollbackFiles.AutoSize = true;
-            this.labelRollbackFiles.Location = new System.Drawing.Point(11, 131);
+            this.labelRollbackFiles.Location = new System.Drawing.Point(11, 109);
             this.labelRollbackFiles.Name = "labelRollbackFiles";
             this.labelRollbackFiles.Size = new System.Drawing.Size(101, 12);
             this.labelRollbackFiles.TabIndex = 2;
@@ -65,7 +63,7 @@
             // 
             // textRollbackFiles
             // 
-            this.textRollbackFiles.Location = new System.Drawing.Point(142, 128);
+            this.textRollbackFiles.Location = new System.Drawing.Point(142, 106);
             this.textRollbackFiles.Name = "textRollbackFiles";
             this.textRollbackFiles.ReadOnly = true;
             this.textRollbackFiles.Size = new System.Drawing.Size(232, 21);
@@ -73,7 +71,7 @@
             // 
             // selectRollbackFiles
             // 
-            this.selectRollbackFiles.Location = new System.Drawing.Point(379, 126);
+            this.selectRollbackFiles.Location = new System.Drawing.Point(379, 104);
             this.selectRollbackFiles.Name = "selectRollbackFiles";
             this.selectRollbackFiles.Size = new System.Drawing.Size(75, 22);
             this.selectRollbackFiles.TabIndex = 8;
@@ -83,7 +81,7 @@
             // 
             // buttonRollback
             // 
-            this.buttonRollback.Location = new System.Drawing.Point(464, 126);
+            this.buttonRollback.Location = new System.Drawing.Point(464, 104);
             this.buttonRollback.Name = "buttonRollback";
             this.buttonRollback.Size = new System.Drawing.Size(75, 22);
             this.buttonRollback.TabIndex = 10;
@@ -93,7 +91,7 @@
             // 
             // progressBar
             // 
-            this.progressBar.Location = new System.Drawing.Point(78, 156);
+            this.progressBar.Location = new System.Drawing.Point(78, 134);
             this.progressBar.MarqueeAnimationSpeed = 0;
             this.progressBar.Name = "progressBar";
             this.progressBar.Size = new System.Drawing.Size(461, 21);
@@ -109,7 +107,7 @@
             // progressLabel
             // 
             this.progressLabel.AutoSize = true;
-            this.progressLabel.Location = new System.Drawing.Point(13, 160);
+            this.progressLabel.Location = new System.Drawing.Point(13, 138);
             this.progressLabel.Name = "progressLabel";
             this.progressLabel.Size = new System.Drawing.Size(47, 12);
             this.progressLabel.TabIndex = 12;
@@ -117,7 +115,7 @@
             // 
             // buttonTransform
             // 
-            this.buttonTransform.Location = new System.Drawing.Point(464, 97);
+            this.buttonTransform.Location = new System.Drawing.Point(464, 75);
             this.buttonTransform.Name = "buttonTransform";
             this.buttonTransform.Size = new System.Drawing.Size(75, 22);
             this.buttonTransform.TabIndex = 9;
@@ -127,7 +125,7 @@
             // 
             // selectTransformFiles
             // 
-            this.selectTransformFiles.Location = new System.Drawing.Point(379, 97);
+            this.selectTransformFiles.Location = new System.Drawing.Point(379, 75);
             this.selectTransformFiles.Name = "selectTransformFiles";
             this.selectTransformFiles.Size = new System.Drawing.Size(75, 22);
             this.selectTransformFiles.TabIndex = 7;
@@ -137,7 +135,7 @@
             // 
             // textTransformFiles
             // 
-            this.textTransformFiles.Location = new System.Drawing.Point(142, 99);
+            this.textTransformFiles.Location = new System.Drawing.Point(142, 77);
             this.textTransformFiles.Name = "textTransformFiles";
             this.textTransformFiles.ReadOnly = true;
             this.textTransformFiles.Size = new System.Drawing.Size(232, 21);
@@ -146,7 +144,7 @@
             // labelTransformFiles
             // 
             this.labelTransformFiles.AutoSize = true;
-            this.labelTransformFiles.Location = new System.Drawing.Point(12, 102);
+            this.labelTransformFiles.Location = new System.Drawing.Point(12, 80);
             this.labelTransformFiles.Name = "labelTransformFiles";
             this.labelTransformFiles.Size = new System.Drawing.Size(101, 12);
             this.labelTransformFiles.TabIndex = 1;
@@ -155,7 +153,7 @@
             // getManager
             // 
             this.getManager.AutoSize = true;
-            this.getManager.Location = new System.Drawing.Point(14, 77);
+            this.getManager.Location = new System.Drawing.Point(105, 46);
             this.getManager.Name = "getManager";
             this.getManager.Size = new System.Drawing.Size(90, 16);
             this.getManager.TabIndex = 35;
@@ -165,7 +163,7 @@
             // Language
             // 
             this.Language.AutoSize = true;
-            this.Language.Location = new System.Drawing.Point(302, 77);
+            this.Language.Location = new System.Drawing.Point(212, 46);
             this.Language.Name = "Language";
             this.Language.Size = new System.Drawing.Size(96, 16);
             this.Language.TabIndex = 44;
@@ -192,29 +190,9 @@
             this.buttonRefreshLanguage.UseVisualStyleBackColor = true;
             this.buttonRefreshLanguage.Click += new System.EventHandler(this.button1_Click_1);
             // 
-            // getCustom
-            // 
-            this.getCustom.AutoSize = true;
-            this.getCustom.Location = new System.Drawing.Point(110, 77);
-            this.getCustom.Name = "getCustom";
-            this.getCustom.Size = new System.Drawing.Size(96, 16);
-            this.getCustom.TabIndex = 47;
-            this.getCustom.Text = "生成自定义类";
-            this.getCustom.UseVisualStyleBackColor = true;
-            // 
-            // getBase
-            // 
-            this.getBase.AutoSize = true;
-            this.getBase.Location = new System.Drawing.Point(212, 77);
-            this.getBase.Name = "getBase";
-            this.getBase.Size = new System.Drawing.Size(84, 16);
-            this.getBase.TabIndex = 48;
-            this.getBase.Text = "生成Base类";
-            this.getBase.UseVisualStyleBackColor = true;
-            // 
             // buttonCode
             // 
-            this.buttonCode.Location = new System.Drawing.Point(157, 10);
+            this.buttonCode.Location = new System.Drawing.Point(142, 10);
             this.buttonCode.Name = "buttonCode";
             this.buttonCode.Size = new System.Drawing.Size(75, 23);
             this.buttonCode.TabIndex = 49;
@@ -234,7 +212,7 @@
             // 
             // buttonData
             // 
-            this.buttonData.Location = new System.Drawing.Point(250, 10);
+            this.buttonData.Location = new System.Drawing.Point(223, 10);
             this.buttonData.Name = "buttonData";
             this.buttonData.Size = new System.Drawing.Size(75, 23);
             this.buttonData.TabIndex = 51;
@@ -245,7 +223,7 @@
             // checkCreate
             // 
             this.checkCreate.AutoSize = true;
-            this.checkCreate.Location = new System.Drawing.Point(342, 14);
+            this.checkCreate.Location = new System.Drawing.Point(304, 14);
             this.checkCreate.Name = "checkCreate";
             this.checkCreate.Size = new System.Drawing.Size(72, 16);
             this.checkCreate.TabIndex = 52;
@@ -277,15 +255,13 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(557, 188);
+            this.ClientSize = new System.Drawing.Size(557, 164);
             this.Controls.Add(this.buttonLog);
             this.Controls.Add(this.buttonSpwan);
             this.Controls.Add(this.checkCreate);
             this.Controls.Add(this.buttonData);
             this.Controls.Add(this.programBox);
             this.Controls.Add(this.buttonCode);
-            this.Controls.Add(this.getBase);
-            this.Controls.Add(this.getCustom);
             this.Controls.Add(this.buttonRefreshLanguage);
             this.Controls.Add(this.buttonLanguage);
             this.Controls.Add(this.Language);
@@ -329,8 +305,6 @@
         private System.Windows.Forms.CheckBox Language;
         private System.Windows.Forms.Button buttonLanguage;
         private System.Windows.Forms.Button buttonRefreshLanguage;
-        private System.Windows.Forms.CheckBox getCustom;
-        private System.Windows.Forms.CheckBox getBase;
         private System.Windows.Forms.Button buttonCode;
         private System.Windows.Forms.ComboBox programBox;
         private System.Windows.Forms.Button buttonData;

@@ -77,7 +77,7 @@ public static class BasicUtil
         new BasicType( "float", BasicEnum.FLOAT, "WriteFloat", "ReadFloat", new string[] {"float", "Float"}) ,
         new BasicType( "double", BasicEnum.DOUBLE, "WriteDouble", "ReadDouble", new string[] {"double", "Double"}) ,
         new BasicType( "string", BasicEnum.STRING, "WriteString", "ReadString", new string[] {"string", "String"}) ,
-        new BasicType( "string", BasicEnum.BYTES, "WriteString", "ReadString", new string[] {"byte[]", "Byte[]"}) ,
+        new BasicType( "bytes", BasicEnum.BYTES, "WriteBytes", "ReadBytes", new string[] {"byte[]", "Byte[]"}) ,
     };
     public static bool HasType(string type)
     {
