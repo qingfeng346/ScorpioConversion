@@ -1,6 +1,6 @@
 using System;
 using System.Collections.Generic;
-public class __TableName : MT_TableBase {
+public class __TableName : ITable {
 	const string FILE_MD5_CODE = "__MD5";
     private string fileName = "";
     private Dictionary<__Key, __DataName> m_dataArray = new Dictionary<__Key, __DataName>();
@@ -10,26 +10,26 @@ public class __TableName : MT_TableBase {
     public void Initialize() {
         m_dataArray.Clear();
         ScorpioReader reader = new ScorpioReader(TableUtil.GetBuffer(fileName));
-        int iRow = reader.ReadInt32();                      //ĞĞÊı
-        int iColums = reader.ReadInt32();                   //ÁĞÊı
-        int iCodeNum = reader.ReadInt32();                  //×Ô¶¨ÒåÀàÊıÁ¿
-        if (reader.ReadString() != FILE_MD5_CODE)           //ÑéÖ¤ÎÄ¼şMD5(¼ì²â½á¹¹ÊÇ·ñ¸Ä±ä)
-            throw new System.Exception("ÎÄ¼ş[" + fileName + "]°æ±¾ÑéÖ¤Ê§°Ü");
+        int iRow = reader.ReadInt32();                      //è¡Œæ•°
+        int iColums = reader.ReadInt32();                   //åˆ—æ•°
+        int iCodeNum = reader.ReadInt32();                  //è‡ªå®šä¹‰ç±»æ•°é‡
+        if (reader.ReadString() != FILE_MD5_CODE)           //éªŒè¯æ–‡ä»¶MD5(æ£€æµ‹ç»“æ„æ˜¯å¦æ”¹å˜)
+            throw new System.Exception("æ–‡ä»¶[" + fileName + "]ç‰ˆæœ¬éªŒè¯å¤±è´¥");
         int i,j,index;
         for (i = 0; i < iColums; ++i) {
-            index = reader.ReadInt32();                     //¶ÁÈ¡ÁĞÀàĞÍ
-            reader.ReadInt32();                             //¶ÁÈ¡ÁĞÊÇ·ñÊÇÊı×é
-            if (index == TableUtil.CLASS_VALUE) {           //Èç¹ûÁĞÊÇ×Ô¶¨ÒåÀà
-                reader.ReadString();                        //¶ÁÈ¡ÀàÃû³Æ
-                for (j = 0; j < reader.ReadInt32(); ++j) {  //×Ô¶¨ÒåÀà×Ö¶Î¸öÊı(È«²¿×ª³É»ù´¡ÀàĞÍÒÔºó)
-                    reader.ReadInt32();                     //È¡³ö×Ö¶ÎÀàĞÍ
+            index = reader.ReadInt32();                     //è¯»å–åˆ—ç±»å‹
+            reader.ReadInt32();                             //è¯»å–åˆ—æ˜¯å¦æ˜¯æ•°ç»„
+            if (index == TableUtil.CLASS_VALUE) {           //å¦‚æœåˆ—æ˜¯è‡ªå®šä¹‰ç±»
+                reader.ReadString();                        //è¯»å–ç±»åç§°
+                for (j = 0; j < reader.ReadInt32(); ++j) {  //è‡ªå®šä¹‰ç±»å­—æ®µä¸ªæ•°(å…¨éƒ¨è½¬æˆåŸºç¡€ç±»å‹ä»¥å)
+                    reader.ReadInt32();                     //å–å‡ºå­—æ®µç±»å‹
                 }
             }
         }
         for (i = 0; i < iRow; ++i) {
             __DataName pData = __DataName.Read(reader, fileName);
             if (Contains(pData.ID()))
-                throw new System.Exception("ÎÄ¼ş[" + fileName + "]ÓĞÖØ¸´Ïî ID : " + pData.ID());
+                throw new System.Exception("æ–‡ä»¶[" + fileName + "]æœ‰é‡å¤é¡¹ ID : " + pData.ID());
             m_dataArray.Add(pData.ID(), pData);
         }
         reader.Close();

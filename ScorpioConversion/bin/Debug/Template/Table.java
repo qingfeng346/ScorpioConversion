@@ -1,6 +1,6 @@
 package __Package;
 import java.util.HashMap;
-public class __TableName extends MT_TableBase {
+public class __TableName extends ITable {
 	final String FILE_MD5_CODE = "__MD5";
     private String fileName = "";
     private HashMap<__Key, __DataName> m_dataArray = new HashMap<__Key, __DataName>();
