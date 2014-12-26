@@ -3,18 +3,13 @@ using System.Collections.Generic;
 using System.Text;
 using System.IO;
 using ICSharpCode.SharpZipLib.GZip;
-/// <summary>
-/// GZIP 工具类
-/// </summary>
+/// <summary> GZIP 工具类 </summary>
 public static class GZipUtil
 {
-    /// <summary>
-    /// 压缩数据
-    /// </summary>
+    /// <summary> 压缩数据</summary>
     public static byte[] Compress(byte[] source)
     {
-        using (MemoryStream stream = new MemoryStream())
-        {
+        using (MemoryStream stream = new MemoryStream()) {
             GZipOutputStream zipStream = new GZipOutputStream(stream);
             zipStream.Write(source, 0, source.Length);
             zipStream.Finish();
@@ -24,9 +19,7 @@ public static class GZipUtil
             return ret;
         }
     }
-    /// <summary>
-    /// 压缩数据
-    /// </summary>
+    /// <summary> 压缩数据 </summary>
     public static byte[] Compress(Stream source)
     {
         long length = source.Length;
@@ -35,16 +28,12 @@ public static class GZipUtil
         source.Close();
         return Compress(buffer);
     }
-    /// <summary>
-    /// 解压数据
-    /// </summary>
+    /// <summary> 解压数据 </summary>
     public static byte[] Decompress(byte[] source)
     {
         return Decompress(new MemoryStream(source));
     }
-    /// <summary>
-    /// 解压数据
-    /// </summary>
+    /// <summary> 解压数据 </summary>
     public static byte[] Decompress(Stream source)
     {
         using (MemoryStream stream = new MemoryStream())

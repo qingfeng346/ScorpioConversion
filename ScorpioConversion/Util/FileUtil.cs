@@ -6,37 +6,14 @@ using System.IO;
 /// <summary> File工具类 </summary>
 public static class FileUtil
 {
-    /// <summary> 字符串头一个字母大写 </summary>
-    public static string ToOneUpper(string str)
-    {
-        if (string.IsNullOrEmpty(str)) 
-            return str;
-        if (str.Length <= 1)
-            return str.ToUpper();
-        return char.ToUpper(str[0]) + str.Substring(1);
-    }
-    /// <summary> 格式化路径\换成/ </summary>
-    public static string FormatPath(string path)
-    {
-        if (string.IsNullOrEmpty(path)) return "";
-        string ret = path.Replace('\\', '/');
-        return ret;
-    }
     /// <summary> 创建一个目录 </summary>
     public static void CreateDirectory(string path)
     {
         try {
-            if (!PathExist(path))
-                Directory.CreateDirectory(path);
+            if (!PathExist(path)) Directory.CreateDirectory(path);
         } catch (System.Exception ex) {
             Logger.error("CreateDirectory is error : {0}", ex.ToString());
         }
-    }
-    /// <summary> 创建一个目录 </summary>
-    public static void CreateDirectoryByFile(string file)
-    {
-        string path = Path.GetDirectoryName(file);
-        CreateDirectory(path);
     }
     /// <summary> 判断文件是否存在 </summary>
     public static bool FileExist(String file)

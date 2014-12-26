@@ -2,14 +2,14 @@
 using System.Collections.Generic;
 using System.Text;
 using System.IO;
-public class GenerateJava : IGenerate
+public class GenerateTableCSharp : IGenerate
 {
-    public GenerateJava() : base(PROGRAM.Java) { }
+    public GenerateTableCSharp() : base(PROGRAM.CSharp) { }
     protected override string Generate_impl()
     {
         StringBuilder builder = new StringBuilder();
         builder.Append(@"
-public class __ClassName extends IData {");
+public class __ClassName : IData {");
         builder.Append(GenerateMessageFields());
         builder.Append(GenerateMessageGetData());
         builder.Append(GenerateMessageRead());
@@ -27,13 +27,13 @@ public class __ClassName extends IData {");
             string str = "";
             if (field.Array) {
                 str = @"
-    private List<__Type> ___Name;
-    /** __Note */
-    public List<__Type> get__Name() { return ___Name; }";
+    private ReadOnlyCollection<__Type> ___Name;
+    /// <summary> __Note </summary>
+    public ReadOnlyCollection<__Type> get__Name() { return ___Name; }";
             } else {
                 str = @"
     private __Type ___Name;
-    /** __Note */
+    /// <summary> __Note </summary>
     public __Type get__Name() { return ___Name; }";
                 if (first && m_ConID) {
                     first = false;
@@ -52,8 +52,7 @@ public class __ClassName extends IData {");
     {
         StringBuilder builder = new StringBuilder();
         builder.Append(@"
-    @Override
-    public Object GetData(String key ) {");
+    public override object GetData(string key ) {");
         foreach (var field in m_Fields)
         {
             builder.Append(@"
@@ -70,21 +69,17 @@ public class __ClassName extends IData {");
         builder.Append(@"
     public static __ClassName Read(ScorpioReader reader) {
         __ClassName ret = new __ClassName();");
-        foreach (var field in m_Fields)
-        {
+        foreach (var field in m_Fields) {
             string str = "";
-            if (field.Array)
-            {
+            if (field.Array) {
                 str = @"
         {
             int number = reader.ReadInt32();
-            ArrayList<__Type> list = new ArrayList<__Type>();
-            for (int i = 0;i < number; ++i) { list.add(__FieldRead); }
-            ret.___Name = Collections.unmodifiableList(list);
+            List<__Type> list = new List<__Type> ();
+            for (int i = 0;i < number; ++i) { list.Add(__FieldRead); }
+            ret.___Name = list.AsReadOnly();
         }";
-            }
-            else
-            {
+            } else {
                 str = @"
         ret.___Name = __FieldRead;";
             }

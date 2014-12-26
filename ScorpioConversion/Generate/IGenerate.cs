@@ -17,7 +17,6 @@ public abstract class IGenerate
         var b = BasicUtil.GetType(type);
         return b != null ? b.GetCode(m_Code) : type;
     }
-
     public string Generate(string className, List<PackageField> fields, bool conID)
     {
         m_ClassName = className;

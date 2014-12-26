@@ -22,11 +22,11 @@ public class DefaultInfo : Attribute
 public enum PROGRAM
 {
     NONE = -1,      //无语言
-    [DefaultInfo("cs", typeof(GenerateCSharp), true)]
+    [DefaultInfo("cs", typeof(GenerateTableCSharp), true)]
     CSharp,         //C#(CSharp) 语言
-    [DefaultInfo("java", typeof(GenerateJava), false)]
+    [DefaultInfo("java", typeof(GenerateTableJava), false)]
     Java,           //Java 语言
-    [DefaultInfo("js", typeof(GenerateScorpio), false)]
+    [DefaultInfo("js", typeof(GenerateTableScorpio), false)]
     Scorpio,        //Scorpio 脚本
     //[DefaultInfo("h", null)]
     //Cpp,

@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Text;
 using System.IO;
-public class GenerateScorpio : IGenerate
+public class GenerateTableScorpio : IGenerate
 {
-    public GenerateScorpio() : base(PROGRAM.Scorpio) { }
+    public GenerateTableScorpio() : base(PROGRAM.Scorpio) { }
     protected override string Generate_impl()
     {
         StringBuilder builder = new StringBuilder();
