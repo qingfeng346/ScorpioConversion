@@ -14,10 +14,10 @@ public partial class TableManager
 {
     public static TableManager _Instance = null;
     public static TableManager GetInstance() { if (_Instance == null) _Instance = new TableManager(); return _Instance; }
-    public static string CurrentDirectory { get { return AppDomain.CurrentDomain.BaseDirectory; } }
 
     private List<PackageField> mFields = new List<PackageField>();              //列数组
     private Dictionary<string, List<PackageField>> mCustoms = new Dictionary<string, List<PackageField>>();             //所有自定义类
+    private List<string> mUsedCustoms = new List<string>();                     //正在转换的表已使用的自定义类
     private int mMaxRow = -1;                                                   //最大行数
     private int mMaxColumn = -1;                                                //最大列数
     private List<List<string>> mDataTable = new List<List<string>>();           //Excel表数据
@@ -79,7 +79,7 @@ public partial class TableManager
             while (itor.MoveNext())
                 GlobalBasic.Add(itor.Current.Value);
         }
-        string[] files = System.IO.Directory.GetFiles(CurrentDirectory + "/Custom", "*.js", SearchOption.AllDirectories);
+        string[] files = System.IO.Directory.GetFiles(Util.CurrentDirectory + "/Custom", "*.js", SearchOption.AllDirectories);
         foreach (var file in files) {
             mScript.LoadFile(file);
         }
@@ -95,8 +95,8 @@ public partial class TableManager
                 var tItor = table.GetIterator();
                 while (tItor.MoveNext())
                 {
-                    string fieldName = itor.Current.Key as string;
-                    ScriptString val = itor.Current.Value as ScriptString;
+                    string fieldName = tItor.Current.Key as string;
+                    ScriptString val = tItor.Current.Value as ScriptString;
                     if (string.IsNullOrEmpty(fieldName) || val == null) throw new Exception(string.Format("Message:{0} Field:{1} 参数出错 参数模版 \"索引,类型,是否数组=false\"", name, fieldName));
                     string[] infos = val.Value.Split(',');
                     if (infos.Length < 2) throw new Exception(string.Format("Message:{0} Field:{1} 参数出错 参数模版 \"索引,类型,是否数组=false\"", name, fieldName));
@@ -191,6 +191,7 @@ public partial class TableManager
     private void ParseLayout()
     {
         mFields.Clear();
+        mUsedCustoms.Clear();
         for (int i = 0; i < mMaxColumn; ++i)
         {
             PackageField field = new PackageField();
@@ -208,13 +209,12 @@ public partial class TableManager
                 fieldType = columnType;
             }
             field.Type = fieldType;
-            if (!BasicUtil.HasType(fieldType))
+            bool basic = BasicUtil.HasType(fieldType);
+            if (!basic && !mCustoms.ContainsKey(fieldType))
                 throw new System.Exception(string.Format("第 {0:d} 列的字段类型不能识别 数据内容为 : \"{1}\"", i, columnType));
-            if (i == 0)
-            {
-                if (field.Array == true || field.Type != "int32")
-                    throw new System.Exception("第一列的数据类型必须为int32类型");
-            }
+            if (i == 0 && (field.Array == true || field.Type != "int32"))
+                throw new System.Exception("第一列的数据类型必须为int32类型");
+            if (!basic) mUsedCustoms.Add(fieldType);
             mFields.Add(field);
         }
         if (mFields.Count == 0)
@@ -284,20 +284,16 @@ public partial class TableManager
                 Logger.warn("转换结束");
             }
         } catch (System.Exception ex) {
-            Logger.error("转换文件出错 " + ex.ToString());
+            string error = "转换文件出错 " + ex.ToString();
+            Logger.error(error);
+            MessageBox.Show(error);
         }
     }
-    private void Transform_impl()
+    private void WriteFields(TableWriter writer, List<PackageField> fields)
     {
-        int iColums = mMaxColumn;                   //数据列数
-        int iRows = mMaxRow;                        //数据行数
-        TableWriter writer = new TableWriter();
-        writer.WriteInt32(0);                       //写入行数(最后计算出有效数据然后写入)
-        writer.WriteInt32(iColums);                 //写入列数
-        writer.WriteString(GetClassMD5Code());      //写入文件MD5码
-        for (int i = 0; i < iColums; ++i)
-        {
-            var field = mFields[i];
+        writer.WriteInt32(fields.Count);
+        for (int i = 0; i < fields.Count; ++i) {
+            var field = fields[i];
             var basic = BasicUtil.GetType(field.Type);
             if (basic != null) {
                 writer.WriteByte(0);
@@ -309,6 +305,21 @@ public partial class TableManager
                 writer.WriteBool(field.Array);
             }
         }
+    }
+    private void Transform_impl()
+    {
+        int iColums = mMaxColumn;                   //数据列数
+        int iRows = mMaxRow;                        //数据行数
+        TableWriter writer = new TableWriter();
+        writer.WriteInt32(0);                       //写入行数(最后计算出有效数据然后写入)
+        writer.WriteString(GetClassMD5Code());      //写入文件MD5码
+        WriteFields(writer, mFields);               //写入表结构
+        writer.WriteInt32(mUsedCustoms.Count);      //写入用到的自定义类数量
+        foreach (var key in mUsedCustoms)
+        {
+            writer.WriteString(key);
+            WriteFields(writer, mCustoms[key]);
+        }
         List<string> keys = new List<string>();
         int count = 0;
         for (int i = 3; i < iRows; ++i) {
@@ -318,7 +329,7 @@ public partial class TableManager
                     if (string.IsNullOrEmpty(value)) value = Util.EmptyString;    //数据为空默认成####(非法值)
                     if (j == 0) {
                         if (keys.Contains(value)) {
-                            throw new Exception(string.Format("ID有重复项【{0}】", value));
+                            throw new Exception(string.Format("ID有重复项[{0}]", value));
                         } else if (Util.IsEmptyString(value)) {
                             throw new Exception("ID不能为####");
                         }
@@ -336,7 +347,7 @@ public partial class TableManager
                             basic.WriteValue(writer, value);
                         }
                     } else {
-
+                        WriteCustom_impl(writer, ValueUtil.ReadValue(value) as ValueList, mCustoms[field.Type], field.Array);
                     }
                 } catch (System.Exception ex) {
                     throw new SystemException(string.Format("[{0}]行[{1}]列出错 数据内容为[{2}] : {3}", i + 1, Util.GetLineName(j + 1), value, ex.ToString()));
@@ -348,6 +359,35 @@ public partial class TableManager
         writer.WriteInt32(count);
         Create_impl(writer.ToArray());
     }
+    private void WriteCustom_impl(TableWriter writer, ValueList list, List<PackageField> fields, bool array)
+    {
+        if (list == null) throw new Exception("数据结构错误");
+        if (array) {
+            writer.WriteInt32(list.values.Count);
+            for (int i = 0; i < list.values.Count;++i ) {
+                WriteCustom_impl(writer, list.values[i] as ValueList, fields, false);
+            }
+        } else {
+            for (int i = 0; i < list.values.Count;++i )
+                WriteOneField(writer, list.values[i], fields[i]);
+        }
+    }
+    private void WriteOneField(TableWriter writer, IValue value, PackageField field)
+    {
+        var basic = BasicUtil.GetType(field.Type);
+        if (basic != null) {
+            if (field.Array) {
+                var vals = (value as ValueList).values;
+                writer.WriteInt32(vals.Count);
+                foreach (var v in vals)
+                    basic.WriteValue(writer, (v as ValueString).value);
+            } else {
+                basic.WriteValue(writer, (value as ValueString).value);
+            }
+        } else {
+            WriteCustom_impl(writer, value as ValueList, mCustoms[field.Type], field.Array);
+        }
+    }
     public void Create_impl(byte[] buffer)
     {
         byte[] bytes = GZipUtil.Compress(buffer);
@@ -357,52 +397,25 @@ public partial class TableManager
             ProgramInfo info = mProgramInfos[program];
             if (!info.Create) continue;
             FileUtil.CreateFile(mStrFiler + ".data", info.Compress ? bytes : buffer, false, info.DataDirectory.Split(';'));
-            if (info.CreateCode == null) continue;
-            string strTable = GetTableClass(program);
-            string strData = info.Generate.Generate(DataClassName, mFields);
-            info.CreateCode.Invoke(this, new object[] { strData, strTable, info });
+            string strHead = info.HeadTemplate.Replace("__Package", "table");
+            FileUtil.CreateFile(info.GetFile(TableClassName), strHead + GetTableClass(program), info.Bom, info.CodeDirectory.Split(';'));
+            CreateCustom(DataClassName, mFields, info, strHead, true);
+            foreach (var custom in mCustoms)
+                CreateCustom(custom.Key, custom.Value, info, strHead, false);
         }
     }
     /// <summary> 获得Table类的代码 </summary>
     private string GetTableClass(PROGRAM program)
     {
-        var info = Util.GetProgramInfo(program);
-        string file = CurrentDirectory + "/Template/Table." + info.Extension;
-        if (FileUtil.FileExist(file))
-        {
-            var template = FileUtil.GetFileString(file);
-            template = template.Replace("__TableName", TableClassName);
-            template = template.Replace("__DataName", DataClassName);
-            template = template.Replace("__Key", BasicUtil.GetType(BasicEnum.INT32).GetCode(program));
-            template = template.Replace("__MD5", GetClassMD5Code());
-            return template.ToString();
-        }
-        return null;
+        var template = Util.GetProgramInfo(program).TableTemplate;
+        template = template.Replace("__TableName", TableClassName);
+        template = template.Replace("__DataName", DataClassName);
+        template = template.Replace("__Key", BasicUtil.GetType(BasicEnum.INT32).GetCode(program));
+        template = template.Replace("__MD5", GetClassMD5Code());
+        return template.ToString();
     }
-    public void CreateCodeCSharp(string strData, string strTable, ProgramInfo info)
+    private void CreateCustom(string name, List<PackageField> fields, ProgramInfo info, string head, bool conID)
     {
-        string strStream = @"using System;
-using System.IO;
-using System.Collections.Generic;
-using Scorpio;
-#pragma warning disable 0219";
-        FileUtil.CreateFile(info.GetFile(TableClassName), strStream + strTable, true, info.CodeDirectory.Split(';'));
-        FileUtil.CreateFile(info.GetFile(DataClassName), strStream + strData, true, info.CodeDirectory.Split(';'));
-    }
-    public void CreateCodeJava(string strData, string strTable, ProgramInfo info)
-    {
-        string strStream = @"package __Package;
-import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
-import java.util.ArrayList;
-import java.util.HashMap;
-@SuppressWarnings(""unused"")";
-        strStream = strStream.Replace("__Package", "table");
-        FileUtil.CreateFile(info.GetFile(TableClassName), strStream + strTable, false, info.CodeDirectory.Split(';'));
-        FileUtil.CreateFile(info.GetFile(DataClassName), strStream + strData, false, info.CodeDirectory.Split(';'));
-    }
-    public void CreateCodeScorpio(string strData, string strTable, ProgramInfo info)
-    {
-        FileUtil.CreateFile(info.GetFile(DataClassName), strData, false, info.CodeDirectory.Split(';'));
+        FileUtil.CreateFile(info.GetFile(name), head + info.Generate.Generate(name, fields, conID), info.Bom, info.CodeDirectory.Split(';'));
     }
 }

@@ -154,7 +154,6 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TableManager\TableManager.cs" />
     <Compile Include="Util\Util.cs" />
-    <Compile Include="TableManager\TableManagerBase.cs" />
     <Compile Include="TableManager\TableManagerManager.cs" />
     <Compile Include="TableManager\TableManagerRollback.cs" />
     <Compile Include="Value\Value.cs" />

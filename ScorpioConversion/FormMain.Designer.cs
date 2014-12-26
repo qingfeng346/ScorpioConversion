@@ -50,6 +50,8 @@
             this.checkCreate = new System.Windows.Forms.CheckBox();
             this.buttonSpwan = new System.Windows.Forms.Button();
             this.buttonLog = new System.Windows.Forms.Button();
+            this.packageText = new System.Windows.Forms.TextBox();
+            this.checkCompress = new System.Windows.Forms.CheckBox();
             this.SuspendLayout();
             // 
             // labelRollbackFiles
@@ -153,7 +155,7 @@
             // getManager
             // 
             this.getManager.AutoSize = true;
-            this.getManager.Location = new System.Drawing.Point(105, 46);
+            this.getManager.Location = new System.Drawing.Point(93, 46);
             this.getManager.Name = "getManager";
             this.getManager.Size = new System.Drawing.Size(90, 16);
             this.getManager.TabIndex = 35;
@@ -163,7 +165,7 @@
             // Language
             // 
             this.Language.AutoSize = true;
-            this.Language.Location = new System.Drawing.Point(212, 46);
+            this.Language.Location = new System.Drawing.Point(189, 46);
             this.Language.Name = "Language";
             this.Language.Size = new System.Drawing.Size(96, 16);
             this.Language.TabIndex = 44;
@@ -251,11 +253,32 @@
             this.buttonLog.UseVisualStyleBackColor = true;
             this.buttonLog.Click += new System.EventHandler(this.buttonLog_Click);
             // 
+            // packageText
+            // 
+            this.packageText.Location = new System.Drawing.Point(287, 44);
+            this.packageText.Name = "packageText";
+            this.packageText.Size = new System.Drawing.Size(86, 21);
+            this.packageText.TabIndex = 55;
+            this.packageText.Text = "PackageName";
+            // 
+            // checkCompress
+            // 
+            this.checkCompress.AutoSize = true;
+            this.checkCompress.Location = new System.Drawing.Point(379, 14);
+            this.checkCompress.Name = "checkCompress";
+            this.checkCompress.Size = new System.Drawing.Size(72, 16);
+            this.checkCompress.TabIndex = 56;
+            this.checkCompress.Text = "gzip压缩";
+            this.checkCompress.UseVisualStyleBackColor = true;
+            this.checkCompress.CheckedChanged += new System.EventHandler(this.checkCompress_CheckedChanged);
+            // 
             // FormMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(557, 164);
+            this.Controls.Add(this.checkCompress);
+            this.Controls.Add(this.packageText);
             this.Controls.Add(this.buttonLog);
             this.Controls.Add(this.buttonSpwan);
             this.Controls.Add(this.checkCreate);
@@ -311,6 +334,8 @@
         private System.Windows.Forms.CheckBox checkCreate;
         private System.Windows.Forms.Button buttonSpwan;
         private System.Windows.Forms.Button buttonLog;
+        private System.Windows.Forms.TextBox packageText;
+        private System.Windows.Forms.CheckBox checkCompress;
     }
 }
 

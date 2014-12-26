@@ -10,6 +10,8 @@ using NPOI.HSSF.UserModel;
 
 public static partial class Util
 {
+    public static string CurrentDirectory { get { return AppDomain.CurrentDomain.BaseDirectory; } }
+
     public const string ReturnString        = "\r\n";
     public const string EmptyString         = "####";
     private const string TabString          = "\t";

@@ -10,7 +10,7 @@ public static class ValueUtil
         string temp = "[" + value + "]";
         return ReadValue_impl(ref temp);
     }
-    public static IValue ReadValue_impl(ref string value)
+    private static IValue ReadValue_impl(ref string value)
     {
         if (value.StartsWith("[")) {
             value = value.Substring(1);

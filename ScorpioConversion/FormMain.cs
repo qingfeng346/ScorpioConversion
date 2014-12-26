@@ -30,6 +30,7 @@ namespace XML_Conversion
                 programBox.Items.Add(((PROGRAM)i).ToString());
             }
             programBox.SelectedIndex = 0;
+            Util.Bind(packageText, "PackageName", ConfigFile.InitConfig);
             m_FormLog = new FormLog();
             m_FormLanguage = new FormLanguage();
         }
@@ -195,10 +196,15 @@ namespace XML_Conversion
         {
             m_Program = (PROGRAM)Enum.Parse(typeof(PROGRAM), programBox.Text);
             checkCreate.Checked = Util.ToBoolean(Util.GetConfig(m_Program, ConfigKey.Create, ConfigFile.PathConfig), true);
+            checkCompress.Checked = Util.ToBoolean(Util.GetConfig(m_Program, ConfigKey.Compress, ConfigFile.InitConfig), false);
         }
         private void checkCreate_CheckedChanged(object sender, EventArgs e)
         {
             Util.SetConfig(m_Program, ConfigKey.Create, checkCreate.Checked ? "true" : "false", ConfigFile.PathConfig);
+        }
+        private void checkCompress_CheckedChanged(object sender, EventArgs e)
+        {
+            Util.SetConfig(m_Program, ConfigKey.Compress, checkCreate.Checked ? "true" : "false", ConfigFile.InitConfig);
         }
     }
 }

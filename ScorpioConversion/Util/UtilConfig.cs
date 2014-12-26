@@ -10,21 +10,23 @@ public class DefaultInfo : Attribute
 {
     public string Extension;        //文件后缀
     public Type GenerateType;       //转换类
-    public DefaultInfo(string ex, Type type)
+    public bool Bom;                //文件是否有bom头
+    public DefaultInfo(string ex, Type type, bool bom)
     {
         Extension = ex;
         GenerateType = type;
+        Bom = bom;
     }
 }
 //语言数量
 public enum PROGRAM
 {
     NONE = -1,      //无语言
-    [DefaultInfo("cs", typeof(GenerateCSharp))]
+    [DefaultInfo("cs", typeof(GenerateCSharp), true)]
     CSharp,         //C#(CSharp) 语言
-    [DefaultInfo("java", typeof(GenerateJava))]
+    [DefaultInfo("java", typeof(GenerateJava), false)]
     Java,           //Java 语言
-    [DefaultInfo("js", typeof(GenerateScorpio))]
+    [DefaultInfo("js", typeof(GenerateScorpio), false)]
     Scorpio,        //Scorpio 脚本
     //[DefaultInfo("h", null)]
     //Cpp,
@@ -49,17 +51,28 @@ public class ProgramInfo
     public bool Compress;               //data文件是否压缩
     public string Extension;            //扩展名
     public IGenerate Generate;          //生成代码类
-    public MethodInfo CreateCode;       //生成代码函数
+    public bool Bom;                    //是否有bom文件头
     public MethodInfo CreateManager;    //生成TableManager文件
     private ProgramInfo() { }
     public ProgramInfo(PROGRAM program)
     {
-        CreateCode = TYPE_MANAGER.GetMethod("CreateCode" + program.ToString());
         CreateManager = TYPE_MANAGER.GetMethod("CreateManager" + program.ToString());
     }
     public string GetFile(string filter)
     {
         return filter + "." + Extension;
+    }
+    public string TableTemplate { 
+        get {
+            string file = Util.CurrentDirectory + "/Template/Table." + Extension;
+            return FileUtil.FileExist(file) ? FileUtil.GetFileString(file) : "";
+        }
+    }
+    public string HeadTemplate {
+        get {
+            string file = Util.CurrentDirectory + "/Template/Head." + Extension;
+            return FileUtil.FileExist(file) ? FileUtil.GetFileString(file) : "";
+        }
     }
     public ProgramInfo Clone()
     {
@@ -70,7 +83,6 @@ public class ProgramInfo
         ret.Compress = Compress;
         ret.Extension = Extension;
         ret.Generate = Generate;
-        ret.CreateCode = CreateCode;
         ret.CreateManager = CreateManager;
         return ret;
     }
@@ -194,10 +206,11 @@ public static partial class Util
             info.CodeDirectory = string.IsNullOrEmpty(CodeDirectory) ? BaseDirectory + program.ToString() : CodeDirectory;
             info.DataDirectory = string.IsNullOrEmpty(DataDirectory) ? BaseDirectory + program.ToString() : DataDirectory;
             info.Create = ToBoolean(GetConfig(program, ConfigKey.Create, ConfigFile.PathConfig), true);
-            info.Compress = ToBoolean(GetConfig(program, ConfigKey.Compress, ConfigFile.InitConfig));
+            info.Compress = ToBoolean(GetConfig(program, ConfigKey.Compress, ConfigFile.InitConfig), false);
             DefaultInfo defaultInfo = (DefaultInfo)Attribute.GetCustomAttribute(program.GetType().GetMember(program.ToString())[0], typeof(DefaultInfo));
             info.Extension = defaultInfo.Extension;
             info.Generate = (IGenerate)System.Activator.CreateInstance(defaultInfo.GenerateType);
+            info.Bom = defaultInfo.Bom;
             m_ProgramInfos.Add(program, info);
         }
     }

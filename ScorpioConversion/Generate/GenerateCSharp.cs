@@ -11,6 +11,7 @@ public class GenerateCSharp : IGenerate
         builder.Append(@"
 public class __ClassName : IData {");
         builder.Append(GenerateMessageFields());
+        builder.Append(GenerateMessageGetData());
         builder.Append(GenerateMessageRead());
         builder.Append(@"
 }");
@@ -34,8 +35,7 @@ public class __ClassName : IData {");
     private __Type ___Name;
     /// <summary> __Note </summary>
     public __Type get__Name() { return ___Name; }";
-                if (first)
-                {
+                if (first && m_ConID) {
                     first = false;
                     str += @"
     public __Type ID() { return ___Name; }";
@@ -46,6 +46,21 @@ public class __ClassName : IData {");
             str = str.Replace("__Type", GetCodeType(field.Type));
             builder.Append(str);
         }
+        return builder.ToString();
+    }
+    string GenerateMessageGetData()
+    {
+        StringBuilder builder = new StringBuilder();
+        builder.Append(@"
+    public override object GetData(string key ) {");
+        foreach (var field in m_Fields)
+        {
+            builder.Append(@"
+        if (key == ""__Key"") return ___Key;".Replace("__Key", field.Name));
+        }
+        builder.Append(@"
+        return null;
+    }");
         return builder.ToString();
     }
     string GenerateMessageRead()
@@ -59,8 +74,9 @@ public class __ClassName : IData {");
             if (field.Array) {
                 str = @"
         {
+            int number = reader.ReadInt32();
             List<__Type> list = new List<__Type> ();
-            for (int i = 0;i < reader.ReadInt32(); ++i) { list.Add(__FieldRead); }
+            for (int i = 0;i < number; ++i) { list.Add(__FieldRead); }
             ret.___Name = list.AsReadOnly();
         }";
             } else {

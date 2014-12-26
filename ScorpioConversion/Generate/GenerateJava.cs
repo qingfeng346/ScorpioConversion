@@ -11,6 +11,7 @@ public class GenerateJava : IGenerate
         builder.Append(@"
 public class __ClassName extends IData {");
         builder.Append(GenerateMessageFields());
+        builder.Append(GenerateMessageGetData());
         builder.Append(GenerateMessageRead());
         builder.Append(@"
 }");
@@ -24,21 +25,17 @@ public class __ClassName extends IData {");
         foreach (var field in m_Fields)
         {
             string str = "";
-            if (field.Array)
-            {
+            if (field.Array) {
                 str = @"
     private List<__Type> ___Name;
     /** __Note */
     public List<__Type> get__Name() { return ___Name; }";
-            }
-            else
-            {
+            } else {
                 str = @"
     private __Type ___Name;
     /** __Note */
     public __Type get__Name() { return ___Name; }";
-                if (first)
-                {
+                if (first && m_ConID) {
                     first = false;
                     str += @"
     public __Type ID() { return ___Name; }";
@@ -49,6 +46,22 @@ public class __ClassName extends IData {");
             str = str.Replace("__Type", GetCodeType(field.Type));
             builder.Append(str);
         }
+        return builder.ToString();
+    }
+    string GenerateMessageGetData()
+    {
+        StringBuilder builder = new StringBuilder();
+        builder.Append(@"
+    @Override
+    public Object GetData(String key ) {");
+        foreach (var field in m_Fields)
+        {
+            builder.Append(@"
+        if (key == ""__Key"") return ___Key;".Replace("__Key", field.Name));
+        }
+        builder.Append(@"
+        return null;
+    }");
         return builder.ToString();
     }
     string GenerateMessageRead()
@@ -64,8 +77,9 @@ public class __ClassName extends IData {");
             {
                 str = @"
         {
+            int number = reader.ReadInt32();
             ArrayList<__Type> list = new ArrayList<__Type>();
-            for (int i = 0;i < reader.ReadInt32(); ++i) { list.add(__FieldRead); }
+            for (int i = 0;i < number; ++i) { list.add(__FieldRead); }
             ret.___Name = Collections.unmodifiableList(list);
         }";
             }
