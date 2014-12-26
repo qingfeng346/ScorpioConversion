@@ -6,4 +6,5 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import Scorpio.Commons.*;
+import Scorpio.Table.*;
 @SuppressWarnings("unused")
