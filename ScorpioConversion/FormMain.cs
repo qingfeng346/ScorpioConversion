@@ -206,5 +206,9 @@ namespace ScorpioConversion
         {
             Util.SetConfig(m_Program, ConfigKey.Compress, checkCreate.Checked ? "true" : "false", ConfigFile.InitConfig);
         }
+        private void buttonMessage_Click(object sender, EventArgs e)
+        {
+
+        }
     }
 }

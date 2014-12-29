@@ -52,6 +52,9 @@
             this.buttonLog = new System.Windows.Forms.Button();
             this.packageText = new System.Windows.Forms.TextBox();
             this.checkCompress = new System.Windows.Forms.CheckBox();
+            this.buttonMessage = new System.Windows.Forms.Button();
+            this.textMessage = new System.Windows.Forms.TextBox();
+            this.label1 = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // labelRollbackFiles
@@ -93,7 +96,7 @@
             // 
             // progressBar
             // 
-            this.progressBar.Location = new System.Drawing.Point(78, 134);
+            this.progressBar.Location = new System.Drawing.Point(78, 165);
             this.progressBar.MarqueeAnimationSpeed = 0;
             this.progressBar.Name = "progressBar";
             this.progressBar.Size = new System.Drawing.Size(461, 21);
@@ -109,7 +112,7 @@
             // progressLabel
             // 
             this.progressLabel.AutoSize = true;
-            this.progressLabel.Location = new System.Drawing.Point(13, 138);
+            this.progressLabel.Location = new System.Drawing.Point(13, 169);
             this.progressLabel.Name = "progressLabel";
             this.progressLabel.Size = new System.Drawing.Size(47, 12);
             this.progressLabel.TabIndex = 12;
@@ -272,11 +275,40 @@
             this.checkCompress.UseVisualStyleBackColor = true;
             this.checkCompress.CheckedChanged += new System.EventHandler(this.checkCompress_CheckedChanged);
             // 
+            // buttonMessage
+            // 
+            this.buttonMessage.Location = new System.Drawing.Point(379, 132);
+            this.buttonMessage.Name = "buttonMessage";
+            this.buttonMessage.Size = new System.Drawing.Size(75, 22);
+            this.buttonMessage.TabIndex = 60;
+            this.buttonMessage.Text = "转换";
+            this.buttonMessage.UseVisualStyleBackColor = true;
+            this.buttonMessage.Click += new System.EventHandler(this.buttonMessage_Click);
+            // 
+            // textMessage
+            // 
+            this.textMessage.Location = new System.Drawing.Point(141, 133);
+            this.textMessage.Name = "textMessage";
+            this.textMessage.Size = new System.Drawing.Size(232, 21);
+            this.textMessage.TabIndex = 58;
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(10, 136);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(77, 12);
+            this.label1.TabIndex = 57;
+            this.label1.Text = "选择协议路径";
+            // 
             // FormMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(557, 164);
+            this.ClientSize = new System.Drawing.Size(557, 198);
+            this.Controls.Add(this.buttonMessage);
+            this.Controls.Add(this.textMessage);
+            this.Controls.Add(this.label1);
             this.Controls.Add(this.checkCompress);
             this.Controls.Add(this.packageText);
             this.Controls.Add(this.buttonLog);
@@ -336,6 +368,9 @@
         private System.Windows.Forms.Button buttonLog;
         private System.Windows.Forms.TextBox packageText;
         private System.Windows.Forms.CheckBox checkCompress;
+        private System.Windows.Forms.Button buttonMessage;
+        private System.Windows.Forms.TextBox textMessage;
+        private System.Windows.Forms.Label label1;
     }
 }
 
