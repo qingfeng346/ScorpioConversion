@@ -31,6 +31,7 @@ namespace ScorpioConversion
             }
             programBox.SelectedIndex = 0;
             Util.Bind(packageText, ConfigKey.PackageName, ConfigFile.InitConfig);
+            Util.Bind(textMessage, ConfigKey.MessagePath, ConfigFile.InitConfig);
             m_FormLog = new FormLog();
             m_FormLanguage = new FormLanguage();
         }
@@ -52,12 +53,13 @@ namespace ScorpioConversion
             this.buttonLanguage.Enabled = enable;
             this.buttonRefreshLanguage.Enabled = enable;
         }
-        void StartRun(OnFinished callBack)
+        void StartRun(OnFinished callBack, ThreadStart start)
         {
             m_Finished = callBack;
             timeEnable = true;
             this.timerProgress.Enabled = true;
             SetEnable(false);
+            new Thread(start).Start();
         }
         void EndRun()
         {
@@ -112,9 +114,7 @@ namespace ScorpioConversion
         }
         void Transform(OnFinished callBack)
         {
-            StartRun(callBack);
-            Thread nonParameterThread = new Thread(new ThreadStart(ThreadTransform));
-            nonParameterThread.Start();
+            StartRun(callBack, ThreadTransform);
         }
         void ThreadTransform()
         {
@@ -128,9 +128,7 @@ namespace ScorpioConversion
         }
         void Rollback(OnFinished callBack)
         {
-            StartRun(callBack);
-            Thread nonParameterThread = new Thread(new ThreadStart(ThreadRollback));
-            nonParameterThread.Start();
+            StartRun(callBack, ThreadRollback);
         }
         void ThreadRollback()
         {
@@ -155,9 +153,7 @@ namespace ScorpioConversion
         }
         void RefreshLanguage(OnFinished callBack)
         {
-            StartRun(callBack);
-            Thread nonParameterThread = new Thread(new ThreadStart(ThreadRefreshLanguage));
-            nonParameterThread.Start();
+            StartRun(callBack, ThreadRefreshLanguage);
         }
         void ThreadRefreshLanguage()
         {
@@ -208,7 +204,12 @@ namespace ScorpioConversion
         }
         private void buttonMessage_Click(object sender, EventArgs e)
         {
-
+            StartRun(null, TransformMessage);
+        }
+        void TransformMessage()
+        {
+            new MessageBuilder().Transform(textMessage.Text);
+            EndRun();
         }
     }
 }

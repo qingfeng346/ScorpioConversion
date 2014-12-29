@@ -12,7 +12,7 @@ public class GenerateMessageScorpio : IGenerate
         foreach (var field in m_Fields)
         {
             string str = @"
-{ Index = __Index, Name = ""__Name"", Type = ""__Type"", Array = __Array },";
+    { Index = __Index, Name = ""__Name"", Type = ""__Type"", Array = __Array },";
             str = str.Replace("__Index", field.Index.ToString());
             str = str.Replace("__Name", field.Name);
             str = str.Replace("__Type", field.Type);
