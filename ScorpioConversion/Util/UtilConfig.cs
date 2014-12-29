@@ -24,7 +24,7 @@ public class DefaultInfo : Attribute
 public enum PROGRAM
 {
     NONE = -1,      //无语言
-    [DefaultInfo("cs", typeof(GenerateTableCSharp), typeof(GenerateMessageCS), true)]
+    [DefaultInfo("cs", typeof(GenerateTableCSharp), typeof(GenerateMessageCSharp), true)]
     CSharp,         //C#(CSharp) 语言
     [DefaultInfo("java", typeof(GenerateTableJava), typeof(GenerateMessageJava), false)]
     Java,           //Java 语言

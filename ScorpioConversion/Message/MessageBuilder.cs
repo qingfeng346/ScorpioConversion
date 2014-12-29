@@ -5,16 +5,16 @@ using System.Text;
 
 public class MessageBuilder
 {
-    public void Transform(string path, string package, string[] outPaths)
+    public void Transform(string path)
     {
         Util.InitializeProgram();
+        string package = Util.GetConfig(ConfigKey.PackageName, ConfigFile.InitConfig);
         var infos = Util.GetProgramInfos();
         Dictionary<string, List<PackageField>> fields = Util.ParseStructure(path);
         foreach (var pair in fields) {
             foreach (var info in infos.Values) {
-                string outPath = outPaths[(int)info.Code];
-                if (string.IsNullOrEmpty(outPath)) continue;
-                FileUtil.CreateFile(pair.Key, info.GenerateMessage.Generate(pair.Key, package, pair.Value, false), info.Bom, outPath.Split(';'));
+                if (!info.Create) continue;
+                FileUtil.CreateFile(pair.Key, info.GenerateMessage.Generate(pair.Key, package, pair.Value, false), info.Bom, info.CodeDirectory.Split(';'));
             }
         }
     }

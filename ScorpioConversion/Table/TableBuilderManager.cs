@@ -13,6 +13,7 @@ public partial class TableBuilder
         StringBuilder builder = new StringBuilder();
         builder.Append(@"using System;
 using System.Collections.Generic;
+namespace __Package {
 public class TableManager {
     public void Reset() {");
         foreach (var clazz in normalClasses)
@@ -61,6 +62,10 @@ public class TableManager {
             classCode = classCode.Replace("__Class", clazz.Class);
             builder.Append(classCode);
         }
+        builder.Append(@"
+}
+}");
+        builder = builder.Replace("__Package", mPackage);
         FileUtil.CreateFile(programInfo.GetFile("TableManager"), builder.ToString(), programInfo.Bom, programInfo.CodeDirectory.Split(';'));
     }
     public void CreateManagerJava()
@@ -70,8 +75,7 @@ public class TableManager {
         var normalClasses = GetNormalClasses(code);
         var spawnsClasses = GetSpawnsClasses(code);
         StringBuilder builder = new StringBuilder();
-        builder.Append(@"using System;
-using System.Collections.Generic;
+        builder.Append(@"package __Package;
 public class TableManager {
     public void Reset() {");
         foreach (var clazz in normalClasses)
@@ -120,6 +124,9 @@ public class TableManager {
             classCode = classCode.Replace("__Class", clazz.Class);
             builder.Append(classCode);
         }
+        builder.Append(@"
+}");
+        builder = builder.Replace("__Package", mPackage);
         FileUtil.CreateFile(programInfo.GetFile("TableManager"), builder.ToString(), programInfo.Bom, programInfo.CodeDirectory.Split(';'));
     }
 }

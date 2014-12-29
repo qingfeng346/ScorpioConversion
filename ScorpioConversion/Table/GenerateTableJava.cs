@@ -8,8 +8,7 @@ public class GenerateTableJava : IGenerate
     protected override string Generate_impl()
     {
         StringBuilder builder = new StringBuilder();
-        builder.Append(@"
-public class __ClassName extends IData {");
+        builder.Append(@"public class __ClassName extends IData {");
         builder.Append(GenerateMessageFields());
         builder.Append(GenerateMessageGetData());
         builder.Append(GenerateMessageRead());

@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Text;
 using System.IO;
-public class GenerateMessageCS : IGenerate
+public class GenerateMessageCSharp : IGenerate
 {
-    public GenerateMessageCS() : base(PROGRAM.CSharp) {}
+    public GenerateMessageCSharp() : base(PROGRAM.CSharp) {}
     protected override string Generate_impl()
     {
         StringBuilder builder = new StringBuilder();

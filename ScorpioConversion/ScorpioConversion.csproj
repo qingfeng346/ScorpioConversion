@@ -90,7 +90,7 @@
     <Compile Include="Table\GenerateTableScorpio.cs" />
     <Compile Include="IGenerate.cs" />
     <Compile Include="Logger.cs" />
-    <Compile Include="Message\GenerateMessageCS.cs" />
+    <Compile Include="Message\GenerateMessageCSharp.cs" />
     <Compile Include="Message\GenerateMessageJava.cs" />
     <Compile Include="Message\GenerateMessageScorpio.cs" />
     <Compile Include="SharpZip\Checksums\Adler32.cs" />

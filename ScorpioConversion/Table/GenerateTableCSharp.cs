@@ -8,8 +8,7 @@ public class GenerateTableCSharp : IGenerate
     protected override string Generate_impl()
     {
         StringBuilder builder = new StringBuilder();
-        builder.Append(@"
-public class __ClassName : IData {");
+        builder.Append(@"public class __ClassName : IData {");
         builder.Append(GenerateMessageFields());
         builder.Append(GenerateMessageGetData());
         builder.Append(GenerateMessageRead());
