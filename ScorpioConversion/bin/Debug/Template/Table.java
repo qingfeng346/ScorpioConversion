@@ -6,7 +6,7 @@ public class __TableName extends ITable {
     public __TableName (String fileName) {
         m_fileName = fileName;
     }
-    public void Initialize() throws Exception {
+    public __TableName Initialize() throws Exception {
         m_dataArray.clear();
         ScorpioReader reader = new ScorpioReader(TableUtil.GetBuffer(m_fileName));
         int iRow = TableUtil.ReadHead(reader, m_fileName, FILE_MD5_CODE);
@@ -18,6 +18,7 @@ public class __TableName extends ITable {
         }
         m_count = m_dataArray.size();
         reader.Close();
+        return this;
     }
     public __DataName GetElement(__Key ID) {
         if (Contains(ID)) return m_dataArray.get(ID);

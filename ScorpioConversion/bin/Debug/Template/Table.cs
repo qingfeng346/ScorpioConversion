@@ -6,7 +6,7 @@ public class __TableName : ITable {
     public __TableName (string fileName) {
         m_fileName = fileName;
     }
-    public void Initialize() {
+    public __TableName Initialize() {
         m_dataArray.Clear();
         ScorpioReader reader = new ScorpioReader(TableUtil.GetBuffer(m_fileName));
         int iRow = TableUtil.ReadHead(reader, m_fileName, FILE_MD5_CODE);
@@ -18,6 +18,7 @@ public class __TableName : ITable {
         }
         m_count = m_dataArray.Count;
         reader.Close();
+        return this;
     }
     public __DataName GetElement(__Key ID) {
 		if (Contains(ID)) return m_dataArray[ID];
