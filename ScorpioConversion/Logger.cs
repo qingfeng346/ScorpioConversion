@@ -4,9 +4,9 @@ using System.Text;
 
 public enum LogType
 {
-    INFO,
-    WARNING,
-    ERROR,
+    Info,
+    Warn,
+    Error,
 }
 public class LogValue
 {
@@ -30,19 +30,19 @@ public class Logger
     public static void info(string format, params object[] args)
     {
         lock (OutMessage) {
-            OutMessage.Enqueue(new LogValue(LogType.INFO, string.Format(format, args)));
+            OutMessage.Enqueue(new LogValue(LogType.Info, string.Format(format, args)));
         }
     }
     public static void warn(string format, params object[] args)
     {
         lock (OutMessage) {
-            OutMessage.Enqueue(new LogValue(LogType.WARNING, string.Format(format, args)));
+            OutMessage.Enqueue(new LogValue(LogType.Warn, string.Format(format, args)));
         }
     }
     public static void error(string format, params object[] args)
     {
         lock (OutMessage) {
-            OutMessage.Enqueue(new LogValue(LogType.ERROR, string.Format(format, args)));
+            OutMessage.Enqueue(new LogValue(LogType.Error, string.Format(format, args)));
         }
     }
 }

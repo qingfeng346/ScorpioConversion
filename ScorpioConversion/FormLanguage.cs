@@ -6,7 +6,7 @@ using System.Drawing;
 using System.Text;
 using System.Windows.Forms;
 
-namespace XML_Conversion
+namespace ScorpioConversion
 {
     public partial class FormLanguage : Form
     {

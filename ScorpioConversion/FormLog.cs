@@ -6,7 +6,7 @@ using System.Drawing;
 using System.Text;
 using System.Windows.Forms;
 using System.IO;
-namespace XML_Conversion
+namespace ScorpioConversion
 {
     public partial class FormLog : Form
     {
@@ -32,14 +32,14 @@ namespace XML_Conversion
         {
             lock (Logger.OutMessage)
             {
-                FileStream stream = new FileStream(Util.BaseDirectory + "log.log", FileMode.Append, FileAccess.Write);
+                FileStream stream = new FileStream(Util.CurrentDirectory + "log.log", FileMode.Append, FileAccess.Write);
                 while (Logger.OutMessage.Count > 0)
                 {
                     LogValue value = Logger.OutMessage.Dequeue();
                     richTextBox1.SelectionStart = richTextBox1.Text.Length;
-                    if (value.type == LogType.INFO)
+                    if (value.type == LogType.Info)
                         richTextBox1.SelectionColor = System.Drawing.Color.Black;
-                    else if (value.type == LogType.WARNING)
+                    else if (value.type == LogType.Warn)
                         richTextBox1.SelectionColor = System.Drawing.Color.Red;
                     else
                         richTextBox1.SelectionColor = System.Drawing.Color.Red;

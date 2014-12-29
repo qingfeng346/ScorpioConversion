@@ -1,4 +1,4 @@
-﻿namespace XML_Conversion
+﻿namespace ScorpioConversion
 {
     partial class FormMain
     {

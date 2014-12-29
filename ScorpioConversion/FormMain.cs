@@ -7,7 +7,7 @@ using System.Text;
 using System.Windows.Forms;
 using System.Threading;
 using System.IO;
-namespace XML_Conversion
+namespace ScorpioConversion
 {
     public partial class FormMain : Form
     {
@@ -118,7 +118,7 @@ namespace XML_Conversion
         }
         void ThreadTransform()
         {
-            TableManager.GetInstance().Transform(transformFileNames);
+            new TableBuilder().Transform(transformFileNames);
             EndRun();
         }
         //点击反转

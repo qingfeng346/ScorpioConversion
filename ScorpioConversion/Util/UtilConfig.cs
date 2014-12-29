@@ -4,17 +4,19 @@ using System.Text;
 using System.Windows.Forms;
 using System.IO;
 using System.Reflection;
-using XML_Conversion;
+using ScorpioConversion;
 
 public class DefaultInfo : Attribute
 {
     public string Extension;        //文件后缀
-    public Type GenerateType;       //转换类
+    public Type GenerateTable;      //转换类
+    public Type GenerateMessage;    //转换Message类
     public bool Bom;                //文件是否有bom头
-    public DefaultInfo(string ex, Type type, bool bom)
+    public DefaultInfo(string ex, Type table, Type message, bool bom)
     {
         Extension = ex;
-        GenerateType = type;
+        GenerateTable = table;
+        GenerateMessage = message;
         Bom = bom;
     }
 }
@@ -22,11 +24,11 @@ public class DefaultInfo : Attribute
 public enum PROGRAM
 {
     NONE = -1,      //无语言
-    [DefaultInfo("cs", typeof(GenerateTableCSharp), true)]
+    [DefaultInfo("cs", typeof(GenerateTableCSharp), typeof(GenerateMessageCS), true)]
     CSharp,         //C#(CSharp) 语言
-    [DefaultInfo("java", typeof(GenerateTableJava), false)]
+    [DefaultInfo("java", typeof(GenerateTableJava), typeof(GenerateMessageJava), false)]
     Java,           //Java 语言
-    [DefaultInfo("js", typeof(GenerateTableScorpio), false)]
+    [DefaultInfo("js", typeof(GenerateTableScorpio), typeof(GenerateMessageScorpio), false)]
     Scorpio,        //Scorpio 脚本
     //[DefaultInfo("h", null)]
     //Cpp,
@@ -44,19 +46,21 @@ public enum ConfigFile
 //一种语言的信息
 public class ProgramInfo
 {
-    private static readonly Type TYPE_MANAGER = typeof(TableManager);
+    private static readonly Type TYPE_MANAGER = typeof(TableBuilder);
+    public PROGRAM Code;                //
     public bool Create;                 //默认是否生成
     public string CodeDirectory;        //代码输出目录
     public string DataDirectory;        //文件输出目录
     public bool Compress;               //data文件是否压缩
     public string Extension;            //扩展名
-    public IGenerate Generate;          //生成代码类
+    public IGenerate GenerateTable;     //Table生成代码类
+    public IGenerate GenerateMessage;   //Message生成代码类
     public bool Bom;                    //是否有bom文件头
     public MethodInfo CreateManager;    //生成TableManager文件
-    private ProgramInfo() { }
-    public ProgramInfo(PROGRAM program)
+    public ProgramInfo(PROGRAM code)
     {
-        CreateManager = TYPE_MANAGER.GetMethod("CreateManager" + program.ToString());
+        Code = code;
+        CreateManager = TYPE_MANAGER.GetMethod("CreateManager" + code.ToString());
     }
     public string GetFile(string filter)
     {
@@ -76,13 +80,14 @@ public class ProgramInfo
     }
     public ProgramInfo Clone()
     {
-        ProgramInfo ret = new ProgramInfo();
+        ProgramInfo ret = new ProgramInfo(Code);
         ret.Create = Create;
         ret.CodeDirectory = CodeDirectory;
         ret.DataDirectory = DataDirectory;
         ret.Compress = Compress;
         ret.Extension = Extension;
-        ret.Generate = Generate;
+        ret.GenerateTable = GenerateTable;
+        ret.GenerateMessage = GenerateMessage;
         ret.CreateManager = CreateManager;
         return ret;
     }
@@ -108,7 +113,6 @@ public class ConfigKey
 }
 public static partial class Util
 {
-    public delegate PROGRAM GetProgram();
     private class AutoConfig
     {
         public PROGRAM program;
@@ -118,7 +122,6 @@ public static partial class Util
     private static Dictionary<ConfigFile, Config> m_Configs = new Dictionary<ConfigFile, Config>();
     private static Dictionary<PROGRAM, ProgramInfo> m_ProgramInfos = new Dictionary<PROGRAM, ProgramInfo>();
     private static Dictionary<object, AutoConfig> m_AutoConfigs = new Dictionary<object, AutoConfig>();
-    public static string BaseDirectory { get { return System.AppDomain.CurrentDomain.BaseDirectory; } }
     public static void Bind(TextBox textBox, string key, ConfigFile file)
     {
         Bind(textBox, PROGRAM.NONE, key, file);
@@ -163,7 +166,7 @@ public static partial class Util
     {
         Config config = null;
         if (!m_Configs.ContainsKey(file)) {
-            config = new Config(BaseDirectory + file.ToString() + ".ini", true);
+            config = new Config(CurrentDirectory + file.ToString() + ".ini", true);
             m_Configs.Add(file, config);
         } else {
             config = m_Configs[file];
@@ -203,13 +206,14 @@ public static partial class Util
             ProgramInfo info = new ProgramInfo(program);
             string CodeDirectory = GetConfig(program, ConfigKey.CodeDirectory, ConfigFile.PathConfig);
             string DataDirectory = GetConfig(program, ConfigKey.DataDirectory, ConfigFile.PathConfig);
-            info.CodeDirectory = string.IsNullOrEmpty(CodeDirectory) ? BaseDirectory + program.ToString() : CodeDirectory;
-            info.DataDirectory = string.IsNullOrEmpty(DataDirectory) ? BaseDirectory + program.ToString() : DataDirectory;
+            info.CodeDirectory = string.IsNullOrEmpty(CodeDirectory) ? CurrentDirectory + program.ToString() : CodeDirectory;
+            info.DataDirectory = string.IsNullOrEmpty(DataDirectory) ? CurrentDirectory + program.ToString() : DataDirectory;
             info.Create = ToBoolean(GetConfig(program, ConfigKey.Create, ConfigFile.PathConfig), true);
             info.Compress = ToBoolean(GetConfig(program, ConfigKey.Compress, ConfigFile.InitConfig), false);
             DefaultInfo defaultInfo = (DefaultInfo)Attribute.GetCustomAttribute(program.GetType().GetMember(program.ToString())[0], typeof(DefaultInfo));
             info.Extension = defaultInfo.Extension;
-            info.Generate = (IGenerate)System.Activator.CreateInstance(defaultInfo.GenerateType);
+            info.GenerateTable = (IGenerate)System.Activator.CreateInstance(defaultInfo.GenerateTable);
+            info.GenerateMessage = (IGenerate)System.Activator.CreateInstance(defaultInfo.GenerateMessage);
             info.Bom = defaultInfo.Bom;
             m_ProgramInfos.Add(program, info);
         }
@@ -219,6 +223,10 @@ public static partial class Util
         if (m_ProgramInfos.ContainsKey(program))
             return m_ProgramInfos[program];
         return null;
+    }
+    public static Dictionary<PROGRAM, ProgramInfo> GetProgramInfos()
+    {
+        return m_ProgramInfos;
     }
     public static void SetToolTip(Control control, string text)
     {

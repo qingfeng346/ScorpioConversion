@@ -87,6 +87,11 @@ public static class FileUtil
             Logger.error("CreateFile is error : {0}", ex.ToString());
         }
     }
+    /// <summary> 删除文件 </summary>
+    public static void DeleteFile(string fileName)
+    {
+        if (FileExist(fileName)) File.Delete(fileName);
+    }
     /// <summary> 获得文件字符串 </summary>
     public static String GetFileString(string fileName)
     {
