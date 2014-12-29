@@ -104,6 +104,7 @@ public class ConfigKey
     public const string Create = "Create";                          //是否默认生成
     public const string Compress = "Compress";                      //data文件是否使用
     public const string Languages = "Languages";                    //所有多国语言
+    public const string PackageName = "PackageName";                //PackageName
     //TableConfig
     public const string Array = "Array";                            //是否是数组形式
     //LanguageConfig

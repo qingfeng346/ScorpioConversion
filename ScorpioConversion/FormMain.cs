@@ -30,7 +30,7 @@ namespace ScorpioConversion
                 programBox.Items.Add(((PROGRAM)i).ToString());
             }
             programBox.SelectedIndex = 0;
-            Util.Bind(packageText, "PackageName", ConfigFile.InitConfig);
+            Util.Bind(packageText, ConfigKey.PackageName, ConfigFile.InitConfig);
             m_FormLog = new FormLog();
             m_FormLanguage = new FormLanguage();
         }
@@ -118,7 +118,7 @@ namespace ScorpioConversion
         }
         void ThreadTransform()
         {
-            new TableBuilder().Transform(transformFileNames);
+            new TableBuilder().Transform(transformFileNames, getManager.Checked);
             EndRun();
         }
         //点击反转

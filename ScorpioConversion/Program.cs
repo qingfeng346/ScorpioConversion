@@ -8,12 +8,12 @@ namespace ScorpioConversion
 {
     static class Program
     {
-        private static string launch;      //启动方式
-        private static string Path;
-        private static string Package;
-        private static string CSOut;
-        private static string JavaOut;
-        private static string ScoOut;
+        //private static string launch;      //启动方式
+        //private static string Path;
+        //private static string Package;
+        //private static string CSOut;
+        //private static string JavaOut;
+        //private static string ScoOut;
         /// <summary>
         /// 应用程序的主入口点。
         /// </summary>

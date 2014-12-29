@@ -16,6 +16,7 @@ public partial class TableBuilder
     private List<string> mUsedCustoms = new List<string>();                     //正在转换的表已使用的自定义类
     private int mMaxRow = -1;                                                   //最大行数
     private int mMaxColumn = -1;                                                //最大列数
+    private string mPackage = "";                                               //Package名字
     private List<List<string>> mDataTable = new List<List<string>>();           //Excel表数据
     private string mStrFiler = "";                                              //文件名称(去掉后缀名)
     private bool mSpawns = false;                                               //是否是关键字类
@@ -28,21 +29,31 @@ public partial class TableBuilder
 
     private class TableClass
     {
-        public string Filer { get; private set; }
+        public string Filer { get; private set; }       //Filter
+        public string Class { get; private set; }       //类名称
         public Dictionary<PROGRAM, ProgramInfo> Info { get; private set; }
-        public TableClass(string filer, Dictionary<PROGRAM, ProgramInfo> info)
+        public TableClass(string filer, string clazz, Dictionary<PROGRAM, ProgramInfo> info)
         {
             Filer = filer;
+            Class = clazz;
             Info = info;
+        }
+        public bool IsCreate(PROGRAM program)
+        {
+            return Info[program].Create;
         }
     }
     private class SpawnsClass
     {
+        public string Filer { get; private set; }       //Filter
+        public string Class { get; private set; }       //类名称
         public string MD5 { get; private set; }         //文件结构MD5
         public Dictionary<PROGRAM, ProgramInfo> Info { get; private set; }
         public List<string> Files = new List<string>(); //此关键字的所有文件
-        public SpawnsClass(string md5, Dictionary<PROGRAM, ProgramInfo> info)
+        public SpawnsClass(string filer, string clazz, string md5, Dictionary<PROGRAM, ProgramInfo> info)
         {
+            Filer = filer;
+            Class = clazz;
             MD5 = md5;
             Info = info;
         }
@@ -50,6 +61,28 @@ public partial class TableBuilder
         {
             Files.Add(str);
         }
+        public bool IsCreate(PROGRAM program)
+        {
+            return Info[program].Create;
+        }
+    }
+    private List<TableClass> GetNormalClasses(PROGRAM program)
+    {
+        List<TableClass> ret = new List<TableClass>();
+        foreach (var clazz in mNormalClasses)
+        {
+            if (clazz.IsCreate(program)) ret.Add(clazz);
+        }
+        return ret;
+    }
+    private List<SpawnsClass> GetSpawnsClasses(PROGRAM program)
+    {
+        List<SpawnsClass> ret = new List<SpawnsClass>();
+        foreach (var pair in mSpawnsClasses)
+        {
+            if (pair.Value.IsCreate(program)) ret.Add(pair.Value);
+        }
+        return ret;
     }
     private string GetClassMD5Code()
     {
@@ -166,7 +199,7 @@ public partial class TableBuilder
         if (mFields.Count == 0)
             throw new System.Exception("字段个数为0");
     }
-    public void Transform(List<string> fileNames)
+    public void Transform(List<string> fileNames, bool getManager)
     {
         try {
             if (fileNames == null || fileNames.Count <= 0) {
@@ -178,6 +211,7 @@ public partial class TableBuilder
             fileNames.Sort();
             mNormalClasses.Clear();
             mSpawnsClasses.Clear();
+            mPackage = Util.GetConfig(ConfigKey.PackageName, ConfigFile.InitConfig);
             Progress.Count = fileNames.Count;
             int ValidCount = 0;
             for (int i = 0; i < fileNames.Count; ++i)
@@ -190,12 +224,12 @@ public partial class TableBuilder
                     ParseLayout();
                     if (mSpawns) {
                         if (!mSpawnsClasses.ContainsKey(mSpawnsName))
-                            mSpawnsClasses.Add(mSpawnsName, new SpawnsClass(GetClassMD5Code(), mProgramInfos));
+                            mSpawnsClasses.Add(mSpawnsName, new SpawnsClass(mSpawnsName, TableClassName, GetClassMD5Code(), mProgramInfos));
                         else if (mSpawnsClasses[mSpawnsName].MD5 != GetClassMD5Code())
                             throw new System.Exception("关键字文件[" + fileName + "]结构跟之前文件不一致");
                         mSpawnsClasses[mSpawnsName].AddString(mStrFiler);
                     } else {
-                        mNormalClasses.Add(new TableClass(mStrFiler, mProgramInfos));
+                        mNormalClasses.Add(new TableClass(mStrFiler, TableClassName, mProgramInfos));
                     }
                     Progress.Value = 0f;
                     Transform_impl();
@@ -209,24 +243,13 @@ public partial class TableBuilder
             }
             if (ValidCount > 0)
             {
-                //for (int i = (int)PROGRAM.NONE + 1; i < (int)PROGRAM.COUNT; ++i)
-                //{
-                //    PROGRAM program = (PROGRAM)i;
-                //    ProgramInfo info = mProgramInfos[program];
-                //    if (mGetManager && info.CreateManager != null)
-                //        info.CreateManager.Invoke(this, null);
-                //    if (mGetCustom && info.CreateCustom != null)
-                //        info.CreateCustom.Invoke(this, null);
-                //    if (mGetBase)
-                //    {
-                //        if (info.CreateBase != null)
-                //            info.CreateBase.Invoke(this, null);
-                //        if (info.CreateReader != null)
-                //            info.CreateReader.Invoke(this, null);
-                //    }
-                //}
-                //if (mGetLanguage)
-                //    CreateLanguage();
+                for (int i = (int)PROGRAM.NONE + 1; i < (int)PROGRAM.COUNT; ++i)
+                {
+                    PROGRAM program = (PROGRAM)i;
+                    ProgramInfo info = mProgramInfos[program];
+                    if (getManager && info.CreateManager != null)
+                        info.CreateManager.Invoke(this, null);
+                }
                 Logger.warn("转换结束");
             }
         } catch (System.Exception ex) {
@@ -343,11 +366,11 @@ public partial class TableBuilder
             ProgramInfo info = mProgramInfos[program];
             if (!info.Create) continue;
             FileUtil.CreateFile(mStrFiler + ".data", info.Compress ? bytes : buffer, false, info.DataDirectory.Split(';'));
-            string strHead = info.HeadTemplate.Replace("__Package", "table");
-            FileUtil.CreateFile(info.GetFile(TableClassName), strHead + GetTableClass(program), info.Bom, info.CodeDirectory.Split(';'));
-            CreateCustom(DataClassName, "table", mFields, info, strHead, true);
+            string strHead = info.HeadTemplate.Replace("__Package", mPackage);
+            FileUtil.CreateFile(info.GetFile(TableClassName), strHead.Replace("__Content", GetTableClass(program)), info.Bom, info.CodeDirectory.Split(';'));
+            CreateCustom(DataClassName, mPackage, mFields, info, strHead, true);
             foreach (var custom in mCustoms)
-                CreateCustom(custom.Key, "table", custom.Value, info, strHead, false);
+                CreateCustom(custom.Key, mPackage, custom.Value, info, strHead, false);
         }
     }
     /// <summary> 获得Table类的代码 </summary>
@@ -362,6 +385,6 @@ public partial class TableBuilder
     }
     private void CreateCustom(string name, string package, List<PackageField> fields, ProgramInfo info, string head, bool conID)
     {
-        FileUtil.CreateFile(info.GetFile(name), head + info.GenerateTable.Generate(name, package, fields, conID), info.Bom, info.CodeDirectory.Split(';'));
+        FileUtil.CreateFile(info.GetFile(name), head.Replace("__Content", info.GenerateTable.Generate(name, package, fields, conID)), info.Bom, info.CodeDirectory.Split(';'));
     }
 }
