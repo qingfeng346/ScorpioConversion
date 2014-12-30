@@ -10,7 +10,7 @@ __TableName =
         return ret
     }
     function Initialize() {
-        this.m_dataArray = TableUtil.ReadDatas(this.m_fileName, "__DataName", "__MD5")
+        this.m_dataArray = TableUtil.ReadDatas(this.m_fileName, "__DataName", "__KeyName", "__MD5")
         this.m_count = table.count(this.m_dataArray)
         return this
     }

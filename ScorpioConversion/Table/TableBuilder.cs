@@ -21,6 +21,7 @@ public partial class TableBuilder
     private string mStrFiler = "";                                              //文件名称(去掉后缀名)
     private bool mSpawns = false;                                               //是否是关键字类
     private string mSpawnsName = "";                                            //关键字名称
+    private string mKeyName = "";                                               //ID名称（表第一个字段名字）
     private string TableClassName { get { return "Table" + (mSpawns ? mSpawnsName : mStrFiler); } }     //Table类名称
     private string DataClassName { get { return "Data" + (mSpawns ? mSpawnsName : mStrFiler); } }       //Data类名称
     private Dictionary<PROGRAM, ProgramInfo> mProgramInfos = new Dictionary<PROGRAM, ProgramInfo>();    //所有生成语言配置
@@ -31,11 +32,13 @@ public partial class TableBuilder
     {
         public string Filer { get; private set; }       //Filter
         public string Class { get; private set; }       //类名称
+        public string KeyName { get; private set; }     //ID名称
         public Dictionary<PROGRAM, ProgramInfo> Info { get; private set; }
-        public TableClass(string filer, string clazz, Dictionary<PROGRAM, ProgramInfo> info)
+        public TableClass(string filer, string clazz, string keyName, Dictionary<PROGRAM, ProgramInfo> info)
         {
             Filer = filer;
             Class = clazz;
+            KeyName = keyName;
             Info = info;
         }
         public bool IsCreate(PROGRAM program)
@@ -47,13 +50,15 @@ public partial class TableBuilder
     {
         public string Filer { get; private set; }       //Filter
         public string Class { get; private set; }       //类名称
+        public string KeyName { get; private set; }     //ID名称
         public string MD5 { get; private set; }         //文件结构MD5
         public Dictionary<PROGRAM, ProgramInfo> Info { get; private set; }
         public List<string> Files = new List<string>(); //此关键字的所有文件
-        public SpawnsClass(string filer, string clazz, string md5, Dictionary<PROGRAM, ProgramInfo> info)
+        public SpawnsClass(string filer, string clazz, string keyName, string md5, Dictionary<PROGRAM, ProgramInfo> info)
         {
             Filer = filer;
             Class = clazz;
+            KeyName = keyName;
             MD5 = md5;
             Info = info;
         }
@@ -198,6 +203,7 @@ public partial class TableBuilder
         }
         if (mFields.Count == 0)
             throw new System.Exception("字段个数为0");
+        mKeyName = mFields[0].Name;
     }
     public void Transform(List<string> fileNames, bool getManager)
     {
@@ -224,12 +230,12 @@ public partial class TableBuilder
                     ParseLayout();
                     if (mSpawns) {
                         if (!mSpawnsClasses.ContainsKey(mSpawnsName))
-                            mSpawnsClasses.Add(mSpawnsName, new SpawnsClass(mSpawnsName, TableClassName, GetClassMD5Code(), mProgramInfos));
+                            mSpawnsClasses.Add(mSpawnsName, new SpawnsClass(mSpawnsName, TableClassName, mKeyName, GetClassMD5Code(), mProgramInfos));
                         else if (mSpawnsClasses[mSpawnsName].MD5 != GetClassMD5Code())
                             throw new System.Exception("关键字文件[" + fileName + "]结构跟之前文件不一致");
                         mSpawnsClasses[mSpawnsName].AddString(mStrFiler);
                     } else {
-                        mNormalClasses.Add(new TableClass(mStrFiler, TableClassName, mProgramInfos));
+                        mNormalClasses.Add(new TableClass(mStrFiler, TableClassName, mKeyName, mProgramInfos));
                     }
                     Progress.Value = 0f;
                     Transform_impl();
@@ -379,7 +385,8 @@ public partial class TableBuilder
         var template = Util.GetProgramInfo(program).TableTemplate;
         template = template.Replace("__TableName", TableClassName);
         template = template.Replace("__DataName", DataClassName);
-        template = template.Replace("__Key", BasicUtil.GetType(BasicEnum.INT32).GetCode(program));
+        template = template.Replace("__KeyName", mKeyName);
+        template = template.Replace("__KeyType", BasicUtil.GetType(BasicEnum.INT32).GetCode(program));
         template = template.Replace("__MD5", GetClassMD5Code());
         return template.ToString();
     }

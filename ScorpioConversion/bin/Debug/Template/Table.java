@@ -2,7 +2,7 @@ public class __TableName extends ITable {
 	final String FILE_MD5_CODE = "__MD5";
     private String m_fileName = "";
     private int m_count = 0;
-    private HashMap<__Key, __DataName> m_dataArray = new HashMap<__Key, __DataName>();
+    private HashMap<__KeyType, __DataName> m_dataArray = new HashMap<__KeyType, __DataName>();
     public __TableName (String fileName) {
         m_fileName = fileName;
     }
@@ -20,20 +20,20 @@ public class __TableName extends ITable {
         reader.Close();
         return this;
     }
-    public __DataName GetElement(__Key ID) {
+    public __DataName GetElement(__KeyType ID) {
         if (Contains(ID)) return m_dataArray.get(ID);
         TableUtil.Warning("MT_Data_Active key is not exist " + ID);
 		return null;
 	}
-    public final HashMap<__Key, __DataName> Datas() {
+    public final HashMap<__KeyType, __DataName> Datas() {
 		return m_dataArray;
 	}
     @Override
-    public boolean Contains(__Key ID) {
+    public boolean Contains(__KeyType ID) {
         return m_dataArray.containsKey(ID);
     }
     @Override
-	public IData GetValue(__Key ID) {
+	public IData GetValue(__KeyType ID) {
 		return GetElement(ID);
 	}
     @Override

@@ -2,7 +2,7 @@ public class __TableName : ITable {
 	const string FILE_MD5_CODE = "__MD5";
     private string m_fileName = "";
     private int m_count = 0;
-    private Dictionary<__Key, __DataName> m_dataArray = new Dictionary<__Key, __DataName>();
+    private Dictionary<__KeyType, __DataName> m_dataArray = new Dictionary<__KeyType, __DataName>();
     public __TableName (string fileName) {
         m_fileName = fileName;
     }
@@ -20,18 +20,18 @@ public class __TableName : ITable {
         reader.Close();
         return this;
     }
-    public __DataName GetElement(__Key ID) {
+    public __DataName GetElement(__KeyType ID) {
 		if (Contains(ID)) return m_dataArray[ID];
         TableUtil.Warning("__DataName key is not exist " + ID);
 		return null;
 	}
-    public Dictionary<__Key, __DataName> Datas() {
+    public Dictionary<__KeyType, __DataName> Datas() {
 		return m_dataArray;
 	}
-    public override bool Contains(__Key ID) {
+    public override bool Contains(__KeyType ID) {
         return m_dataArray.ContainsKey(ID);
     }
-	public override IData GetValue(__Key ID) {
+	public override IData GetValue(__KeyType ID) {
 		return GetElement(ID);
 	}
 	public override int Count() {
