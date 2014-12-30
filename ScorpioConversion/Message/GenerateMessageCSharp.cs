@@ -10,6 +10,7 @@ public class GenerateMessageCSharp : IGenerate
         StringBuilder builder = new StringBuilder();
         builder.Append(@"using System.Collections.Generic;
 using Scorpio.Commons;
+using Scorpio.Message;
 namespace __Package {
 public class __ClassName : IMessage {");
         builder.Append(GenerateMessageFields());
@@ -94,8 +95,9 @@ public class __ClassName : IMessage {");
             if (field.Array) {
                 str = @"
         if (ret.HasSign(__Index)) {
+            int number = reader.ReadInt32();
             ret.___Name = new List<__TypeName>();
-            for (int i = 0;i < reader.ReadInt32(); ++i) { ret.___Name.Add(__FieldRead); }
+            for (int i = 0;i < number; ++i) { ret.___Name.Add(__FieldRead); }
         }";
             } else {
                 str = @"

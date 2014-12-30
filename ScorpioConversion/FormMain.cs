@@ -52,6 +52,7 @@ namespace ScorpioConversion
             this.buttonRollback.Enabled = enable;
             this.buttonLanguage.Enabled = enable;
             this.buttonRefreshLanguage.Enabled = enable;
+            this.buttonMessage.Enabled = enable;
         }
         void StartRun(OnFinished callBack, ThreadStart start)
         {
