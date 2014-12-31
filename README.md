@@ -7,10 +7,9 @@ ScorpioConversion
 
 ## 协议生成工具，最简单的紧凑结构，目前可以转成cs,java,sco 用 Scropio-CSharp脚本作为配置
 
-
 ## Scropio-CSharp 传送门 https://github.com/qingfeng346/Scorpio-CSharp
 ## Scropio-Java 传送门 https://github.com/qingfeng346/Scorpio-Java
-## sco可以作为脚本实现协议热更新
+## sco可以作为脚本实现协议热更新 (请使用master分支)
 
 ## c#版本依赖库 https://github.com/qingfeng346/ScorpioCommonsCSharp
 ## java版本依赖库 https://github.com/qingfeng346/ScorpioCommonsJava
