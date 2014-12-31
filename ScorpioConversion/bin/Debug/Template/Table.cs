@@ -1,19 +1,15 @@
 public class __TableName : ITable {
 	const string FILE_MD5_CODE = "__MD5";
-    private string m_fileName = "";
     private int m_count = 0;
     private Dictionary<__KeyType, __DataName> m_dataArray = new Dictionary<__KeyType, __DataName>();
-    public __TableName (string fileName) {
-        m_fileName = fileName;
-    }
-    public __TableName Initialize() {
+    public __TableName Initialize(string fileName) {
         m_dataArray.Clear();
-        ScorpioReader reader = new ScorpioReader(TableUtil.GetBuffer(m_fileName));
-        int iRow = TableUtil.ReadHead(reader, m_fileName, FILE_MD5_CODE);
+        ScorpioReader reader = new ScorpioReader(TableUtil.GetBuffer(fileName));
+        int iRow = TableUtil.ReadHead(reader, fileName, FILE_MD5_CODE);
         for (int i = 0; i < iRow; ++i) {
             __DataName pData = __DataName.Read(reader);
             if (Contains(pData.ID()))
-                throw new System.Exception("文件[" + m_fileName + "]有重复项 ID : " + pData.ID());
+                throw new System.Exception("文件[" + fileName + "]有重复项 ID : " + pData.ID());
             m_dataArray.Add(pData.ID(), pData);
         }
         m_count = m_dataArray.Count;

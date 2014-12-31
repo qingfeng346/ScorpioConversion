@@ -1,19 +1,15 @@
 public class __TableName extends ITable {
 	final String FILE_MD5_CODE = "__MD5";
-    private String m_fileName = "";
     private int m_count = 0;
     private HashMap<__KeyType, __DataName> m_dataArray = new HashMap<__KeyType, __DataName>();
-    public __TableName (String fileName) {
-        m_fileName = fileName;
-    }
-    public __TableName Initialize() throws Exception {
+    public __TableName Initialize(String fileName) throws Exception {
         m_dataArray.clear();
-        ScorpioReader reader = new ScorpioReader(TableUtil.GetBuffer(m_fileName));
-        int iRow = TableUtil.ReadHead(reader, m_fileName, FILE_MD5_CODE);
+        ScorpioReader reader = new ScorpioReader(TableUtil.GetBuffer(fileName));
+        int iRow = TableUtil.ReadHead(reader, fileName, FILE_MD5_CODE);
         for (int i = 0; i < iRow; ++i) {
             __DataName pData = __DataName.Read(reader);
             if (Contains(pData.ID()))
-                throw new Exception("文件" + m_fileName + "有重复项 ID : " + pData.ID());
+                throw new Exception("文件" + fileName + "有重复项 ID : " + pData.ID());
             m_dataArray.put(pData.ID(),pData);
         }
         m_count = m_dataArray.size();
