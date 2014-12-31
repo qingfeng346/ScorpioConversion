@@ -12,6 +12,7 @@ public class GenerateMessageJava : IGenerate
 import java.util.List;
 import java.util.ArrayList;
 import Scorpio.Commons.*;
+import Scorpio.Message.*;
 public class __ClassName extends IMessage {");
         builder.Append(GenerateMessageFields());
         builder.Append(GenerateMessageWrite());
@@ -101,8 +102,9 @@ public class __ClassName extends IMessage {");
             {
                 str = @"
         if (ret.HasSign(__Index)) {
+            int number = reader.ReadInt32();
             ret.___Name = new ArrayList<__TypeName>();
-            for (int i = 0;i < reader.ReadInt32(); ++i) { ret.___Name.add(__FieldRead); }
+            for (int i = 0;i < number; ++i) { ret.___Name.add(__FieldRead); }
         }";
             }
             else
