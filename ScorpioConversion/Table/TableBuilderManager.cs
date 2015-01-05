@@ -132,7 +132,7 @@ public class TableManager {
         var normalClasses = GetNormalClasses(code);
         var spawnsClasses = GetSpawnsClasses(code);
         StringBuilder builder = new StringBuilder();
-        builder.Append(@"
+        builder.Append(@"//Package = __Package
 TableManager = {
     function Reset() {");
         foreach (var clazz in normalClasses)
@@ -142,8 +142,11 @@ TableManager = {
         }
         foreach (var clazz in spawnsClasses)
         {
-            builder.Append(@"
-        this.__FilerArray = {}".Replace("__Filer", clazz.Filer));
+            foreach (string value in clazz.Files)
+            {
+                builder.Append(@"
+        Table__Element = null".Replace("__Element", value));
+            }
         }
         builder.Append(@"
     }");
@@ -151,7 +154,7 @@ TableManager = {
         {
             string str = @"
     m__Filer = null,
-    function Get__Filer() { if (m__Filer == null){ m__Filer = __Class.Initialize(""__Filer""); } return m__Filer; }";
+    function Get__Filer() { if (this.m__Filer == null){ this.m__Filer = __Class.Initialize(""__Filer""); } return this.m__Filer; }";
             str = str.Replace("__Class", clazz.Class);
             str = str.Replace("__Filer", clazz.Filer);
             builder.Append(str);
@@ -162,8 +165,7 @@ TableManager = {
             foreach (string value in clazz.Files)
             {
                 string str = @"
-    m__Element = null,
-    function Get__Element() { if (m__Element == null){ m__Element = clone(__Class).Initialize(""__Element""); } return m__Element; }";
+    function Get__Element() { if (Table__Element == null){ Table__Element = clone(__Class).Initialize(""__Element""); } return Table__Element; }";
                 str = str.Replace("__Element", value);
                 str = str.Replace("__Class", clazz.Class);
                 builder.Append(str);
@@ -171,6 +173,7 @@ TableManager = {
         }
         builder.Append(@"
 }");
+        builder = builder.Replace("__Package", mPackage);
         FileUtil.CreateFile(programInfo.GetFile("TableManager"), builder.ToString(), programInfo.Bom, programInfo.CodeDirectory.Split(';'));
     }
 }

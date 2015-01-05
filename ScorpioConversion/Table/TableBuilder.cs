@@ -253,8 +253,7 @@ public partial class TableBuilder
                 {
                     PROGRAM program = (PROGRAM)i;
                     ProgramInfo info = mProgramInfos[program];
-                    if (getManager && info.CreateManager != null)
-                        info.CreateManager.Invoke(this, null);
+                    if (getManager) info.CreateTableManager.Invoke(this, null);
                 }
                 Logger.warn("转换结束");
             }

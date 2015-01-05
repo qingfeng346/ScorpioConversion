@@ -133,7 +133,7 @@ namespace ScorpioConversion
         }
         void ThreadRollback()
         {
-            //TableManager.GetInstance().Rollback(rollbackFileNames.ToArray());
+            new TableBuilder().Rollback(rollbackFileNames.ToArray());
             EndRun();
         }
         //进度计时器

@@ -118,29 +118,4 @@ public static partial class Util
         cell.SetCellType(CellType.String);
         return cell.StringCellValue;
     }
-    //获得反转自定义类结构
-    public static string GetRollbackClassData(Dictionary<string, List<int>> typeList)
-    {
-//        StringBuilder builder = new StringBuilder();
-//        foreach (KeyValuePair<string, List<int>> pair in typeList)
-//        {
-//            string str = @"
-//public class __ClassName {";
-//            str = str.Replace("__ClassName", pair.Key);
-//            List<int> fields = pair.Value;
-//            for (int i = 0; i < fields.Count;++i )
-//            {
-//                str += @"
-//    public __FieldType __FieldName;";
-//                Element element = GetElement((BasicEnum)fields[i]);
-//                str = str.Replace("__FieldType", element.GetVariable(PROGRAM.CS));
-//                str = str.Replace("__FieldName", "field" + (i+1));
-//            }
-//            str += @"
-//}";
-//            builder.Append(str);
-//        }
-//        return builder.ToString();
-        return "";
-    }
 }

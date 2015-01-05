@@ -46,7 +46,8 @@ public enum ConfigFile
 //一种语言的信息
 public class ProgramInfo
 {
-    private static readonly Type TYPE_MANAGER = typeof(TableBuilder);
+    private static readonly Type TYPE_TABLE_BUILDER = typeof(TableBuilder);
+    private static readonly Type TYPE_MESSAGE_BUILDER = typeof(MessageBuilder);
     public PROGRAM Code;                //
     public bool Create;                 //默认是否生成
     public string CodeDirectory;        //代码输出目录
@@ -56,11 +57,13 @@ public class ProgramInfo
     public IGenerate GenerateTable;     //Table生成代码类
     public IGenerate GenerateMessage;   //Message生成代码类
     public bool Bom;                    //是否有bom文件头
-    public MethodInfo CreateManager;    //生成TableManager文件
+    public MethodInfo CreateTableManager;    //生成TableManager文件
+    public MethodInfo CreateMessageManager;    //生成TableManager文件
     public ProgramInfo(PROGRAM code)
     {
         Code = code;
-        CreateManager = TYPE_MANAGER.GetMethod("CreateManager" + code.ToString());
+        CreateTableManager = TYPE_TABLE_BUILDER.GetMethod("CreateManager" + code.ToString());
+        CreateMessageManager = TYPE_MESSAGE_BUILDER.GetMethod("CreateManager" + code.ToString());
     }
     public string GetFile(string filter)
     {
@@ -88,7 +91,8 @@ public class ProgramInfo
         ret.Extension = Extension;
         ret.GenerateTable = GenerateTable;
         ret.GenerateMessage = GenerateMessage;
-        ret.CreateManager = CreateManager;
+        ret.CreateTableManager = CreateTableManager;
+        ret.CreateMessageManager = CreateMessageManager;
         return ret;
     }
 }

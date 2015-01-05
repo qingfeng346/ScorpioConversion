@@ -85,6 +85,7 @@
       <DependentUpon>FormPath.cs</DependentUpon>
     </Compile>
     <Compile Include="Message\MessageBuilder.cs" />
+    <Compile Include="Message\MessageBuilderManager.cs" />
     <Compile Include="Table\GenerateTableCSharp.cs" />
     <Compile Include="Table\GenerateTableJava.cs" />
     <Compile Include="Table\GenerateTableScorpio.cs" />
