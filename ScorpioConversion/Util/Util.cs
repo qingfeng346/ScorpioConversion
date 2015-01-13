@@ -8,7 +8,13 @@ using NPOI.SS.UserModel;
 using NPOI.HSSF.UserModel;
 using Scorpio;
 
-
+public class IValue { }
+public class ValueString : IValue {
+    public string value;
+}
+public class ValueList : IValue {
+    public List<IValue> values = new List<IValue>();
+}
 public static partial class Util
 {
     public static string CurrentDirectory { get { return AppDomain.CurrentDomain.BaseDirectory; } }
@@ -60,7 +66,7 @@ public static partial class Util
                             Name = fieldName,
                         });
                         enums.Sort((m1, m2) => { return m1.Index.CompareTo(m2.Index); });
-                        customEnum[name] = enums;
+                        customEnum[name.Replace("enum_", "")] = enums;
                     }
                 } else {
                     List<PackageField> fields = new List<PackageField>();
@@ -133,5 +139,40 @@ public static partial class Util
         if (cell == null) return "";
         cell.SetCellType(CellType.String);
         return cell.StringCellValue;
+    }
+    //读取Value
+    public static IValue ReadValue(string value)
+    {
+        string temp = "[" + value + "]";
+        return ReadValue_impl(ref temp);
+    }
+    private static IValue ReadValue_impl(ref string value)
+    {
+        if (value.StartsWith("[")) {
+            value = value.Substring(1);
+            ValueList ret = new ValueList();
+            while (!value.StartsWith("]")) {
+                if (value.StartsWith(","))
+                    value = value.Substring(1);
+                ret.values.Add(ReadValue_impl(ref value));
+            }
+            value = value.Substring(1);
+            return ret;
+        } else {
+            ValueString ret = new ValueString();
+            int index1 = value.IndexOf(',');
+            int index2 = value.IndexOf("]");
+            if (index1 == -1 && index2 == -1) {
+                ret.value = value;
+                value = "";
+            } else if (index1 == -1 || index2 < index1) {
+                ret.value = value.Substring(0, index2);
+                value = value.Substring(index2);
+            } else {
+                ret.value = value.Substring(0, index1);
+                value = value.Substring(index1 + 1);
+            }
+            return ret;
+        }
     }
 }

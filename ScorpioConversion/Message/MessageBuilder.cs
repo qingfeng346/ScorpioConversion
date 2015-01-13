@@ -17,12 +17,20 @@ public partial class MessageBuilder
         mKeys = new List<string>(mCustoms.Keys);
         mKeys.Sort();
         var infos = Util.GetProgramInfos();
-        Progress.Count = mCustoms.Count;
+        Progress.Count = mCustoms.Count + mEnums.Count;
         foreach (var pair in mCustoms) {
             ++Progress.Count;
             foreach (var info in infos.Values) {
                 if (!info.Create) continue;
-                FileUtil.CreateFile(info.GetFile(pair.Key), info.GenerateMessage.Generate(pair.Key, mPackage, pair.Value, false), info.Bom, info.CodeDirectory.Split(';'));
+                info.CreateFile(pair.Key, info.GenerateMessage.Generate(pair.Key, mPackage, pair.Value, new List<string>(mEnums.Keys), false));
+            }
+        }
+        foreach (var pair in mEnums)
+        {
+            ++Progress.Count;
+            foreach (var info in infos.Values) {
+                if (!info.Create) continue;
+                info.CreateFile(pair.Key, info.GenerateEnum.Generate(pair.Key, mPackage, pair.Value));
             }
         }
         foreach (var info in infos.Values)

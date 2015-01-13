@@ -72,6 +72,9 @@
     <Reference Include="System.XML" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Enum\GenerateEnumCSharp.cs" />
+    <Compile Include="Enum\GenerateEnumJava.cs" />
+    <Compile Include="Enum\GenerateEnumScorpio.cs" />
     <Compile Include="FormLog.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -164,7 +167,6 @@
     <Compile Include="Util\Util.cs" />
     <Compile Include="Table\TableBuilderManager.cs" />
     <Compile Include="Table\TableBuilderRollback.cs" />
-    <Compile Include="Util\ValueUtil.cs" />
     <EmbeddedResource Include="FormLog.resx">
       <DependentUpon>FormLog.cs</DependentUpon>
     </EmbeddedResource>
@@ -219,6 +221,7 @@
       <Install>true</Install>
     </BootstrapperPackage>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

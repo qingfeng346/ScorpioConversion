@@ -322,7 +322,7 @@ public partial class TableBuilder
                             basic.WriteValue(writer, value);
                         }
                     } else {
-                        WriteCustom_impl(writer, ValueUtil.ReadValue(value) as ValueList, mCustoms[field.Type], field.Array);
+                        WriteCustom_impl(writer, Util.ReadValue(value) as ValueList, mCustoms[field.Type], field.Array);
                     }
                 } catch (System.Exception ex) {
                     throw new SystemException(string.Format("[{0}]行[{1}]列出错 数据内容为[{2}] : {3}", i + 1, Util.GetLineName(j + 1), value, ex.ToString()));
@@ -373,10 +373,13 @@ public partial class TableBuilder
             if (!info.Create) continue;
             FileUtil.CreateFile(mStrFiler + ".data", info.Compress ? bytes : buffer, false, info.DataDirectory.Split(';'));
             string strHead = info.HeadTemplate.Replace("__Package", mPackage);
-            FileUtil.CreateFile(info.GetFile(TableClassName), strHead.Replace("__Content", GetTableClass(program)), info.Bom, info.CodeDirectory.Split(';'));
+            info.CreateFile(TableClassName, strHead.Replace("__Content", GetTableClass(program)));
+            var enums = new List<string>(mEnums.Keys);
             CreateCustom(DataClassName, mPackage, mFields, info, strHead, true);
             foreach (var custom in mCustoms)
                 CreateCustom(custom.Key, mPackage, custom.Value, info, strHead, false);
+            foreach (var custom in mEnums)
+                info.CreateFile(custom.Key, info.GenerateEnum.Generate(custom.Key, mPackage, custom.Value));
         }
     }
     /// <summary> 获得Table类的代码 </summary>
@@ -392,6 +395,6 @@ public partial class TableBuilder
     }
     private void CreateCustom(string name, string package, List<PackageField> fields, ProgramInfo info, string head, bool conID)
     {
-        FileUtil.CreateFile(info.GetFile(name), head.Replace("__Content", info.GenerateTable.Generate(name, package, fields, conID)), info.Bom, info.CodeDirectory.Split(';'));
+        info.CreateFile(name, head.Replace("__Content", info.GenerateTable.Generate(name, package, fields, new List<string>(mEnums.Keys), conID)));
     }
 }

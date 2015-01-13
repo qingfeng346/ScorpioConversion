@@ -9,14 +9,16 @@ using ScorpioConversion;
 public class DefaultInfo : Attribute
 {
     public string Extension;        //文件后缀
-    public Type GenerateTable;      //转换类
+    public Type GenerateTable;      //转换Table类
     public Type GenerateMessage;    //转换Message类
+    public Type GenerateEnum;       //转换Enum类
     public bool Bom;                //文件是否有bom头
-    public DefaultInfo(string ex, Type table, Type message, bool bom)
+    public DefaultInfo(string ex, Type table, Type message, Type @enum, bool bom)
     {
         Extension = ex;
         GenerateTable = table;
         GenerateMessage = message;
+        GenerateEnum = @enum;
         Bom = bom;
     }
 }
@@ -24,11 +26,11 @@ public class DefaultInfo : Attribute
 public enum PROGRAM
 {
     NONE = -1,      //无语言
-    [DefaultInfo("cs", typeof(GenerateTableCSharp), typeof(GenerateMessageCSharp), true)]
+    [DefaultInfo("cs", typeof(GenerateTableCSharp), typeof(GenerateMessageCSharp), typeof(GenerateEnumCSharp), true)]
     CSharp,         //C#(CSharp) 语言
-    [DefaultInfo("java", typeof(GenerateTableJava), typeof(GenerateMessageJava), false)]
+    [DefaultInfo("java", typeof(GenerateTableJava), typeof(GenerateMessageJava), typeof(GenerateEnumJava), false)]
     Java,           //Java 语言
-    [DefaultInfo("js", typeof(GenerateTableScorpio), typeof(GenerateMessageScorpio), false)]
+    [DefaultInfo("js", typeof(GenerateTableScorpio), typeof(GenerateMessageScorpio), typeof(GenerateEnumScorpio), false)]
     Scorpio,        //Scorpio 脚本
     //[DefaultInfo("h", null)]
     //Cpp,
@@ -56,6 +58,7 @@ public class ProgramInfo
     public string Extension;            //扩展名
     public IGenerate GenerateTable;     //Table生成代码类
     public IGenerate GenerateMessage;   //Message生成代码类
+    public IGenerate GenerateEnum;      //Enum生成代码类
     public bool Bom;                    //是否有bom文件头
     public MethodInfo CreateTableManager;    //生成TableManager文件
     public MethodInfo CreateMessageManager;    //生成TableManager文件
@@ -81,6 +84,10 @@ public class ProgramInfo
             return FileUtil.FileExist(file) ? FileUtil.GetFileString(file) : "";
         }
     }
+    public void CreateFile(string name, string context)
+    {
+        FileUtil.CreateFile(GetFile(name), context, Bom, CodeDirectory.Split(';'));
+    }
     public ProgramInfo Clone()
     {
         ProgramInfo ret = new ProgramInfo(Code);
@@ -91,6 +98,7 @@ public class ProgramInfo
         ret.Extension = Extension;
         ret.GenerateTable = GenerateTable;
         ret.GenerateMessage = GenerateMessage;
+        ret.GenerateEnum = GenerateEnum;
         ret.CreateTableManager = CreateTableManager;
         ret.CreateMessageManager = CreateMessageManager;
         return ret;
@@ -220,6 +228,7 @@ public static partial class Util
             info.Extension = defaultInfo.Extension;
             info.GenerateTable = (IGenerate)System.Activator.CreateInstance(defaultInfo.GenerateTable);
             info.GenerateMessage = (IGenerate)System.Activator.CreateInstance(defaultInfo.GenerateMessage);
+            info.GenerateEnum = (IGenerate)System.Activator.CreateInstance(defaultInfo.GenerateEnum);
             info.Bom = defaultInfo.Bom;
             m_ProgramInfos.Add(program, info);
         }

@@ -34,7 +34,7 @@ public class GenerateTableCSharp : IGenerate
     private __Type ___Name;
     /// <summary> __Note </summary>
     public __Type get__Name() { return ___Name; }";
-                if (first && m_ConID) {
+                if (first && (bool)m_Parameter) {
                     first = false;
                     str += @"
     public __Type ID() { return ___Name; }";

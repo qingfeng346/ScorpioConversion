@@ -23,7 +23,7 @@ public class MessageManager {");
 }
 }");
         builder = builder.Replace("__Package", mPackage);
-        FileUtil.CreateFile(programInfo.GetFile("MessageManager"), builder.ToString(), programInfo.Bom, programInfo.CodeDirectory.Split(';'));
+        programInfo.CreateFile("MessageManager", builder.ToString());
     }
     public void CreateManagerJava()
     {
@@ -44,7 +44,7 @@ public class MessageManager {");
         builder.Append(@"
 }");
         builder = builder.Replace("__Package", mPackage);
-        FileUtil.CreateFile(programInfo.GetFile("MessageManager"), builder.ToString(), programInfo.Bom, programInfo.CodeDirectory.Split(';'));
+        programInfo.CreateFile("MessageManager", builder.ToString());
     }
     public void CreateManagerScorpio()
     {
@@ -65,7 +65,7 @@ MessageManager = {");
         builder.Append(@"
 }");
         builder = builder.Replace("__Package", mPackage);
-        FileUtil.CreateFile(programInfo.GetFile("MessageManager"), builder.ToString(), programInfo.Bom, programInfo.CodeDirectory.Split(';'));
+        programInfo.CreateFile("MessageManager", builder.ToString());
     }
 }
 

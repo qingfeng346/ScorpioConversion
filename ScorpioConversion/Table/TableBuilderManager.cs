@@ -61,7 +61,7 @@ public class TableManager {
 }
 }");
         builder = builder.Replace("__Package", mPackage);
-        FileUtil.CreateFile(programInfo.GetFile("TableManager"), builder.ToString(), programInfo.Bom, programInfo.CodeDirectory.Split(';'));
+        programInfo.CreateFile("TableManager", builder.ToString());
     }
     public void CreateManagerJava()
     {
@@ -123,7 +123,7 @@ public class TableManager {
         builder.Append(@"
 }");
         builder = builder.Replace("__Package", mPackage);
-        FileUtil.CreateFile(programInfo.GetFile("TableManager"), builder.ToString(), programInfo.Bom, programInfo.CodeDirectory.Split(';'));
+        programInfo.CreateFile("TableManager", builder.ToString());
     }
     public void CreateManagerScorpio()
     {
@@ -174,7 +174,7 @@ TableManager = {
         builder.Append(@"
 }");
         builder = builder.Replace("__Package", mPackage);
-        FileUtil.CreateFile(programInfo.GetFile("TableManager"), builder.ToString(), programInfo.Bom, programInfo.CodeDirectory.Split(';'));
+        programInfo.CreateFile("TableManager", builder.ToString());
     }
 }
 
