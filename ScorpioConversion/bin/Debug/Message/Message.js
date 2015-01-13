@@ -1,3 +1,9 @@
+enum_TestEnum =
+{
+    Info1 = 1,
+    Info2 = 2,
+    Info3 = 3,
+}
 Msg_C2G_Test = 
 {
     Info1 = "5,int32",
