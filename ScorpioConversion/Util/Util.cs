@@ -25,10 +25,11 @@ public static partial class Util
     public const float INVALID_FLOAT        = -1.0f;
     public const double INVALID_DOUBLE      = -1.0;
     public const string INVALID_STRING      = "";
-    public static Dictionary<string, List<PackageField>> ParseStructure(string dir)
+    public static void ParseStructure(string dir, ref Dictionary<string, List<PackageField>> customClass, ref Dictionary<string, List<PackageEnum>> customEnum)
     {
+        customClass.Clear();
+        customEnum.Clear();
         dir = Path.Combine(CurrentDirectory, dir);
-        Dictionary<string, List<PackageField>> ret = new Dictionary<string, List<PackageField>>();
         Script script = new Script();
         script.LoadLibrary();
         List<ScriptObject> GlobalBasic = new List<ScriptObject>();
@@ -47,29 +48,44 @@ public static partial class Util
                 string name = itor.Current.Key as string;
                 ScriptTable table = itor.Current.Value as ScriptTable;
                 if (name == null || table == null) continue;
-                List<PackageField> fields = new List<PackageField>();
-                var tItor = table.GetIterator();
-                while (tItor.MoveNext()) {
-                    string fieldName = tItor.Current.Key as string;
-                    ScriptString val = tItor.Current.Value as ScriptString;
-                    if (string.IsNullOrEmpty(fieldName) || val == null) throw new Exception(string.Format("Message:{0} Field:{1} 参数出错 参数模版 \"索引,类型,是否数组=false,注释\"", name, fieldName));
-                    string[] infos = val.Value.Split(',');
-                    if (infos.Length < 2) throw new Exception(string.Format("Message:{0} Field:{1} 参数出错 参数模版 \"索引,类型,是否数组=false,注释\"", name, fieldName));
-                    bool array = infos.Length > 2 && infos[2] == "true";
-                    string note = infos.Length > 3 ? infos[3] : "";
-                    fields.Add(new PackageField() {
-                        Index = int.Parse(infos[0]),
-                        Type = infos[1],
-                        Name = fieldName,
-                        Array = array,
-                        Note = note,
-                    });
+                if (name.StartsWith("enum_")) {
+                    List<PackageEnum> enums = new List<PackageEnum>();
+                    var tItor = table.GetIterator();
+                    while (tItor.MoveNext()) {
+                        string fieldName = tItor.Current.Key as string;
+                        ScriptNumber val = tItor.Current.Value as ScriptNumber;
+                        if (string.IsNullOrEmpty(fieldName) || val == null) throw new Exception(string.Format("Enum:{0} Field:{1} 参数出错", name, fieldName));
+                        enums.Add(new PackageEnum() {
+                            Index = Convert.ToInt32(val.ObjectValue),
+                            Name = fieldName,
+                        });
+                        enums.Sort((m1, m2) => { return m1.Index.CompareTo(m2.Index); });
+                        customEnum[name] = enums;
+                    }
+                } else {
+                    List<PackageField> fields = new List<PackageField>();
+                    var tItor = table.GetIterator();
+                    while (tItor.MoveNext()) {
+                        string fieldName = tItor.Current.Key as string;
+                        ScriptString val = tItor.Current.Value as ScriptString;
+                        if (string.IsNullOrEmpty(fieldName) || val == null) throw new Exception(string.Format("Message:{0} Field:{1} 参数出错 参数模版 \"索引,类型,是否数组=false,注释\"", name, fieldName));
+                        string[] infos = val.Value.Split(',');
+                        if (infos.Length < 2) throw new Exception(string.Format("Message:{0} Field:{1} 参数出错 参数模版 \"索引,类型,是否数组=false,注释\"", name, fieldName));
+                        bool array = infos.Length > 2 && infos[2] == "true";
+                        string note = infos.Length > 3 ? infos[3] : "";
+                        fields.Add(new PackageField() {
+                            Index = int.Parse(infos[0]),
+                            Type = infos[1],
+                            Name = fieldName,
+                            Array = array,
+                            Note = note,
+                        });
+                    }
+                    fields.Sort((m1, m2) => { return m1.Index.CompareTo(m2.Index); });
+                    customClass[name] = fields;
                 }
-                fields.Sort((m1, m2) => { return m1.Index.CompareTo(m2.Index); });
-                ret[name] = fields;
             }
         }
-        return ret;
     }
     //是不是非法字符串 ####
     public static bool IsEmptyString(string str)

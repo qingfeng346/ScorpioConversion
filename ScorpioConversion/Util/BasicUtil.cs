@@ -65,6 +65,12 @@ public class PackageField
         get { return BasicUtil.GetType(Type); }
     }
 }
+//单个枚举
+public class PackageEnum
+{
+    public int Index;       //枚举值
+    public string Name;     //枚举类型
+}
 public static class BasicUtil
 {
     private static readonly List<BasicType> BasicTypes = new List<BasicType>()

@@ -13,6 +13,7 @@ public partial class TableBuilder
 {
     private List<PackageField> mFields = new List<PackageField>();              //列数组
     private Dictionary<string, List<PackageField>> mCustoms = new Dictionary<string, List<PackageField>>();             //所有自定义类
+    private Dictionary<string, List<PackageEnum>> mEnums = new Dictionary<string, List<PackageEnum>>();             //所有自定义枚举
     private List<string> mUsedCustoms = new List<string>();                     //正在转换的表已使用的自定义类
     private int mMaxRow = -1;                                                   //最大行数
     private int mMaxColumn = -1;                                                //最大列数
@@ -213,7 +214,7 @@ public partial class TableBuilder
                 return;
             }
             Util.InitializeProgram();
-            mCustoms = Util.ParseStructure("Custom");
+            Util.ParseStructure("Custom", ref mCustoms, ref mEnums);
             fileNames.Sort();
             mNormalClasses.Clear();
             mSpawnsClasses.Clear();

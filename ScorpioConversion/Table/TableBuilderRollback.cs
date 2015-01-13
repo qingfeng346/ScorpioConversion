@@ -160,7 +160,7 @@ public partial class TableBuilder
             foreach (var field in pair.Value)
             {
                 string str = @"
-    __Field = ""__Index,__Type,__Array""";
+    __Field = ""__Index,__Type,__Array"",";
                 str = str.Replace("__Field", field.Name);
                 str = str.Replace("__Index", field.Index.ToString());
                 str = str.Replace("__Type", field.Type);

@@ -7,11 +7,12 @@ public partial class MessageBuilder
 {
     private string mPackage;
     private List<string> mKeys;
-    private Dictionary<string, List<PackageField>> mCustoms;
+    private Dictionary<string, List<PackageField>> mCustoms = new Dictionary<string, List<PackageField>>();
+    private Dictionary<string, List<PackageEnum>> mEnums = new Dictionary<string, List<PackageEnum>>();
     public void Transform(string path)
     {
         Util.InitializeProgram();
-        mCustoms = Util.ParseStructure(path);
+        Util.ParseStructure(path, ref mCustoms, ref mEnums);
         mPackage = Util.GetConfig(ConfigKey.PackageName, ConfigFile.InitConfig);
         mKeys = new List<string>(mCustoms.Keys);
         mKeys.Sort();
