@@ -314,14 +314,18 @@ public partial class TableBuilder
                     var field = mFields[j];
                     var basic = BasicUtil.GetType(field.Type);
                     if (basic != null) {
-                        if (field.Array) {
-                            string[] strs = value.Split(',');
-                            writer.WriteInt32(strs.Length);
-                            foreach (var str in strs)
-                                basic.WriteValue(writer, str);
-                        } else {
-                            basic.WriteValue(writer, value);
-                        }
+                        if (field.Array)
+                            WriteOneField(writer, Util.ReadValue(value) as ValueList, field);
+                        else
+                            WriteOneField(writer, new ValueString() { value = value }, field);
+                        //if (field.Array) {
+                        //    string[] strs = value.Split(',');
+                        //    writer.WriteInt32(strs.Length);
+                        //    foreach (var str in strs)
+                        //        basic.WriteValue(writer, str);
+                        //} else {
+                        //    basic.WriteValue(writer, value);
+                        //}
                     } else {
                         WriteCustom_impl(writer, Util.ReadValue(value) as ValueList, mCustoms[field.Type], field.Array);
                     }
