@@ -101,6 +101,19 @@ public partial class TableBuilder
         }
         return FileUtil.GetMD5FromString(builder.ToString());
     }
+    //获得枚举值
+    private int GetEnumValue(string enumName, string value)
+    {
+        int val;
+        if (int.TryParse(value, out val))
+            return val;
+        var enums = mEnums[enumName];
+        foreach (var pair in enums) {
+            if (pair.Name == value)
+                return pair.Index;
+        }
+        throw new Exception(string.Format("枚举:{0} 找不到枚举值:{1}", enumName, value));
+    }
     //初始化此文件的配置
     private void Initialize(string fileName)
     {
@@ -359,10 +372,19 @@ public partial class TableBuilder
             if (field.Array) {
                 var vals = (value as ValueList).values;
                 writer.WriteInt32(vals.Count);
-                foreach (var v in vals)
-                    basic.WriteValue(writer, (v as ValueString).value);
+                foreach (var val in vals)
+                    basic.WriteValue(writer, (val as ValueString).value);
             } else {
                 basic.WriteValue(writer, (value as ValueString).value);
+            }
+        } else if (field.Enum) {
+            if (field.Array) {
+                var vals = (value as ValueList).values;
+                writer.WriteInt32(vals.Count);
+                foreach (var val in vals)
+                    writer.WriteInt32(GetEnumValue(field.Type, (val as ValueString).value));
+            } else {
+                writer.WriteInt32(GetEnumValue(field.Type, (value as ValueString).value));
             }
         } else {
             WriteCustom_impl(writer, value as ValueList, mCustoms[field.Type], field.Array);
