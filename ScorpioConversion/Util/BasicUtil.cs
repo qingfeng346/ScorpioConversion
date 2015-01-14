@@ -56,8 +56,9 @@ public class PackageField
     public int Index;           //变量索引
     public string Name;         //变量名字
     public string Type;         //类型
-    public bool Array;          //是否是数组
-    public string Note;         //注释
+    public bool Enum = false;   //是否是枚举
+    public bool Array = false;  //是否是数组
+    public string Note = "";    //注释
     public bool IsBasic {       //是否是基本数据
         get { return BasicUtil.HasType(Type); }
     }

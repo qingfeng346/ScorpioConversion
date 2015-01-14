@@ -15,7 +15,7 @@ public class GenerateMessageScorpio : IGenerate
     { Index = __Index, Name = ""__Name"", Type = ""__Type"", Array = __Array },";
             str = str.Replace("__Index", field.Index.ToString());
             str = str.Replace("__Name", field.Name);
-            str = str.Replace("__Type", field.Type);
+            str = str.Replace("__Type", field.Enum ? "int32" : field.Type);
             str = str.Replace("__Array", field.Array ? "true" : "false");
             builder.Append(str);
         }

@@ -12,7 +12,7 @@ using NPOI.HSSF.UserModel;
 public partial class TableBuilder
 {
     private List<PackageField> mFields = new List<PackageField>();              //列数组
-    private Dictionary<string, List<PackageField>> mCustoms = new Dictionary<string, List<PackageField>>();             //所有自定义类
+    private Dictionary<string, List<PackageField>> mCustoms = new Dictionary<string, List<PackageField>>();         //所有自定义类
     private Dictionary<string, List<PackageEnum>> mEnums = new Dictionary<string, List<PackageEnum>>();             //所有自定义枚举
     private List<string> mUsedCustoms = new List<string>();                     //正在转换的表已使用的自定义类
     private int mMaxRow = -1;                                                   //最大行数
@@ -195,11 +195,12 @@ public partial class TableBuilder
             }
             field.Type = fieldType;
             bool basic = BasicUtil.HasType(fieldType);
-            if (!basic && !mCustoms.ContainsKey(fieldType))
+            if (!basic && !mCustoms.ContainsKey(fieldType) && !mEnums.ContainsKey(fieldType))
                 throw new System.Exception(string.Format("第 {0:d} 列的字段类型不能识别 数据内容为 : \"{1}\"", i, columnType));
             if (i == 0 && (field.Array == true || field.Type != "int32"))
                 throw new System.Exception("第一列的数据类型必须为int32类型");
-            if (!basic) mUsedCustoms.Add(fieldType);
+            field.Enum = mEnums.ContainsKey(fieldType);
+            if (!basic && !field.Enum) mUsedCustoms.Add(fieldType);
             mFields.Add(field);
         }
         if (mFields.Count == 0)
@@ -395,6 +396,6 @@ public partial class TableBuilder
     }
     private void CreateCustom(string name, string package, List<PackageField> fields, ProgramInfo info, string head, bool conID)
     {
-        info.CreateFile(name, head.Replace("__Content", info.GenerateTable.Generate(name, package, fields, new List<string>(mEnums.Keys), conID)));
+        info.CreateFile(name, head.Replace("__Content", info.GenerateTable.Generate(name, package, fields, conID)));
     }
 }

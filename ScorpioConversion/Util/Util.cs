@@ -31,6 +31,7 @@ public static partial class Util
     public const float INVALID_FLOAT        = -1.0f;
     public const double INVALID_DOUBLE      = -1.0;
     public const string INVALID_STRING      = "";
+    private const string ENUM_KEYWORD       = "enum_";
     public static void ParseStructure(string dir, ref Dictionary<string, List<PackageField>> customClass, ref Dictionary<string, List<PackageEnum>> customEnum)
     {
         customClass.Clear();
@@ -44,9 +45,7 @@ public static partial class Util
             while (itor.MoveNext()) GlobalBasic.Add(itor.Current.Value);
         }
         string[] files = System.IO.Directory.GetFiles(dir, "*.js", SearchOption.AllDirectories);
-        foreach (var file in files) {
-            script.LoadFile(file);
-        }
+        foreach (var file in files) { script.LoadFile(file); }
         {
             var itor = script.GetGlobalTable().GetIterator();
             while (itor.MoveNext()) {
@@ -54,7 +53,7 @@ public static partial class Util
                 string name = itor.Current.Key as string;
                 ScriptTable table = itor.Current.Value as ScriptTable;
                 if (name == null || table == null) continue;
-                if (name.StartsWith("enum_")) {
+                if (name.StartsWith(ENUM_KEYWORD)) {
                     List<PackageEnum> enums = new List<PackageEnum>();
                     var tItor = table.GetIterator();
                     while (tItor.MoveNext()) {
@@ -66,7 +65,7 @@ public static partial class Util
                             Name = fieldName,
                         });
                         enums.Sort((m1, m2) => { return m1.Index.CompareTo(m2.Index); });
-                        customEnum[name.Replace("enum_", "")] = enums;
+                        customEnum[name.Substring(ENUM_KEYWORD.Length)] = enums;
                     }
                 } else {
                     List<PackageField> fields = new List<PackageField>();
@@ -74,18 +73,26 @@ public static partial class Util
                     while (tItor.MoveNext()) {
                         string fieldName = tItor.Current.Key as string;
                         ScriptString val = tItor.Current.Value as ScriptString;
-                        if (string.IsNullOrEmpty(fieldName) || val == null) throw new Exception(string.Format("Message:{0} Field:{1} 参数出错 参数模版 \"索引,类型,是否数组=false,注释\"", name, fieldName));
+                        if (string.IsNullOrEmpty(fieldName) || val == null) throw new Exception(string.Format("Class:{0} Field:{1} 参数出错 参数模版 \"索引,类型,是否数组=false,注释\"", name, fieldName));
                         string[] infos = val.Value.Split(',');
-                        if (infos.Length < 2) throw new Exception(string.Format("Message:{0} Field:{1} 参数出错 参数模版 \"索引,类型,是否数组=false,注释\"", name, fieldName));
+                        if (infos.Length < 2) throw new Exception(string.Format("Class:{0} Field:{1} 参数出错 参数模版 \"索引,类型,是否数组=false,注释\"", name, fieldName));
                         bool array = infos.Length > 2 && infos[2] == "true";
                         string note = infos.Length > 3 ? infos[3] : "";
-                        fields.Add(new PackageField() {
+                        var packageField = new PackageField() {
                             Index = int.Parse(infos[0]),
                             Type = infos[1],
                             Name = fieldName,
                             Array = array,
                             Note = note,
-                        });
+                        };
+                        if (!packageField.IsBasic) {
+                            if (script.HasValue(ENUM_KEYWORD + packageField.Type)) {
+                                packageField.Enum = true;
+                            } else if (!script.HasValue(packageField.Type)) {
+                                throw new Exception(string.Format("Class:{0} Field:{1} 未知类型:{2}", name, fieldName, packageField.Type));
+                            }
+                        }
+                        fields.Add(packageField);
                     }
                     fields.Sort((m1, m2) => { return m1.Index.CompareTo(m2.Index); });
                     customClass[name] = fields;

@@ -82,7 +82,7 @@ public class GenerateTableCSharp : IGenerate
                 str = @"
         ret.___Name = __FieldRead;";
             }
-            str = str.Replace("__FieldRead", !field.IsBasic ? "__Type.Read(reader)" : "reader.__Read()");
+            str = str.Replace("__FieldRead", field.IsBasic ? "reader.__Read()" : (field.Enum ? "(__Type)reader.ReadInt32()" : "__Type.Read(reader)"));
             str = str.Replace("__Read", field.IsBasic ? field.Info.ReadFunction : "");
             str = str.Replace("__Type", GetCodeType(field.Type));
             str = str.Replace("__Index", field.Index.ToString());

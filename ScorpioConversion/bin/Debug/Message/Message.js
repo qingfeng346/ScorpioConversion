@@ -6,7 +6,7 @@ enum_TestEnum =
 }
 Msg_C2G_Test = 
 {
-    Info1 = "5,int32",
+    Info1 = "5,TestEnum",
     Info2 = "2,Msg_C2G_Test2",
     Into3 = "3,int32"
     Into4 = "4,Msg_C2G_Test2,true",

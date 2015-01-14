@@ -67,14 +67,11 @@ public class __ClassName : IMessage {");
                 str = @"
         if (HasSign(__Index)) { __FieldWrite; }";
             }
-            string write = "";
-            if (field.Array) {
-                write = !field.IsBasic ? "___Name[i].Write(writer)" : "writer.__Write(___Name[i])";
-            } else {
-                write = !field.IsBasic ? "___Name.Write(writer)" : "writer.__Write(___Name)";
-            }
+            string name = field.Array ? "___Name[i]" : "___Name";
+            string write = field.IsBasic ? "writer.__Write(___Name)" : (field.Enum ? "writer.__Write((int)___Name)" : "___Name.Write(writer)");
+            write = write.Replace("___Name", name);
             str = str.Replace("__FieldWrite", write);
-            str = str.Replace("__Write", field.IsBasic ? field.Info.WriteFunction : "");
+            str = str.Replace("__Write", field.IsBasic ? field.Info.WriteFunction : (field.Enum ? "WriteInt32" : ""));
             str = str.Replace("__Index", field.Index.ToString());
             str = str.Replace("__Name", field.Name);
             builder.Append(str);
@@ -96,16 +93,16 @@ public class __ClassName : IMessage {");
                 str = @"
         if (ret.HasSign(__Index)) {
             int number = reader.ReadInt32();
-            ret.___Name = new List<__TypeName>();
+            ret.___Name = new List<__Type>();
             for (int i = 0;i < number; ++i) { ret.___Name.Add(__FieldRead); }
         }";
             } else {
                 str = @"
         if (ret.HasSign(__Index)) { ret.___Name = __FieldRead; }";
             }
-            str = str.Replace("__FieldRead", !field.IsBasic ? "__TypeName.Read(reader)" : "reader.__Read()");
+            str = str.Replace("__FieldRead", field.IsBasic ? "reader.__Read()" : (field.Enum ? "(__Type)reader.ReadInt32()" : "__Type.Read(reader)"));
             str = str.Replace("__Read", field.IsBasic ? field.Info.ReadFunction : "");
-            str = str.Replace("__TypeName", GetCodeType(field.Type));
+            str = str.Replace("__Type", GetCodeType(field.Type));
             str = str.Replace("__Index", field.Index.ToString());
             str = str.Replace("__Name", field.Name);
             builder.Append(str);
