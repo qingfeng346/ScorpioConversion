@@ -18,15 +18,13 @@
 
 
 ## 生成文件后使用方法
-
-####网络协议生成的代码文件 
 -----------
+**网络协议生成的代码文件** 
 * 例如协议名为 **Msg_C2G_Test** 工具会生成 **Msg_C2G_Test.cs Msg_C2G_Test.java Msg_C2G_Test.sco** 文件具体要生成什么语言可以配置
 	* **c#和java** 语言 可以直接使用 **Msg_C2G_Test.Deserialize** 和 **Msg_C2G_Test.Deserialize** 就可以完成 byte[] 和 协议之间的转换
 	* **Scorpio** 脚本 可以使用 **ScorpioSerializer.Deserialize** 和 **ScorpioSerializer.Serialize** 完成转换
 
-####Excel表转换工具
------------
+**Excel表转换工具**
 * 请自行实现一个继承 **TableUtil.ITableUtil** 的类 然后调用 **TableUtil.SetTableUtil** 设置
 * **new** 一个 **TableManager** 对象,然后就可以调用 **GetXXX** 函数获取数据了
 * 继承 **ITableUtil** 的类是为了实现读取文件的操作 传入文件名 返回 byte[]
