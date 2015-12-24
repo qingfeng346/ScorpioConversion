@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Security.Cryptography;
 using System.Text;
 using System.IO;
 /// <summary> File工具类 </summary>
@@ -157,11 +156,6 @@ public static class FileUtil
     public static string GetMD5FromBuffer(byte[] buffer)
     {
         if (buffer == null) return null;
-        MD5 md5 = new MD5CryptoServiceProvider();
-        byte[] retVal = md5.ComputeHash(buffer);
-        StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < retVal.Length; i++)
-            sb.Append(retVal[i].ToString("x2"));
-        return sb.ToString();
+        return MD5.GetMd5String(buffer);
     }
 }

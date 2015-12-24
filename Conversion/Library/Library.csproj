@@ -76,6 +76,7 @@
     <Compile Include="Util\FileUtil.cs" />
     <Compile Include="Util\GZipUtil.cs" />
     <Compile Include="Util\JsonUtil.cs" />
+    <Compile Include="Util\Md5.cs" />
     <Compile Include="Util\TableReader.cs" />
     <Compile Include="Util\TableWriter.cs" />
     <Compile Include="Util\Util.cs" />
