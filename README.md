@@ -28,7 +28,7 @@
 Excel表转换工具
 -----------
 * 请自行实现一个继承 **TableUtil.ITableUtil** 的类 然后调用 **TableUtil.SetTableUtil** 设置
-* new 一个 **TableManager** 对象,然后就可以调用GetXXX函数获取数据了
+* **new** 一个 **TableManager** 对象,然后就可以调用GetXXX函数获取数据了
 * 继承 **ITableUtil** 的类是为了实现读取文件的操作 传入文件名 返回 byte[]
 
 ## master版本更新和修改内容 ##
