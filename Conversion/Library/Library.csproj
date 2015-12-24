@@ -36,12 +36,7 @@
     <Reference Include="Scorpio">
       <HintPath>libs\Scorpio.dll</HintPath>
     </Reference>
-    <Reference Include="ScorpioCommons">
-      <HintPath>libs\ScorpioCommons.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Const\GenerateConstCSharp.cs" />
@@ -85,6 +80,12 @@
     <Compile Include="Util\TableWriter.cs" />
     <Compile Include="Util\Util.cs" />
     <Compile Include="Util\UtilConfig.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\ScorpioZip\ScorpioZip.csproj">
+      <Project>{498d2605-3fa0-4652-9fdc-f017bfd4f8d4}</Project>
+      <Name>ScorpioZip</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
