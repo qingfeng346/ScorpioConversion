@@ -17,8 +17,12 @@ ScorpioConversion
 
 
 ## 生成文件后使用方法
-* 网络协议生成的代码文件 
-** c#或java 例如协议名为 Msg_C2G_Test 工具会生成 Msg_C2G_Test.cs 或 Msg_C2G_Test.java 文件 直接使用 Msg_C2G_Test.Deserialize 和 Msg_C2G_Test.Deserialize 就可以完成 byte[] 和 协议之间的转换
-** Scorpio 例如协议名为 Msg_C2G_Test 工具会生成 Msg_C2G_Test.sco 文件 可以使用 ScorpioSerializer.Deserialize 和 ScorpioSerializer.Serialize 完成转换
-* Excel表转换工具
-** 请自行实现一个继承 TableUtil.ITableUtil 的类 然后调用 TableUtil.SetTableUtil 设置后 直接 new 一个 TableManager 对象 就可以 直接使用了 ITableUtil 是为了实现读取文件的操作 传入文件名 返回 byte[]
+
+网络协议生成的代码文件 
+-----------
+* c#或java 例如协议名为 Msg_C2G_Test 工具会生成 Msg_C2G_Test.cs 或 Msg_C2G_Test.java 文件 直接使用 Msg_C2G_Test.Deserialize 和 Msg_C2G_Test.Deserialize 就可以完成 byte[] 和 协议之间的转换
+* Scorpio 例如协议名为 Msg_C2G_Test 工具会生成 Msg_C2G_Test.sco 文件 可以使用 ScorpioSerializer.Deserialize 和 ScorpioSerializer.Serialize 完成转换
+
+Excel表转换工具
+-----------
+* 请自行实现一个继承 TableUtil.ITableUtil 的类 然后调用 TableUtil.SetTableUtil 设置后 直接 new 一个 TableManager 对象 就可以 直接使用了 ITableUtil 是为了实现读取文件的操作 传入文件名 返回 byte[]
