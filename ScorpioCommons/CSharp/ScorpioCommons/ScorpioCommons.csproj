@@ -36,7 +36,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Scorpio">
-      <HintPath>..\..\..\Scorpio-CSharp\trunk\Scorpio\bin\Debug\Scorpio.dll</HintPath>
+      <HintPath>libs\Scorpio.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
