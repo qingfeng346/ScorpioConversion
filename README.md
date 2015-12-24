@@ -21,9 +21,9 @@
 
 ####网络协议生成的代码文件 
 -----------
-* 例如协议名为 Msg_C2G_Test 工具会生成 Msg_C2G_Test.cs Msg_C2G_Test.java Msg_C2G_Test.sco 文件具体要生成什么语言可以配置
-	* c#和java 语言 可以直接使用 Msg_C2G_Test.Deserialize 和 Msg_C2G_Test.Deserialize 就可以完成 byte[] 和 协议之间的转换
-	* Scorpio 脚本 可以使用 ScorpioSerializer.Deserialize 和 ScorpioSerializer.Serialize 完成转换
+* 例如协议名为 **Msg_C2G_Test** 工具会生成 **Msg_C2G_Test.cs Msg_C2G_Test.java Msg_C2G_Test.sco** 文件具体要生成什么语言可以配置
+	* **c#和java** 语言 可以直接使用 **Msg_C2G_Test.Deserialize** 和 **Msg_C2G_Test.Deserialize** 就可以完成 byte[] 和 协议之间的转换
+	* **Scorpio** 脚本 可以使用 **ScorpioSerializer.Deserialize** 和 **ScorpioSerializer.Serialize** 完成转换
 
 ####Excel表转换工具
 -----------
