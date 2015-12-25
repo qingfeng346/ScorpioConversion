@@ -2,10 +2,15 @@
 * author : while
 * QQ群 : 245199668 [加群](http://shang.qq.com/wpa/qunwpa?idkey=8ef904955c52f7b3764403ab81602b9c08b856f040d284f7e2c1d05ed3428de8)
 
+**工具说明**
+* 此工具是为了解决网络协议以及策划Excel表热更新
+* 配置文件全部使用Scorpio-CSharp脚本配置 Scorpio-CSharp源码地址 https://github.com/qingfeng346/Scorpio-CSharp
+* 示例放在Sample目录下，可以运行ScorpioConversion.exe查看
+
 **此工具包含两个功能**
 * 网络协议生成工具
 * Excel表转换工具
-* 示例放在Sample目录下，可以运行ScorpioConversion.exe查看
+
 
 **各个项目作用**
 * Conversion 整个转换工具项目 
