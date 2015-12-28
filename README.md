@@ -35,6 +35,11 @@
 * 继承 **ITableUtil** 的类是为了实现读取文件的操作 传入文件名 返回 byte[]
 
 ## master版本更新和修改内容 ##
+(2015-12-28)
+-----------
+* 修改生成Data文件压缩选项不起作用的BUG
+* 修复ScorpioZip GZIP压缩 写入时间的问题
+
 (2015-12-24)
 -----------
 * 更新MD5库为第三方库,避免有些机器上使用系统MD5算法报错(System.InvalidOperationException: 此实现不是 Windows 平台 FIPS 验证的加密算法的一部分。)
