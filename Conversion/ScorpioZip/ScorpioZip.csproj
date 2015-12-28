@@ -4,7 +4,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{498D2605-3FA0-4652-9FDC-F017BFD4F8D4}</ProjectGuid>
+    <ProjectGuid>{58AEFB8A-AB51-42CE-890C-164E6BF36516}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>ScorpioZip</RootNamespace>

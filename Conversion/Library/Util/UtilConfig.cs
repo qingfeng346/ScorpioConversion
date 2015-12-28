@@ -139,7 +139,7 @@ public static partial class Util
             info.CodeDirectory = config.CodeDirectory;
             info.DataDirectory = config.DataDirectory;
             info.Create = ToBoolean(config.Create, true);
-            info.Compress = ToBoolean(config.Create, false);
+            info.Compress = ToBoolean(config.Compress, false);
             DefaultInfo defaultInfo = (DefaultInfo)Attribute.GetCustomAttribute(program.GetType().GetMember(program.ToString())[0], typeof(DefaultInfo));
             info.Extension = defaultInfo.Extension;
             info.GenerateTable = (IGenerate)System.Activator.CreateInstance(defaultInfo.GenerateTable);

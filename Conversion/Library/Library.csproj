@@ -84,7 +84,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\ScorpioZip\ScorpioZip.csproj">
-      <Project>{498d2605-3fa0-4652-9fdc-f017bfd4f8d4}</Project>
+      <Project>{58aefb8a-ab51-42ce-890c-164e6bf36516}</Project>
       <Name>ScorpioZip</Name>
     </ProjectReference>
   </ItemGroup>
