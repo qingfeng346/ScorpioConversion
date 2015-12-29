@@ -5,6 +5,31 @@ using System.Windows.Forms;
 using System.IO;
 using System.Reflection;
 using ScorpioConversion;
+
+public class TinyPNGConfig {
+    public string ApiKey;
+    public string SourcePath;
+    public string TargetPath;
+}
+public class TinyPNGInput {
+    public int size;
+    public string type;
+}
+public class TinyPNGOutput {
+    public int size;
+    public string type;
+    public int width;
+    public int height;
+    public float ratio;
+    public string url;
+}
+public class TinyPNGResponseData {
+    public TinyPNGInput input;
+    public TinyPNGOutput output;
+    public string error;
+    public string message;
+}
+
 //所有配置文件
 public enum ConfigFile
 {

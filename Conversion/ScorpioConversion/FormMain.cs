@@ -11,16 +11,17 @@ namespace ScorpioConversion
 {
     public partial class FormMain : Form
     {
-        private bool timeEnable = false;                                        //计时器是否能使用
-        private PROGRAM m_Program;                                              //当前选择的语言
-        private FormLog m_FormLog;                                              //日志显示
-        private FormLanguage m_FormLanguage;                                    //多国语言配置
+        private bool timeEnable = false;        //计时器是否能使用
+        private PROGRAM m_Program;              //当前选择的语言
+        private FormLog m_FormLog;              //日志显示
+        private FormLanguage m_FormLanguage;    //多国语言配置
+        private FormTinyPNG m_FormTinyPNG;      //TinyPNG界面    
         public FormMain()
         {
             Logger.SetLogger(new LibLogger());
             InitializeComponent();
         }
-        private void Form1_Load(object sender, EventArgs e)
+        private void FormMain_Load(object sender, EventArgs e)
         {
             programBox.Items.Clear();
             for (int i = (int)PROGRAM.NONE + 1; i < (int)PROGRAM.COUNT; ++i) {
@@ -34,6 +35,7 @@ namespace ScorpioConversion
             ConversionUtil.Bind(textDatabase, ConfigKey.DatabasePath, ConfigFile.InitConfig);
             m_FormLog = new FormLog();
             m_FormLanguage = new FormLanguage();
+            m_FormTinyPNG = new FormTinyPNG();
         }
         void OnQuit()
         {
@@ -280,6 +282,11 @@ namespace ScorpioConversion
                 }
                 EndRun();
             });
+        }
+
+        private void buttonTinyPNG_Click(object sender, EventArgs e)
+        {
+            m_FormTinyPNG.Show();
         }
     }
 }
