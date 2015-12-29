@@ -67,6 +67,7 @@
             this.label5 = new System.Windows.Forms.Label();
             this.refreshNote = new System.Windows.Forms.CheckBox();
             this.clearPath = new System.Windows.Forms.Button();
+            this.buttonTinyPNG = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // labelRollbackFiles
@@ -420,11 +421,22 @@
             this.clearPath.UseVisualStyleBackColor = true;
             this.clearPath.Click += new System.EventHandler(this.clearPath_Click);
             // 
+            // buttonTinyPNG
+            // 
+            this.buttonTinyPNG.Location = new System.Drawing.Point(464, 108);
+            this.buttonTinyPNG.Name = "buttonTinyPNG";
+            this.buttonTinyPNG.Size = new System.Drawing.Size(75, 23);
+            this.buttonTinyPNG.TabIndex = 73;
+            this.buttonTinyPNG.Text = "TinyPNG";
+            this.buttonTinyPNG.UseVisualStyleBackColor = true;
+            this.buttonTinyPNG.Click += new System.EventHandler(this.buttonTinyPNG_Click);
+            // 
             // FormMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(557, 306);
+            this.Controls.Add(this.buttonTinyPNG);
             this.Controls.Add(this.clearPath);
             this.Controls.Add(this.refreshNote);
             this.Controls.Add(this.label5);
@@ -467,7 +479,7 @@
             this.Name = "FormMain";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "XML_Conversion";
-            this.Load += new System.EventHandler(this.Form1_Load);
+            this.Load += new System.EventHandler(this.FormMain_Load);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -514,6 +526,7 @@
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.CheckBox refreshNote;
         private System.Windows.Forms.Button clearPath;
+        private System.Windows.Forms.Button buttonTinyPNG;
     }
 }
 
