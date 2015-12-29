@@ -46,6 +46,7 @@ namespace ScorpioConversion
             this.buttonCode.Enabled = enable;
             this.buttonData.Enabled = enable;
             this.checkCreate.Enabled = enable;
+            this.checkCompress.Enabled = enable;
             this.selectTransformFiles.Enabled = enable;
             this.buttonTransform.Enabled = enable;
             this.selectRollbackFiles.Enabled = enable;
@@ -56,7 +57,17 @@ namespace ScorpioConversion
             this.buttonDatabase.Enabled = enable;
             this.textTableConfig.Enabled = enable;
             this.buttonTransformFolder.Enabled = enable;
+            this.buttonDatabaseConfig.Enabled = enable;
+            this.clearPath.Enabled = enable;
+            this.textTransformFiles.Enabled = enable;
+            this.textRollbackFiles.Enabled = enable;
+            this.textMessage.Enabled = enable;
+            this.textDatabase.Enabled = enable;
             this.textTableFolder.Enabled = enable;
+            this.getManager.Enabled = enable;
+            this.Language.Enabled = enable;
+            this.refreshNote.Enabled = enable;
+            this.packageText.Enabled = enable;
         }
         void StartRun(ThreadStart start)
         {
