@@ -18,7 +18,12 @@ public class ValueList : IValue {
 }
 public static partial class Util
 {
+    private const double KB_LENGTH = 1024;              //1KB 的字节数
+    private const double MB_LENGTH = 1048576;           //1MB 的字节数
+    private const double GB_LENGTH = 1073741824;		//1GB 的字节数
+
     public static string CurrentDirectory { get { return AppDomain.CurrentDomain.BaseDirectory; } }
+
 
     public static Script Script;
     public const string EmptyString         = "####";
@@ -38,6 +43,14 @@ public static partial class Util
     private const string CONST_KEYWORD      = "const_";         //常量类型关键字
     private const string DATABASE_KEYWORD   = "database_";      //数据库格式关键字
     private const string DATABASE_CLASS_KEYWORD = "class_";     //数据库自定义类关键字
+    public static string GetMemory(long by) {
+        if (by < MB_LENGTH)
+            return string.Format("{0:f2} KB", Convert.ToDouble(by) / KB_LENGTH);
+        else if (by < GB_LENGTH)
+            return string.Format("{0:f2} MB", Convert.ToDouble(by) / MB_LENGTH);
+        else
+            return string.Format("{0:f2} MB", Convert.ToDouble(by) / GB_LENGTH);
+    }
     public static void ParseStructure(string dir, 
         Dictionary<string, List<PackageField>> customClass, 
         Dictionary<string, List<PackageEnum>> customEnum,
