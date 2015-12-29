@@ -13,7 +13,6 @@ namespace ScorpioConversion
     {
         private bool timeEnable = false;        //计时器是否能使用
         private PROGRAM m_Program;              //当前选择的语言
-        private FormLog m_FormLog;              //日志显示
         private FormLanguage m_FormLanguage;    //多国语言配置
         private FormTinyPNG m_FormTinyPNG;      //TinyPNG界面    
         public FormMain()
@@ -33,7 +32,6 @@ namespace ScorpioConversion
             ConversionUtil.Bind(textTableFolder, ConfigKey.TableFolderPath, ConfigFile.InitConfig);
             ConversionUtil.Bind(textMessage, ConfigKey.MessagePath, ConfigFile.InitConfig);
             ConversionUtil.Bind(textDatabase, ConfigKey.DatabasePath, ConfigFile.InitConfig);
-            m_FormLog = new FormLog();
             m_FormLanguage = new FormLanguage();
             m_FormTinyPNG = new FormTinyPNG();
         }
@@ -76,7 +74,7 @@ namespace ScorpioConversion
             timeEnable = true;
             this.timerProgress.Enabled = true;
             SetEnable(false);
-            m_FormLog.Show();
+            FormLog.GetInstance().Show();
             new Thread(start).Start();
         }
         void EndRun()
@@ -201,7 +199,7 @@ namespace ScorpioConversion
         //打开日志界面
         private void buttonLog_Click(object sender, EventArgs e)
         {
-            m_FormLog.Show();
+            FormLog.GetInstance().Show();
         }
         //设置代码路径
         private void buttonCode_Click(object sender, EventArgs e)

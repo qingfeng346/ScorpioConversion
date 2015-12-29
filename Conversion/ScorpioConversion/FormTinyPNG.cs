@@ -38,6 +38,7 @@ namespace ScorpioConversion
         void StartRun(ThreadStart start)
         {
             SetEnable(false);
+            FormLog.GetInstance().Show();
             new Thread(start).Start();
         }
         void EndRun()
@@ -74,8 +75,8 @@ namespace ScorpioConversion
         {
             var apiKey = this.Config.ApiKey;
             var outPath = this.Config.TargetPath;
-            var jpgFiles = Directory.GetFiles(this.Config.SourcePath, "*.jpg", SearchOption.AllDirectories);
-            var pngFiles = Directory.GetFiles(this.Config.SourcePath, "*.png", SearchOption.AllDirectories);
+            var jpgFiles = Directory.GetFiles(this.Config.SourcePath, "*.jpg", SearchOption.TopDirectoryOnly);
+            var pngFiles = Directory.GetFiles(this.Config.SourcePath, "*.png", SearchOption.TopDirectoryOnly);
             var files = new List<string>();
             files.AddRange(jpgFiles);
             files.AddRange(pngFiles);
@@ -88,10 +89,10 @@ namespace ScorpioConversion
                 this.Working = "正在上传 : " + fileName;
                 Console.WriteLine(file);
                 var result = Upload("https://api.tinypng.com/shrink", apiKey, file);
-                Console.WriteLine(result);
                 var data = JsonUtil.JsonToObject<TinyPNGResponseData>(result);
                 this.Working = "正在下载 : " + fileName;
                 Download(data.output.url, outPath + "/" + fileName);
+                Logger.info("压缩文件[{0}]完成,原大小[{1}],压缩后文件大小[{2}],压缩率[{3:N2}%]", fileName, Util.GetMemory(data.input.size), Util.GetMemory(data.output.size), Convert.ToDouble(data.output.size) / Convert.ToDouble(data.input.size) * 100);
             }
             this.Working = "全部处理完成";
         }
@@ -124,6 +125,8 @@ namespace ScorpioConversion
                 postStream.Write(bytes, 0, readSize);
             }
             postStream.Close();
+            reader.Close();
+            fileStream.Close();
             var responseStream = httpRequest.GetResponse().GetResponseStream();
             MemoryStream retStream = new MemoryStream();
             while ((readSize = responseStream.Read(bytes, 0, READ_LENGTH)) != 0) {

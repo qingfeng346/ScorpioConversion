@@ -10,6 +10,13 @@ namespace ScorpioConversion
 {
     public partial class FormLog : Form
     {
+        private static FormLog instance = null;
+        public static FormLog GetInstance()
+        {
+            if (instance == null)
+                instance = new FormLog();
+            return instance;
+        }
         public FormLog()
         {
             InitializeComponent();
