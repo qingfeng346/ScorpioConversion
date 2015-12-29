@@ -129,7 +129,9 @@ public static class FileUtil
     /// <summary> 获得文件字符串 </summary>
     public static String GetFileString(string fileName)
     {
-        return Encoding.UTF8.GetString(GetFileBuffer(fileName));
+        var buffer = GetFileBuffer(fileName);
+        if (buffer == null) return "";
+        return Encoding.UTF8.GetString(buffer);
     }
     /// <summary> 获得文件byte[] </summary>
     public static byte[] GetFileBuffer(string fileName)
