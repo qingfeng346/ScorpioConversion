@@ -72,6 +72,7 @@
     <Compile Include="Table\TableBuilderManager.cs" />
     <Compile Include="Table\TableBuilderRollback.cs" />
     <Compile Include="Util\BasicUtil.cs" />
+    <Compile Include="Util\Config.cs" />
     <Compile Include="Util\DatabaseUtil.cs" />
     <Compile Include="Util\FileUtil.cs" />
     <Compile Include="Util\GZipUtil.cs" />
