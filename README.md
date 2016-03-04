@@ -23,7 +23,7 @@
 * 要使用Java语言 请导入ScorpioProto-Java库 源码地址 https://github.com/qingfeng346/ScorpioProto-Java
 
 ## 工具使用方法
-![](https://github.com/qingfeng346/ScorpioConversion/Sample/Readme.png)
+![](https://github.com/qingfeng346/ScorpioConversion/blob/master/Sample/Readme.png)
 
 ## 生成文件后使用方法
 -----------
