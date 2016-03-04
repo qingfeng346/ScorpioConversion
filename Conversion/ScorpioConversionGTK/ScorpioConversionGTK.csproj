@@ -74,13 +74,13 @@
     <Folder Include="Util\" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Library\Library.csproj">
-      <Project>{26163BC7-DB7A-4110-9E9B-AFA38712D076}</Project>
-      <Name>Library</Name>
-    </ProjectReference>
     <ProjectReference Include="..\ScorpioZip\ScorpioZip.csproj">
       <Project>{58AEFB8A-AB51-42CE-890C-164E6BF36516}</Project>
       <Name>ScorpioZip</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Library\Library.csproj">
+      <Project>{26163BC7-DB7A-4110-9E9B-AFA38712D076}</Project>
+      <Name>Library</Name>
     </ProjectReference>
   </ItemGroup>
 </Project>
