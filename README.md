@@ -17,6 +17,11 @@
 * Conversion/Library 转换工具核心代码
 * Conversion/ScorpioZip 转换工具gzip压缩库 其实就是 SharpZip 库  修改了gzip压缩写入是写入固定时间 以免每次转表 md5 码都会改变
 * Conversion/ScorpioConversion 转换工具界面代码
+
+**数据解析库,转换工具暂时只支持c#和java两种语言的代码生成**
+* 要使用c#语言 请导入ScorpioProto-CSharp库 源码地址 https://github.com/qingfeng346/ScorpioProto-CSharp
+
+
 * ScorpioCommons 数据解析库 网络协议以及转表数据解析都会用到 如果要使用此工具 项目代码里面要拷入此库
 * ScorpioCommons/CSharp c#解析库 以及c#下使用Scorpio的解析
 * ScorpioCommons/Java java解析库 以及java下使用Scorpio的解析
