@@ -20,11 +20,7 @@
 
 **数据解析库,转换工具暂时只支持c#和java两种语言的代码生成**
 * 要使用c#语言 请导入ScorpioProto-CSharp库 源码地址 https://github.com/qingfeng346/ScorpioProto-CSharp
-
-
-* ScorpioCommons 数据解析库 网络协议以及转表数据解析都会用到 如果要使用此工具 项目代码里面要拷入此库
-* ScorpioCommons/CSharp c#解析库 以及c#下使用Scorpio的解析
-* ScorpioCommons/Java java解析库 以及java下使用Scorpio的解析
+* 要使用Java语言 请导入ScorpioProto-Java库 源码地址 https://github.com/qingfeng346/ScorpioProto-Java
 
 
 ## 生成文件后使用方法
@@ -40,6 +36,10 @@
 * 继承 **ITableUtil** 的类是为了实现读取文件的操作 传入文件名 返回 byte[]
 
 ## master版本更新和修改内容 ##
+(2016-3-4)
+-----------
+* 增加GTK#界面工程,可以阔平台运行转换工具,暂时缺少功能TinyPNG
+
 (2015-12-29)
 -----------
 * 整合TinyPNG图片压缩工具 TinyPNG的具体功能请查看 https://tinypng.com/
