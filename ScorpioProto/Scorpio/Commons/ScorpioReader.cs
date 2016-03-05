@@ -52,8 +52,12 @@ namespace Scorpio.Commons
         }
         public void Close()
         {
-            stream.Close();
+            stream.Dispose();
+#if SCORPIO_UWP && !UNITY_EDITOR
+            reader.Dispose();
+#else
             reader.Close();
+#endif
         }
     }
 }
