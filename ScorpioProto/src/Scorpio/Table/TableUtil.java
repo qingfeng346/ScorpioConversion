@@ -1,7 +1,5 @@
 package Scorpio.Table;
 import java.util.List;
-
-import Scorpio.*;
 import Scorpio.Commons.*;
 public class TableUtil
 {
@@ -20,12 +18,12 @@ public class TableUtil
 		if (IUtil != null)
 			IUtil.Warning(str);
 	}
-    public static ScriptTable ReadDatas(Script script, String fileName, String dataName, String keyName, String MD5) throws Exception
+    public static Scorpio.ScriptTable ReadDatas(Scorpio.Script script, String fileName, String dataName, String keyName, String MD5) throws Exception
     {
-        ScriptTable ret = script.CreateTable();
+    	Scorpio.ScriptTable ret = script.CreateTable();
         ScorpioReader reader = new ScorpioReader(GetBuffer(fileName));
         int iRow = ReadHead(reader, fileName, MD5);
-        ScriptTable data = null;
+        Scorpio.ScriptTable data = null;
         double key = 0;
         for (int i = 0; i < iRow; ++i) {
             data = ScorpioSerializer.Read(script, reader, dataName, false);
