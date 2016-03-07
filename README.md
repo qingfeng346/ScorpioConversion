@@ -12,7 +12,6 @@
 * 网络协议生成工具
 * Excel表转换工具
 
-
 **各个项目作用**
 * Conversion 整个转换工具项目 
 * Conversion/Library 转换工具核心代码
@@ -25,10 +24,40 @@
 
 ## 生成文件后使用方法
 -----------
+**网络协议源文件说明**
+```javascript
+//测试信息
+Msg_C2G_Test = {
+    Value1 = "1,int",
+	Value2 = "2,string",
+	Value3 = "3,int,true",
+}
+//嵌套类型使用
+Msg_C2G_Test1 = {
+	Value1 = "1,Msg_C2G_Test",
+}
+/*
+定义一个名为**Msg_C2G_Test**的协议
+Key值为字段名
+Value值格式为  字段索引(不能重复),字段类型,字段是否为数组(不填默认为不是数组)
+例如 Value1字段 Value1为字段名,索引为1,类型为int型,不是数组
+*/
+```
 **网络协议生成的代码文件** 
 * 例如协议名为 **Msg_C2G_Test** 工具会生成 **Msg_C2G_Test.cs Msg_C2G_Test.java Msg_C2G_Test.sco** 文件具体要生成什么语言可以配置
 	* **c#和java** 语言 可以直接使用 **Msg_C2G_Test.Deserialize** 和 **Msg_C2G_Test.Deserialize** 就可以完成 byte[] 和 协议之间的转换
 	* **Scorpio** 脚本 可以使用 **ScorpioSerializer.Deserialize** 和 **ScorpioSerializer.Serialize** 完成转换
+**网络协议源文件支持数据类型
+* bool
+* int8
+* int16
+* int32
+* int
+* int64
+* float
+* double
+* string
+* bytes
 
 **Excel表转换工具**
 * 请自行实现一个继承 **TableUtil.ITableUtil** 的类 然后调用 **TableUtil.SetTableUtil** 设置
