@@ -1,4 +1,5 @@
-﻿using System;
+﻿#if SCORPIO_PROTO_SCO
+using System;
 using System.Collections.Generic;
 using System.Text;
 using Scorpio;
@@ -161,3 +162,4 @@ namespace Scorpio.Commons
         }
     }
 }
+#endif

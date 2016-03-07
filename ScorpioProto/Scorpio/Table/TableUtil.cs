@@ -20,6 +20,7 @@ namespace Scorpio.Table
         public static void Warning(string str) {
             if (IUtil != null) IUtil.Warning(str);
         }
+#if SCORPIO_PROTO_SCO
         public static ScriptTable ReadDatas(Script script, string fileName, string dataName, string keyName, string MD5) {
             ScriptTable ret = script.CreateTable();
             ScorpioReader reader = new ScorpioReader(GetBuffer(fileName));
@@ -36,6 +37,7 @@ namespace Scorpio.Table
             }
             return ret;
         }
+#endif
         public static int ReadHead(ScorpioReader reader, string fileName, string MD5) {
             int iRow = reader.ReadInt32();          //行数
             if (reader.ReadString() != MD5)         //验证文件MD5(检测结构是否改变)
