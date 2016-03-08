@@ -32,6 +32,12 @@ public enum PROGRAM
     Java,           //Java 语言
     [DefaultInfo("sco", typeof(GenerateTableScorpio), typeof(GenerateMessageScorpio), typeof(GenerateEnumScorpio), typeof(GenerateConstScorpio), false)]
     Scorpio,        //Scorpio 脚本
+    //[DefaultInfo("h", typeof(GenerateTableScorpio), typeof(GenerateMessageScorpio), typeof(GenerateEnumScorpio), typeof(GenerateConstScorpio), false)]
+    //CPP,        //c++ 语言
+    //[DefaultInfo("php", typeof(GenerateTableScorpio), typeof(GenerateMessageScorpio), typeof(GenerateEnumScorpio), typeof(GenerateConstScorpio), false)]
+    //PHP,        //php 语言
+    //[DefaultInfo("python", typeof(GenerateTableScorpio), typeof(GenerateMessageScorpio), typeof(GenerateEnumScorpio), typeof(GenerateConstScorpio), false)]
+    //Python,        //python 语言
     COUNT,
 }
 //一种程序语言的动态配置
