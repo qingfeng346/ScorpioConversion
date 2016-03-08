@@ -45,8 +45,8 @@ Value值格式为  字段索引(不能重复),字段类型,字段是否为数组
 ```
 **网络协议生成的代码文件** 
 * 例如协议名为 **Msg_C2G_Test** 工具会生成对应语言的名为**Msg_C2G_Test.xx 以及 MessageManager.xx(自动生成的协议名和ID的对应文件)**文件，具体要生成什么语言可以配置
-	* **c#和java** 语言 可以直接使用 **Msg_C2G_Test.Deserialize** 和 **Msg_C2G_Test.Deserialize** 就可以完成 byte[] 和 协议之间的转换
-	* **Scorpio** 脚本 可以使用 **ScorpioSerializer.Deserialize** 和 **ScorpioSerializer.Serialize** 完成转换
+	* **Sco 脚本** 可以直接使用 **ScorpioSerializer.Deserialize** 和 **ScorpioSerializer.Serialize** 进行序列化和反序列化
+	* **其他语言** 可以直接使用 **Msg_C2G_Test**类的 **Deserialize函数** 和 **Serialize函数** 进行序列化和反序列化
 
 **网络协议源文件支持数据类型**
 * bool
