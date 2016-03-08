@@ -25,6 +25,12 @@ public class DataTest : IData {
     private TestEnum _TestEnumName;
     /// <summary> 自定义枚举() </summary>
     public TestEnum getTestEnumName() { return _TestEnumName; }
+    private ReadOnlyCollection<int> _TestArray;
+    /// <summary> array类型 以逗号隔开() </summary>
+    public ReadOnlyCollection<int> getTestArray() { return _TestArray; }
+    private ReadOnlyCollection<Int2> _TestArray2;
+    /// <summary> array类型 自定义类型 每一个中括号为一个单位() </summary>
+    public ReadOnlyCollection<Int2> getTestArray2() { return _TestArray2; }
     public override object GetData(string key ) {
         if (key == "ID") return _ID;
         if (key == "TestInt") return _TestInt;
@@ -32,6 +38,8 @@ public class DataTest : IData {
         if (key == "TestBool") return _TestBool;
         if (key == "TestInt2") return _TestInt2;
         if (key == "TestEnumName") return _TestEnumName;
+        if (key == "TestArray") return _TestArray;
+        if (key == "TestArray2") return _TestArray2;
         return null;
     }
     public bool IsInvalid() { return m_IsInvalid; }
@@ -42,6 +50,8 @@ public class DataTest : IData {
         if (!TableUtil.IsInvalid(this._TestBool)) return false;
         if (!TableUtil.IsInvalid(this._TestInt2)) return false;
         if (!TableUtil.IsInvalid(this._TestEnumName)) return false;
+        if (!TableUtil.IsInvalid(this._TestArray)) return false;
+        if (!TableUtil.IsInvalid(this._TestArray2)) return false;
         return true;
     }
     public static DataTest Read(ScorpioReader reader) {
@@ -52,6 +62,18 @@ public class DataTest : IData {
         ret._TestBool = reader.ReadBool();
         ret._TestInt2 = Int2.Read(reader);
         ret._TestEnumName = (TestEnum)reader.ReadInt32();
+        {
+            int number = reader.ReadInt32();
+            List<int> list = new List<int> ();
+            for (int i = 0;i < number; ++i) { list.Add(reader.ReadInt32()); }
+            ret._TestArray = list.AsReadOnly();
+        }
+        {
+            int number = reader.ReadInt32();
+            List<Int2> list = new List<Int2> ();
+            for (int i = 0;i < number; ++i) { list.Add(Int2.Read(reader)); }
+            ret._TestArray2 = list.AsReadOnly();
+        }
         ret.m_IsInvalid = ret.IsInvalid_impl();
         return ret;
     }

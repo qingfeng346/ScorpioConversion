@@ -6,4 +6,6 @@ DataTest = [
     { Index = 3, Name = "TestBool", Type = "bool", Array = false },     //bool类型()
     { Index = 4, Name = "TestInt2", Type = "Int2", Array = false },     //自定义类型 根据ExcelConfig下 table.sco文件定义的Int2解析 类型为table_后面的名字 格式为 , 隔开()
     { Index = 5, Name = "TestEnumName", Type = "int32", Array = false },     //自定义枚举()
+    { Index = 6, Name = "TestArray", Type = "int", Array = true },     //array类型 以逗号隔开()
+    { Index = 7, Name = "TestArray2", Type = "Int2", Array = true },     //array类型 自定义类型 每一个中括号为一个单位()
 ]

@@ -9,7 +9,7 @@ import Scorpio.Commons.*;
 import Scorpio.Table.*;
 @SuppressWarnings("unused")
 public class TableTest extends ITable {
-	final String FILE_MD5_CODE = "34a59b0b8327d56e524598fdec293a9b";
+	final String FILE_MD5_CODE = "e401d7d89535698d39f341ff1afc8f1d";
     private int m_count = 0;
     private HashMap<Integer, DataTest> m_dataArray = new HashMap<Integer, DataTest>();
     public TableTest Initialize(String fileName) {

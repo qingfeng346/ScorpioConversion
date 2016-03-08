@@ -29,6 +29,12 @@ public class DataTest implements IData {
     private TestEnum _TestEnumName;
     /** 自定义枚举() */
     public TestEnum getTestEnumName() { return _TestEnumName; }
+    private List<Integer> _TestArray;
+    /** array类型 以逗号隔开() */
+    public List<Integer> getTestArray() { return _TestArray; }
+    private List<Int2> _TestArray2;
+    /** array类型 自定义类型 每一个中括号为一个单位() */
+    public List<Int2> getTestArray2() { return _TestArray2; }
     public Object GetData(String key ) {
         if (key.equals("ID")) return _ID;
         if (key.equals("TestInt")) return _TestInt;
@@ -36,6 +42,8 @@ public class DataTest implements IData {
         if (key.equals("TestBool")) return _TestBool;
         if (key.equals("TestInt2")) return _TestInt2;
         if (key.equals("TestEnumName")) return _TestEnumName;
+        if (key.equals("TestArray")) return _TestArray;
+        if (key.equals("TestArray2")) return _TestArray2;
         return null;
     }
     public boolean IsInvalid() { return m_IsInvalid; }
@@ -46,6 +54,8 @@ public class DataTest implements IData {
         if (!TableUtil.IsInvalid(this._TestBool)) return false;
         if (!TableUtil.IsInvalid(this._TestInt2)) return false;
         if (!TableUtil.IsInvalid(this._TestEnumName)) return false;
+        if (!TableUtil.IsInvalid(this._TestArray)) return false;
+        if (!TableUtil.IsInvalid(this._TestArray2)) return false;
         return true;
     }
     public static DataTest Read(ScorpioReader reader) {
@@ -56,6 +66,18 @@ public class DataTest implements IData {
         ret._TestBool = reader.ReadBool();
         ret._TestInt2 = Int2.Read(reader);
         ret._TestEnumName = TestEnum.valueOf(reader.ReadInt32());
+        {
+            int number = reader.ReadInt32();
+            ArrayList<Integer> list = new ArrayList<Integer>();
+            for (int i = 0;i < number; ++i) { list.add(reader.ReadInt32()); }
+            ret._TestArray = Collections.unmodifiableList(list);
+        }
+        {
+            int number = reader.ReadInt32();
+            ArrayList<Int2> list = new ArrayList<Int2>();
+            for (int i = 0;i < number; ++i) { list.add(Int2.Read(reader)); }
+            ret._TestArray2 = Collections.unmodifiableList(list);
+        }
         ret.m_IsInvalid = ret.IsInvalid_impl();
         return ret;
     }
