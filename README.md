@@ -19,8 +19,8 @@
 * Conversion/ScorpioConversion 转换工具界面代码
 
 **数据解析库,转换工具暂时只支持c#和java两种语言的代码生成**
-* 要使用c#语言 请导入ScorpioProto-CSharp库 源码地址 https://github.com/qingfeng346/ScorpioProto-CSharp
-* 要使用Java语言 请导入ScorpioProto-Java库 源码地址 https://github.com/qingfeng346/ScorpioProto-Java
+* 要使用c#语言 请导入**ScorpioProto-CSharp**库 源码地址 https://github.com/qingfeng346/ScorpioProto-CSharp
+* 要使用Java语言 请导入**ScorpioProto-Java**库 源码地址 https://github.com/qingfeng346/ScorpioProto-Java
 
 ## 生成文件后使用方法
 -----------
