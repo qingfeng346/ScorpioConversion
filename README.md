@@ -65,6 +65,27 @@ Value值格式为  字段索引(不能重复),字段类型,字段是否为数组
 * **new** 一个 **TableManager** 对象,然后就可以调用 **GetXXX** 函数获取数据了
 * 继承 **ITableUtil** 的类是为了实现读取文件的操作 传入文件名 返回 byte[]
 
+**Excel表填写示例**
+* ![](https://github.com/qingfeng346/ScorpioConversion/blob/master/Sample/Excel.png)
+* 第一行为字段注释 没有实际作用 转换的时候会自动添加上 字段注释
+* 第二行为字段名称 不能重复
+* 第三行为字段默认值 此列的数据如果不填 则默认为此值
+* 第四行为字段类型 目前支持的基础数据类型有:
+	* bool
+	* int8
+	* int16
+	* int32
+	* int
+	* int64
+	* float
+	* double
+	* string
+* 第一列的数据类型固定为int型,并且必须唯一
+* 如果字段类型前面 加上 array关键字,例如 arrayint arraybool arraystring  则此字段为数组类型
+* 字段类型还支持 自定义数据结构 和 枚举类型，定义的格式请参照 https://github.com/qingfeng346/ScorpioConversion/blob/master/Sample/ExcelConfig/Table.sco
+* 转表工具还支持批量表转换,请先在转表工具界面点击**批量关键字**按钮设置批量表关键字
+* 然后以关键字开头的表会转成一个map数组的数据,关键字表的字段数据格式必须一致,具体用法可以参考 Sample/Excel 下的 Spawn_Test1.xls Spawn_Test2.xls
+
 ## master版本更新和修改内容 ##
 (2016-3-4)
 -----------
