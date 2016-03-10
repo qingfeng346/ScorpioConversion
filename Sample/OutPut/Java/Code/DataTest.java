@@ -15,10 +15,10 @@ public class DataTest implements IData {
     public Integer getID() { return _ID; }
     public Integer ID() { return _ID; }
     private Integer _TestInt;
-    /** int类型() */
+    /** int类型(20) */
     public Integer getTestInt() { return _TestInt; }
     private String _TestString;
-    /** string类型() */
+    /** string类型(aaa) */
     public String getTestString() { return _TestString; }
     private Boolean _TestBool;
     /** bool类型() */
@@ -35,6 +35,9 @@ public class DataTest implements IData {
     private List<Int2> _TestArray2;
     /** array类型 自定义类型 每一个中括号为一个单位() */
     public List<Int2> getTestArray2() { return _TestArray2; }
+    private Int3 _TestInt3;
+    /** 嵌套类型() */
+    public Int3 getTestInt3() { return _TestInt3; }
     public Object GetData(String key ) {
         if (key.equals("ID")) return _ID;
         if (key.equals("TestInt")) return _TestInt;
@@ -44,6 +47,7 @@ public class DataTest implements IData {
         if (key.equals("TestEnumName")) return _TestEnumName;
         if (key.equals("TestArray")) return _TestArray;
         if (key.equals("TestArray2")) return _TestArray2;
+        if (key.equals("TestInt3")) return _TestInt3;
         return null;
     }
     public boolean IsInvalid() { return m_IsInvalid; }
@@ -56,6 +60,7 @@ public class DataTest implements IData {
         if (!TableUtil.IsInvalid(this._TestEnumName)) return false;
         if (!TableUtil.IsInvalid(this._TestArray)) return false;
         if (!TableUtil.IsInvalid(this._TestArray2)) return false;
+        if (!TableUtil.IsInvalid(this._TestInt3)) return false;
         return true;
     }
     public static DataTest Read(ScorpioReader reader) {
@@ -78,6 +83,7 @@ public class DataTest implements IData {
             for (int i = 0;i < number; ++i) { list.add(Int2.Read(reader)); }
             ret._TestArray2 = Collections.unmodifiableList(list);
         }
+        ret._TestInt3 = Int3.Read(reader);
         ret.m_IsInvalid = ret.IsInvalid_impl();
         return ret;
     }

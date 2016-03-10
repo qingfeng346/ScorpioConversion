@@ -10,3 +10,7 @@ table_Int2 = {
     Value1 = "0,int32",
     Value2 = "1,int32",
 }
+table_Int3 = {
+    Value1 = "0,Int2,true",
+    Value2 = "1,int32",
+}

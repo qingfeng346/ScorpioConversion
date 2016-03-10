@@ -11,10 +11,10 @@ public class DataTest : IData {
     public int getID() { return _ID; }
     public int ID() { return _ID; }
     private int _TestInt;
-    /// <summary> int类型() </summary>
+    /// <summary> int类型(20) </summary>
     public int getTestInt() { return _TestInt; }
     private string _TestString;
-    /// <summary> string类型() </summary>
+    /// <summary> string类型(aaa) </summary>
     public string getTestString() { return _TestString; }
     private bool _TestBool;
     /// <summary> bool类型() </summary>
@@ -31,6 +31,9 @@ public class DataTest : IData {
     private ReadOnlyCollection<Int2> _TestArray2;
     /// <summary> array类型 自定义类型 每一个中括号为一个单位() </summary>
     public ReadOnlyCollection<Int2> getTestArray2() { return _TestArray2; }
+    private Int3 _TestInt3;
+    /// <summary> 嵌套类型() </summary>
+    public Int3 getTestInt3() { return _TestInt3; }
     public override object GetData(string key ) {
         if (key == "ID") return _ID;
         if (key == "TestInt") return _TestInt;
@@ -40,6 +43,7 @@ public class DataTest : IData {
         if (key == "TestEnumName") return _TestEnumName;
         if (key == "TestArray") return _TestArray;
         if (key == "TestArray2") return _TestArray2;
+        if (key == "TestInt3") return _TestInt3;
         return null;
     }
     public bool IsInvalid() { return m_IsInvalid; }
@@ -52,6 +56,7 @@ public class DataTest : IData {
         if (!TableUtil.IsInvalid(this._TestEnumName)) return false;
         if (!TableUtil.IsInvalid(this._TestArray)) return false;
         if (!TableUtil.IsInvalid(this._TestArray2)) return false;
+        if (!TableUtil.IsInvalid(this._TestInt3)) return false;
         return true;
     }
     public static DataTest Read(ScorpioReader reader) {
@@ -74,6 +79,7 @@ public class DataTest : IData {
             for (int i = 0;i < number; ++i) { list.Add(Int2.Read(reader)); }
             ret._TestArray2 = list.AsReadOnly();
         }
+        ret._TestInt3 = Int3.Read(reader);
         ret.m_IsInvalid = ret.IsInvalid_impl();
         return ret;
     }

@@ -6,7 +6,7 @@ using Scorpio.Commons;
 using Scorpio.Table;
 namespace scorpiogame.proto {
 public class TableTest : ITable {
-	const string FILE_MD5_CODE = "e401d7d89535698d39f341ff1afc8f1d";
+	const string FILE_MD5_CODE = "a3c72d072e44d2c473850e1cd61b0e24";
     private int m_count = 0;
     private Dictionary<int, DataTest> m_dataArray = new Dictionary<int, DataTest>();
     public TableTest Initialize(string fileName) {

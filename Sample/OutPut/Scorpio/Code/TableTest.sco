@@ -3,7 +3,7 @@ TableTest =
     m_count = 0,
     m_dataArray = {},
     function Initialize(fileName) {
-        this.m_dataArray = TableUtil.ReadDatas(_SCRIPT, fileName, "DataTest", "ID", "e401d7d89535698d39f341ff1afc8f1d")
+        this.m_dataArray = TableUtil.ReadDatas(_SCRIPT, fileName, "DataTest", "ID", "a3c72d072e44d2c473850e1cd61b0e24")
         this.m_count = table.count(this.m_dataArray)
         return this
     }
