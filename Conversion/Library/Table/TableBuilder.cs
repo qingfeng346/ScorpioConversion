@@ -345,11 +345,11 @@ public partial class TableBuilder
                     var basic = BasicUtil.GetType(field.Type);
                     if (basic != null || field.Enum) {
                         if (field.Array)
-                            WriteOneField(writer, Util.ReadValue(value) as ValueList, field);
+                            WriteOneField(writer, Util.ReadValue(mDataTable[i].RowNumber, Util.GetLineName(j + 1), value, false, true), field);
                         else
                             WriteOneField(writer, new ValueString(value), field);
                     } else {
-                        WriteCustom_impl(writer, Util.ReadValue(value) as ValueList, mCustoms[field.Type], field.Array);
+                        WriteCustom_impl(writer, Util.ReadValue(mDataTable[i].RowNumber, Util.GetLineName(j + 1), value, true, field.Array), mCustoms[field.Type], field.Array);
                     }
                 } catch (System.Exception ex) {
                     throw new SystemException(string.Format("[{0}]行[{1}]列出错 数据内容为[{2}] : {3}", mDataTable[i].RowNumber, Util.GetLineName(j + 1), value, ex.ToString()));

@@ -190,12 +190,13 @@ public static partial class Util
     //是否是非法值
     public static bool IsEmptyValue(ValueList value)
     {
-        if (value.values.Count == 1) {
-            ValueString val = value.values[0] as ValueString;
-            if (val != null && IsEmptyString(val.value))
-                return true;
-        }
-        return false;
+        //if (value.values.Count == 1) {
+        //    ValueString val = value.values[0] as ValueString;
+        //    if (val != null && IsEmptyString(val.value))
+        //        return true;
+        //}
+        //return false;
+        return value.values.Count == 0;
     }
     //根据数字 获得 AA Excel列名字
     public static string GetLineName(int line)
@@ -229,10 +230,19 @@ public static partial class Util
         }
     }
     //读取Value
-    public static IValue ReadValue(string value)
+    public static ValueList ReadValue(int row, string line, string value, bool custom, bool array)
     {
+        if (IsEmptyString(value)) { return new ValueList(); }
+        string key = string.Format("[{0}]行[{1}]列", row, line);
         value = "[" + value + "]";
-        return new ValueParser(null, new ScriptLexer(value, "").GetTokens(), "").GetObject();
+        ValueList ret = new ValueParser(null, new ScriptLexer(value, key).GetTokens(), key).GetObject() as ValueList;
+        if (custom == true && array == true) {
+            if (!(ret.values[0] is ValueList)) {
+                value = "[" + value + "]";
+                ret = new ValueParser(null, new ScriptLexer(value, key).GetTokens(), key).GetObject() as ValueList;
+            }
+        }
+        return ret;
     }
     //获得一个单元格的字符串
     public static string GetCellString(ICell cell)

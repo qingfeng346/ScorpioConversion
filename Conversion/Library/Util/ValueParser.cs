@@ -12,6 +12,13 @@ public class ValueParser : ScriptParser
         Token token = ReadToken();
         switch (token.Type)
         {
+            case TokenType.Minus:
+                token = ReadToken();
+                if (token.Type == TokenType.Number) {
+                    return new ValueString("-" + token.Lexeme.ToString());
+                } else {
+                    throw new Exception("负号支持数字");
+                }
             case TokenType.Null:
             case TokenType.Identifier:
             case TokenType.Boolean:
