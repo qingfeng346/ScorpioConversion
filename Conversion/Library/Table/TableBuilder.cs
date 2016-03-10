@@ -345,11 +345,11 @@ public partial class TableBuilder
                     var basic = BasicUtil.GetType(field.Type);
                     if (basic != null || field.Enum) {
                         if (field.Array)
-                            WriteOneField(writer, Util.ReadValue(value, false) as ValueList, field);
+                            WriteOneField(writer, Util.ReadValue(value) as ValueList, field);
                         else
-                            WriteOneField(writer, new ValueString() { value = value }, field);
+                            WriteOneField(writer, new ValueString(value), field);
                     } else {
-                        WriteCustom_impl(writer, Util.ReadValue(value, field.Array) as ValueList, mCustoms[field.Type], field.Array);
+                        WriteCustom_impl(writer, Util.ReadValue(value) as ValueList, mCustoms[field.Type], field.Array);
                     }
                 } catch (System.Exception ex) {
                     throw new SystemException(string.Format("[{0}]行[{1}]列出错 数据内容为[{2}] : {3}", mDataTable[i].RowNumber, Util.GetLineName(j + 1), value, ex.ToString()));
@@ -376,7 +376,7 @@ public partial class TableBuilder
         } else {
             if (Util.IsEmptyValue(list)) {
                 for (int i = 0; i < fields.Count; ++i)
-                    WriteOneField(writer, new ValueString() { value = "" }, fields[i]);
+                    WriteOneField(writer, new ValueString(""), fields[i]);
             } else {
                 if (list.values.Count != fields.Count)
                     throw new Exception(string.Format("填写字段数量与数据机构字段数量不一致 需要数量 {0}  填写数量{1}", fields.Count, list.values.Count));

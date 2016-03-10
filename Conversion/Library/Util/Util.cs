@@ -8,10 +8,13 @@ using NPOI.SS.UserModel;
 using NPOI.HSSF.UserModel;
 using Scorpio;
 using Scorpio.Variable;
-
+using Scorpio.Compiler;
 public class IValue { }
 public class ValueString : IValue {
     public string value;
+    public ValueString(string value) {
+        this.value = value;
+    }
 }
 public class ValueList : IValue {
     public List<IValue> values = new List<IValue>();
@@ -39,10 +42,11 @@ public static partial class Util
     public const double INVALID_DOUBLE      = -1.0;
     public const string INVALID_STRING      = "";
     private const string TABLE_KEYWORD      = "table_";         //Table自定义类关键字
+    private const string DATABASE_CLASS_KEYWORD = "class_";     //数据库自定义类关键字
+
     private const string ENUM_KEYWORD       = "enum_";          //枚举类型关键字
     private const string CONST_KEYWORD      = "const_";         //常量类型关键字
     private const string DATABASE_KEYWORD   = "database_";      //数据库格式关键字
-    private const string DATABASE_CLASS_KEYWORD = "class_";     //数据库自定义类关键字
     public static string GetMemory(long by) {
         if (by < MB_LENGTH)
             return string.Format("{0:f2} KB", Convert.ToDouble(by) / KB_LENGTH);
@@ -154,7 +158,10 @@ public static partial class Util
                         if (!packageField.IsBasic) {
                             if (Script.HasValue(ENUM_KEYWORD + packageField.Type)) {
                                 packageField.Enum = true;
-                            } else if (!Script.HasValue(packageField.Type) && !Script.HasValue("class_" + packageField.Type)) {
+                            } else if ( !Script.HasValue(packageField.Type) &&                              //判断网络协议自定义类
+                                        !Script.HasValue(TABLE_KEYWORD + packageField.Type) &&              //判断Table内嵌类
+                                        !Script.HasValue(DATABASE_CLASS_KEYWORD + packageField.Type)        //判断数据库内嵌类
+                                       ) {
                                 throw new Exception(string.Format("Class:{0} Field:{1} 未知类型:{2}", name, fieldName, packageField.Type));
                             }
                         }
@@ -222,42 +229,10 @@ public static partial class Util
         }
     }
     //读取Value
-    public static IValue ReadValue(string value, bool array)
+    public static IValue ReadValue(string value)
     {
-        if (array && !value.StartsWith("["))  {
-            value = "[" + value + "]";
-        }
-        string temp = "[" + value + "]";
-        return ReadValue_impl(ref temp);
-    }
-    private static IValue ReadValue_impl(ref string value)
-    {
-        if (value.StartsWith("[")) {
-            value = value.Substring(1);
-            ValueList ret = new ValueList();
-            while (!value.StartsWith("]")) {
-                if (value.StartsWith(","))
-                    value = value.Substring(1);
-                ret.values.Add(ReadValue_impl(ref value));
-            }
-            value = value.Substring(1);
-            return ret;
-        } else {
-            ValueString ret = new ValueString();
-            int index1 = value.IndexOf(',');
-            int index2 = value.IndexOf("]");
-            if (index1 == -1 && index2 == -1) {
-                ret.value = value;
-                value = "";
-            } else if (index1 == -1 || index2 < index1) {
-                ret.value = value.Substring(0, index2);
-                value = value.Substring(index2);
-            } else {
-                ret.value = value.Substring(0, index1);
-                value = value.Substring(index1 + 1);
-            }
-            return ret;
-        }
+        value = "[" + value + "]";
+        return new ValueParser(null, new ScriptLexer(value, "").GetTokens(), "").GetObject();
     }
     //获得一个单元格的字符串
     public static string GetCellString(ICell cell)
