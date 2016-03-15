@@ -8,6 +8,7 @@ using System.Threading;
 using NPOI.SS.UserModel;
 using NPOI.HSSF.UserModel;
 using NPOI.SS.Util;
+using Scorpio;
 public partial class TableBuilder
 {
     private const int START_ROW = 4;        //数值其实行
@@ -345,11 +346,11 @@ public partial class TableBuilder
                     var basic = BasicUtil.GetType(field.Type);
                     if (basic != null || field.Enum) {
                         if (field.Array)
-                            WriteOneField(writer, Util.ReadValue(mDataTable[i].RowNumber, Util.GetLineName(j + 1), value, false, true), field);
+                            WriteField(writer, Util.ReadValue(mEnums, mDataTable[i].RowNumber, Util.GetLineName(j + 1), value, false, true), field);
                         else
-                            WriteOneField(writer, new ValueString(value), field);
+                            WriteField(writer, value, field);
                     } else {
-                        WriteCustom_impl(writer, Util.ReadValue(mDataTable[i].RowNumber, Util.GetLineName(j + 1), value, true, field.Array), mCustoms[field.Type], field.Array);
+                        WriteCustom(writer, Util.ReadValue(mEnums, mDataTable[i].RowNumber, Util.GetLineName(j + 1), value, true, field.Array), mCustoms[field.Type], field.Array);
                     }
                 } catch (System.Exception ex) {
                     throw new SystemException(string.Format("[{0}]行[{1}]列出错 数据内容为[{2}] : {3}", mDataTable[i].RowNumber, Util.GetLineName(j + 1), value, ex.ToString()));
@@ -361,63 +362,67 @@ public partial class TableBuilder
         writer.WriteInt32(count);
         Create_impl(writer.ToArray());
     }
-    private void WriteCustom_impl(TableWriter writer, ValueList list, List<PackageField> fields, bool array)
+    private void WriteCustom(TableWriter writer, ScriptArray list, List<PackageField> fields, bool array)
     {
         if (list == null) throw new Exception("数据结构错误");
         if (array) {
             if (Util.IsEmptyValue(list)) {
                 writer.WriteInt32(0);
             } else {
-                writer.WriteInt32(list.values.Count);
-                for (int i = 0; i < list.values.Count; ++i) {
-                    WriteCustom_impl(writer, list.values[i] as ValueList, fields, false);
+                int count = list.Count();
+                writer.WriteInt32(count);
+                for (int i = 0; i < count; ++i) {
+                    WriteCustom(writer, list.GetValue(i) as ScriptArray, fields, false);
                 }
             }
         } else {
             if (Util.IsEmptyValue(list)) {
                 for (int i = 0; i < fields.Count; ++i)
-                    WriteOneField(writer, new ValueString(""), fields[i]);
+                    WriteField(writer, "", fields[i]);
             } else {
-                if (list.values.Count != fields.Count)
-                    throw new Exception(string.Format("填写字段数量与数据机构字段数量不一致 需要数量 {0}  填写数量{1}", fields.Count, list.values.Count));
-                for (int i = 0; i < list.values.Count; ++i)
-                    WriteOneField(writer, list.values[i], fields[i]);
+                int count = list.Count();
+                if (count != fields.Count)
+                    throw new Exception(string.Format("填写字段数量与数据机构字段数量不一致 需要数量 {0}  填写数量{1}", fields.Count, count));
+                for (int i = 0; i < count; ++i)
+                    WriteField(writer, list.GetValue(i), fields[i]);
             }
         }
     }
-    private void WriteOneField(TableWriter writer, IValue value, PackageField field)
+    private void WriteField(TableWriter writer, object value, PackageField field)
     {
         var basic = BasicUtil.GetType(field.Type);
         if (basic != null) {
             if (field.Array) {
-                var list = value as ValueList;
+                var list = value as ScriptArray;
                 if (Util.IsEmptyValue(list)) {
                     writer.WriteInt32(0);
                 } else {
-                    var vals = list.values;
-                    writer.WriteInt32(vals.Count);
-                    foreach (var val in vals)
-                        basic.WriteValue(writer, (val as ValueString).value);
+                    int count = list.Count();
+                    writer.WriteInt32(count);
+                    for (int i = 0;i < count; ++i) {
+                        basic.WriteValue(writer, list.GetValue(i).ToString());
+                    }
                 }
             } else {
-                basic.WriteValue(writer, (value as ValueString).value);
+                basic.WriteValue(writer, value.ToString());
             }
         } else if (field.Enum) {
             if (field.Array) {
-                var list = value as ValueList;
+                var list = value as ScriptArray;
                 if (Util.IsEmptyValue(list)) {
                     writer.WriteInt32(0);
                 } else {
-                    var vals = list.values;
-                    writer.WriteInt32(vals.Count);
-                    foreach (var val in vals)
-                        writer.WriteInt32(GetEnumValue(field.Type, (val as ValueString).value));
+                    int count = list.Count();
+                    writer.WriteInt32(count);
+                    for (int i = 0; i < count; ++i) {
+                        writer.WriteInt32(GetEnumValue(field.Type, value.ToString()));
+                    }
                 }
             } else {
-                writer.WriteInt32(GetEnumValue(field.Type, (value as ValueString).value));
+                writer.WriteInt32(GetEnumValue(field.Type, value.ToString()));
             }
         } else {
-            WriteCustom_impl(writer, value as ValueList, mCustoms[field.Type], field.Array);
+            WriteCustom(writer, value as ScriptArray, mCustoms[field.Type], field.Array);
         }
     }
     public void Create_impl(byte[] buffer)

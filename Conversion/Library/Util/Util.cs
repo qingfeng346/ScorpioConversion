@@ -188,15 +188,9 @@ public static partial class Util
         return str == EmptyString || string.IsNullOrEmpty(str);
     }
     //是否是非法值
-    public static bool IsEmptyValue(ValueList value)
+    public static bool IsEmptyValue(ScriptArray value)
     {
-        //if (value.values.Count == 1) {
-        //    ValueString val = value.values[0] as ValueString;
-        //    if (val != null && IsEmptyString(val.value))
-        //        return true;
-        //}
-        //return false;
-        return value.values.Count == 0;
+        return value == null || value.Count() == 0;
     }
     //根据数字 获得 AA Excel列名字
     public static string GetLineName(int line)
@@ -230,16 +224,26 @@ public static partial class Util
         }
     }
     //读取Value
-    public static ValueList ReadValue(int row, string line, string value, bool custom, bool array)
+    public static ScriptArray ReadValue(Dictionary<string, List<PackageEnum>> enums, int row, string line, string value, bool custom, bool array)
     {
-        if (IsEmptyString(value)) { return new ValueList(); }
+        if (IsEmptyString(value)) { return null; }
+        StringBuilder builder = new StringBuilder();
+        foreach (var pair in enums) {
+            foreach (var data in pair.Value) {
+                builder.AppendLine(data.Name + "=\"" + data.Name + "\"");
+            }
+        }
         string key = string.Format("[{0}]行[{1}]列", row, line);
         value = "[" + value + "]";
-        ValueList ret = new ValueParser(null, new ScriptLexer(value, key).GetTokens(), key).GetObject() as ValueList;
+        Script script = new Script();
+        script.LoadLibrary();
+        script.LoadString(builder.ToString());
+        var ret = script.LoadString("return " + value) as ScriptArray;
+        //ValueList ret = new ValueParser(null, new ScriptLexer(value, key).GetTokens(), key).GetObject() as ValueList;
         if (custom == true && array == true) {
-            if (!(ret.values[0] is ValueList)) {
+            if (!ret.GetValue(0).IsArray) {
                 value = "[" + value + "]";
-                ret = new ValueParser(null, new ScriptLexer(value, key).GetTokens(), key).GetObject() as ValueList;
+                ret = script.LoadString("return " + value) as ScriptArray;
             }
         }
         return ret;

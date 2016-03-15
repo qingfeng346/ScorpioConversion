@@ -8,7 +8,8 @@ public class GenerateTableCSharp : IGenerate
     protected override string Generate_impl()
     {
         StringBuilder builder = new StringBuilder();
-        builder.Append(@"public class __ClassName : IData {");
+        builder.Append(@"public class __ClassName : IData {
+    private bool m_IsInvalid;");
         builder.Append(GenerateMessageFields());
         builder.Append(GenerateMessageGetData());
         builder.Append(GenerateMessageIsInvalid());
@@ -53,7 +54,7 @@ public class GenerateTableCSharp : IGenerate
     {
         StringBuilder builder = new StringBuilder();
         builder.Append(@"
-    public override object GetData(string key ) {");
+    public object GetData(string key ) {");
         foreach (var field in m_Fields)
         {
             builder.Append(@"
