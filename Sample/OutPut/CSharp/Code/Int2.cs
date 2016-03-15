@@ -6,13 +6,14 @@ using Scorpio.Commons;
 using Scorpio.Table;
 namespace scorpiogame.proto {
 public class Int2 : IData {
+    private bool m_IsInvalid;
     private int _Value1;
     /// <summary> () </summary>
     public int getValue1() { return _Value1; }
     private int _Value2;
     /// <summary> () </summary>
     public int getValue2() { return _Value2; }
-    public override object GetData(string key ) {
+    public object GetData(string key ) {
         if (key == "Value1") return _Value1;
         if (key == "Value2") return _Value2;
         return null;

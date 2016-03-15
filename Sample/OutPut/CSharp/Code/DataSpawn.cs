@@ -6,6 +6,7 @@ using Scorpio.Commons;
 using Scorpio.Table;
 namespace scorpiogame.proto {
 public class DataSpawn : IData {
+    private bool m_IsInvalid;
     private int _ID;
     /// <summary> 测试ID 此值必须唯一 而且必须为int型() </summary>
     public int getID() { return _ID; }
@@ -25,7 +26,7 @@ public class DataSpawn : IData {
     private TestEnum _TestEnumName;
     /// <summary> 自定义枚举() </summary>
     public TestEnum getTestEnumName() { return _TestEnumName; }
-    public override object GetData(string key ) {
+    public object GetData(string key ) {
         if (key == "ID") return _ID;
         if (key == "TestInt") return _TestInt;
         if (key == "TestString") return _TestString;

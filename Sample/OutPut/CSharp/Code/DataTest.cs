@@ -6,6 +6,7 @@ using Scorpio.Commons;
 using Scorpio.Table;
 namespace scorpiogame.proto {
 public class DataTest : IData {
+    private bool m_IsInvalid;
     private int _ID;
     /// <summary> 测试ID 此值必须唯一 而且必须为int型() </summary>
     public int getID() { return _ID; }
@@ -34,7 +35,7 @@ public class DataTest : IData {
     private Int3 _TestInt3;
     /// <summary> 嵌套类型() </summary>
     public Int3 getTestInt3() { return _TestInt3; }
-    public override object GetData(string key ) {
+    public object GetData(string key ) {
         if (key == "ID") return _ID;
         if (key == "TestInt") return _TestInt;
         if (key == "TestString") return _TestString;
