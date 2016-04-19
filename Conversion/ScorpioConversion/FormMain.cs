@@ -140,10 +140,12 @@ namespace ScorpioConversion
                     Dictionary<string, LanguageTable> mTables = new Dictionary<string, LanguageTable>();
                     tableBuilder.ExecuteField = (PackageField field, string id, ref string value) => {
                         if (field.Attribute.GetValue("Language").LogicOperation()) {
-                            if (!mTables.ContainsKey(tableBuilder.Filer))
-                                mTables[tableBuilder.Filer] = new LanguageTable();
-                            string key = string.Format("{0}_{1}_{2}", tableBuilder.Filer, field.Name, id);
-                            mTables[tableBuilder.Filer].Languages[key] = new Language(key, value);
+                            if (!Util.IsEmptyString(value)) {
+                                if (!mTables.ContainsKey(tableBuilder.Filer))
+                                    mTables[tableBuilder.Filer] = new LanguageTable();
+                                string key = string.Format("{0}_{1}_{2}", tableBuilder.Filer, field.Name, id);
+                                mTables[tableBuilder.Filer].Languages[key] = new Language(key, value);
+                            }
                         }
                     };
                     tableBuilder.Transform(string.Join(";", files),
