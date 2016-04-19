@@ -50,6 +50,7 @@ public partial class LanguageBuilder {
     }
     //获取就得翻译表数据
     public void GetCacheLanguages() {
+        Logger.info("正在获取旧翻译数据");
         if (!FileUtil.FileExist(m_TranslationFile)) { return; }
         IWorkbook workbook = new HSSFWorkbook(new FileStream(m_TranslationFile, FileMode.Open, FileAccess.Read));
         foreach (var pair in m_Tables) {
@@ -84,6 +85,7 @@ public partial class LanguageBuilder {
     }
     //创建最新的翻译表
     public void CreateTranslation() {
+        Logger.info("正在生成新的翻译表");
         IWorkbook workbook = new HSSFWorkbook();
         //创建标记有修改的行
         ICellStyle changeStyle = workbook.CreateCellStyle();

@@ -9,6 +9,7 @@ public partial class LanguageBuilder {
     }
     private Dictionary<string, LanguageItem> m_Items = new Dictionary<string, LanguageItem>();
     public void RefreshLanguage() {
+        Logger.info("正在生成Language表");
         m_Items.Clear();
         IWorkbook workbook = new HSSFWorkbook(new FileStream(m_TranslationFile, FileMode.Open, FileAccess.Read));
         for (int i = 0; i < workbook.NumberOfSheets; ++i) {
