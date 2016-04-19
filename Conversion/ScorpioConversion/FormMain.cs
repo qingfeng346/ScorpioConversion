@@ -154,11 +154,7 @@ namespace ScorpioConversion
                         refreshNote.Checked,
                         GetProgramConfig());
                     if (Language.Checked) {
-                        new LanguageBuilder(
-                            ConversionUtil.GetConfig(ConfigKey.AllLanguage, ConfigFile.LanguageConfig),
-                            ConversionUtil.GetConfig(ConfigKey.LanguageDirectory, ConfigFile.LanguageConfig),
-                            ConversionUtil.GetConfig(ConfigKey.TranslationDirectory, ConfigFile.LanguageConfig),
-                            mTables).Build();
+                        BuildLanguage(mTables, true);
                     }
                 } catch (Exception ex) {
                     Logger.error("TransformFolder is error : " + ex.ToString());
@@ -201,12 +197,37 @@ namespace ScorpioConversion
             }
         }
         //刷新多国语言
-        private void button1_Click_1(object sender, EventArgs e)
-        {
+        private void buttonRefreshLanguage_Click(object sender, EventArgs e) {
             StartRun(() => {
-                //TableManager.GetInstance().RefreshLanguage();
+                BuildLanguage(null, false);
                 EndRun();
             });
+        }
+        private void BuildLanguage(Dictionary<string, LanguageTable> tables, bool build) {
+            string allLanguages = ConversionUtil.GetConfig(ConfigKey.AllLanguage, ConfigFile.LanguageConfig);
+            string languageDirectory = ConversionUtil.GetConfig(ConfigKey.LanguageDirectory, ConfigFile.LanguageConfig);
+            LanguageBuilder builder = new LanguageBuilder(
+                allLanguages,
+                languageDirectory,
+                ConversionUtil.GetConfig(ConfigKey.TranslationDirectory, ConfigFile.LanguageConfig),
+                tables);
+            if (build) {
+                builder.Build();
+            } else {
+                builder.RefreshLanguage();
+            }
+            string[] languages = allLanguages.Split(';');
+            List<string> languageFiles = new List<string>();
+            foreach (var language in languages) {
+                languageFiles.Add(languageDirectory + "/Language_" + language + ".xls");
+            }
+            new TableBuilder().Transform(string.Join(";", languageFiles.ToArray()),
+                textTableConfig.Text,
+                packageText.Text,
+                ConversionUtil.GetConfig(ConfigKey.SpawnList, ConfigFile.InitConfig),
+                false,
+                refreshNote.Checked,
+                GetProgramConfig());
         }
         //打开多国语言配置界面
         private void buttonLanguage_Click(object sender, EventArgs e)

@@ -206,7 +206,7 @@
             this.buttonRefreshLanguage.TabIndex = 46;
             this.buttonRefreshLanguage.Text = "刷新表";
             this.buttonRefreshLanguage.UseVisualStyleBackColor = true;
-            this.buttonRefreshLanguage.Click += new System.EventHandler(this.button1_Click_1);
+            this.buttonRefreshLanguage.Click += new System.EventHandler(this.buttonRefreshLanguage_Click);
             // 
             // buttonCode
             // 
