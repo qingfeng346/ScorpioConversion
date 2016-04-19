@@ -49,6 +49,8 @@
     <Compile Include="Enum\GenerateEnumJava.cs" />
     <Compile Include="Enum\GenerateEnumScorpio.cs" />
     <Compile Include="IGenerate.cs" />
+    <Compile Include="Language\LanguageBuilder.cs" />
+    <Compile Include="Language\LanguageBuilderRefresh.cs" />
     <Compile Include="LitJson\IJsonWrapper.cs" />
     <Compile Include="LitJson\JsonData.cs" />
     <Compile Include="LitJson\JsonException.cs" />
@@ -72,9 +74,9 @@
     <Compile Include="Table\GenerateTableScorpio.cs" />
     <Compile Include="Table\TableBuilder.cs" />
     <Compile Include="Table\TableBuilderRollback.cs" />
-    <Compile Include="Table\TableManagerCSharp.cs" />
-    <Compile Include="Table\TableManagerJava.cs" />
-    <Compile Include="Table\TableManagerScorpio.cs" />
+    <Compile Include="Table\TableBuilderCSharp.cs" />
+    <Compile Include="Table\TableBuilderJava.cs" />
+    <Compile Include="Table\TableBuilderScorpio.cs" />
     <Compile Include="Util\BasicUtil.cs" />
     <Compile Include="Util\Config.cs" />
     <Compile Include="Util\DatabaseUtil.cs" />

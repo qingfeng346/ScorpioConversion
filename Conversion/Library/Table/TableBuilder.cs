@@ -9,9 +9,9 @@ using NPOI.SS.UserModel;
 using NPOI.HSSF.UserModel;
 using NPOI.SS.Util;
 using Scorpio;
-public partial class TableBuilder
-{
-    private const int START_ROW = 4;        //数值其实行
+public partial class TableBuilder {
+    public delegate void ExecuteFieldDelegate(PackageField field, string id, ref string value);
+    private const int START_ROW = 5;        //数据起始行
     private class RowData {
         public int RowNumber = 0;
         public List<string> Values = new List<string>();
@@ -30,6 +30,8 @@ public partial class TableBuilder
     private bool mSpawns = false;                                               //是否是关键字类
     private string mSpawnsName = "";                                            //关键字名称
     private string mKeyName = "";                                               //ID名称（表第一个字段名字）
+    public ExecuteFieldDelegate ExecuteField;
+    public string Filer { get { return mStrFiler; } }
     private string TableClassName { get { return "Table" + (mSpawns ? mSpawnsName : mStrFiler); } }     //Table类名称
     private string DataClassName { get { return "Data" + (mSpawns ? mSpawnsName : mStrFiler); } }       //Data类名称
     private Dictionary<PROGRAM, ProgramInfo> mProgramInfos = new Dictionary<PROGRAM, ProgramInfo>();    //所有生成语言配置
@@ -187,14 +189,21 @@ public partial class TableBuilder
     {
         mFields.Clear();
         mUsedCustoms.Clear();
-        for (int i = 0; i < mMaxColumn; ++i)
-        {
+        for (int i = 0; i < mMaxColumn; ++i) {
             PackageField field = new PackageField();
             field.Index = i;
-            field.Comment = mDataTable[0][i];
-            field.Name = mDataTable[1][i];
-            field.Default = mDataTable[2][i];
-            string columnType = mDataTable[3][i];
+            field.Comment = mDataTable[0][i];       //第0行是注释
+            field.Name = mDataTable[1][i];          //第1行是字段名
+            field.Default = mDataTable[3][i];       //第3行是字段默认值
+            var attribute = mDataTable[2][i];       //第2行是字段属性
+            Scorpio.Script script = new Scorpio.Script();
+            script.LoadLibrary();
+            if (string.IsNullOrEmpty(attribute)) {
+                field.Attribute = script.CreateTable();
+            } else {
+                field.Attribute = (script.LoadString("return {" + attribute + "}") as ScriptTable) ?? script.CreateTable();
+            }
+            string columnType = mDataTable[4][i];   //第4行是字段类型
             string fieldType = "";
             if (columnType.StartsWith(Util.ArrayString)) {
                 field.Array = true;
@@ -211,7 +220,9 @@ public partial class TableBuilder
             if (i == 0 && (field.Array == true || field.Info.BasicIndex != BasicEnum.INT32))
                 throw new System.Exception("第一列的数据类型必须为int32类型");
             field.Enum = mEnums.ContainsKey(fieldType);
-            if (!basic && !field.Enum && !mUsedCustoms.Contains(fieldType)) mUsedCustoms.Add(fieldType);
+            //保存使用的自定义结构
+            if (!basic && !field.Enum && !mUsedCustoms.Contains(fieldType))
+                mUsedCustoms.Add(fieldType);
             mFields.Add(field);
         }
         if (mFields.Count == 0)
@@ -312,8 +323,7 @@ public partial class TableBuilder
         }
     }
     //生成data文件数据
-    private void Transform_impl()
-    {
+    private void Transform_impl() {
         int iColums = mMaxColumn;                   //数据列数
         int iRows = mMaxRow;                        //数据行数
         TableWriter writer = new TableWriter();
@@ -328,12 +338,13 @@ public partial class TableBuilder
         List<string> keys = new List<string>();
         int count = 0;
         for (int i = START_ROW; i < iRows; ++i) {
+            string ID = "";
             for (int j = 0; j < iColums; ++j) {
                 string value = mDataTable[i][j];
                 var field = mFields[j];
                 try {
                     if (string.IsNullOrEmpty(value)) {
-                        value = string.IsNullOrEmpty(field.Default) ? Util.EmptyString : field.Default;    //数据为空默认成####(非法值)
+                        value = string.IsNullOrEmpty(field.Default) ? Util.EmptyString : field.Default;    //数据为空设置为默认值
                     }
                     if (j == 0) {
                         if (keys.Contains(value)) {
@@ -341,8 +352,10 @@ public partial class TableBuilder
                         } else if (Util.IsEmptyString(value)) {
                             throw new Exception("ID字段不能为空");
                         }
+                        ID = value;
                         keys.Add(value);
                     }
+                    if (ExecuteField != null) ExecuteField(field, ID, ref value);
                     var basic = BasicUtil.GetType(field.Type);
                     if (basic != null || field.Enum) {
                         if (field.Array)
@@ -364,7 +377,6 @@ public partial class TableBuilder
     }
     private void WriteCustom(TableWriter writer, ScriptArray list, List<PackageField> fields, bool array)
     {
-        if (list == null) throw new Exception("数据结构错误");
         if (array) {
             if (Util.IsEmptyValue(list)) {
                 writer.WriteInt32(0);
@@ -425,7 +437,7 @@ public partial class TableBuilder
             WriteCustom(writer, value as ScriptArray, mCustoms[field.Type], field.Array);
         }
     }
-    public void Create_impl(byte[] buffer)
+    private void Create_impl(byte[] buffer)
     {
         byte[] bytes = GZipUtil.Compress(buffer);
         foreach (var pair in mProgramInfos)

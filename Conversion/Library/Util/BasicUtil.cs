@@ -53,13 +53,14 @@ public class BasicType
 //单个变量
 public class PackageField
 {
-    public int Index;           //变量索引
-    public string Name;         //变量名字
-    public string Type;         //类型
-    public string Default;      //默认值
+    public int Index;           //字段索引
+    public string Comment;      //字段注释
+    public string Name;         //字段名字
+    public Scorpio.ScriptTable Attribute;    //字段属性 字段配置
+    public string Default;      //字段默认值
+    public string Type;         //字段类型
     public bool Enum = false;   //是否是枚举
     public bool Array = false;  //是否是数组
-    public string Comment = ""; //注释
     public bool IsBasic {       //是否是基本数据
         get { return BasicUtil.HasType(Type); }
     }

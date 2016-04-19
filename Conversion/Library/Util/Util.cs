@@ -72,15 +72,21 @@ public static partial class Util
         dir = Path.Combine(CurrentDirectory, dir);
         Script = new Script();
         Script.LoadLibrary();
-        List<ScriptObject> GlobalBasic = new List<ScriptObject>(); {
+        List<ScriptObject> GlobalBasic = new List<ScriptObject>();
+        {
             var itor = Script.GetGlobalTable().GetIterator();
-            while (itor.MoveNext()) GlobalBasic.Add(itor.Current.Value);
+            while (itor.MoveNext())
+                GlobalBasic.Add(itor.Current.Value);
         }
         string[] files = System.IO.Directory.Exists(dir) ? System.IO.Directory.GetFiles(dir, "*.sco", SearchOption.AllDirectories) :  new string[0];
-        foreach (var file in files) { Script.LoadFile(file); } {
+        foreach (var file in files) {
+            Script.LoadFile(file);
+        }
+        {
             var itor = Script.GetGlobalTable().GetIterator();
             while (itor.MoveNext()) {
-                if (GlobalBasic.Contains(itor.Current.Value)) continue;
+                if (GlobalBasic.Contains(itor.Current.Value))
+                    continue;
                 string name = itor.Current.Key as string;
                 ScriptTable table = itor.Current.Value as ScriptTable;
                 if (name == null || table == null) continue;
