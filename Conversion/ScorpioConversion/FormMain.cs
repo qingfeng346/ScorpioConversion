@@ -136,13 +136,30 @@ namespace ScorpioConversion
                     var files = Directory.GetFiles(textTableFolder.Text, "*.xls", SearchOption.AllDirectories);
                     if (files.Length == 0)
                         throw new Exception(string.Format("路径[{0}]下的文件数量为0", textTableFolder.Text));
-                    new TableBuilder().Transform(string.Join(";", files),
+                    TableBuilder tableBuilder = new TableBuilder();
+                    Dictionary<string, LanguageTable> mTables = new Dictionary<string, LanguageTable>();
+                    tableBuilder.ExecuteField = (PackageField field, string id, ref string value) => {
+                        if (field.Attribute.GetValue("Language").LogicOperation()) {
+                            if (!mTables.ContainsKey(tableBuilder.Filer))
+                                mTables[tableBuilder.Filer] = new LanguageTable();
+                            string key = string.Format("{0}_{1}_{2}", tableBuilder.Filer, field.Name, id);
+                            mTables[tableBuilder.Filer].Languages[key] = new Language(key, value);
+                        }
+                    };
+                    tableBuilder.Transform(string.Join(";", files),
                         textTableConfig.Text,
                         packageText.Text,
                         ConversionUtil.GetConfig(ConfigKey.SpawnList, ConfigFile.InitConfig),
                         getManager.Checked,
                         refreshNote.Checked,
                         GetProgramConfig());
+                    if (Language.Checked) {
+                        new LanguageBuilder(
+                            ConversionUtil.GetConfig(ConfigKey.AllLanguage, ConfigFile.LanguageConfig),
+                            ConversionUtil.GetConfig(ConfigKey.LanguageDirectory, ConfigFile.LanguageConfig),
+                            ConversionUtil.GetConfig(ConfigKey.TranslationDirectory, ConfigFile.LanguageConfig),
+                            mTables).Build();
+                    }
                 } catch (Exception ex) {
                     Logger.error("TransformFolder is error : " + ex.ToString());
                 }
