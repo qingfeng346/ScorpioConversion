@@ -1,0 +1,34 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 14
+VisualStudioVersion = 14.0.23107.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ScorpioConversion", "ScorpioConversion\ScorpioConversion.csproj", "{EF17B1E2-E2DC-4361-B8C3-7C1ADE733832}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Library", "Library\Library.csproj", "{26163BC7-DB7A-4110-9E9B-AFA38712D076}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ScorpioZip", "ScorpioZip\ScorpioZip.csproj", "{58AEFB8A-AB51-42CE-890C-164E6BF36516}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{EF17B1E2-E2DC-4361-B8C3-7C1ADE733832}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EF17B1E2-E2DC-4361-B8C3-7C1ADE733832}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EF17B1E2-E2DC-4361-B8C3-7C1ADE733832}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EF17B1E2-E2DC-4361-B8C3-7C1ADE733832}.Release|Any CPU.Build.0 = Release|Any CPU
+		{26163BC7-DB7A-4110-9E9B-AFA38712D076}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{26163BC7-DB7A-4110-9E9B-AFA38712D076}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{26163BC7-DB7A-4110-9E9B-AFA38712D076}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{26163BC7-DB7A-4110-9E9B-AFA38712D076}.Release|Any CPU.Build.0 = Release|Any CPU
+		{58AEFB8A-AB51-42CE-890C-164E6BF36516}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{58AEFB8A-AB51-42CE-890C-164E6BF36516}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{58AEFB8A-AB51-42CE-890C-164E6BF36516}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{58AEFB8A-AB51-42CE-890C-164E6BF36516}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
