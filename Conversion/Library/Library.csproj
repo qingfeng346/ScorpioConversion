@@ -1,54 +1,54 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{26163BC7-DB7A-4110-9E9B-AFA38712D076}</ProjectGuid>
+    <ProjectGuid>{9F32FBC6-C66B-497A-A6C2-0490DAEE055C}</ProjectGuid>
     <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Library</RootNamespace>
     <AssemblyName>Library</AssemblyName>
-    <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <OutputPath>bin\Debug</OutputPath>
+    <DefineConstants>DEBUG;</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <ConsolePause>false</ConsolePause>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>pdbonly</DebugType>
+    <DebugType>full</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
+    <OutputPath>bin\Release</OutputPath>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <ConsolePause>false</ConsolePause>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="System" />
     <Reference Include="NPOI">
       <HintPath>libs\NPOI.dll</HintPath>
     </Reference>
     <Reference Include="Scorpio">
       <HintPath>libs\Scorpio.dll</HintPath>
     </Reference>
-    <Reference Include="System" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Const\GenerateConstCSharp.cs" />
     <Compile Include="Const\GenerateConstJava.cs" />
     <Compile Include="Const\GenerateConstScorpio.cs" />
+    <Compile Include="IGenerate.cs" />
+    <Compile Include="Logger.cs" />
     <Compile Include="Database\DatabaseBuilder.cs" />
     <Compile Include="Database\GenerateDatabaseJava.cs" />
     <Compile Include="Database\GenerateDatabaseTableJava.cs" />
     <Compile Include="Enum\GenerateEnumCSharp.cs" />
     <Compile Include="Enum\GenerateEnumJava.cs" />
     <Compile Include="Enum\GenerateEnumScorpio.cs" />
-    <Compile Include="IGenerate.cs" />
     <Compile Include="Language\LanguageBuilder.cs" />
     <Compile Include="Language\LanguageBuilderRefresh.cs" />
     <Compile Include="LitJson\IJsonWrapper.cs" />
@@ -60,7 +60,6 @@
     <Compile Include="LitJson\JsonWriter.cs" />
     <Compile Include="LitJson\Lexer.cs" />
     <Compile Include="LitJson\ParserToken.cs" />
-    <Compile Include="Logger.cs" />
     <Compile Include="Message\GenerateMessageCSharp.cs" />
     <Compile Include="Message\GenerateMessageJava.cs" />
     <Compile Include="Message\GenerateMessageScorpio.cs" />
@@ -68,14 +67,13 @@
     <Compile Include="Message\MessageManagerCSharp.cs" />
     <Compile Include="Message\MessageManagerJava.cs" />
     <Compile Include="Message\MessageManagerScorpio.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Table\GenerateTableCSharp.cs" />
     <Compile Include="Table\GenerateTableJava.cs" />
     <Compile Include="Table\GenerateTableScorpio.cs" />
     <Compile Include="Table\TableBuilder.cs" />
-    <Compile Include="Table\TableBuilderRollback.cs" />
     <Compile Include="Table\TableBuilderCSharp.cs" />
     <Compile Include="Table\TableBuilderJava.cs" />
+    <Compile Include="Table\TableBuilderRollback.cs" />
     <Compile Include="Table\TableBuilderScorpio.cs" />
     <Compile Include="Util\BasicUtil.cs" />
     <Compile Include="Util\Config.cs" />
@@ -90,21 +88,11 @@
     <Compile Include="Util\UtilConfig.cs" />
     <Compile Include="Util\ValueParser.cs" />
   </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
     <ProjectReference Include="..\ScorpioZip\ScorpioZip.csproj">
-      <Project>{58aefb8a-ab51-42ce-890c-164e6bf36516}</Project>
+      <Project>{6A68446A-C8A1-46E8-BCF4-83BDE9F89515}</Project>
       <Name>ScorpioZip</Name>
     </ProjectReference>
   </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <PropertyGroup>
-    <PostBuildEvent>copy $(TargetPath) ..\..\..\ScorpioConversion\bin\Debug</PostBuildEvent>
-  </PropertyGroup>
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
-  </Target>
-  <Target Name="AfterBuild">
-  </Target>
-  -->
 </Project>
