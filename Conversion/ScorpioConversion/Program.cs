@@ -1,22 +1,16 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Windows.Forms;
-using System.Data;
-using System.IO;
+using Gtk;
 
 namespace ScorpioConversion
 {
-    static class Program
-    {
-        /// <summary>
-        /// 应用程序的主入口点。
-        /// </summary>
-        [STAThread]
-        static void Main()
-        {
-            Application.EnableVisualStyles();
-            Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new FormMain());
-        }
-    }
+	class MainClass
+	{
+		public static void Main (string[] args)
+		{
+			Application.Init ();
+			MainWindow win = new MainWindow ();
+			win.Show ();
+			Application.Run ();
+		}
+	}
 }
