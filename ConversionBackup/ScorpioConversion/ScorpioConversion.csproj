@@ -1,16 +1,18 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{EF17B1E2-E2DC-4361-B8C3-7C1ADE733832}</ProjectGuid>
+    <ProjectGuid>{335FAAB4-80A8-44F1-86C2-CF67C96BD270}</ProjectGuid>
     <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>ScorpioConversion</RootNamespace>
     <AssemblyName>ScorpioConversion</AssemblyName>
     <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -32,13 +34,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="NPOI, Version=2.1.1.0, Culture=neutral, PublicKeyToken=0df73ec7942b34e1, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\Library\libs\NPOI.dll</HintPath>
-    </Reference>
     <Reference Include="Scorpio, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\Library\libs\Scorpio.dll</HintPath>
+      <HintPath>..\..\ConversionBackup\Library\libs\Scorpio.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
@@ -48,54 +46,36 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="FormTinyPNG.cs">
-      <SubType>Form</SubType>
+    <Compile Include="CodeControl.cs">
+      <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="FormTinyPNG.designer.cs">
-      <DependentUpon>FormTinyPNG.cs</DependentUpon>
-    </Compile>
-    <Compile Include="FormLanguage.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="FormLanguage.designer.cs">
-      <DependentUpon>FormLanguage.cs</DependentUpon>
-    </Compile>
-    <Compile Include="FormLog.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="FormLog.designer.cs">
-      <DependentUpon>FormLog.cs</DependentUpon>
+    <Compile Include="CodeControl.Designer.cs">
+      <DependentUpon>CodeControl.cs</DependentUpon>
     </Compile>
     <Compile Include="FormMain.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="FormMain.designer.cs">
+    <Compile Include="FormMain.Designer.cs">
       <DependentUpon>FormMain.cs</DependentUpon>
     </Compile>
-    <Compile Include="FormPath.cs">
+    <Compile Include="FormTiny.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="FormPath.designer.cs">
-      <DependentUpon>FormPath.cs</DependentUpon>
+    <Compile Include="FormTiny.designer.cs">
+      <DependentUpon>FormTiny.cs</DependentUpon>
     </Compile>
     <Compile Include="Logger.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Util\UtilConfig.cs" />
-    <EmbeddedResource Include="FormTinyPNG.resx">
-      <DependentUpon>FormTinyPNG.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="FormLanguage.resx">
-      <DependentUpon>FormLanguage.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="FormLog.resx">
-      <DependentUpon>FormLog.cs</DependentUpon>
+    <Compile Include="UtilConfig.cs" />
+    <EmbeddedResource Include="CodeControl.resx">
+      <DependentUpon>CodeControl.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="FormMain.resx">
       <DependentUpon>FormMain.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="FormPath.resx">
-      <DependentUpon>FormPath.cs</DependentUpon>
+    <EmbeddedResource Include="FormTiny.resx">
+      <DependentUpon>FormTiny.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
@@ -105,6 +85,7 @@
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
     </Compile>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
@@ -117,20 +98,19 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Library\Library.csproj">
+    <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\ConversionBackup\Library\Library.csproj">
       <Project>{26163bc7-db7a-4110-9e9b-afa38712d076}</Project>
       <Name>Library</Name>
     </ProjectReference>
-    <ProjectReference Include="..\ScorpioZip\ScorpioZip.csproj">
+    <ProjectReference Include="..\..\ConversionBackup\ScorpioZip\ScorpioZip.csproj">
       <Project>{58aefb8a-ab51-42ce-890c-164e6bf36516}</Project>
       <Name>ScorpioZip</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <PropertyGroup>
-    <PostBuildEvent>
-    </PostBuildEvent>
-  </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

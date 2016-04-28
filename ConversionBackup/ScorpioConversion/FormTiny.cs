@@ -8,61 +8,48 @@ using System.Windows.Forms;
 using System.IO;
 using System.Net;
 using System.Threading;
-namespace ScorpioConversion
-{
-    public partial class FormTinyPNG : Form {
+namespace ScorpioConversion {
+    public partial class FormTiny : Form {
+        public class TinyPNGConfig {
+            public string ApiKey;
+            public string SourcePath;
+            public string TargetPath;
+        }
+        public class TinyPNGInput {
+            public int size;
+            public string type;
+        }
+        public class TinyPNGOutput {
+            public int size;
+            public string type;
+            public int width;
+            public int height;
+            public float ratio;
+            public string url;
+        }
+        public class TinyPNGResponseData {
+            public TinyPNGInput input;
+            public TinyPNGOutput output;
+            public string error;
+            public string message;
+        }
         private const int READ_LENGTH = 4096;
-        private string ProgressText = "";
-        private string Working = "";
-        private bool timeEnable = false;        //计时器是否能使用
-        private TinyPNGConfig Config = new TinyPNGConfig();
-        public FormTinyPNG()
+        public FormTiny()
         {
             InitializeComponent();
         }
-        private void FormTinyPNG_Load(object sender, EventArgs e)
+        private void FormTiny_Load(object sender, EventArgs e)
         {
-            this.timerProgress.Enabled = true;
-            this.Config = GetConfig();
-            this.textSourcePath.Text = this.Config.SourcePath;
-            this.textTargetPath.Text = this.Config.TargetPath;
-            this.textApiKey.Text = this.Config.ApiKey;
-        }
-        void SetEnable(bool enable)
-        {
-            this.textSourcePath.Enabled = enable;
-            this.textTargetPath.Enabled = enable;
-            this.textApiKey.Enabled = enable;
-            this.buttonTransform.Enabled = enable;
+            ConversionUtil.Bind(TextBoxApiKey, ConfigKey.TinyApiKey, ConfigFile.TinyConfig);
+            ConversionUtil.Bind(TextBoxSource, ConfigKey.TinySourcePath, ConfigFile.TinyConfig);
+            ConversionUtil.Bind(TextBoxTarget, ConfigKey.TinyTargetPath, ConfigFile.TinyConfig);
         }
         void StartRun(ThreadStart start)
         {
-            SetEnable(false);
-            FormLog.GetInstance().Show();
             new Thread(start).Start();
         }
         void EndRun()
         {
-            timeEnable = false;
-        }
-        private TinyPNGConfig GetConfig()
-        {
-            string str = FileUtil.GetFileString(Util.CurrentDirectory + "/TinyPNGConfig.ini");
-            if (string.IsNullOrEmpty(str)) return new TinyPNGConfig();
-            return JsonUtil.JsonToObject<TinyPNGConfig>(str);
-        }
-        private void SaveConfig()
-        {
-            FileUtil.CreateFile(Util.CurrentDirectory + "/TinyPNGConfig.ini", JsonUtil.ObjectToJson(Config));
-        }
-        private void timerProgress_Tick(object sender, EventArgs e)
-        {
-            if (timeEnable == false) {
-                timeEnable = true;
-                SetEnable(true);
-            }
-            this.toolStripStatusProgress.Text = ProgressText;
-            this.toolStripStatusWorking.Text = Working;
         }
         private void buttonTransform_Click(object sender, EventArgs e)
         {
@@ -73,28 +60,29 @@ namespace ScorpioConversion
         }
         private void StartTiny()
         {
-            var apiKey = this.Config.ApiKey;
-            var outPath = this.Config.TargetPath;
-            var jpgFiles = Directory.GetFiles(this.Config.SourcePath, "*.jpg", SearchOption.TopDirectoryOnly);
-            var pngFiles = Directory.GetFiles(this.Config.SourcePath, "*.png", SearchOption.TopDirectoryOnly);
+            var apiKey = this.TextBoxApiKey.Text;
+            var source = this.TextBoxSource.Text;
+            var target = this.TextBoxTarget.Text;
+            var jpgFiles = Directory.GetFiles(source, "*.jpg", SearchOption.AllDirectories);
+            var pngFiles = Directory.GetFiles(source, "*.png", SearchOption.AllDirectories);
             var files = new List<string>();
             files.AddRange(jpgFiles);
             files.AddRange(pngFiles);
             int length = files.Count;
             if (length == 0) return;
-            for (int i=0;i< length; ++i) {
+            Progress.Count = length;
+            for (int i = 0; i < length; ++i) {
                 var file = files[i];
-                var fileName = Path.GetFileName(file);
-                this.ProgressText = "进度 : " + (i + 1) + "/" + length;
-                this.Working = "正在上传 : " + fileName;
-                Console.WriteLine(file);
+                var fileName = file.Replace("\\", "/").Replace(source.Replace("\\", "/"), "");
+                Progress.Current = i + 1;
+                Logger.info("正在上传 : " + fileName + "  " + (i + 1) + "/" + length);
                 var result = Upload("https://api.tinypng.com/shrink", apiKey, file);
                 var data = JsonUtil.JsonToObject<TinyPNGResponseData>(result);
-                this.Working = "正在下载 : " + fileName;
-                Download(data.output.url, outPath + "/" + fileName);
+                Logger.info("正在下载 : " + fileName);
+                Download(data.output.url, target + "/" + fileName);
                 Logger.info("压缩文件[{0}]完成,原大小[{1}],压缩后文件大小[{2}],压缩率[{3:N2}%]", fileName, Util.GetMemory(data.input.size), Util.GetMemory(data.output.size), Convert.ToDouble(data.output.size) / Convert.ToDouble(data.input.size) * 100);
             }
-            this.Working = "全部处理完成";
+            Logger.info("文件全部处理完成");
         }
         private string Upload(string url, string apikey, string file)
         {
@@ -150,24 +138,6 @@ namespace ScorpioConversion
             }
             httpStream.Close();
             fileStream.Close();
-        }
-
-        private void textApiKey_TextChanged(object sender, EventArgs e)
-        {
-            this.Config.ApiKey = textApiKey.Text;
-            SaveConfig();
-        }
-
-        private void textSourcePath_TextChanged(object sender, EventArgs e)
-        {
-            this.Config.SourcePath = textSourcePath.Text;
-            SaveConfig();
-        }
-
-        private void textTargetPath_TextChanged(object sender, EventArgs e)
-        {
-            this.Config.TargetPath = textTargetPath.Text;
-            SaveConfig();
         }
     }
 }
