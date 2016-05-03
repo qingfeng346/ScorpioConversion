@@ -1,7 +1,4 @@
-﻿using System;
-using System.Windows.Forms;
-
-namespace ScorpioConversion {
+﻿namespace ScorpioConversion {
     public partial class CodeControl {
         private PROGRAM m_Program;
         public void SetProgram(PROGRAM program) {
