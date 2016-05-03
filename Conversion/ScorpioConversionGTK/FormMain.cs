@@ -10,6 +10,8 @@ namespace ScorpioConversion {
 		private Thread m_Thread;
 		public FormMain () : base (Gtk.WindowType.Toplevel) {
 			Build ();
+			Init ();
+			CheckBox ();
 			m_Thread = new Thread (ThreadFunc);
 			m_Thread.Start ();
 		}
@@ -43,8 +45,7 @@ namespace ScorpioConversion {
 		}
 		protected void OnClickTinyPNG (object sender, EventArgs e)
 		{
-			FormTiny window = new FormTiny ();
-			window.Show ();
+			new FormTiny ().Show ();
 		}
 	}
 }

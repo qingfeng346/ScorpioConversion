@@ -6,14 +6,14 @@
     <ProjectGuid>{66F12AE3-785A-4DC0-9705-4FF2B1487F44}</ProjectGuid>
     <OutputType>WinExe</OutputType>
     <RootNamespace>ScorpioConversion</RootNamespace>
-    <AssemblyName>ScorpioConversion</AssemblyName>
+    <AssemblyName>ScorpioConversionGTK</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>bin\Debug</OutputPath>
+    <OutputPath>..\..\..\Minesweeper2\Plan\Conversion\</OutputPath>
     <DefineConstants>DEBUG;MONO_GTK</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -24,7 +24,7 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
     <DebugType>full</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>bin\Release</OutputPath>
+    <OutputPath>..\..\..\Minesweeper2\Plan\Conversion\</OutputPath>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <ConsolePause>false</ConsolePause>
@@ -72,6 +72,7 @@
     <Compile Include="..\ScorpioConversion\Common\UtilConfig.cs">
       <Link>Common\UtilConfig.cs</Link>
     </Compile>
+    <Compile Include="FormTiny.cs" />
     <Compile Include="gtk-gui\ScorpioConversion.FormTiny.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />

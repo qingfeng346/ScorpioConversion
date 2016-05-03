@@ -8,7 +8,8 @@ namespace ScorpioConversion {
 	public partial class FormTiny : Gtk.Window {
 		public FormTiny () : base (Gtk.WindowType.Toplevel)
 		{
-			//this.Build ();
+			this.Build ();
+			Init ();
 		}
 	}
 }

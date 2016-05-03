@@ -6,7 +6,7 @@
   </configuration>
   <import>
     <widget-library name="glade-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
-    <widget-library name="../bin/Debug/ScorpioConversion.exe" internal="true" />
+    <widget-library name="../../../../Minesweeper2/Plan/Conversion/ScorpioConversionGTK.exe" internal="true" />
   </import>
   <widget class="Gtk.Window" id="ScorpioConversion.FormMain" design-size="994 481">
     <action-group name="Default">
@@ -1088,7 +1088,7 @@
                 <property name="MemberName" />
                 <property name="Spacing">6</property>
                 <child>
-                  <widget class="Gtk.Label" id="label10">
+                  <widget class="Gtk.Label" id="labelApiKey">
                     <property name="MemberName" />
                     <property name="WidthRequest">100</property>
                     <property name="LabelProp" translatable="yes">API Key</property>

@@ -17,7 +17,8 @@ namespace ScorpioConversion {
 //			ConversionUtil.Bind (CheckCompress, m_Program, ConfigKey.Compress, ConfigFile.PathConfig);
 //		}
 		private void SetProgram_impl() {
-			
+			LanguageName.LabelProp = "===========" + m_Program.ToString() + "===========";
+			ShowAll ();
 		}
 	}
 }
