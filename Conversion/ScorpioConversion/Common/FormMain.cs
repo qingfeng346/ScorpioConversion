@@ -3,7 +3,12 @@ using System.IO;
 using System.Text;
 using System.Threading;
 using System.Collections.Generic;
+#if MONO_GTK
+
+#else
 using System.Windows.Forms;
+#endif
+
 namespace ScorpioConversion {
     public partial class FormMain {
         private void Init() {
@@ -80,10 +85,10 @@ namespace ScorpioConversion {
                         textTableConfig.Text,
                         textBoxPackage.Text,
                         ConversionUtil.GetConfig(ConfigKey.SpawnList, ConfigFile.InitConfig),
-                        getManager.Checked,
-                        refreshNote.Checked,
+						getManager.GetChecked(),
+						refreshNote.GetChecked(),
                         ConversionUtil.GetProgramConfig());
-                    if (Language.Checked) {
+					if (Language.GetChecked()) {
                         BuildLanguage(mTables, true);
                     }
                 } catch (Exception ex) {
@@ -114,8 +119,8 @@ namespace ScorpioConversion {
                     textTableConfig.Text,
                     textBoxPackage.Text,
                     ConversionUtil.GetConfig(ConfigKey.SpawnList, ConfigFile.InitConfig),
-                    getManager.Checked,
-                    refreshNote.Checked,
+					getManager.GetChecked(),
+					refreshNote.GetChecked(),
                     ConversionUtil.GetProgramConfig());
                 EndRun();
             });
@@ -143,7 +148,7 @@ namespace ScorpioConversion {
                 textBoxPackage.Text,
                 ConversionUtil.GetConfig(ConfigKey.SpawnList, ConfigFile.InitConfig),
                 false,
-                refreshNote.Checked,
+				refreshNote.GetChecked(),
                 ConversionUtil.GetProgramConfig());
         }
 

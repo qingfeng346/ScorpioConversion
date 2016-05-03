@@ -1,7 +1,64 @@
 ﻿using System;
 using System.Collections.Generic;
+#if MONO_GTK
+using RichTextBox = global::Gtk.TextView;
+using TextBox = global::Gtk.Entry;
+using CheckBox = global::Gtk.ToggleButton;
+#else
 using System.Windows.Forms;
-
+#endif
+public static class MyExtends
+{
+	public static bool GetChecked(this CheckBox checkBox) {
+#if MONO_GTK
+		return checkBox.Active;
+#else
+		return chekkBox.Checked;
+#endif
+	}
+	public static void SetChecked(this CheckBox checkBox, bool check) {
+#if MONO_GTK
+		checkBox.Active = check;
+#else
+		chekkBox.Checked = check;
+#endif
+	}
+	public static string GetText(this RichTextBox textBox) {
+#if MONO_GTK
+		return textBox.Buffer.Text;
+#else
+		return textBox.Text;
+#endif
+	}
+	public static void SetText(this RichTextBox textBox, string text) {
+#if MONO_GTK
+		textBox.Buffer.Text = text;
+#else
+		textBox.Text = text;
+#endif
+	}
+	public static void RegisterEvent(this RichTextBox textBox, System.EventHandler handler) {
+#if MONO_GTK
+		textBox.Buffer.Changed += handler;
+#else
+		textBox.TextChanged += handler;
+#endif	
+	}
+	public static void RegisterEvent(this TextBox textBox, System.EventHandler handler) {
+#if MONO_GTK
+		textBox.Changed += handler;
+#else
+		textBox.TextChanged += handler;
+#endif	
+	}
+	public static void RegisterEvent(this CheckBox textBox, System.EventHandler handler) {
+#if MONO_GTK
+		textBox.Toggled += handler;
+#else
+		textBox.CheckedChanged += handler;
+#endif
+	}
+}
 //所有配置文件
 public enum ConfigFile {
     PathConfig,
@@ -67,15 +124,15 @@ public static partial class ConversionUtil {
         if (m_AutoConfigs.ContainsKey(textBox))
             return;
         AutoConfig config = new AutoConfig() { program = program, key = key, file = file };
-        textBox.Text = GetConfig(program, key, file).Replace(";", "\n");
-        textBox.TextChanged += new System.EventHandler(RichTextChanged);
+		textBox.SetText (GetConfig (program, key, file).Replace (";", "\n"));
+		textBox.RegisterEvent (new System.EventHandler (RichTextChanged));
         m_AutoConfigs[textBox] = config;
     }
     private static void RichTextChanged(object sender, EventArgs e) {
         if (m_AutoConfigs.ContainsKey(sender)) {
             RichTextBox textBox = (RichTextBox)sender;
             AutoConfig config = m_AutoConfigs[sender];
-            SetConfig(config.program, config.key, textBox.Text.Replace("\n", ";"), config.file);
+			SetConfig(config.program, config.key, textBox.GetText().Replace("\n", ";"), config.file);
         }
     }
     public static void Bind(TextBox textBox, string key, ConfigFile file) {
@@ -86,7 +143,7 @@ public static partial class ConversionUtil {
             return;
         AutoConfig config = new AutoConfig() { program = program, key = key, file = file };
         textBox.Text = GetConfig(program, key, file);
-        textBox.TextChanged += new System.EventHandler(TextChanged);
+		textBox.RegisterEvent(new System.EventHandler(TextChanged));
         m_AutoConfigs[textBox] = config;
     }
     private static void TextChanged(object sender, EventArgs e) {
@@ -103,15 +160,15 @@ public static partial class ConversionUtil {
         if (m_AutoConfigs.ContainsKey(textBox))
             return;
         AutoConfig config = new AutoConfig() { program = program, key = key, file = file };
-        textBox.Checked = Util.ToBoolean(GetConfig(program, key, file), false);
-        textBox.CheckedChanged += new System.EventHandler(CheckedChanged);
+		textBox.SetChecked (Util.ToBoolean (GetConfig (program, key, file), false));
+		textBox.RegisterEvent(new System.EventHandler(CheckedChanged));
         m_AutoConfigs[textBox] = config;
     }
     private static void CheckedChanged(object sender, EventArgs e) {
         if (m_AutoConfigs.ContainsKey(sender))
         {
             AutoConfig config = m_AutoConfigs[sender];
-            SetConfig(config.program, config.key, ((CheckBox)sender).Checked ? "true" : "false", config.file);
+			SetConfig(config.program, config.key, ((CheckBox)sender).GetChecked() ? "true" : "false", config.file);
         }
     }
     private static Config GetConfig(ConfigFile file) {
@@ -143,12 +200,7 @@ public static partial class ConversionUtil {
         Config config = GetConfig(file);
         return config.Get(section, key);
     }
-    public static void SetToolTip(Control control, string text) {
-        var tips = new ToolTip();
-        tips.ShowAlways = true;
-        tips.InitialDelay = 1;
-        tips.IsBalloon = true;
-        tips.SetToolTip(control, text);
+	public static void SetToolTip(object control, string text) {
+        
     }
 }
-
