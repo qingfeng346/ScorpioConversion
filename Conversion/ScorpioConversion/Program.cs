@@ -1,16 +1,16 @@
 ﻿using System;
-using Gtk;
+using System.Windows.Forms;
 
-namespace ScorpioConversion
-{
-	class MainClass
-	{
-		public static void Main (string[] args)
-		{
-			Application.Init ();
-			MainWindow win = new MainWindow ();
-			win.Show ();
-			Application.Run ();
-		}
-	}
+namespace ScorpioConversion {
+    static class Program {
+        /// <summary>
+        /// 应用程序的主入口点。
+        /// </summary>
+        [STAThread]
+        static void Main() {
+            Application.EnableVisualStyles();
+            Application.SetCompatibleTextRenderingDefault(false);
+            Application.Run(new FormMain());
+        }
+    }
 }
