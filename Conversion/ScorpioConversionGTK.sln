@@ -1,11 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2012
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Library", "Library\Library.csproj", "{9F32FBC6-C66B-497A-A6C2-0490DAEE055C}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Library", "Library\Library.csproj", "{26163BC7-DB7A-4110-9E9B-AFA38712D076}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ScorpioZip", "ScorpioZip\ScorpioZip.csproj", "{6A68446A-C8A1-46E8-BCF4-83BDE9F89515}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ScorpioZip", "ScorpioZip\ScorpioZip.csproj", "{58AEFB8A-AB51-42CE-890C-164E6BF36516}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ScorpioConversion", "ScorpioConversion\ScorpioConversion.csproj", "{66F12AE3-785A-4DC0-9705-4FF2B1487F44}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ScorpioConversionGTK", "ScorpioConversionGTK\ScorpioConversionGTK.csproj", "{66F12AE3-785A-4DC0-9705-4FF2B1487F44}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -13,17 +13,17 @@ Global
 		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{26163BC7-DB7A-4110-9E9B-AFA38712D076}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{26163BC7-DB7A-4110-9E9B-AFA38712D076}.Debug|x86.Build.0 = Debug|Any CPU
+		{26163BC7-DB7A-4110-9E9B-AFA38712D076}.Release|x86.ActiveCfg = Release|Any CPU
+		{26163BC7-DB7A-4110-9E9B-AFA38712D076}.Release|x86.Build.0 = Release|Any CPU
+		{58AEFB8A-AB51-42CE-890C-164E6BF36516}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{58AEFB8A-AB51-42CE-890C-164E6BF36516}.Debug|x86.Build.0 = Debug|Any CPU
+		{58AEFB8A-AB51-42CE-890C-164E6BF36516}.Release|x86.ActiveCfg = Release|Any CPU
+		{58AEFB8A-AB51-42CE-890C-164E6BF36516}.Release|x86.Build.0 = Release|Any CPU
 		{66F12AE3-785A-4DC0-9705-4FF2B1487F44}.Debug|x86.ActiveCfg = Debug|x86
 		{66F12AE3-785A-4DC0-9705-4FF2B1487F44}.Debug|x86.Build.0 = Debug|x86
 		{66F12AE3-785A-4DC0-9705-4FF2B1487F44}.Release|x86.ActiveCfg = Release|x86
 		{66F12AE3-785A-4DC0-9705-4FF2B1487F44}.Release|x86.Build.0 = Release|x86
-		{6A68446A-C8A1-46E8-BCF4-83BDE9F89515}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{6A68446A-C8A1-46E8-BCF4-83BDE9F89515}.Debug|x86.Build.0 = Debug|Any CPU
-		{6A68446A-C8A1-46E8-BCF4-83BDE9F89515}.Release|x86.ActiveCfg = Release|Any CPU
-		{6A68446A-C8A1-46E8-BCF4-83BDE9F89515}.Release|x86.Build.0 = Release|Any CPU
-		{9F32FBC6-C66B-497A-A6C2-0490DAEE055C}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{9F32FBC6-C66B-497A-A6C2-0490DAEE055C}.Debug|x86.Build.0 = Debug|Any CPU
-		{9F32FBC6-C66B-497A-A6C2-0490DAEE055C}.Release|x86.ActiveCfg = Release|Any CPU
-		{9F32FBC6-C66B-497A-A6C2-0490DAEE055C}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
