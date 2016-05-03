@@ -7,51 +7,51 @@ using CheckBox = global::Gtk.ToggleButton;
 #else
 using System.Windows.Forms;
 #endif
-public static class MyExtends
+public static class Extends
 {
-	public static bool GetChecked(this CheckBox checkBox) {
+	public static bool GetChecked(CheckBox checkBox) {
 #if MONO_GTK
 		return checkBox.Active;
 #else
-		return chekkBox.Checked;
+		return checkBox.Checked;
 #endif
 	}
-	public static void SetChecked(this CheckBox checkBox, bool check) {
+	public static void SetChecked(CheckBox checkBox, bool check) {
 #if MONO_GTK
 		checkBox.Active = check;
 #else
-		chekkBox.Checked = check;
+        checkBox.Checked = check;
 #endif
 	}
-	public static string GetText(this RichTextBox textBox) {
+	public static string GetText(RichTextBox textBox) {
 #if MONO_GTK
 		return textBox.Buffer.Text;
 #else
 		return textBox.Text;
 #endif
 	}
-	public static void SetText(this RichTextBox textBox, string text) {
+	public static void SetText(RichTextBox textBox, string text) {
 #if MONO_GTK
 		textBox.Buffer.Text = text;
 #else
 		textBox.Text = text;
 #endif
 	}
-	public static void RegisterEvent(this RichTextBox textBox, System.EventHandler handler) {
+	public static void RegisterEvent(RichTextBox textBox, System.EventHandler handler) {
 #if MONO_GTK
 		textBox.Buffer.Changed += handler;
 #else
 		textBox.TextChanged += handler;
 #endif	
 	}
-	public static void RegisterEvent(this TextBox textBox, System.EventHandler handler) {
+	public static void RegisterEvent(TextBox textBox, System.EventHandler handler) {
 #if MONO_GTK
 		textBox.Changed += handler;
 #else
 		textBox.TextChanged += handler;
 #endif	
 	}
-	public static void RegisterEvent(this CheckBox textBox, System.EventHandler handler) {
+	public static void RegisterEvent(CheckBox textBox, System.EventHandler handler) {
 #if MONO_GTK
 		textBox.Toggled += handler;
 #else
@@ -124,15 +124,15 @@ public static partial class ConversionUtil {
         if (m_AutoConfigs.ContainsKey(textBox))
             return;
         AutoConfig config = new AutoConfig() { program = program, key = key, file = file };
-		textBox.SetText (GetConfig (program, key, file).Replace (";", "\n"));
-		textBox.RegisterEvent (new System.EventHandler (RichTextChanged));
+        Extends.SetText(textBox, GetConfig(program, key, file).Replace(";", "\n"));
+        Extends.RegisterEvent(textBox, new System.EventHandler(RichTextChanged));
         m_AutoConfigs[textBox] = config;
     }
     private static void RichTextChanged(object sender, EventArgs e) {
         if (m_AutoConfigs.ContainsKey(sender)) {
             RichTextBox textBox = (RichTextBox)sender;
             AutoConfig config = m_AutoConfigs[sender];
-			SetConfig(config.program, config.key, textBox.GetText().Replace("\n", ";"), config.file);
+			SetConfig(config.program, config.key, Extends.GetText(textBox).Replace("\n", ";"), config.file);
         }
     }
     public static void Bind(TextBox textBox, string key, ConfigFile file) {
@@ -143,7 +143,7 @@ public static partial class ConversionUtil {
             return;
         AutoConfig config = new AutoConfig() { program = program, key = key, file = file };
         textBox.Text = GetConfig(program, key, file);
-		textBox.RegisterEvent(new System.EventHandler(TextChanged));
+        Extends.RegisterEvent(textBox, new System.EventHandler(TextChanged));
         m_AutoConfigs[textBox] = config;
     }
     private static void TextChanged(object sender, EventArgs e) {
@@ -160,15 +160,15 @@ public static partial class ConversionUtil {
         if (m_AutoConfigs.ContainsKey(textBox))
             return;
         AutoConfig config = new AutoConfig() { program = program, key = key, file = file };
-		textBox.SetChecked (Util.ToBoolean (GetConfig (program, key, file), false));
-		textBox.RegisterEvent(new System.EventHandler(CheckedChanged));
+        Extends.SetChecked(textBox, Util.ToBoolean(GetConfig(program, key, file), false));
+        Extends.RegisterEvent(textBox, new System.EventHandler(CheckedChanged));
         m_AutoConfigs[textBox] = config;
     }
     private static void CheckedChanged(object sender, EventArgs e) {
         if (m_AutoConfigs.ContainsKey(sender))
         {
             AutoConfig config = m_AutoConfigs[sender];
-			SetConfig(config.program, config.key, ((CheckBox)sender).GetChecked() ? "true" : "false", config.file);
+			SetConfig(config.program, config.key, Extends.GetChecked((CheckBox)sender) ? "true" : "false", config.file);
         }
     }
     private static Config GetConfig(ConfigFile file) {
