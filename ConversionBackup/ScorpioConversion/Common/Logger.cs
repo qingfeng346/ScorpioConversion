@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
+﻿using System.Collections.Generic;
 public class LibLogger : ILogger {
     public void info(string value) {
         ConversionLogger.info(value);

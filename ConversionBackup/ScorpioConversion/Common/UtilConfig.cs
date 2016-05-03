@@ -3,15 +3,13 @@ using System.Collections.Generic;
 using System.Windows.Forms;
 
 //所有配置文件
-public enum ConfigFile
-{
+public enum ConfigFile {
     PathConfig,
     InitConfig,
     LanguageConfig,
     TinyConfig,
 }
-public class ConfigKey
-{
+public class ConfigKey {
     //PathConfig
     public const string CodeDirectory = "CodeDirectory";            //语言代码生成目录
     public const string DataDirectory = "DataDirectory";            //语言数据文件生成目录
@@ -80,12 +78,10 @@ public static partial class ConversionUtil {
             SetConfig(config.program, config.key, textBox.Text.Replace("\n", ";"), config.file);
         }
     }
-    public static void Bind(TextBox textBox, string key, ConfigFile file)
-    {
+    public static void Bind(TextBox textBox, string key, ConfigFile file) {
         Bind(textBox, PROGRAM.NONE, key, file);
     }
-    public static void Bind(TextBox textBox, PROGRAM program, string key, ConfigFile file)
-    {
+    public static void Bind(TextBox textBox, PROGRAM program, string key, ConfigFile file) {
         if (m_AutoConfigs.ContainsKey(textBox))
             return;
         AutoConfig config = new AutoConfig() { program = program, key = key, file = file };
@@ -93,21 +89,17 @@ public static partial class ConversionUtil {
         textBox.TextChanged += new System.EventHandler(TextChanged);
         m_AutoConfigs[textBox] = config;
     }
-    private static void TextChanged(object sender, EventArgs e)
-    {
-        if (m_AutoConfigs.ContainsKey(sender))
-        {
+    private static void TextChanged(object sender, EventArgs e) {
+        if (m_AutoConfigs.ContainsKey(sender)) {
             TextBox textBox = (TextBox)sender;
             AutoConfig config = m_AutoConfigs[sender];
             SetConfig(config.program, config.key, textBox.Text, config.file);
         }
     }
-    public static void Bind(CheckBox textBox, string key, ConfigFile file)
-    {
+    public static void Bind(CheckBox textBox, string key, ConfigFile file) {
         Bind(textBox, PROGRAM.NONE, key, file);
     }
-    public static void Bind(CheckBox textBox, PROGRAM program, string key, ConfigFile file)
-    {
+    public static void Bind(CheckBox textBox, PROGRAM program, string key, ConfigFile file) {
         if (m_AutoConfigs.ContainsKey(textBox))
             return;
         AutoConfig config = new AutoConfig() { program = program, key = key, file = file };
@@ -115,16 +107,14 @@ public static partial class ConversionUtil {
         textBox.CheckedChanged += new System.EventHandler(CheckedChanged);
         m_AutoConfigs[textBox] = config;
     }
-    private static void CheckedChanged(object sender, EventArgs e)
-    {
+    private static void CheckedChanged(object sender, EventArgs e) {
         if (m_AutoConfigs.ContainsKey(sender))
         {
             AutoConfig config = m_AutoConfigs[sender];
             SetConfig(config.program, config.key, ((CheckBox)sender).Checked ? "true" : "false", config.file);
         }
     }
-    private static Config GetConfig(ConfigFile file)
-    {
+    private static Config GetConfig(ConfigFile file) {
         Config config = null;
         if (!m_Configs.ContainsKey(file)) {
             config = new Config(CurrentDirectory + file.ToString() + ".ini", true);
@@ -134,32 +124,26 @@ public static partial class ConversionUtil {
         }
         return config;
     }
-    public static string GetConfig(string key, ConfigFile file)
-    {
+    public static string GetConfig(string key, ConfigFile file) {
         return GetConfig(PROGRAM.NONE, key, file);
     }
-    public static void SetConfig(string key, string value, ConfigFile file)
-    {
+    public static void SetConfig(string key, string value, ConfigFile file) {
         SetConfig(PROGRAM.NONE, key, value, file);
     }
-    public static string GetConfig(PROGRAM program, string key, ConfigFile file)
-    {
+    public static string GetConfig(PROGRAM program, string key, ConfigFile file) {
         Config config = GetConfig(file);
         return config.Get(program == PROGRAM.NONE ? "" : program.ToString(), key);
     }
-    public static void SetConfig(PROGRAM program, string key, string value, ConfigFile file)
-    {
+    public static void SetConfig(PROGRAM program, string key, string value, ConfigFile file) {
         Config config = GetConfig(file);
         config.Set(program == PROGRAM.NONE ? "" : program.ToString(), key, value);
         config.Save(false);
     }
-    public static string GetConfig(string section, string key, ConfigFile file)
-    {
+    public static string GetConfig(string section, string key, ConfigFile file) {
         Config config = GetConfig(file);
         return config.Get(section, key);
     }
-    public static void SetToolTip(Control control, string text)
-    {
+    public static void SetToolTip(Control control, string text) {
         var tips = new ToolTip();
         tips.ShowAlways = true;
         tips.InitialDelay = 1;
