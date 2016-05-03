@@ -7,7 +7,8 @@
     <OutputType>Library</OutputType>
     <RootNamespace>ScorpioZip</RootNamespace>
     <AssemblyName>ScorpioZip</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>

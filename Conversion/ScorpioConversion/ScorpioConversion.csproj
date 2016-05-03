@@ -34,9 +34,13 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="NPOI, Version=2.1.1.0, Culture=neutral, PublicKeyToken=0df73ec7942b34e1, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Library\libs\NPOI.dll</HintPath>
+    </Reference>
     <Reference Include="Scorpio, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\ConversionBackup\Library\libs\Scorpio.dll</HintPath>
+      <HintPath>..\Library\libs\Scorpio.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
@@ -110,11 +114,11 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\ConversionBackup\Library\Library.csproj">
+    <ProjectReference Include="..\Library\Library.csproj">
       <Project>{26163bc7-db7a-4110-9e9b-afa38712d076}</Project>
       <Name>Library</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\ConversionBackup\ScorpioZip\ScorpioZip.csproj">
+    <ProjectReference Include="..\ScorpioZip\ScorpioZip.csproj">
       <Project>{58aefb8a-ab51-42ce-890c-164e6bf36516}</Project>
       <Name>ScorpioZip</Name>
     </ProjectReference>
