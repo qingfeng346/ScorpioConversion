@@ -8,7 +8,7 @@ namespace ScorpioConversion
 		public static void Main (string[] args)
 		{
 			Application.Init ();
-			MainWindow win = new MainWindow ();
+			FormMain win = new FormMain ();
 			win.Show ();
 			Application.Run ();
 		}

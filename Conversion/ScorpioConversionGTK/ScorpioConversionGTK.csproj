@@ -14,7 +14,7 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>bin\Debug</OutputPath>
-    <DefineConstants>DEBUG;</DefineConstants>
+    <DefineConstants>DEBUG;MONO_GTK</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <ConsolePause>false</ConsolePause>
@@ -51,25 +51,37 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="gtk-gui\generated.cs" />
-    <Compile Include="MainWindow.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="gtk-gui\MainWindow.cs" />
-    <Compile Include="LanguageWidget.cs" />
-    <Compile Include="UtilConfig.cs" />
-    <Compile Include="Logger.cs" />
-    <Compile Include="TinyWindow.cs" />
-    <Compile Include="gtk-gui\TinyWindow.cs" />
-    <Compile Include="gtk-gui\LanguageWidget.cs" />
+    <Compile Include="gtk-gui\ScorpioConversion.FormMain.cs" />
+    <Compile Include="FormMain.cs" />
+    <Compile Include="CodeControl.cs" />
+    <Compile Include="gtk-gui\ScorpioConversion.CodeControl.cs" />
+    <Compile Include="..\ScorpioConversion\Common\CodeControl.cs">
+      <Link>Common\CodeControl.cs</Link>
+    </Compile>
+    <Compile Include="..\ScorpioConversion\Common\FormMain.cs">
+      <Link>Common\FormMain.cs</Link>
+    </Compile>
+    <Compile Include="..\ScorpioConversion\Common\FormTiny.cs">
+      <Link>Common\FormTiny.cs</Link>
+    </Compile>
+    <Compile Include="..\ScorpioConversion\Common\Logger.cs">
+      <Link>Common\Logger.cs</Link>
+    </Compile>
+    <Compile Include="..\ScorpioConversion\Common\UtilConfig.cs">
+      <Link>Common\UtilConfig.cs</Link>
+    </Compile>
+    <Compile Include="gtk-gui\ScorpioConversion.FormTiny.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
     <ProjectReference Include="..\Library\Library.csproj">
-      <Project>{9F32FBC6-C66B-497A-A6C2-0490DAEE055C}</Project>
+      <Project>{26163BC7-DB7A-4110-9E9B-AFA38712D076}</Project>
       <Name>Library</Name>
     </ProjectReference>
     <ProjectReference Include="..\ScorpioZip\ScorpioZip.csproj">
-      <Project>{6A68446A-C8A1-46E8-BCF4-83BDE9F89515}</Project>
+      <Project>{58AEFB8A-AB51-42CE-890C-164E6BF36516}</Project>
       <Name>ScorpioZip</Name>
     </ProjectReference>
   </ItemGroup>

@@ -6,9 +6,9 @@
   </configuration>
   <import>
     <widget-library name="glade-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
-    <widget-library name="../bin/Release/ScorpioConversion.exe" internal="true" />
+    <widget-library name="../bin/Debug/ScorpioConversion.exe" internal="true" />
   </import>
-  <widget class="Gtk.Window" id="MainWindow" design-size="994 481">
+  <widget class="Gtk.Window" id="ScorpioConversion.FormMain" design-size="994 481">
     <action-group name="Default">
       <action id="ToolsAction">
         <property name="Type">Action</property>
@@ -160,7 +160,7 @@
                                                   </packing>
                                                 </child>
                                                 <child>
-                                                  <widget class="Gtk.Entry" id="TextBoxAllLanguages">
+                                                  <widget class="Gtk.Entry" id="textBoxAllLanguages">
                                                     <property name="MemberName" />
                                                     <property name="CanFocus">True</property>
                                                     <property name="IsEditable">True</property>
@@ -198,7 +198,7 @@
                                                   </packing>
                                                 </child>
                                                 <child>
-                                                  <widget class="Gtk.Entry" id="TextBoxTranslation">
+                                                  <widget class="Gtk.Entry" id="textBoxTranslation">
                                                     <property name="MemberName" />
                                                     <property name="CanFocus">True</property>
                                                     <property name="IsEditable">True</property>
@@ -236,7 +236,7 @@
                                                   </packing>
                                                 </child>
                                                 <child>
-                                                  <widget class="Gtk.Entry" id="TextBoxLanguage">
+                                                  <widget class="Gtk.Entry" id="textBoxLanguage">
                                                     <property name="MemberName" />
                                                     <property name="CanFocus">True</property>
                                                     <property name="IsEditable">True</property>
@@ -314,7 +314,7 @@
                                                   </packing>
                                                 </child>
                                                 <child>
-                                                  <widget class="Gtk.Entry" id="textSpawns">
+                                                  <widget class="Gtk.Entry" id="textBoxSpawns">
                                                     <property name="MemberName" />
                                                     <property name="CanFocus">True</property>
                                                     <property name="IsEditable">True</property>
@@ -352,7 +352,7 @@
                                                   </packing>
                                                 </child>
                                                 <child>
-                                                  <widget class="Gtk.Entry" id="textDatabase">
+                                                  <widget class="Gtk.Entry" id="textBoxDatabase">
                                                     <property name="MemberName" />
                                                     <property name="CanFocus">True</property>
                                                     <property name="IsEditable">True</property>
@@ -420,7 +420,7 @@
                               </packing>
                             </child>
                             <child>
-                              <widget class="Gtk.Entry" id="packageText">
+                              <widget class="Gtk.Entry" id="textBoxPackage">
                                 <property name="MemberName" />
                                 <property name="CanFocus">True</property>
                                 <property name="Text" translatable="yes">PackageName</property>
@@ -838,7 +838,7 @@
                             <property name="MemberName" />
                             <property name="ShadowType">In</property>
                             <child>
-                              <widget class="Gtk.TextView" id="TextViewLog">
+                              <widget class="Gtk.TextView" id="richTextBoxLog">
                                 <property name="MemberName" />
                                 <property name="CanFocus">True</property>
                                 <property name="ShowScrollbars">True</property>
@@ -870,7 +870,7 @@
       </widget>
     </child>
   </widget>
-  <widget class="Gtk.Bin" id="LanguageWidget" design-size="652 630">
+  <widget class="Gtk.Bin" id="ScorpioConversion.CodeControl" design-size="652 630">
     <property name="MemberName" />
     <property name="Visible">False</property>
     <child>
@@ -1070,7 +1070,7 @@
       </widget>
     </child>
   </widget>
-  <widget class="Gtk.Window" id="TinyWindow" design-size="481 135">
+  <widget class="Gtk.Window" id="ScorpioConversion.FormTiny" design-size="481 135">
     <property name="MemberName" />
     <property name="Title" translatable="yes">TinyWindow</property>
     <property name="TypeHint">Desktop</property>
@@ -1208,7 +1208,6 @@
             <property name="Type">TextOnly</property>
             <property name="Label" translatable="yes"> 开始转换 </property>
             <property name="UseUnderline">True</property>
-            <signal name="Clicked" handler="OnClickStart" />
           </widget>
           <packing>
             <property name="Position">1</property>
