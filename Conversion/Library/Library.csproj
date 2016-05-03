@@ -91,7 +91,7 @@
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
     <ProjectReference Include="..\ScorpioZip\ScorpioZip.csproj">
-      <Project>{6A68446A-C8A1-46E8-BCF4-83BDE9F89515}</Project>
+      <Project>{58AEFB8A-AB51-42CE-890C-164E6BF36516}</Project>
       <Name>ScorpioZip</Name>
     </ProjectReference>
   </ItemGroup>
