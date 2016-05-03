@@ -1,9 +1,9 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{6A68446A-C8A1-46E8-BCF4-83BDE9F89515}</ProjectGuid>
+    <ProjectGuid>{58AEFB8A-AB51-42CE-890C-164E6BF36516}</ProjectGuid>
     <OutputType>Library</OutputType>
     <RootNamespace>ScorpioZip</RootNamespace>
     <AssemblyName>ScorpioZip</AssemblyName>
