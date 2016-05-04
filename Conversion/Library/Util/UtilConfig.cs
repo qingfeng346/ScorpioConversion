@@ -7,15 +7,17 @@ using System.Reflection;
 public class DefaultInfo : Attribute
 {
     public string Extension;        //文件后缀
-    public Type GenerateTable;      //转换Table类
+    public Type GenerateTable;      //生成Table类
+    public Type GenerateData;       //转换Data类
     public Type GenerateMessage;    //转换Message类
     public Type GenerateEnum;       //转换Enum类
     public Type GenerateConst;      //转换Const类
     public bool Bom;                //文件是否有bom头
-    public DefaultInfo(string ex, Type table, Type message, Type @enum, Type @const, bool bom)
+    public DefaultInfo(string ex, Type table, Type data, Type message, Type @enum, Type @const, bool bom)
     {
         Extension = ex;
         GenerateTable = table;
+        GenerateData = data;
         GenerateMessage = message;
         GenerateEnum = @enum;
         GenerateConst = @const;
@@ -26,14 +28,18 @@ public class DefaultInfo : Attribute
 public enum PROGRAM
 {
     NONE = -1,      //无语言
-    [DefaultInfo("cs", typeof(GenerateTableCSharp), typeof(GenerateMessageCSharp), typeof(GenerateEnumCSharp), typeof(GenerateConstCSharp), true)]
+
+    [DefaultInfo("cs", null, typeof(GenerateDataCSharp), typeof(GenerateMessageCSharp), typeof(GenerateEnumCSharp), typeof(GenerateConstCSharp), true)]
     CSharp,         //C#(CSharp) 语言
-    [DefaultInfo("java", typeof(GenerateTableJava), typeof(GenerateMessageJava), typeof(GenerateEnumJava), typeof(GenerateConstJava), false)]
+
+    [DefaultInfo("java", null, typeof(GenerateDataJava), typeof(GenerateMessageJava), typeof(GenerateEnumJava), typeof(GenerateConstJava), false)]
     Java,           //Java 语言
-    [DefaultInfo("sco", typeof(GenerateTableScorpio), typeof(GenerateMessageScorpio), typeof(GenerateEnumScorpio), typeof(GenerateConstScorpio), false)]
+
+    [DefaultInfo("sco", null, typeof(GenerateDataScorpio), typeof(GenerateMessageScorpio), typeof(GenerateEnumScorpio), typeof(GenerateConstScorpio), false)]
     Scorpio,        //Scorpio 脚本
-    //[DefaultInfo("h", typeof(GenerateTableScorpio), typeof(GenerateMessageScorpio), typeof(GenerateEnumScorpio), typeof(GenerateConstScorpio), false)]
-    //CPP,        //c++ 语言
+
+    [DefaultInfo("h", null, typeof(GenerateDataCPP), typeof(GenerateMessageCPP), typeof(GenerateEnumCPP), typeof(GenerateConstCPP), false)]
+    CPP,            //c++ 语言
     //[DefaultInfo("php", typeof(GenerateTableScorpio), typeof(GenerateMessageScorpio), typeof(GenerateEnumScorpio), typeof(GenerateConstScorpio), false)]
     //PHP,        //php 语言
     //[DefaultInfo("python", typeof(GenerateTableScorpio), typeof(GenerateMessageScorpio), typeof(GenerateEnumScorpio), typeof(GenerateConstScorpio), false)]
@@ -79,7 +85,8 @@ public class ProgramInfo
     public string DataDirectory;                //文件输出目录
     public bool Compress;                       //data文件是否压缩
     public string Extension;                    //扩展名
-    public IGenerate GenerateTable;             //Table生成代码类
+    public IGenerate GenerateTable;             //Table类生成代码类
+    public IGenerate GenerateData;              //Data类生成代码类
     public IGenerate GenerateMessage;           //Message生成代码类
     public IGenerate GenerateEnum;              //Enum生成代码类
     public IGenerate GenerateConst;             //const生成代码类
@@ -122,6 +129,7 @@ public class ProgramInfo
         ret.Compress = Compress;
         ret.Extension = Extension;
         ret.GenerateTable = GenerateTable;
+        ret.GenerateData = GenerateData;
         ret.GenerateMessage = GenerateMessage;
         ret.GenerateEnum = GenerateEnum;
         ret.GenerateConst = GenerateConst;
@@ -144,11 +152,12 @@ public static partial class Util
             ProgramInfo info = new ProgramInfo(program);
             info.CodeDirectory = config.CodeDirectory;
             info.DataDirectory = config.DataDirectory;
-            info.Create = ToBoolean(config.Create, true);
+            info.Create = ToBoolean(config.Create, false);
             info.Compress = ToBoolean(config.Compress, false);
             DefaultInfo defaultInfo = (DefaultInfo)Attribute.GetCustomAttribute(program.GetType().GetMember(program.ToString())[0], typeof(DefaultInfo));
             info.Extension = defaultInfo.Extension;
-            info.GenerateTable = (IGenerate)System.Activator.CreateInstance(defaultInfo.GenerateTable);
+            info.GenerateTable = defaultInfo.GenerateTable != null ? (IGenerate)System.Activator.CreateInstance(defaultInfo.GenerateTable) : null;
+            info.GenerateData = (IGenerate)System.Activator.CreateInstance(defaultInfo.GenerateData);
             info.GenerateMessage = (IGenerate)System.Activator.CreateInstance(defaultInfo.GenerateMessage);
             info.GenerateEnum = (IGenerate)System.Activator.CreateInstance(defaultInfo.GenerateEnum);
             info.GenerateConst = (IGenerate)System.Activator.CreateInstance(defaultInfo.GenerateConst);

@@ -1,10 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.IO;
-public class GenerateTableScorpio : IGenerate
+﻿using System.Text;
+public class GenerateDataScorpio : IGenerate
 {
-    public GenerateTableScorpio() : base(PROGRAM.Scorpio) { }
+    public GenerateDataScorpio() : base(PROGRAM.Scorpio) { }
     protected override string Generate_impl()
     {
         StringBuilder builder = new StringBuilder();

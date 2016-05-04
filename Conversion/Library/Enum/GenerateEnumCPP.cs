@@ -1,7 +1,7 @@
 ﻿using System.Text;
-public class GenerateEnumCSharp : IGenerate
+public class GenerateEnumCPP : IGenerate
 {
-    public GenerateEnumCSharp() : base(PROGRAM.CSharp) { }
+    public GenerateEnumCPP() : base(PROGRAM.CPP) { }
     protected override string Generate_impl()
     {
         StringBuilder builder = new StringBuilder();

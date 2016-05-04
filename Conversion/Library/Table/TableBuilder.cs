@@ -440,8 +440,7 @@ public partial class TableBuilder {
     private void Create_impl(byte[] buffer)
     {
         byte[] bytes = GZipUtil.Compress(buffer);
-        foreach (var pair in mProgramInfos)
-        {
+        foreach (var pair in mProgramInfos) {
             PROGRAM program = pair.Key;
             ProgramInfo info = pair.Value;
             if (!info.Create) continue;
@@ -465,10 +464,10 @@ public partial class TableBuilder {
         template = template.Replace("__KeyName", mKeyName);
         template = template.Replace("__KeyType", BasicUtil.GetType(BasicEnum.INT32).GetCode(program));
         template = template.Replace("__MD5", GetClassMD5Code());
-        return template.ToString();
+        return template;
     }
     private void CreateCustom(string name, string package, List<PackageField> fields, ProgramInfo info, string head, bool conID)
     {
-        info.CreateFile(name, head.Replace("__Content", info.GenerateTable.Generate(name, package, fields, conID)));
+        info.CreateFile(name, head.Replace("__Content", info.GenerateData.Generate(name, package, fields, conID)));
     }
 }

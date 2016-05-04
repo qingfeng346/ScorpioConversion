@@ -1,10 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.IO;
-public class GenerateTableJava : IGenerate
+﻿using System.Text;
+public class GenerateDataJava : IGenerate
 {
-    public GenerateTableJava() : base(PROGRAM.Java) { }
+    public GenerateDataJava() : base(PROGRAM.Java) { }
     protected override string Generate_impl()
     {
         StringBuilder builder = new StringBuilder();

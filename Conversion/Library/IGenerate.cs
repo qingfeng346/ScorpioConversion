@@ -26,6 +26,7 @@ public abstract class IGenerate
         var b = BasicUtil.GetType(type);
         return b != null ? b.GetCode(m_Code) : type.ToString();
     }
+    //生成一个自定义类以及表Data类
     public string Generate(string className, string package, List<PackageField> fields, object parameter = null)
     {
         m_ClassName = className;
@@ -34,6 +35,7 @@ public abstract class IGenerate
         m_Parameter = parameter;
         return Generate_impl();
     }
+    //生成一个枚举类
     public string Generate(string className, string package, List<PackageEnum> enums)
     {
         m_ClassName = className;
@@ -41,6 +43,7 @@ public abstract class IGenerate
         m_Enums = enums;
         return Generate_impl();
     }
+    //生成一个常量类
     public string Generate(string className, string package, List<PackageConst> consts)
     {
         m_ClassName = className;
@@ -48,6 +51,7 @@ public abstract class IGenerate
         m_Consts = consts;
         return Generate_impl();
     }
+    //生成一个数据库类
     public string Generate(string className, string package, DatabaseTable database)
     {
         m_ClassName = className;

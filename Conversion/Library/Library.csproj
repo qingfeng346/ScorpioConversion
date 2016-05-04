@@ -38,6 +38,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Const\GenerateConstCPP.cs" />
+    <Compile Include="Enum\GenerateEnumCPP.cs" />
+    <Compile Include="Message\GenerateMessageCPP.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Const\GenerateConstCSharp.cs" />
     <Compile Include="Const\GenerateConstJava.cs" />
@@ -65,17 +68,18 @@
     <Compile Include="Message\GenerateMessageJava.cs" />
     <Compile Include="Message\GenerateMessageScorpio.cs" />
     <Compile Include="Message\MessageBuilder.cs" />
-    <Compile Include="Message\MessageManagerCSharp.cs" />
-    <Compile Include="Message\MessageManagerJava.cs" />
-    <Compile Include="Message\MessageManagerScorpio.cs" />
-    <Compile Include="Table\GenerateTableCSharp.cs" />
-    <Compile Include="Table\GenerateTableJava.cs" />
-    <Compile Include="Table\GenerateTableScorpio.cs" />
+    <Compile Include="Message\GenerateManagerCSharp.cs" />
+    <Compile Include="Message\GenerateManagerJava.cs" />
+    <Compile Include="Message\GenerateManagerScorpio.cs" />
+    <Compile Include="Table\GenerateDataCPP.cs" />
+    <Compile Include="Table\GenerateDataCSharp.cs" />
+    <Compile Include="Table\GenerateDataJava.cs" />
+    <Compile Include="Table\GenerateDataScorpio.cs" />
     <Compile Include="Table\TableBuilder.cs" />
-    <Compile Include="Table\TableBuilderCSharp.cs" />
-    <Compile Include="Table\TableBuilderJava.cs" />
+    <Compile Include="Table\GenerateManagerCSharp.cs" />
+    <Compile Include="Table\GenerateManagerJava.cs" />
     <Compile Include="Table\TableBuilderRollback.cs" />
-    <Compile Include="Table\TableBuilderScorpio.cs" />
+    <Compile Include="Table\GenerateManagerScorpio.cs" />
     <Compile Include="Util\BasicUtil.cs" />
     <Compile Include="Util\Config.cs" />
     <Compile Include="Util\DatabaseUtil.cs" />

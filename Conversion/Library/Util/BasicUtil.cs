@@ -85,16 +85,35 @@ public static class BasicUtil
 {
     private static readonly List<BasicType> BasicTypes = new List<BasicType>()
     {
-        new BasicType( "bool", BasicEnum.BOOL, "WriteBool", "ReadBool", new string[] {"bool", "Boolean"}) ,
-        new BasicType( "int8", BasicEnum.INT8, "WriteInt8", "ReadInt8", new string[] {"sbyte", "Byte"}) ,
-        new BasicType( "int16", BasicEnum.INT16, "WriteInt16", "ReadInt16", new string[] {"short", "Short"}) ,
-        new BasicType( "int32", BasicEnum.INT32, "WriteInt32", "ReadInt32", new string[] {"int", "Integer"}) ,
-        new BasicType( "int64", BasicEnum.INT64, "WriteInt64", "ReadInt64", new string[] {"long", "Long"}) ,
-        new BasicType( "float", BasicEnum.FLOAT, "WriteFloat", "ReadFloat", new string[] {"float", "Float"}) ,
-        new BasicType( "double", BasicEnum.DOUBLE, "WriteDouble", "ReadDouble", new string[] {"double", "Double"}) ,
-        new BasicType( "string", BasicEnum.STRING, "WriteString", "ReadString", new string[] {"string", "String"}) ,
-        new BasicType( "bytes", BasicEnum.BYTES, "WriteBytes", "ReadBytes", new string[] {"byte[]", "byte[]"}) ,
-        new BasicType( "int", BasicEnum.INT32, "WriteInt32", "ReadInt32", new string[] {"int", "Integer"}) ,
+        new BasicType( "bool", BasicEnum.BOOL, "WriteBool", "ReadBool", 
+            new string[] {"bool", "Boolean", "", "bool"}) ,
+
+        new BasicType( "int8", BasicEnum.INT8, "WriteInt8", "ReadInt8", 
+            new string[] {"sbyte", "Byte", "", "__int8"}) ,
+
+        new BasicType( "int16", BasicEnum.INT16, "WriteInt16", "ReadInt16", 
+            new string[] {"short", "Short", "", "__int16"}) ,
+
+        new BasicType( "int32", BasicEnum.INT32, "WriteInt32", "ReadInt32", 
+            new string[] {"int", "Integer", "", "__int32"}) ,
+
+        new BasicType( "int64", BasicEnum.INT64, "WriteInt64", "ReadInt64", 
+            new string[] {"long", "Long", "", "__int64"}) ,
+
+        new BasicType( "float", BasicEnum.FLOAT, "WriteFloat", "ReadFloat", 
+            new string[] {"float", "Float", "", "float"}) ,
+
+        new BasicType( "double", BasicEnum.DOUBLE, "WriteDouble", "ReadDouble", 
+            new string[] {"double", "Double", "", "double"}) ,
+
+        new BasicType( "string", BasicEnum.STRING, "WriteString", "ReadString", 
+            new string[] {"string", "String", "", "char *"}) ,
+
+        new BasicType( "bytes", BasicEnum.BYTES, "WriteBytes", "ReadBytes", 
+            new string[] {"byte[]", "byte[]", "", "char * "}) ,
+
+        new BasicType( "int", BasicEnum.INT32, "WriteInt32", "ReadInt32", 
+            new string[] {"int", "Integer", "", "__int32"}) ,
     };
     public static bool HasType(string type)
     {
