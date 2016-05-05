@@ -5,6 +5,7 @@ namespace ScorpioConversion {
     public partial class CodeControl : UserControl {
         public CodeControl() {
             InitializeComponent();
+            this.panel.Visible = false;
         }
         private void SetProgram_impl() {
             this.button.Text = m_Program.ToString();
