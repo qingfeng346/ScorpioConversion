@@ -22,7 +22,7 @@ public partial class MessageBuilder
             Progress.Current = 0;
             foreach (var pair in mCustoms) {
                 ++Progress.Current;
-                Logger.info("正在转换类 {0}/{1} [{2}]", Progress.Current, Progress.Count, pair.Key);
+                Logger.info("正在生成消息 {0}/{1} [{2}]", Progress.Current, Progress.Count, pair.Key);
                 foreach (var info in infos.Values) {
                     if (!info.Create) continue;
                     info.CreateFile(pair.Key, info.GenerateMessage.Generate(pair.Key, mPackage, pair.Value, false));
@@ -46,7 +46,11 @@ public partial class MessageBuilder
             }
             foreach (var info in infos.Values) {
                 if (!info.Create) continue;
-                info.CreateMessageManager.Invoke(this, null);
+                if (info.CreateMessageManager == null) {
+                    Logger.error("找不到生成MessageManager函数 " + info.Code);
+                } else {
+                    info.CreateMessageManager.Invoke(this, null);
+                }
             }
         } catch (Exception ex) {
             Logger.error("转换消息出错 " + ex.ToString());

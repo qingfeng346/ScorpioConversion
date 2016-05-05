@@ -29,16 +29,16 @@ public enum PROGRAM
 {
     NONE = -1,      //无语言
 
-    [DefaultInfo("cs", null, typeof(GenerateDataCSharp), typeof(GenerateMessageCSharp), typeof(GenerateEnumCSharp), typeof(GenerateConstCSharp), true)]
+    [DefaultInfo("cs", typeof(GenerateTableCSharp), typeof(GenerateDataCSharp), typeof(GenerateMessageCSharp), typeof(GenerateEnumCSharp), typeof(GenerateConstCSharp), true)]
     CSharp,         //C#(CSharp) 语言
 
-    [DefaultInfo("java", null, typeof(GenerateDataJava), typeof(GenerateMessageJava), typeof(GenerateEnumJava), typeof(GenerateConstJava), false)]
+    [DefaultInfo("java", typeof(GenerateTableJava), typeof(GenerateDataJava), typeof(GenerateMessageJava), typeof(GenerateEnumJava), typeof(GenerateConstJava), false)]
     Java,           //Java 语言
 
-    [DefaultInfo("sco", null, typeof(GenerateDataScorpio), typeof(GenerateMessageScorpio), typeof(GenerateEnumScorpio), typeof(GenerateConstScorpio), false)]
+    [DefaultInfo("sco", typeof(GenerateTableScorpio), typeof(GenerateDataScorpio), typeof(GenerateMessageScorpio), typeof(GenerateEnumScorpio), typeof(GenerateConstScorpio), false)]
     Scorpio,        //Scorpio 脚本
 
-    [DefaultInfo("h", null, typeof(GenerateDataCPP), typeof(GenerateMessageCPP), typeof(GenerateEnumCPP), typeof(GenerateConstCPP), false)]
+    [DefaultInfo("h", typeof(GenerateTableCPP), typeof(GenerateDataCPP), typeof(GenerateMessageCPP), typeof(GenerateEnumCPP), typeof(GenerateConstCPP), false)]
     CPP,            //c++ 语言
     //[DefaultInfo("php", typeof(GenerateTableScorpio), typeof(GenerateMessageScorpio), typeof(GenerateEnumScorpio), typeof(GenerateConstScorpio), false)]
     //PHP,        //php 语言
@@ -100,18 +100,6 @@ public class ProgramInfo
         CreateMessageManager = TYPE_MESSAGE_BUILDER.GetMethod("CreateManager" + code.ToString());
     }
     public string GetFile(string filter) { return filter + "." + Extension; }
-    public string TableTemplate { 
-        get {
-            string file = Util.CurrentDirectory + "/Template/Table." + Extension;
-            return FileUtil.FileExist(file) ? FileUtil.GetFileString(file) : "";
-        }
-    }
-    public string HeadTemplate {
-        get {
-            string file = Util.CurrentDirectory + "/Template/Head." + Extension;
-            return FileUtil.FileExist(file) ? FileUtil.GetFileString(file) : "";
-        }
-    }
     public void CreateFile(string name, string context) {
         if (string.IsNullOrEmpty(CodeDirectory)) return;
         FileUtil.CreateFile(GetFile(name), context, Bom, CodeDirectory.Split(';'));

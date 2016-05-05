@@ -5,6 +5,8 @@ public class GenerateDataJava : IGenerate
     protected override string Generate_impl()
     {
         StringBuilder builder = new StringBuilder();
+        builder.AppendLine("package " + m_Package + ";");
+        builder.Append(TemplateJava.Head);
         builder.Append(@"public class __ClassName implements IData {");
         builder.Append(GenerateMessageFields());
         builder.Append(GenerateMessageGetData());

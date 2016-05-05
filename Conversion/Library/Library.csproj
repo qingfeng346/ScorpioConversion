@@ -40,6 +40,7 @@
   <ItemGroup>
     <Compile Include="Const\GenerateConstCPP.cs" />
     <Compile Include="Enum\GenerateEnumCPP.cs" />
+    <Compile Include="Message\GenerateManagerCPP.cs" />
     <Compile Include="Message\GenerateMessageCPP.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Const\GenerateConstCSharp.cs" />
@@ -75,11 +76,19 @@
     <Compile Include="Table\GenerateDataCSharp.cs" />
     <Compile Include="Table\GenerateDataJava.cs" />
     <Compile Include="Table\GenerateDataScorpio.cs" />
+    <Compile Include="Table\GenerateTableCPP.cs" />
+    <Compile Include="Table\GenerateTableScorpio.cs" />
+    <Compile Include="Table\GenerateTableJava.cs" />
+    <Compile Include="Table\GenerateTableCSharp.cs" />
     <Compile Include="Table\TableBuilder.cs" />
     <Compile Include="Table\GenerateManagerCSharp.cs" />
     <Compile Include="Table\GenerateManagerJava.cs" />
     <Compile Include="Table\TableBuilderRollback.cs" />
     <Compile Include="Table\GenerateManagerScorpio.cs" />
+    <Compile Include="Template\TemplateCSharp.cs" />
+    <Compile Include="Template\TemplateCPP.cs" />
+    <Compile Include="Template\TemplateScorpio.cs" />
+    <Compile Include="Template\TemplateJava.cs" />
     <Compile Include="Util\BasicUtil.cs" />
     <Compile Include="Util\Config.cs" />
     <Compile Include="Util\DatabaseUtil.cs" />
@@ -100,4 +109,5 @@
       <Name>ScorpioZip</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
 </Project>

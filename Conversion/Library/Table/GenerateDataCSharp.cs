@@ -5,6 +5,8 @@ public class GenerateDataCSharp : IGenerate
     protected override string Generate_impl()
     {
         StringBuilder builder = new StringBuilder();
+        builder.Append(TemplateCSharp.Head);
+        builder.AppendLine("namespace " + m_Package + " {");
         builder.Append(@"public class __ClassName : IData {
     private bool m_IsInvalid;");
         builder.Append(GenerateMessageFields());
@@ -12,6 +14,7 @@ public class GenerateDataCSharp : IGenerate
         builder.Append(GenerateMessageIsInvalid());
         builder.Append(GenerateMessageRead());
         builder.Append(@"
+}
 }");
         builder.Replace("__ClassName", m_ClassName);
         return builder.ToString();

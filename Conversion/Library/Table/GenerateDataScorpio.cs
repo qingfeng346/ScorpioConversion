@@ -7,8 +7,7 @@ public class GenerateDataScorpio : IGenerate
         StringBuilder builder = new StringBuilder();
         builder.Append(@"//本文件为自动生成，请不要手动修改
 __ClassName = [");
-        foreach (var field in m_Fields)
-        {
+        foreach (var field in m_Fields) {
             string str = @"
     { Index = __Index, Name = ""__Name"", Type = ""__Type"", Array = __Array, Attribute = __Attribute },     //__Note(__Default)";
             str = str.Replace("__Index", field.Index.ToString());

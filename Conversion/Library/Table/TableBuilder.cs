@@ -297,7 +297,14 @@ public partial class TableBuilder {
             if (ValidCount > 0) {
                 if (generateManager) {
                     foreach (var pair in Util.GetProgramInfos()) {
-                        pair.Value.CreateTableManager.Invoke(this, null);
+                        var info = pair.Value;
+                        if (info.Create) {
+                            if (info.CreateTableManager == null) {
+                                Logger.error("找不到生成TableManager的函数 " + pair.Key);
+                            } else {
+                                info.CreateTableManager.Invoke(this, null);
+                            }
+                        }
                     }
                 }
             }
@@ -444,30 +451,27 @@ public partial class TableBuilder {
             PROGRAM program = pair.Key;
             ProgramInfo info = pair.Value;
             if (!info.Create) continue;
-            string strHead = info.HeadTemplate.Replace("__Package", mPackage);
             info.CreateData(mStrFiler, info.Compress ? bytes : buffer);
-            info.CreateFile(TableClassName, strHead.Replace("__Content", GetTableClass(program)));
-            var enums = new List<string>(mEnums.Keys);
-            CreateCustom(DataClassName, mPackage, mFields, info, strHead, true);
+            CreateTable(info);
+            CreateCustom(DataClassName, mPackage, mFields, info, true);
             foreach (var custom in mCustoms)
-                CreateCustom(custom.Key, mPackage, custom.Value, info, strHead, false);
+                CreateCustom(custom.Key, mPackage, custom.Value, info, false);
             foreach (var custom in mEnums)
                 info.CreateFile(custom.Key, info.GenerateEnum.Generate(custom.Key, mPackage, custom.Value));
         }
     }
-    /// <summary> 获得Table类的代码 </summary>
-    private string GetTableClass(PROGRAM program)
-    {
-        var template = Util.GetProgramInfo(program).TableTemplate;
-        template = template.Replace("__TableName", TableClassName);
-        template = template.Replace("__DataName", DataClassName);
-        template = template.Replace("__KeyName", mKeyName);
-        template = template.Replace("__KeyType", BasicUtil.GetType(BasicEnum.INT32).GetCode(program));
-        template = template.Replace("__MD5", GetClassMD5Code());
-        return template;
+    /// <summary> 生成Table类的代码 </summary>
+    private void CreateTable(ProgramInfo info) {
+        var str = info.GenerateTable.Generate(mPackage);
+        str = str.Replace("__TableName", TableClassName);
+        str = str.Replace("__DataName", DataClassName);
+        str = str.Replace("__KeyName", mKeyName);
+        str = str.Replace("__KeyType", BasicUtil.GetType(BasicEnum.INT32).GetCode(info.Code));
+        str = str.Replace("__MD5", GetClassMD5Code());
+        info.CreateFile(TableClassName, str);
     }
-    private void CreateCustom(string name, string package, List<PackageField> fields, ProgramInfo info, string head, bool conID)
+    private void CreateCustom(string name, string package, List<PackageField> fields, ProgramInfo info, bool conID)
     {
-        info.CreateFile(name, head.Replace("__Content", info.GenerateData.Generate(name, package, fields, conID)));
+        info.CreateFile(name, info.GenerateData.Generate(name, package, fields, conID));
     }
 }

@@ -26,6 +26,10 @@ public abstract class IGenerate
         var b = BasicUtil.GetType(type);
         return b != null ? b.GetCode(m_Code) : type.ToString();
     }
+    public string Generate(string package) {
+        m_Package = package;
+        return Generate_impl();
+    }
     //生成一个自定义类以及表Data类
     public string Generate(string className, string package, List<PackageField> fields, object parameter = null)
     {
