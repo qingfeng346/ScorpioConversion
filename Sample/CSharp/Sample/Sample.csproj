@@ -43,8 +43,24 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Code\DataSpawn.cs" />
+    <Compile Include="Code\DataTest.cs" />
+    <Compile Include="Code\Int2.cs" />
+    <Compile Include="Code\Int3.cs" />
+    <Compile Include="Code\TableManager.cs" />
+    <Compile Include="Code\TableSpawn.cs" />
+    <Compile Include="Code\TableTest.cs" />
+    <Compile Include="Code\TestEnum.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ScorpioProto\Commons\ScorpioReader.cs" />
+    <Compile Include="ScorpioProto\Commons\ScorpioSerializer.cs" />
+    <Compile Include="ScorpioProto\Commons\ScorpioUtil.cs" />
+    <Compile Include="ScorpioProto\Commons\ScorpioWriter.cs" />
+    <Compile Include="ScorpioProto\Message\IMessage.cs" />
+    <Compile Include="ScorpioProto\Table\IData.cs" />
+    <Compile Include="ScorpioProto\Table\ITable.cs" />
+    <Compile Include="ScorpioProto\Table\TableUtil.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
