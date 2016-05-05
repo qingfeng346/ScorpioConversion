@@ -20,7 +20,7 @@ public class TableTest extends ITable {
             DataTest pData = DataTest.Read(reader);
             if (m_dataArray.containsKey(pData.ID()))
                 throw new RuntimeException("文件" + fileName + "有重复项 ID : " + pData.ID());
-            m_dataArray.put(pData.ID(),pData);
+            m_dataArray.put(pData.ID(), pData);
         }
         m_count = m_dataArray.size();
         reader.Close();
@@ -29,21 +29,21 @@ public class TableTest extends ITable {
     public DataTest GetElement(Integer ID) {
         if (Contains(ID)) return m_dataArray.get(ID);
         TableUtil.Warning("DataTest key is not exist " + ID);
-		return null;
-	}
+        return null;
+    }
     @Override
-	public IData GetValue(Integer ID) {
-		return GetElement(ID);
-	}
+    public IData GetValue(Integer ID) {
+        return GetElement(ID);
+    }
     @Override
     public boolean Contains(Integer ID) {
         return m_dataArray.containsKey(ID);
     }
     @Override
-	public int Count() {
-		return m_count;
-	}
+    public int Count() {
+        return m_count;
+    }
     public final HashMap<Integer, DataTest> Datas() {
-		return m_dataArray;
-	}
+        return m_dataArray;
+    }
 }

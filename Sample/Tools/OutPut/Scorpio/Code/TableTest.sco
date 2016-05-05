@@ -1,9 +1,8 @@
-__TableName = 
-{
+TableTest = {
     m_count = 0,
     m_dataArray = {},
     function Initialize(fileName) {
-        this.m_dataArray = TableUtil.ReadDatas(_SCRIPT, fileName, "__DataName", "__KeyName", "__MD5")
+        this.m_dataArray = TableUtil.ReadDatas(_SCRIPT, fileName, "DataTest", "ID", "a3c72d072e44d2c473850e1cd61b0e24")
         this.m_count = table.count(this.m_dataArray)
         return this
     }

@@ -1,5 +1,4 @@
-TableSpawn = 
-{
+TableSpawn = {
     m_count = 0,
     m_dataArray = {},
     function Initialize(fileName) {
