@@ -136,7 +136,7 @@ public class ScorpioSerializer {
             write.WriteInt8(ScorpioUtil.ToInt8(value));
         } else if (Int16Type.equals(type)) {
             write.WriteInt16(ScorpioUtil.ToInt16(value));
-        } else if (Int32Type.equals(type)) {
+        } else if (Int32Type.equals(type) || IntType.equals(type)) {
             write.WriteInt32(ScorpioUtil.ToInt32(value));
         } else if (Int64Type.equals(type)) {
             write.WriteInt64(ScorpioUtil.ToInt64(value));
