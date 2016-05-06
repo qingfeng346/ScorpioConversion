@@ -146,10 +146,19 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <Text Include="ReadMe.txt" />
+    <ClCompile Include="Sample.cpp" />
+    <ClCompile Include="ScorpioProto\Commons\ScorpioReader.cpp" />
+    <ClCompile Include="ScorpioProto\Commons\ScorpioWriter.cpp" />
+    <ClCompile Include="ScorpioProto\Commons\TableUtil.cpp" />
+    <ClCompile Include="ScorpioProto\Table\TableUtil.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Sample.cpp" />
+    <ClInclude Include="ScorpioProto\Commons\ScorpioReader.h" />
+    <ClInclude Include="ScorpioProto\Commons\ScorpioWriter.h" />
+    <ClInclude Include="ScorpioProto\Commons\TableUtil.h" />
+    <ClInclude Include="ScorpioProto\Table\IData.h" />
+    <ClInclude Include="ScorpioProto\Table\ITable.h" />
+    <ClInclude Include="ScorpioProto\Table\TableUtil.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
