@@ -1,0 +1,25 @@
+2016/5/5 19:06:05  [Info]正在转换文件 1/3 [.\Excel\Spawn_Test1.xls]
+2016/5/5 19:06:05  [Info]正在转换文件 2/3 [.\Excel\Spawn_Test2.xls]
+2016/5/5 19:06:05  [Info]正在转换文件 3/3 [.\Excel\Test.xls]
+2016/5/5 19:06:26  [Info]正在转换文件 1/3 [.\Excel\Spawn_Test1.xls]
+2016/5/5 19:06:26  [Info]正在转换文件 2/3 [.\Excel\Spawn_Test2.xls]
+2016/5/5 19:06:26  [Error]CreateFile is error : System.UnauthorizedAccessException: 对路径“E:\ScorpioConversion\Sample\CSharp\Sample\Code\TableSpawn.cs”的访问被拒绝。
+   在 System.IO.__Error.WinIOError(Int32 errorCode, String maybeFullPath)
+   在 System.IO.FileStream.Init(String path, FileMode mode, FileAccess access, Int32 rights, Boolean useRights, FileShare share, Int32 bufferSize, FileOptions options, SECURITY_ATTRIBUTES secAttrs, String msgPath, Boolean bFromProxy)
+   在 System.IO.FileStream..ctor(String path, FileMode mode, FileAccess access, FileShare share, Int32 bufferSize, FileOptions options, String msgPath, Boolean bFromProxy)
+   在 System.IO.FileStream..ctor(String path, FileMode mode)
+   在 FileUtil.CreateFile(String fileName, Byte[] buffer, Boolean bom)
+2016/5/5 19:06:26  [Info]正在转换文件 3/3 [.\Excel\Test.xls]
+2016/5/5 19:06:26  [Error]找不到生成TableManager的函数 CPP
+2016/5/5 19:06:29  [Info]正在转换文件 1/3 [.\Excel\Spawn_Test1.xls]
+2016/5/5 19:06:29  [Info]正在转换文件 2/3 [.\Excel\Spawn_Test2.xls]
+2016/5/5 19:06:29  [Info]正在转换文件 3/3 [.\Excel\Test.xls]
+2016/5/5 19:06:29  [Error]找不到生成TableManager的函数 CPP
+2016/5/5 19:07:34  [Info]正在转换文件 1/3 [.\Excel\Spawn_Test1.xls]
+2016/5/5 19:07:34  [Info]正在转换文件 2/3 [.\Excel\Spawn_Test2.xls]
+2016/5/5 19:07:34  [Info]正在转换文件 3/3 [.\Excel\Test.xls]
+2016/5/5 19:07:34  [Error]找不到生成TableManager的函数 CPP
+2016/5/5 19:07:36  [Info]正在转换文件 1/3 [.\Excel\Spawn_Test1.xls]
+2016/5/5 19:07:36  [Info]正在转换文件 2/3 [.\Excel\Spawn_Test2.xls]
+2016/5/5 19:07:36  [Info]正在转换文件 3/3 [.\Excel\Test.xls]
+2016/5/5 19:07:36  [Error]找不到生成TableManager的函数 CPP
