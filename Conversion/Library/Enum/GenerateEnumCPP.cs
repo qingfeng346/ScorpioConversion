@@ -5,22 +5,30 @@ public class GenerateEnumCPP : IGenerate
     protected override string Generate_impl()
     {
         StringBuilder builder = new StringBuilder();
+        builder.AppendLine(@"#ifndef ____EnumName_H__
+#define ____EnumName_H__");
+        string[] packages = m_Package.Split('.');
+        foreach (var package in packages) {
+            builder.AppendLine("namespace " + package + "{");
+        }
         builder.Append(@"//本文件为自动生成，请不要手动修改
-namespace __Package {
-public enum __EnumName {");
+enum __EnumName {");
         foreach (var info in m_Enums)
         {
             string str = @"
-    __FieldName = __FieldValue,";
+    __EnumName___FieldName = __FieldValue,";
             str = str.Replace("__FieldName", info.Name);
             str = str.Replace("__FieldValue", info.Index.ToString());
             builder.Append(str);
         }
         builder.Append(@"
-}
-}");
+};
+");
         builder.Replace("__EnumName", m_ClassName);
-        builder.Replace("__Package", m_Package);
+        foreach (var package in packages) {
+            builder.AppendLine("}");
+        }
+        builder.Append("#endif");
         return builder.ToString();
     }
 }

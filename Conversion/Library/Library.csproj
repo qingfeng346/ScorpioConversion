@@ -76,6 +76,7 @@
     <Compile Include="Table\GenerateDataCSharp.cs" />
     <Compile Include="Table\GenerateDataJava.cs" />
     <Compile Include="Table\GenerateDataScorpio.cs" />
+    <Compile Include="Table\GenerateManagerCPP.cs" />
     <Compile Include="Table\GenerateTableCPP.cs" />
     <Compile Include="Table\GenerateTableScorpio.cs" />
     <Compile Include="Table\GenerateTableJava.cs" />

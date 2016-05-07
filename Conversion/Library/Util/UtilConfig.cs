@@ -121,6 +121,7 @@ public class ProgramInfo
         ret.GenerateMessage = GenerateMessage;
         ret.GenerateEnum = GenerateEnum;
         ret.GenerateConst = GenerateConst;
+        ret.Bom = Bom;
         ret.CreateTableManager = CreateTableManager;
         ret.CreateMessageManager = CreateMessageManager;
         return ret;
