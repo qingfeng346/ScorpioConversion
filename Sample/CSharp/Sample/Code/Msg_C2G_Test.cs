@@ -1,4 +1,4 @@
-﻿//本文件为自动生成，请不要手动修改
+//本文件为自动生成，请不要手动修改
 using System.Collections.Generic;
 using Scorpio.Commons;
 using Scorpio.Message;
