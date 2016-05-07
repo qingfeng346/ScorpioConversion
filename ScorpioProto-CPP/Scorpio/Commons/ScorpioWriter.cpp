@@ -15,10 +15,10 @@ namespace Scorpio {
 				buffer = nullptr;
 			}
 		}
-		void ScorpioWriter::EnsureCapacity(int value) {
+		void ScorpioWriter::EnsureCapacity(size_t value) {
 			if (value < capacity)
 				return;
-			int num = value;
+			size_t num = value;
 			if (num < 256)
 				num = 256;
 			if (num < capacity * 2)
@@ -41,31 +41,31 @@ namespace Scorpio {
 		}
 		void ScorpioWriter::WriteInt16(__int16 value) {
 			EnsureCapacity(length + sizeof(__int16));
-			(*(buffer + length)) = value;
+			*((__int16*)(buffer + length)) = value;
 			length += sizeof(__int16);
 		}
 		void ScorpioWriter::WriteInt32(__int32 value) {
 			EnsureCapacity(length + sizeof(__int32));
-			(*(buffer + length)) = value;
+			*((__int32*)(buffer + length)) = value;
 			length += sizeof(__int32);
 		}
 		void ScorpioWriter::WriteInt64(__int64 value) {
 			EnsureCapacity(length + sizeof(__int64));
-			(*(buffer + length)) = value;
+			*((__int64*)(buffer + length)) = value;
 			length += sizeof(__int64);
 		}
 		void ScorpioWriter::WriteFloat(float value) {
 			EnsureCapacity(length + sizeof(float));
-			(*(buffer + length)) = value;
+			*((float*)(buffer + length)) = value;
 			length += sizeof(float);
 		}
 		void ScorpioWriter::WriteDouble(double value) {
 			EnsureCapacity(length + sizeof(double));
-			(*(buffer + length)) = value;
+			*((double*)(buffer + length)) = value;
 			length += sizeof(double);
 		}
 		void ScorpioWriter::WriteString(const char * value) {
-			int l = strlen(value);
+			size_t l = strlen(value);
 			EnsureCapacity(length + l + 1);
 			memcpy(buffer + length, value, l);
 			length += l;

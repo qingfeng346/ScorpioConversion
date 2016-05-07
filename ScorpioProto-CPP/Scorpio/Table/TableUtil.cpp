@@ -4,7 +4,11 @@
 using namespace std;
 namespace Scorpio {
 	namespace Table {
-		unsigned char * TableUtil::GetBuffer(const char * fileName) {
+		ITableUtil * TableUtil::IUtil = nullptr;
+		float TableUtil::INVALID_FLOAT = -1.0f;
+		double TableUtil::INVALID_DOUBLE = -1.0;
+
+		char * TableUtil::GetBuffer(const char * fileName) {
 			return IUtil != nullptr ? IUtil->GetBuffer(fileName) : nullptr;
 		}
 		void TableUtil::Warning(const char * message) {
@@ -66,10 +70,6 @@ namespace Scorpio {
 		}
 		bool TableUtil::IsInvalid(const char * val) {
 			return strlen(val) == 0;
-		}
-		template<typename T>
-		bool TableUtil::IsInvalid(std::vector<T> val) {
-			return val.empty();
 		}
 		bool TableUtil::IsInvalid(IData * val) {
 			return val->IsInvalid();

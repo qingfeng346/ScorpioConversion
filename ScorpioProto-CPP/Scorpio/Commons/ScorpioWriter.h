@@ -5,10 +5,10 @@ namespace Scorpio {
 		class ScorpioWriter
 		{
 		private:
-			int length;
-			int capacity;
+			size_t length;
+			size_t capacity;
 			unsigned char * buffer;
-			void EnsureCapacity(int value);
+			void EnsureCapacity(size_t value);
 		public:
 			ScorpioWriter();
 			~ScorpioWriter();

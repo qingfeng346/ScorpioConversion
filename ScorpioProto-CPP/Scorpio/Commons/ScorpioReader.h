@@ -2,18 +2,13 @@
 #define __SCORPIO_READER
 namespace Scorpio {
 	namespace Commons {
-
-	}
-}
-namespace Scorpio {
-	namespace Commons {
 		class ScorpioReader
 		{
 		private:
-			unsigned char * buf;
-			unsigned char * buffer;
+			char * buf;
+			char * buffer;
 		public:
-			ScorpioReader(unsigned char * buffer);
+			ScorpioReader(char * buffer);
 			void Close();
 			bool ReadBool();
 			__int8 ReadInt8();
@@ -23,7 +18,7 @@ namespace Scorpio {
 			float ReadFloat();
 			double ReadDouble();
 			char * ReadString();
-			unsigned char * ReadBytes();
+			char * ReadBytes();
 		};
 	}
 }

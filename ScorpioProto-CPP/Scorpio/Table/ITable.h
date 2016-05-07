@@ -6,7 +6,7 @@ namespace Scorpio {
 		class ITable {
 		public:
 			virtual bool Contains(int ID) = 0;
-			virtual int Count() = 0;
+			virtual size_t Count() = 0;
 			virtual IData * GetValue(int key) = 0;
 		};
 	}

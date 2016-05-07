@@ -9,7 +9,7 @@ namespace Scorpio {
 		class ITableUtil
 		{
 		public:
-			virtual unsigned char * GetBuffer(const char * fileName) = 0;
+			virtual char * GetBuffer(const char * fileName) = 0;
 			virtual void Warning(const char * message) = 0;
 		};
 		class TableUtil
@@ -17,7 +17,8 @@ namespace Scorpio {
 		private:
 			static ITableUtil *IUtil;
 		public:
-			static unsigned char * GetBuffer(const char * fileName);
+			static void SetTableUtil(ITableUtil * util) { IUtil = util; }
+			static char * GetBuffer(const char * fileName);
 			static void Warning(const char * message);
 			static int ReadHead(ScorpioReader * reader, const char * fileName, const char * md5);
 		private:
@@ -35,7 +36,10 @@ namespace Scorpio {
 			static bool IsInvalid(float val);
 			static bool IsInvalid(double val);
 			static bool IsInvalid(const char * val);
-			template<typename T> static bool IsInvalid(std::vector<T> val);
+			template<class T>
+			static bool IsInvalid(std::vector<T> val) {
+				return val.empty();
+			}
 			static bool IsInvalid(IData * val);
 
 			static bool IsInvalidInt8(__int8 val);
@@ -48,9 +52,6 @@ namespace Scorpio {
 			template<typename T> static bool IsInvalidList(std::vector<T> val);
 			static bool IsInvalidData(IData *val);
 		};
-		ITableUtil * TableUtil::IUtil = nullptr;
-		float TableUtil::INVALID_FLOAT = -1.0f;
-		double TableUtil::INVALID_DOUBLE = -1.0;
 	}
 }
 #endif
