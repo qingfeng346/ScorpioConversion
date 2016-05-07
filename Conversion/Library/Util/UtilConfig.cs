@@ -29,7 +29,7 @@ public enum PROGRAM
 {
     NONE = -1,      //无语言
 
-    [DefaultInfo("cs", typeof(GenerateTableCSharp), typeof(GenerateDataCSharp), typeof(GenerateMessageCSharp), typeof(GenerateEnumCSharp), typeof(GenerateConstCSharp), true)]
+    [DefaultInfo("cs", typeof(GenerateTableCSharp), typeof(GenerateDataCSharp), typeof(GenerateMessageCSharp), typeof(GenerateEnumCSharp), typeof(GenerateConstCSharp), false)]
     CSharp,         //C#(CSharp) 语言
 
     [DefaultInfo("java", typeof(GenerateTableJava), typeof(GenerateDataJava), typeof(GenerateMessageJava), typeof(GenerateEnumJava), typeof(GenerateConstJava), false)]
