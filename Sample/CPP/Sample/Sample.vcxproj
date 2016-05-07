@@ -71,9 +71,11 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
+    <IncludePath>./ScorpioProto/;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
+    <IncludePath>./ScorpioProto/;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
@@ -149,16 +151,25 @@
     <ClCompile Include="Sample.cpp" />
     <ClCompile Include="ScorpioProto\Commons\ScorpioReader.cpp" />
     <ClCompile Include="ScorpioProto\Commons\ScorpioWriter.cpp" />
-    <ClCompile Include="ScorpioProto\Commons\TableUtil.cpp" />
     <ClCompile Include="ScorpioProto\Table\TableUtil.cpp" />
+    <ClCompile Include="String.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Code\DataSpawn.h" />
+    <ClInclude Include="Code\DataTest.h" />
+    <ClInclude Include="Code\Int2.h" />
+    <ClInclude Include="Code\Int3.h" />
+    <ClInclude Include="Code\TableManager.h" />
+    <ClInclude Include="Code\TableSpawn.h" />
+    <ClInclude Include="Code\TableTest.h" />
+    <ClInclude Include="Code\TestEnum.h" />
+    <ClInclude Include="ScorpioConfig.h" />
     <ClInclude Include="ScorpioProto\Commons\ScorpioReader.h" />
     <ClInclude Include="ScorpioProto\Commons\ScorpioWriter.h" />
-    <ClInclude Include="ScorpioProto\Commons\TableUtil.h" />
     <ClInclude Include="ScorpioProto\Table\IData.h" />
     <ClInclude Include="ScorpioProto\Table\ITable.h" />
     <ClInclude Include="ScorpioProto\Table\TableUtil.h" />
+    <ClInclude Include="String.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
