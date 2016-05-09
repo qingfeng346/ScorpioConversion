@@ -8,10 +8,13 @@ public class TemplateCPP {
 #include ""Table/IData.h""
 #include ""Table/ITable.h""
 #include ""Table/TableUtil.h""
+#include ""Message/IMessage.h""
 #include <unordered_map>
 #include <vector>
 using namespace Scorpio::Commons;
-using namespace Scorpio::Table;";
+using namespace Scorpio::Table;
+using namespace Scorpio::Message;
+";
     public const string Table = @"class __TableName : public ITable {
 	const char * FILE_MD5_CODE = ""__MD5"";
     private:
