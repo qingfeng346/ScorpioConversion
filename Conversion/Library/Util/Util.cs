@@ -201,7 +201,6 @@ public static partial class Util
     //根据数字 获得 AA Excel列名字
     public static string GetLineName(int line)
     {
-        --line;
         StringBuilder stringBuilder = new StringBuilder();
         if (line < 26)
         {

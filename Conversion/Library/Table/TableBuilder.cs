@@ -366,14 +366,14 @@ public partial class TableBuilder {
                     var basic = BasicUtil.GetType(field.Type);
                     if (basic != null || field.Enum) {
                         if (field.Array)
-                            WriteField(writer, Util.ReadValue(mEnums, mDataTable[i].RowNumber, Util.GetLineName(j + 1), value, false, true), field);
+                            WriteField(writer, Util.ReadValue(mEnums, mDataTable[i].RowNumber, Util.GetLineName(j), value, false, true), field);
                         else
                             WriteField(writer, value, field);
                     } else {
-                        WriteCustom(writer, Util.ReadValue(mEnums, mDataTable[i].RowNumber, Util.GetLineName(j + 1), value, true, field.Array), mCustoms[field.Type], field.Array);
+                        WriteCustom(writer, Util.ReadValue(mEnums, mDataTable[i].RowNumber, Util.GetLineName(j), value, true, field.Array), mCustoms[field.Type], field.Array);
                     }
                 } catch (System.Exception ex) {
-                    throw new SystemException(string.Format("[{0}]行[{1}]列出错 数据内容为[{2}] : {3}", mDataTable[i].RowNumber, Util.GetLineName(j + 1), value, ex.ToString()));
+                    throw new SystemException(string.Format("[{0}]行[{1}]列出错 数据内容为[{2}] : {3}", mDataTable[i].RowNumber, Util.GetLineName(j), value, ex.ToString()));
                 }
             }
             count++;

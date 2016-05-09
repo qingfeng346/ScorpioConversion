@@ -14,19 +14,24 @@ public partial class LanguageBuilder {
         IWorkbook workbook = new HSSFWorkbook(new FileStream(m_TranslationFile, FileMode.Open, FileAccess.Read));
         for (int i = 0; i < workbook.NumberOfSheets; ++i) {
             ISheet sheet = workbook.GetSheetAt(i);
-            for (int j = 1; j <= sheet.LastRowNum; ++j) {
-                LanguageItem item = new LanguageItem();
-                item.Table = sheet.SheetName;
-                IRow row = sheet.GetRow(j);
-                if (row == null) continue;
-                ICell cell = row.GetCell(0);
-                if (cell == null) continue;
-                string key = cell.StringCellValue;
-                for (int z = 0; z < m_Languages.Length; ++z) {
-                    item.Text[m_Languages[z]] = row.GetCell(z + 1, MissingCellPolicy.CREATE_NULL_AS_BLANK).StringCellValue;
+            int j = 1, z = 0;
+            try {
+                for (j = 1; j <= sheet.LastRowNum; ++j) {
+                    LanguageItem item = new LanguageItem();
+                    item.Table = sheet.SheetName;
+                    IRow row = sheet.GetRow(j);
+                    if (row == null) continue;
+                    ICell cell = row.GetCell(0);
+                    if (cell == null) continue;
+                    string key = cell.StringCellValue;
+                    for (z = 0; z < m_Languages.Length; ++z) {
+                        item.Text[m_Languages[z]] = row.GetCell(z + 1, MissingCellPolicy.CREATE_NULL_AS_BLANK).StringCellValue;
+                    }
+                    if (!string.IsNullOrEmpty(key))
+                        m_Items[key] = item;
                 }
-                if (!string.IsNullOrEmpty(key))
-                    m_Items[key] = item;
+            } catch (System.Exception ex) {
+                throw new System.Exception(string.Format("获取数据出错 Sheet:{0} 行:{1} 列:{2} Error:{2}", sheet.SheetName, j + 1, Util.GetLineName(z + 1), ex.ToString()));
             }
         }
         foreach (var language in m_Languages) {
