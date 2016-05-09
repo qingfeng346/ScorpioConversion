@@ -81,42 +81,44 @@ namespace ScorpioConversion {
         }
         void StartRun(ThreadStart start) {
             builder = new StringBuilder();
-            new Thread(start).Start();
+            new Thread(() => {
+                try {
+                    if (start != null) start();
+                } catch (System.Exception ex) {
+                    Logger.error(string.Format("Run is Error method : {0}  error : {1}", start.ToString(), ex.ToString()));
+                }
+                EndRun();
+            }).Start();
         }
         void EndRun() {
         }
         private void buttonTransformFolder_Click(object sender, EventArgs e) {
             StartRun(() => {
-                try {
-                    var files = Directory.GetFiles(textTableFolder.Text, "*.xls", SearchOption.AllDirectories);
-                    if (files.Length == 0)
-                        throw new Exception(string.Format("路径[{0}]下的文件数量为0", textTableFolder.Text));
-                    TableBuilder tableBuilder = new TableBuilder();
-                    Dictionary<string, LanguageTable> mTables = new Dictionary<string, LanguageTable>();
-                    tableBuilder.ExecuteField = (PackageField field, string id, ref string value) => {
-                        if (field.Attribute.GetValue("Language").LogicOperation()) {
-                            if (!Util.IsEmptyString(value)) {
-                                if (!mTables.ContainsKey(tableBuilder.Filer))
-                                    mTables[tableBuilder.Filer] = new LanguageTable();
-                                string key = string.Format("{0}_{1}_{2}", tableBuilder.Filer, field.Name, id);
-                                mTables[tableBuilder.Filer].Languages[key] = new Language(key, value);
-                            }
+                var files = Directory.GetFiles(textTableFolder.Text, "*.xls", SearchOption.AllDirectories);
+                if (files.Length == 0)
+                    throw new Exception(string.Format("路径[{0}]下的文件数量为0", textTableFolder.Text));
+                TableBuilder tableBuilder = new TableBuilder();
+                Dictionary<string, LanguageTable> mTables = new Dictionary<string, LanguageTable>();
+                tableBuilder.ExecuteField = (PackageField field, string id, ref string value) => {
+                    if (field.Attribute.GetValue("Language").LogicOperation()) {
+                        if (!Util.IsEmptyString(value)) {
+                            if (!mTables.ContainsKey(tableBuilder.Filer))
+                                mTables[tableBuilder.Filer] = new LanguageTable();
+                            string key = string.Format("{0}_{1}_{2}", tableBuilder.Filer, field.Name, id);
+                            mTables[tableBuilder.Filer].Languages[key] = new Language(key, value);
                         }
-                    };
-                    tableBuilder.Transform(string.Join(";", files),
-                        textTableConfig.Text,
-                        textBoxPackage.Text,
-                        ConversionUtil.GetConfig(ConfigKey.SpawnList, ConfigFile.InitConfig),
-                        Extends.GetChecked(getManager),
-                        Extends.GetChecked(refreshNote),
-                        ConversionUtil.GetProgramConfig());
-					if (Extends.GetChecked(Language)) {
-                        BuildLanguage(mTables, true);
                     }
-                } catch (Exception ex) {
-                    Logger.error("TransformFolder is error : " + ex.ToString());
+                };
+                tableBuilder.Transform(string.Join(";", files),
+                    textTableConfig.Text,
+                    textBoxPackage.Text,
+                    ConversionUtil.GetConfig(ConfigKey.SpawnList, ConfigFile.InitConfig),
+                    Extends.GetChecked(getManager),
+                    Extends.GetChecked(refreshNote),
+                    ConversionUtil.GetProgramConfig());
+                if (Extends.GetChecked(Language)) {
+                    BuildLanguage(mTables, true);
                 }
-                EndRun();
             });
         }
 
@@ -163,7 +165,6 @@ namespace ScorpioConversion {
                     Extends.GetChecked(getManager),
                     Extends.GetChecked(refreshNote),
                     ConversionUtil.GetProgramConfig());
-                EndRun();
             });
         }
         private void BuildLanguage(Dictionary<string, LanguageTable> tables, bool build) {
@@ -233,7 +234,6 @@ namespace ScorpioConversion {
         private void buttonRollback_Click(object sender, EventArgs e) {
             StartRun(() => {
                 new TableBuilder().Rollback(this.textRollbackFiles.Text);
-                EndRun();
             });
         }
 
@@ -242,7 +242,6 @@ namespace ScorpioConversion {
                 new MessageBuilder().Transform(textMessage.Text,
                     textBoxPackage.Text,
                     ConversionUtil.GetProgramConfig());
-                EndRun();
             });
         }
 
@@ -252,14 +251,12 @@ namespace ScorpioConversion {
                     textBoxPackage.Text,
                     ConversionUtil.GetConfig(ConfigKey.DatabaseConfigDirectory, ConfigFile.PathConfig),
                     ConversionUtil.GetProgramConfig());
-                EndRun();
             });
         }
 
         private void buttonRefreshLanguage_Click(object sender, EventArgs e) {
             StartRun(() => {
                 BuildLanguage(null, false);
-                EndRun();
             });
         }
     }
