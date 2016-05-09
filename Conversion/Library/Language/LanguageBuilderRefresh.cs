@@ -25,13 +25,13 @@ public partial class LanguageBuilder {
                     if (cell == null) continue;
                     string key = cell.StringCellValue;
                     for (z = 0; z < m_Languages.Length; ++z) {
-                        item.Text[m_Languages[z]] = row.GetCell(z + 1, MissingCellPolicy.CREATE_NULL_AS_BLANK).StringCellValue;
+                        item.Text[m_Languages[z]] = Util.GetCellString(row.GetCell(z + 1, MissingCellPolicy.CREATE_NULL_AS_BLANK));
                     }
                     if (!string.IsNullOrEmpty(key))
                         m_Items[key] = item;
                 }
             } catch (System.Exception ex) {
-                throw new System.Exception(string.Format("获取数据出错 Sheet:{0} 行:{1} 列:{2} Error:{2}", sheet.SheetName, j + 1, Util.GetLineName(z + 1), ex.ToString()));
+                throw new System.Exception(string.Format("获取数据出错 Sheet:{0} 行:{1} 列:{2} Error:{3}", sheet.SheetName, j + 1, Util.GetLineName(z + 1), ex.ToString()));
             }
         }
         foreach (var language in m_Languages) {

@@ -27,6 +27,5 @@ public class TemplateScorpio {
     function Datas() {
         return this.m_dataArray
     }
-}
-";
+}";
 }
