@@ -6,7 +6,7 @@
 * 此工具是为了解决网络协议以及策划Excel表热更新
 * 配置文件全部使用Scorpio-CSharp脚本配置 Scorpio-CSharp源码地址 https://github.com/qingfeng346/Scorpio-CSharp
 * 示例放在Sample目录下，可以运行ScorpioConversion.exe查看
-* ![](https://github.com/qingfeng346/ScorpioConversion/blob/master/Sample/Readme.png)
+* ![](https://github.com/qingfeng346/ScorpioConversion/blob/master/Sample/Tools/Readme.png)
 
 **此工具包含两个功能**
 * 网络协议生成工具
