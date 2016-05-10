@@ -151,7 +151,9 @@
     <ClCompile Include="Sample.cpp" />
     <ClCompile Include="ScorpioProto\Commons\ScorpioReader.cpp" />
     <ClCompile Include="ScorpioProto\Commons\ScorpioWriter.cpp" />
+    <ClCompile Include="ScorpioProto\Message\IMessage.cpp" />
     <ClCompile Include="ScorpioProto\Table\TableUtil.cpp" />
+    <ClCompile Include="ScorpioProto\Commons\ScorpioUtil.cpp" />
     <ClCompile Include="String.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -159,16 +161,21 @@
     <ClInclude Include="Code\DataTest.h" />
     <ClInclude Include="Code\Int2.h" />
     <ClInclude Include="Code\Int3.h" />
+    <ClInclude Include="Code\Msg_C2G_Test.h" />
+    <ClInclude Include="Code\Msg_C2G_Test2.h" />
+    <ClInclude Include="Code\Msg_C2G_Test3.h" />
     <ClInclude Include="Code\TableManager.h" />
     <ClInclude Include="Code\TableSpawn.h" />
     <ClInclude Include="Code\TableTest.h" />
     <ClInclude Include="Code\TestEnum.h" />
+    <ClInclude Include="ScorpioProto\Message\IMessage.h" />
     <ClInclude Include="ScorpioConfig.h" />
     <ClInclude Include="ScorpioProto\Commons\ScorpioReader.h" />
     <ClInclude Include="ScorpioProto\Commons\ScorpioWriter.h" />
     <ClInclude Include="ScorpioProto\Table\IData.h" />
     <ClInclude Include="ScorpioProto\Table\ITable.h" />
     <ClInclude Include="ScorpioProto\Table\TableUtil.h" />
+    <ClInclude Include="ScorpioProto\Commons\ScorpioUtil.h" />
     <ClInclude Include="String.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

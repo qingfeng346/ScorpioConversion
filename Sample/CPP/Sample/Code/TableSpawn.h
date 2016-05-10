@@ -5,10 +5,13 @@
 #include "Table/IData.h"
 #include "Table/ITable.h"
 #include "Table/TableUtil.h"
+#include "Message/IMessage.h"
 #include <unordered_map>
 #include <vector>
 using namespace Scorpio::Commons;
 using namespace Scorpio::Table;
+using namespace Scorpio::Message;
+
 #include "DataSpawn.h"
 namespace ScorpioProtoTest{
 class TableSpawn : public ITable {
