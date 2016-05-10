@@ -19,6 +19,8 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Scorpio\Commons\ScorpioUtil.h" />
+    <ClInclude Include="Scorpio\Message\IMessage.h" />
     <ClInclude Include="Scorpio\Table\ITable.h" />
     <ClInclude Include="Scorpio\Table\IData.h" />
     <ClInclude Include="Scorpio\Commons\ScorpioWriter.h" />
@@ -27,15 +29,17 @@
     <ClInclude Include="Scorpio\Table\TableUtil.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Scorpio\Commons\ScorpioUtil.cpp" />
     <ClCompile Include="Scorpio\Commons\ScorpioWriter.cpp" />
     <ClCompile Include="Scorpio\Commons\ScorpioReader.cpp" />
-    <ClCompile Include="Scorpio\Commons\TableUtil.cpp" />
+    <ClCompile Include="Scorpio\Message\IMessage.cpp" />
     <ClCompile Include="Scorpio\Table\TableUtil.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{FF4BAF0C-BE1A-4B25-8EB1-C9613021A7FC}</ProjectGuid>
+    <ProjectGuid>{0C433BF7-E220-4699-A041-57C7C4827D90}</ProjectGuid>
     <RootNamespace>ScorpioProtoCPP</RootNamespace>
     <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
+    <ProjectName>ScorpioProto</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
