@@ -94,6 +94,7 @@ Value值格式为  字段索引(不能重复),字段类型,字段是否为数组
 * 字段类型还支持 自定义数据结构 和 枚举类型，定义的格式请参照 https://github.com/qingfeng346/ScorpioConversion/blob/master/Sample/Tools/ExcelConfig/Table.sco
 * 转表工具还支持批量表转换,请先在转表工具界面关键字列表输入框设置批量表关键字,多个关键字请以**;**隔开
 * 然后以关键字开头的表会转成一个map数组的数据,关键字表的字段数据格式必须一致,具体用法可以参考 Sample/Excel 下的 Spawn_Test1.xls Spawn_Test2.xls
+* Sample下是使用示例,Tools文件夹下是原始文件,使用前请阅读相应语言下的**Readme.txt**文件
 
 ## master版本更新和修改内容 ##
 (2016-5-10)
