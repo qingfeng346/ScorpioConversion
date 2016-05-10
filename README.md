@@ -92,7 +92,7 @@ Value值格式为  字段索引(不能重复),字段类型,字段是否为数组
 * 第一列的数据类型固定为int型,并且必须唯一
 * 如果字段类型前面 加上 array关键字,例如 arrayint arraybool arraystring  则此字段为数组类型
 * 字段类型还支持 自定义数据结构 和 枚举类型，定义的格式请参照 https://github.com/qingfeng346/ScorpioConversion/blob/master/Sample/Tools/ExcelConfig/Table.sco
-* 转表工具还支持批量表转换,请先在转表工具界面点击**批量关键字**按钮设置批量表关键字
+* 转表工具还支持批量表转换,请先在转表工具界面关键字列表输入框设置批量表关键字,多个关键字请以**;**隔开
 * 然后以关键字开头的表会转成一个map数组的数据,关键字表的字段数据格式必须一致,具体用法可以参考 Sample/Excel 下的 Spawn_Test1.xls Spawn_Test2.xls
 
 ## master版本更新和修改内容 ##
