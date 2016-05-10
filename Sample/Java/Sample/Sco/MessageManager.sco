@@ -5,4 +5,6 @@ MessageManager = {
     0 = 'Msg_C2G_Test',
     'Msg_C2G_Test2' = 1,
     1 = 'Msg_C2G_Test2',
+    'Msg_C2G_Test3' = 2,
+    2 = 'Msg_C2G_Test3',
 }
