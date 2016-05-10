@@ -7,7 +7,7 @@ namespace Scorpio {
 		private:
 			size_t length;
 			size_t capacity;
-			unsigned char * buffer;
+			char * buffer;
 			void EnsureCapacity(size_t value);
 		public:
 			ScorpioWriter();
@@ -20,8 +20,8 @@ namespace Scorpio {
 			void WriteFloat(float value);
 			void WriteDouble(double value);
 			void WriteString(const char * value);
-			void WriteBytes(unsigned char * value);
-			unsigned char * ToArray();
+			void WriteBytes(char * value);
+			char * ToArray();
 		};
 	}
 }

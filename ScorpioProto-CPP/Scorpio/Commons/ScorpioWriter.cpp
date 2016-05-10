@@ -24,7 +24,7 @@ namespace Scorpio {
 			if (num < capacity * 2)
 				num = capacity * 2;
 			capacity = num;
-			unsigned char * array = new unsigned char[capacity];
+			char * array = new char[capacity];
 			if (buffer != nullptr) {
 				memcpy(array, buffer, length);
 				delete buffer;
@@ -72,8 +72,11 @@ namespace Scorpio {
 			buffer[length] = (__int8)0;
 			length += sizeof(__int8);
 		}
-		unsigned char * ScorpioWriter::ToArray() {
-			unsigned char * ret = new unsigned char[length];
+		void ScorpioWriter::WriteBytes(char * value) {
+
+		}
+		char * ScorpioWriter::ToArray() {
+			char * ret = new char[length];
 			memcpy(ret, buffer, length);
 			return ret;
 		}
