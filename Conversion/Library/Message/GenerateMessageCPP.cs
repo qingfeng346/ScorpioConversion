@@ -166,7 +166,12 @@ class __ClassName : public IMessage {");
     {
         return @"
     public: static __ClassName * Deserialize(char * data) {
-        return Read(new ScorpioReader(data));
+        ScorpioReader * reader = new ScorpioReader(data);
+        __ClassName * ret = Read(reader);
+        reader->Close();
+        delete reader;
+        reader = nullptr;
+        return ret;
     }";
     }
 }
