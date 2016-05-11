@@ -68,7 +68,12 @@ class Msg_C2G_Test3 : public IMessage {
         return ret;
     }
     public: static Msg_C2G_Test3 * Deserialize(char * data) {
-        return Read(new ScorpioReader(data));
+        ScorpioReader * reader = new ScorpioReader(data);
+        Msg_C2G_Test3 * ret = Read(reader);
+        reader->Close();
+        delete reader;
+        reader = nullptr;
+        return ret;
     }
 };
 }
