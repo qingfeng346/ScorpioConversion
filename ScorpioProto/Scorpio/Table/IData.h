@@ -6,6 +6,7 @@ namespace Scorpio {
 		{
 		public:
 			virtual bool IsInvalid() = 0;
+			virtual void* GetData(char * key) = 0;
 		};
 	}
 }
