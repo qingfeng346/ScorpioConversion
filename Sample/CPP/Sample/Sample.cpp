@@ -39,12 +39,18 @@ int main()
 	Msg_C2G_Test * message = new Msg_C2G_Test();
 	message->setValue1(100);
 	message->setValue2("1234567890");
+	std::vector<int> vals;
+	vals.push_back(100);
+	vals.push_back(200);
+	vals.push_back(300);
+	message->setValue3(vals);
 	char * buf = message->Serialize();
 	delete message;
 	Msg_C2G_Test * msg = Msg_C2G_Test::Deserialize(buf);
 	printf("%d\n", msg->getValue1());
 	printf("%s\n", msg->getValue2());
 	printf("%d\n", msg->HasSign(3));
+	printf("%zd  %d\n", msg->getValue3().size(), msg->getValue3()[2]);
 	system("pause");
 	//printf()
     return 0;
