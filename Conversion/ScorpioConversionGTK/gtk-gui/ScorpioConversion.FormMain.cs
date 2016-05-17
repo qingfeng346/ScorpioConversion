@@ -68,19 +68,11 @@ namespace ScorpioConversion
 		
 		private global::Gtk.HBox hbox13;
 		
-		private global::Gtk.Label label12;
-		
-		private global::Gtk.Entry textBoxDatabase;
-		
-		private global::Gtk.VBox vbox14;
-		
-		private global::Gtk.HBox hbox2;
-		
 		private global::Gtk.Label label1;
 		
 		private global::Gtk.Entry textBoxPackage;
 		
-		private global::Gtk.Button buttonRefreshLanguage;
+		private global::Gtk.VBox vbox14;
 		
 		private global::Gtk.HBox hbox3;
 		
@@ -89,6 +81,8 @@ namespace ScorpioConversion
 		private global::Gtk.CheckButton Language;
 		
 		private global::Gtk.CheckButton refreshNote;
+		
+		private global::Gtk.Button buttonRefreshLanguage;
 		
 		private global::Gtk.HBox hbox4;
 		
@@ -399,24 +393,23 @@ namespace ScorpioConversion
 			this.hbox13.Name = "hbox13";
 			this.hbox13.Spacing = 6;
 			// Container child hbox13.Gtk.Box+BoxChild
-			this.label12 = new global::Gtk.Label ();
-			this.label12.WidthRequest = 120;
-			this.label12.Name = "label12";
-			this.label12.Xalign = 0.15F;
-			this.label12.LabelProp = global::Mono.Unix.Catalog.GetString ("数据库生成目录");
-			this.hbox13.Add (this.label12);
-			global::Gtk.Box.BoxChild w23 = ((global::Gtk.Box.BoxChild)(this.hbox13 [this.label12]));
+			this.label1 = new global::Gtk.Label ();
+			this.label1.Name = "label1";
+			this.label1.LabelProp = global::Mono.Unix.Catalog.GetString ("PackageName");
+			this.hbox13.Add (this.label1);
+			global::Gtk.Box.BoxChild w23 = ((global::Gtk.Box.BoxChild)(this.hbox13 [this.label1]));
 			w23.Position = 0;
 			w23.Expand = false;
 			w23.Fill = false;
 			// Container child hbox13.Gtk.Box+BoxChild
-			this.textBoxDatabase = new global::Gtk.Entry ();
-			this.textBoxDatabase.CanFocus = true;
-			this.textBoxDatabase.Name = "textBoxDatabase";
-			this.textBoxDatabase.IsEditable = true;
-			this.textBoxDatabase.InvisibleChar = '●';
-			this.hbox13.Add (this.textBoxDatabase);
-			global::Gtk.Box.BoxChild w24 = ((global::Gtk.Box.BoxChild)(this.hbox13 [this.textBoxDatabase]));
+			this.textBoxPackage = new global::Gtk.Entry ();
+			this.textBoxPackage.CanFocus = true;
+			this.textBoxPackage.Name = "textBoxPackage";
+			this.textBoxPackage.Text = global::Mono.Unix.Catalog.GetString ("PackageName");
+			this.textBoxPackage.IsEditable = true;
+			this.textBoxPackage.InvisibleChar = '●';
+			this.hbox13.Add (this.textBoxPackage);
+			global::Gtk.Box.BoxChild w24 = ((global::Gtk.Box.BoxChild)(this.hbox13 [this.textBoxPackage]));
 			w24.Position = 1;
 			this.vbox6.Add (this.hbox13);
 			global::Gtk.Box.BoxChild w25 = ((global::Gtk.Box.BoxChild)(this.vbox6 [this.hbox13]));
@@ -441,43 +434,6 @@ namespace ScorpioConversion
 			this.vbox14.Name = "vbox14";
 			this.vbox14.Spacing = 6;
 			// Container child vbox14.Gtk.Box+BoxChild
-			this.hbox2 = new global::Gtk.HBox ();
-			this.hbox2.Name = "hbox2";
-			this.hbox2.Spacing = 6;
-			// Container child hbox2.Gtk.Box+BoxChild
-			this.label1 = new global::Gtk.Label ();
-			this.label1.Name = "label1";
-			this.label1.LabelProp = global::Mono.Unix.Catalog.GetString ("PackageName");
-			this.hbox2.Add (this.label1);
-			global::Gtk.Box.BoxChild w32 = ((global::Gtk.Box.BoxChild)(this.hbox2 [this.label1]));
-			w32.Position = 0;
-			w32.Expand = false;
-			w32.Fill = false;
-			// Container child hbox2.Gtk.Box+BoxChild
-			this.textBoxPackage = new global::Gtk.Entry ();
-			this.textBoxPackage.CanFocus = true;
-			this.textBoxPackage.Name = "textBoxPackage";
-			this.textBoxPackage.Text = global::Mono.Unix.Catalog.GetString ("PackageName");
-			this.textBoxPackage.IsEditable = true;
-			this.textBoxPackage.InvisibleChar = '●';
-			this.hbox2.Add (this.textBoxPackage);
-			global::Gtk.Box.BoxChild w33 = ((global::Gtk.Box.BoxChild)(this.hbox2 [this.textBoxPackage]));
-			w33.Position = 1;
-			// Container child hbox2.Gtk.Box+BoxChild
-			this.buttonRefreshLanguage = new global::Gtk.Button ();
-			this.buttonRefreshLanguage.CanFocus = true;
-			this.buttonRefreshLanguage.Name = "buttonRefreshLanguage";
-			this.buttonRefreshLanguage.UseUnderline = true;
-			this.buttonRefreshLanguage.Label = global::Mono.Unix.Catalog.GetString ("刷新多国语言表");
-			this.hbox2.Add (this.buttonRefreshLanguage);
-			global::Gtk.Box.BoxChild w34 = ((global::Gtk.Box.BoxChild)(this.hbox2 [this.buttonRefreshLanguage]));
-			w34.Position = 2;
-			this.vbox14.Add (this.hbox2);
-			global::Gtk.Box.BoxChild w35 = ((global::Gtk.Box.BoxChild)(this.vbox14 [this.hbox2]));
-			w35.Position = 0;
-			w35.Expand = false;
-			w35.Fill = false;
-			// Container child vbox14.Gtk.Box+BoxChild
 			this.hbox3 = new global::Gtk.HBox ();
 			this.hbox3.Name = "hbox3";
 			this.hbox3.Spacing = 6;
@@ -489,8 +445,8 @@ namespace ScorpioConversion
 			this.getManager.DrawIndicator = true;
 			this.getManager.UseUnderline = true;
 			this.hbox3.Add (this.getManager);
-			global::Gtk.Box.BoxChild w36 = ((global::Gtk.Box.BoxChild)(this.hbox3 [this.getManager]));
-			w36.Position = 0;
+			global::Gtk.Box.BoxChild w32 = ((global::Gtk.Box.BoxChild)(this.hbox3 [this.getManager]));
+			w32.Position = 0;
 			// Container child hbox3.Gtk.Box+BoxChild
 			this.Language = new global::Gtk.CheckButton ();
 			this.Language.CanFocus = true;
@@ -499,8 +455,8 @@ namespace ScorpioConversion
 			this.Language.DrawIndicator = true;
 			this.Language.UseUnderline = true;
 			this.hbox3.Add (this.Language);
-			global::Gtk.Box.BoxChild w37 = ((global::Gtk.Box.BoxChild)(this.hbox3 [this.Language]));
-			w37.Position = 1;
+			global::Gtk.Box.BoxChild w33 = ((global::Gtk.Box.BoxChild)(this.hbox3 [this.Language]));
+			w33.Position = 1;
 			// Container child hbox3.Gtk.Box+BoxChild
 			this.refreshNote = new global::Gtk.CheckButton ();
 			this.refreshNote.CanFocus = true;
@@ -509,13 +465,24 @@ namespace ScorpioConversion
 			this.refreshNote.DrawIndicator = true;
 			this.refreshNote.UseUnderline = true;
 			this.hbox3.Add (this.refreshNote);
-			global::Gtk.Box.BoxChild w38 = ((global::Gtk.Box.BoxChild)(this.hbox3 [this.refreshNote]));
-			w38.Position = 2;
+			global::Gtk.Box.BoxChild w34 = ((global::Gtk.Box.BoxChild)(this.hbox3 [this.refreshNote]));
+			w34.Position = 2;
+			// Container child hbox3.Gtk.Box+BoxChild
+			this.buttonRefreshLanguage = new global::Gtk.Button ();
+			this.buttonRefreshLanguage.CanFocus = true;
+			this.buttonRefreshLanguage.Name = "buttonRefreshLanguage";
+			this.buttonRefreshLanguage.UseUnderline = true;
+			this.buttonRefreshLanguage.Label = global::Mono.Unix.Catalog.GetString ("刷新多国语言表");
+			this.hbox3.Add (this.buttonRefreshLanguage);
+			global::Gtk.Box.BoxChild w35 = ((global::Gtk.Box.BoxChild)(this.hbox3 [this.buttonRefreshLanguage]));
+			w35.Position = 3;
+			w35.Expand = false;
+			w35.Fill = false;
 			this.vbox14.Add (this.hbox3);
-			global::Gtk.Box.BoxChild w39 = ((global::Gtk.Box.BoxChild)(this.vbox14 [this.hbox3]));
-			w39.Position = 1;
-			w39.Expand = false;
-			w39.Fill = false;
+			global::Gtk.Box.BoxChild w36 = ((global::Gtk.Box.BoxChild)(this.vbox14 [this.hbox3]));
+			w36.Position = 0;
+			w36.Expand = false;
+			w36.Fill = false;
 			// Container child vbox14.Gtk.Box+BoxChild
 			this.hbox4 = new global::Gtk.HBox ();
 			this.hbox4.Name = "hbox4";
@@ -525,10 +492,10 @@ namespace ScorpioConversion
 			this.label2.Name = "label2";
 			this.label2.LabelProp = global::Mono.Unix.Catalog.GetString ("选择配置路径");
 			this.hbox4.Add (this.label2);
-			global::Gtk.Box.BoxChild w40 = ((global::Gtk.Box.BoxChild)(this.hbox4 [this.label2]));
-			w40.Position = 0;
-			w40.Expand = false;
-			w40.Fill = false;
+			global::Gtk.Box.BoxChild w37 = ((global::Gtk.Box.BoxChild)(this.hbox4 [this.label2]));
+			w37.Position = 0;
+			w37.Expand = false;
+			w37.Fill = false;
 			// Container child hbox4.Gtk.Box+BoxChild
 			this.textTableConfig = new global::Gtk.Entry ();
 			this.textTableConfig.CanFocus = true;
@@ -536,13 +503,13 @@ namespace ScorpioConversion
 			this.textTableConfig.IsEditable = true;
 			this.textTableConfig.InvisibleChar = '●';
 			this.hbox4.Add (this.textTableConfig);
-			global::Gtk.Box.BoxChild w41 = ((global::Gtk.Box.BoxChild)(this.hbox4 [this.textTableConfig]));
-			w41.Position = 1;
+			global::Gtk.Box.BoxChild w38 = ((global::Gtk.Box.BoxChild)(this.hbox4 [this.textTableConfig]));
+			w38.Position = 1;
 			this.vbox14.Add (this.hbox4);
-			global::Gtk.Box.BoxChild w42 = ((global::Gtk.Box.BoxChild)(this.vbox14 [this.hbox4]));
-			w42.Position = 2;
-			w42.Expand = false;
-			w42.Fill = false;
+			global::Gtk.Box.BoxChild w39 = ((global::Gtk.Box.BoxChild)(this.vbox14 [this.hbox4]));
+			w39.Position = 1;
+			w39.Expand = false;
+			w39.Fill = false;
 			// Container child vbox14.Gtk.Box+BoxChild
 			this.hbox5 = new global::Gtk.HBox ();
 			this.hbox5.Name = "hbox5";
@@ -552,10 +519,10 @@ namespace ScorpioConversion
 			this.label3.Name = "label3";
 			this.label3.LabelProp = global::Mono.Unix.Catalog.GetString ("选择要转换的文件夹");
 			this.hbox5.Add (this.label3);
-			global::Gtk.Box.BoxChild w43 = ((global::Gtk.Box.BoxChild)(this.hbox5 [this.label3]));
-			w43.Position = 0;
-			w43.Expand = false;
-			w43.Fill = false;
+			global::Gtk.Box.BoxChild w40 = ((global::Gtk.Box.BoxChild)(this.hbox5 [this.label3]));
+			w40.Position = 0;
+			w40.Expand = false;
+			w40.Fill = false;
 			// Container child hbox5.Gtk.Box+BoxChild
 			this.textTableFolder = new global::Gtk.Entry ();
 			this.textTableFolder.CanFocus = true;
@@ -563,8 +530,8 @@ namespace ScorpioConversion
 			this.textTableFolder.IsEditable = true;
 			this.textTableFolder.InvisibleChar = '●';
 			this.hbox5.Add (this.textTableFolder);
-			global::Gtk.Box.BoxChild w44 = ((global::Gtk.Box.BoxChild)(this.hbox5 [this.textTableFolder]));
-			w44.Position = 1;
+			global::Gtk.Box.BoxChild w41 = ((global::Gtk.Box.BoxChild)(this.hbox5 [this.textTableFolder]));
+			w41.Position = 1;
 			// Container child hbox5.Gtk.Box+BoxChild
 			this.buttonTransformFolder = new global::Gtk.Button ();
 			this.buttonTransformFolder.CanFocus = true;
@@ -572,13 +539,13 @@ namespace ScorpioConversion
 			this.buttonTransformFolder.UseUnderline = true;
 			this.buttonTransformFolder.Label = global::Mono.Unix.Catalog.GetString ("转换");
 			this.hbox5.Add (this.buttonTransformFolder);
-			global::Gtk.Box.BoxChild w45 = ((global::Gtk.Box.BoxChild)(this.hbox5 [this.buttonTransformFolder]));
-			w45.Position = 2;
+			global::Gtk.Box.BoxChild w42 = ((global::Gtk.Box.BoxChild)(this.hbox5 [this.buttonTransformFolder]));
+			w42.Position = 2;
 			this.vbox14.Add (this.hbox5);
-			global::Gtk.Box.BoxChild w46 = ((global::Gtk.Box.BoxChild)(this.vbox14 [this.hbox5]));
-			w46.Position = 3;
-			w46.Expand = false;
-			w46.Fill = false;
+			global::Gtk.Box.BoxChild w43 = ((global::Gtk.Box.BoxChild)(this.vbox14 [this.hbox5]));
+			w43.Position = 2;
+			w43.Expand = false;
+			w43.Fill = false;
 			// Container child vbox14.Gtk.Box+BoxChild
 			this.hbox6 = new global::Gtk.HBox ();
 			this.hbox6.Name = "hbox6";
@@ -588,10 +555,10 @@ namespace ScorpioConversion
 			this.label4.Name = "label4";
 			this.label4.LabelProp = global::Mono.Unix.Catalog.GetString ("选择要转换的文件");
 			this.hbox6.Add (this.label4);
-			global::Gtk.Box.BoxChild w47 = ((global::Gtk.Box.BoxChild)(this.hbox6 [this.label4]));
-			w47.Position = 0;
-			w47.Expand = false;
-			w47.Fill = false;
+			global::Gtk.Box.BoxChild w44 = ((global::Gtk.Box.BoxChild)(this.hbox6 [this.label4]));
+			w44.Position = 0;
+			w44.Expand = false;
+			w44.Fill = false;
 			// Container child hbox6.Gtk.Box+BoxChild
 			this.textTransformFiles = new global::Gtk.Entry ();
 			this.textTransformFiles.CanFocus = true;
@@ -599,8 +566,8 @@ namespace ScorpioConversion
 			this.textTransformFiles.IsEditable = true;
 			this.textTransformFiles.InvisibleChar = '●';
 			this.hbox6.Add (this.textTransformFiles);
-			global::Gtk.Box.BoxChild w48 = ((global::Gtk.Box.BoxChild)(this.hbox6 [this.textTransformFiles]));
-			w48.Position = 1;
+			global::Gtk.Box.BoxChild w45 = ((global::Gtk.Box.BoxChild)(this.hbox6 [this.textTransformFiles]));
+			w45.Position = 1;
 			// Container child hbox6.Gtk.Box+BoxChild
 			this.selectTransformFiles = new global::Gtk.Button ();
 			this.selectTransformFiles.CanFocus = true;
@@ -608,8 +575,8 @@ namespace ScorpioConversion
 			this.selectTransformFiles.UseUnderline = true;
 			this.selectTransformFiles.Label = global::Mono.Unix.Catalog.GetString ("选择");
 			this.hbox6.Add (this.selectTransformFiles);
-			global::Gtk.Box.BoxChild w49 = ((global::Gtk.Box.BoxChild)(this.hbox6 [this.selectTransformFiles]));
-			w49.Position = 2;
+			global::Gtk.Box.BoxChild w46 = ((global::Gtk.Box.BoxChild)(this.hbox6 [this.selectTransformFiles]));
+			w46.Position = 2;
 			// Container child hbox6.Gtk.Box+BoxChild
 			this.buttonTransform = new global::Gtk.Button ();
 			this.buttonTransform.CanFocus = true;
@@ -617,13 +584,13 @@ namespace ScorpioConversion
 			this.buttonTransform.UseUnderline = true;
 			this.buttonTransform.Label = global::Mono.Unix.Catalog.GetString ("转换");
 			this.hbox6.Add (this.buttonTransform);
-			global::Gtk.Box.BoxChild w50 = ((global::Gtk.Box.BoxChild)(this.hbox6 [this.buttonTransform]));
-			w50.Position = 3;
+			global::Gtk.Box.BoxChild w47 = ((global::Gtk.Box.BoxChild)(this.hbox6 [this.buttonTransform]));
+			w47.Position = 3;
 			this.vbox14.Add (this.hbox6);
-			global::Gtk.Box.BoxChild w51 = ((global::Gtk.Box.BoxChild)(this.vbox14 [this.hbox6]));
-			w51.Position = 4;
-			w51.Expand = false;
-			w51.Fill = false;
+			global::Gtk.Box.BoxChild w48 = ((global::Gtk.Box.BoxChild)(this.vbox14 [this.hbox6]));
+			w48.Position = 3;
+			w48.Expand = false;
+			w48.Fill = false;
 			// Container child vbox14.Gtk.Box+BoxChild
 			this.hbox7 = new global::Gtk.HBox ();
 			this.hbox7.Name = "hbox7";
@@ -633,10 +600,10 @@ namespace ScorpioConversion
 			this.label5.Name = "label5";
 			this.label5.LabelProp = global::Mono.Unix.Catalog.GetString ("选择要反转的文件");
 			this.hbox7.Add (this.label5);
-			global::Gtk.Box.BoxChild w52 = ((global::Gtk.Box.BoxChild)(this.hbox7 [this.label5]));
-			w52.Position = 0;
-			w52.Expand = false;
-			w52.Fill = false;
+			global::Gtk.Box.BoxChild w49 = ((global::Gtk.Box.BoxChild)(this.hbox7 [this.label5]));
+			w49.Position = 0;
+			w49.Expand = false;
+			w49.Fill = false;
 			// Container child hbox7.Gtk.Box+BoxChild
 			this.textRollbackFiles = new global::Gtk.Entry ();
 			this.textRollbackFiles.CanFocus = true;
@@ -644,8 +611,8 @@ namespace ScorpioConversion
 			this.textRollbackFiles.IsEditable = true;
 			this.textRollbackFiles.InvisibleChar = '●';
 			this.hbox7.Add (this.textRollbackFiles);
-			global::Gtk.Box.BoxChild w53 = ((global::Gtk.Box.BoxChild)(this.hbox7 [this.textRollbackFiles]));
-			w53.Position = 1;
+			global::Gtk.Box.BoxChild w50 = ((global::Gtk.Box.BoxChild)(this.hbox7 [this.textRollbackFiles]));
+			w50.Position = 1;
 			// Container child hbox7.Gtk.Box+BoxChild
 			this.selectRollbackFiles = new global::Gtk.Button ();
 			this.selectRollbackFiles.CanFocus = true;
@@ -653,8 +620,8 @@ namespace ScorpioConversion
 			this.selectRollbackFiles.UseUnderline = true;
 			this.selectRollbackFiles.Label = global::Mono.Unix.Catalog.GetString ("选择");
 			this.hbox7.Add (this.selectRollbackFiles);
-			global::Gtk.Box.BoxChild w54 = ((global::Gtk.Box.BoxChild)(this.hbox7 [this.selectRollbackFiles]));
-			w54.Position = 2;
+			global::Gtk.Box.BoxChild w51 = ((global::Gtk.Box.BoxChild)(this.hbox7 [this.selectRollbackFiles]));
+			w51.Position = 2;
 			// Container child hbox7.Gtk.Box+BoxChild
 			this.buttonRollback = new global::Gtk.Button ();
 			this.buttonRollback.CanFocus = true;
@@ -662,13 +629,13 @@ namespace ScorpioConversion
 			this.buttonRollback.UseUnderline = true;
 			this.buttonRollback.Label = global::Mono.Unix.Catalog.GetString ("转换");
 			this.hbox7.Add (this.buttonRollback);
-			global::Gtk.Box.BoxChild w55 = ((global::Gtk.Box.BoxChild)(this.hbox7 [this.buttonRollback]));
-			w55.Position = 3;
+			global::Gtk.Box.BoxChild w52 = ((global::Gtk.Box.BoxChild)(this.hbox7 [this.buttonRollback]));
+			w52.Position = 3;
 			this.vbox14.Add (this.hbox7);
-			global::Gtk.Box.BoxChild w56 = ((global::Gtk.Box.BoxChild)(this.vbox14 [this.hbox7]));
-			w56.Position = 5;
-			w56.Expand = false;
-			w56.Fill = false;
+			global::Gtk.Box.BoxChild w53 = ((global::Gtk.Box.BoxChild)(this.vbox14 [this.hbox7]));
+			w53.Position = 4;
+			w53.Expand = false;
+			w53.Fill = false;
 			// Container child vbox14.Gtk.Box+BoxChild
 			this.hbox8 = new global::Gtk.HBox ();
 			this.hbox8.Name = "hbox8";
@@ -678,10 +645,10 @@ namespace ScorpioConversion
 			this.label6.Name = "label6";
 			this.label6.LabelProp = global::Mono.Unix.Catalog.GetString ("选择协议路径");
 			this.hbox8.Add (this.label6);
-			global::Gtk.Box.BoxChild w57 = ((global::Gtk.Box.BoxChild)(this.hbox8 [this.label6]));
-			w57.Position = 0;
-			w57.Expand = false;
-			w57.Fill = false;
+			global::Gtk.Box.BoxChild w54 = ((global::Gtk.Box.BoxChild)(this.hbox8 [this.label6]));
+			w54.Position = 0;
+			w54.Expand = false;
+			w54.Fill = false;
 			// Container child hbox8.Gtk.Box+BoxChild
 			this.textMessage = new global::Gtk.Entry ();
 			this.textMessage.CanFocus = true;
@@ -689,8 +656,8 @@ namespace ScorpioConversion
 			this.textMessage.IsEditable = true;
 			this.textMessage.InvisibleChar = '●';
 			this.hbox8.Add (this.textMessage);
-			global::Gtk.Box.BoxChild w58 = ((global::Gtk.Box.BoxChild)(this.hbox8 [this.textMessage]));
-			w58.Position = 1;
+			global::Gtk.Box.BoxChild w55 = ((global::Gtk.Box.BoxChild)(this.hbox8 [this.textMessage]));
+			w55.Position = 1;
 			// Container child hbox8.Gtk.Box+BoxChild
 			this.buttonMessage = new global::Gtk.Button ();
 			this.buttonMessage.CanFocus = true;
@@ -698,13 +665,13 @@ namespace ScorpioConversion
 			this.buttonMessage.UseUnderline = true;
 			this.buttonMessage.Label = global::Mono.Unix.Catalog.GetString ("转换");
 			this.hbox8.Add (this.buttonMessage);
-			global::Gtk.Box.BoxChild w59 = ((global::Gtk.Box.BoxChild)(this.hbox8 [this.buttonMessage]));
-			w59.Position = 2;
+			global::Gtk.Box.BoxChild w56 = ((global::Gtk.Box.BoxChild)(this.hbox8 [this.buttonMessage]));
+			w56.Position = 2;
 			this.vbox14.Add (this.hbox8);
-			global::Gtk.Box.BoxChild w60 = ((global::Gtk.Box.BoxChild)(this.vbox14 [this.hbox8]));
-			w60.Position = 6;
-			w60.Expand = false;
-			w60.Fill = false;
+			global::Gtk.Box.BoxChild w57 = ((global::Gtk.Box.BoxChild)(this.vbox14 [this.hbox8]));
+			w57.Position = 5;
+			w57.Expand = false;
+			w57.Fill = false;
 			// Container child vbox14.Gtk.Box+BoxChild
 			this.hbox9 = new global::Gtk.HBox ();
 			this.hbox9.Name = "hbox9";
@@ -714,10 +681,10 @@ namespace ScorpioConversion
 			this.label7.Name = "label7";
 			this.label7.LabelProp = global::Mono.Unix.Catalog.GetString ("选择数据库配置路径");
 			this.hbox9.Add (this.label7);
-			global::Gtk.Box.BoxChild w61 = ((global::Gtk.Box.BoxChild)(this.hbox9 [this.label7]));
-			w61.Position = 0;
-			w61.Expand = false;
-			w61.Fill = false;
+			global::Gtk.Box.BoxChild w58 = ((global::Gtk.Box.BoxChild)(this.hbox9 [this.label7]));
+			w58.Position = 0;
+			w58.Expand = false;
+			w58.Fill = false;
 			// Container child hbox9.Gtk.Box+BoxChild
 			this.textDatabaseConfig = new global::Gtk.Entry ();
 			this.textDatabaseConfig.CanFocus = true;
@@ -725,8 +692,8 @@ namespace ScorpioConversion
 			this.textDatabaseConfig.IsEditable = true;
 			this.textDatabaseConfig.InvisibleChar = '●';
 			this.hbox9.Add (this.textDatabaseConfig);
-			global::Gtk.Box.BoxChild w62 = ((global::Gtk.Box.BoxChild)(this.hbox9 [this.textDatabaseConfig]));
-			w62.Position = 1;
+			global::Gtk.Box.BoxChild w59 = ((global::Gtk.Box.BoxChild)(this.hbox9 [this.textDatabaseConfig]));
+			w59.Position = 1;
 			// Container child hbox9.Gtk.Box+BoxChild
 			this.buttonDatabase = new global::Gtk.Button ();
 			this.buttonDatabase.CanFocus = true;
@@ -734,22 +701,22 @@ namespace ScorpioConversion
 			this.buttonDatabase.UseUnderline = true;
 			this.buttonDatabase.Label = global::Mono.Unix.Catalog.GetString ("转换");
 			this.hbox9.Add (this.buttonDatabase);
-			global::Gtk.Box.BoxChild w63 = ((global::Gtk.Box.BoxChild)(this.hbox9 [this.buttonDatabase]));
-			w63.Position = 2;
+			global::Gtk.Box.BoxChild w60 = ((global::Gtk.Box.BoxChild)(this.hbox9 [this.buttonDatabase]));
+			w60.Position = 2;
 			this.vbox14.Add (this.hbox9);
-			global::Gtk.Box.BoxChild w64 = ((global::Gtk.Box.BoxChild)(this.vbox14 [this.hbox9]));
-			w64.Position = 7;
-			w64.Expand = false;
-			w64.Fill = false;
+			global::Gtk.Box.BoxChild w61 = ((global::Gtk.Box.BoxChild)(this.vbox14 [this.hbox9]));
+			w61.Position = 6;
+			w61.Expand = false;
+			w61.Fill = false;
 			// Container child vbox14.Gtk.Box+BoxChild
 			this.progressBar = new global::Gtk.ProgressBar ();
 			this.progressBar.Name = "progressBar";
 			this.progressBar.Text = "";
 			this.vbox14.Add (this.progressBar);
-			global::Gtk.Box.BoxChild w65 = ((global::Gtk.Box.BoxChild)(this.vbox14 [this.progressBar]));
-			w65.Position = 8;
-			w65.Expand = false;
-			w65.Fill = false;
+			global::Gtk.Box.BoxChild w62 = ((global::Gtk.Box.BoxChild)(this.vbox14 [this.progressBar]));
+			w62.Position = 7;
+			w62.Expand = false;
+			w62.Fill = false;
 			// Container child vbox14.Gtk.Box+BoxChild
 			this.GtkScrolledWindow1 = new global::Gtk.ScrolledWindow ();
 			this.GtkScrolledWindow1.Name = "GtkScrolledWindow1";
@@ -760,16 +727,16 @@ namespace ScorpioConversion
 			this.richTextBoxLog.Name = "richTextBoxLog";
 			this.GtkScrolledWindow1.Add (this.richTextBoxLog);
 			this.vbox14.Add (this.GtkScrolledWindow1);
-			global::Gtk.Box.BoxChild w67 = ((global::Gtk.Box.BoxChild)(this.vbox14 [this.GtkScrolledWindow1]));
-			w67.Position = 9;
+			global::Gtk.Box.BoxChild w64 = ((global::Gtk.Box.BoxChild)(this.vbox14 [this.GtkScrolledWindow1]));
+			w64.Position = 8;
 			this.MainHBox.Add (this.vbox14);
-			global::Gtk.Box.BoxChild w68 = ((global::Gtk.Box.BoxChild)(this.MainHBox [this.vbox14]));
-			w68.Position = 1;
+			global::Gtk.Box.BoxChild w65 = ((global::Gtk.Box.BoxChild)(this.MainHBox [this.vbox14]));
+			w65.Position = 1;
 			w3.Add (this.MainHBox);
 			this.GtkScrolledWindow.Add (w3);
 			this.MenuVBox.Add (this.GtkScrolledWindow);
-			global::Gtk.Box.BoxChild w71 = ((global::Gtk.Box.BoxChild)(this.MenuVBox [this.GtkScrolledWindow]));
-			w71.Position = 1;
+			global::Gtk.Box.BoxChild w68 = ((global::Gtk.Box.BoxChild)(this.MenuVBox [this.GtkScrolledWindow]));
+			w68.Position = 1;
 			this.Add (this.MenuVBox);
 			if ((this.Child != null)) {
 				this.Child.ShowAll ();
