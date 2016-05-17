@@ -30,7 +30,6 @@ namespace ScorpioConversion {
             }
 			#endif
             ConversionUtil.Bind(textBoxPackage, ConfigKey.PackageName, ConfigFile.InitConfig);
-            ConversionUtil.Bind(textBoxDatabase, ConfigKey.DatabasePath, ConfigFile.InitConfig);
             ConversionUtil.Bind(textBoxSpawns, ConfigKey.SpawnList, ConfigFile.InitConfig);
 
             ConversionUtil.Bind(textTableConfig, ConfigKey.TableConfigPath, ConfigFile.InitConfig);
@@ -247,9 +246,8 @@ namespace ScorpioConversion {
 
         private void buttonDatabase_Click(object sender, EventArgs e) {
             StartRun(() => {
-                new DatabaseBuilder().Transform(textBoxDatabase.Text,
+                new DatabaseBuilder().Transform(textDatabaseConfig.Text,
                     textBoxPackage.Text,
-                    ConversionUtil.GetConfig(ConfigKey.DatabaseConfigDirectory, ConfigFile.PathConfig),
                     ConversionUtil.GetProgramConfig());
             });
         }

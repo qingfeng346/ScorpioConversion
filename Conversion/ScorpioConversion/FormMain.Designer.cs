@@ -27,8 +27,6 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FormMain));
             this.splitContainerMain = new System.Windows.Forms.SplitContainer();
             this.OtherFoldPanel = new System.Windows.Forms.Panel();
-            this.textBoxDatabase = new System.Windows.Forms.TextBox();
-            this.label6 = new System.Windows.Forms.Label();
             this.textBoxPackage = new System.Windows.Forms.TextBox();
             this.label5 = new System.Windows.Forms.Label();
             this.textBoxSpawns = new System.Windows.Forms.TextBox();
@@ -45,6 +43,7 @@
             this.CodeFoldPanel = new System.Windows.Forms.Panel();
             this.CodeFoldButton = new System.Windows.Forms.Button();
             this.splitContainerFunc = new System.Windows.Forms.SplitContainer();
+            this.buttonRefreshLanguage = new System.Windows.Forms.Button();
             this.refreshNote = new System.Windows.Forms.CheckBox();
             this.buttonTransformFolder = new System.Windows.Forms.Button();
             this.textTableFolder = new System.Windows.Forms.TextBox();
@@ -71,12 +70,11 @@
             this.labelTransformFiles = new System.Windows.Forms.Label();
             this.richTextBoxLog = new System.Windows.Forms.RichTextBox();
             this.timerMain = new System.Windows.Forms.Timer(this.components);
-            this.buttonRefreshLanguage = new System.Windows.Forms.Button();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.toolStripContainer1 = new System.Windows.Forms.ToolStripContainer();
             this.toolStrip1 = new System.Windows.Forms.ToolStrip();
-            this.toolStripContainer2 = new System.Windows.Forms.ToolStripContainer();
             this.toolStripButtonTiny = new System.Windows.Forms.ToolStripButton();
+            this.toolStripContainer2 = new System.Windows.Forms.ToolStripContainer();
             this.splitContainerMain.Panel1.SuspendLayout();
             this.splitContainerMain.Panel2.SuspendLayout();
             this.splitContainerMain.SuspendLayout();
@@ -123,8 +121,6 @@
             // 
             // OtherFoldPanel
             // 
-            this.OtherFoldPanel.Controls.Add(this.textBoxDatabase);
-            this.OtherFoldPanel.Controls.Add(this.label6);
             this.OtherFoldPanel.Controls.Add(this.textBoxPackage);
             this.OtherFoldPanel.Controls.Add(this.label5);
             this.OtherFoldPanel.Controls.Add(this.textBoxSpawns);
@@ -132,26 +128,8 @@
             this.OtherFoldPanel.Dock = System.Windows.Forms.DockStyle.Top;
             this.OtherFoldPanel.Location = new System.Drawing.Point(0, 270);
             this.OtherFoldPanel.Name = "OtherFoldPanel";
-            this.OtherFoldPanel.Size = new System.Drawing.Size(307, 100);
+            this.OtherFoldPanel.Size = new System.Drawing.Size(307, 66);
             this.OtherFoldPanel.TabIndex = 5;
-            // 
-            // textBoxDatabase
-            // 
-            this.textBoxDatabase.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.textBoxDatabase.Location = new System.Drawing.Point(130, 60);
-            this.textBoxDatabase.Name = "textBoxDatabase";
-            this.textBoxDatabase.Size = new System.Drawing.Size(185, 21);
-            this.textBoxDatabase.TabIndex = 11;
-            // 
-            // label6
-            // 
-            this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(11, 65);
-            this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(113, 12);
-            this.label6.TabIndex = 10;
-            this.label6.Text = "数据库配置生成目录";
             // 
             // textBoxPackage
             // 
@@ -343,6 +321,16 @@
             this.splitContainerFunc.SplitterIncrement = 10;
             this.splitContainerFunc.SplitterWidth = 10;
             this.splitContainerFunc.TabIndex = 0;
+            // 
+            // buttonRefreshLanguage
+            // 
+            this.buttonRefreshLanguage.Location = new System.Drawing.Point(467, 24);
+            this.buttonRefreshLanguage.Name = "buttonRefreshLanguage";
+            this.buttonRefreshLanguage.Size = new System.Drawing.Size(75, 23);
+            this.buttonRefreshLanguage.TabIndex = 96;
+            this.buttonRefreshLanguage.Text = "刷新表";
+            this.buttonRefreshLanguage.UseVisualStyleBackColor = true;
+            this.buttonRefreshLanguage.Click += new System.EventHandler(this.buttonRefreshLanguage_Click);
             // 
             // refreshNote
             // 
@@ -576,16 +564,6 @@
             this.timerMain.Interval = 10;
             this.timerMain.Tick += new System.EventHandler(this.timerMain_Tick);
             // 
-            // buttonRefreshLanguage
-            // 
-            this.buttonRefreshLanguage.Location = new System.Drawing.Point(467, 24);
-            this.buttonRefreshLanguage.Name = "buttonRefreshLanguage";
-            this.buttonRefreshLanguage.Size = new System.Drawing.Size(75, 23);
-            this.buttonRefreshLanguage.TabIndex = 96;
-            this.buttonRefreshLanguage.Text = "刷新表";
-            this.buttonRefreshLanguage.UseVisualStyleBackColor = true;
-            this.buttonRefreshLanguage.Click += new System.EventHandler(this.buttonRefreshLanguage_Click);
-            // 
             // statusStrip1
             // 
             this.statusStrip1.Dock = System.Windows.Forms.DockStyle.None;
@@ -624,9 +602,19 @@
             this.toolStripButtonTiny});
             this.toolStrip1.Location = new System.Drawing.Point(3, 0);
             this.toolStrip1.Name = "toolStrip1";
-            this.toolStrip1.Size = new System.Drawing.Size(66, 25);
+            this.toolStrip1.Size = new System.Drawing.Size(35, 25);
             this.toolStrip1.TabIndex = 3;
             this.toolStrip1.Text = "toolStrip1";
+            // 
+            // toolStripButtonTiny
+            // 
+            this.toolStripButtonTiny.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.toolStripButtonTiny.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButtonTiny.Image")));
+            this.toolStripButtonTiny.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.toolStripButtonTiny.Name = "toolStripButtonTiny";
+            this.toolStripButtonTiny.Size = new System.Drawing.Size(23, 22);
+            this.toolStripButtonTiny.Text = "toolStripButton1";
+            this.toolStripButtonTiny.Click += new System.EventHandler(this.toolStripButtonTiny_Click);
             // 
             // toolStripContainer2
             // 
@@ -649,16 +637,6 @@
             // toolStripContainer2.TopToolStripPanel
             // 
             this.toolStripContainer2.TopToolStripPanel.Controls.Add(this.toolStrip1);
-            // 
-            // toolStripButtonTiny
-            // 
-            this.toolStripButtonTiny.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.toolStripButtonTiny.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButtonTiny.Image")));
-            this.toolStripButtonTiny.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.toolStripButtonTiny.Name = "toolStripButtonTiny";
-            this.toolStripButtonTiny.Size = new System.Drawing.Size(23, 22);
-            this.toolStripButtonTiny.Text = "toolStripButton1";
-            this.toolStripButtonTiny.Click += new System.EventHandler(this.toolStripButtonTiny_Click);
             // 
             // FormMain
             // 
@@ -715,8 +693,6 @@
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.TextBox textBoxSpawns;
         private System.Windows.Forms.Label label4;
-        private System.Windows.Forms.TextBox textBoxDatabase;
-        private System.Windows.Forms.Label label6;
         private System.Windows.Forms.TextBox textBoxPackage;
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.CheckBox refreshNote;

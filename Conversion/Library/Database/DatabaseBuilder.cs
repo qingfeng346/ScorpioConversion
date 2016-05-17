@@ -9,7 +9,7 @@ public class DatabaseBuilder
     private Dictionary<string, List<PackageField>> mCustoms = new Dictionary<string, List<PackageField>>();
     private Dictionary<string, List<PackageEnum>> mEnums = new Dictionary<string, List<PackageEnum>>();
     private Dictionary<string, Dictionary<string, DatabaseTable>> mDatabases = new Dictionary<string, Dictionary<string, DatabaseTable>>();
-    public void Transform(string configPath, string package, string databaseConfigPath, Dictionary<PROGRAM, ProgramConfig> programConfigs)
+    public void Transform(string configPath, string package, Dictionary<PROGRAM, ProgramConfig> programConfigs)
     {
         try {
             configPath = FileUtil.GetFullPath(configPath);

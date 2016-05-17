@@ -78,7 +78,6 @@ public class ConfigKey {
 
     //InitConfig
     public const string DatabaseConfigDirectory = "DatabaseConfigDirectory";        //数据库配置路径
-    public const string DatabasePath = "DatabasePath";              //数据库生成目录
     public const string SpawnList = "SpawnList";                    //批量处理关键字
     public const string PackageName = "PackageName";                //PackageName
     public const string TableConfigPath = "TableConfigPath";        //Table配置路径
