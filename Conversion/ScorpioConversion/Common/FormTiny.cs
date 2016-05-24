@@ -121,6 +121,7 @@ namespace ScorpioConversion {
             HttpWebRequest httpRequest = (HttpWebRequest)WebRequest.Create(url);
             HttpWebResponse response = (HttpWebResponse)httpRequest.GetResponse();
             Stream httpStream = response.GetResponseStream();
+            FileUtil.CreateDirectory(Path.GetDirectoryName(filename));
             Stream fileStream = new FileStream(filename, FileMode.Create);
             int readSize = 0;
             byte[] bytes = new byte[READ_LENGTH];
