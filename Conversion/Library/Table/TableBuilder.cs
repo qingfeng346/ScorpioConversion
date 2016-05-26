@@ -255,9 +255,11 @@ public partial class TableBuilder {
             List<string> fileNames = new List<string>(files.Split(';'));
             if (fileNames.Count == 0)
                 throw new Exception("请选择要转换的文件");
-            configPath = FileUtil.GetFullPath(configPath);
             Util.InitializeProgram(programConfigs);
-            Util.ParseStructure(configPath, null, mEnums, mCustoms, null, null, null);
+            if (!string.IsNullOrEmpty(configPath)) {
+                configPath = FileUtil.GetFullPath(configPath);
+                Util.ParseStructure(configPath, null, mEnums, mCustoms, null, null, null);
+            }
             fileNames.Sort();
             mNormalClasses.Clear();
             mSpawnsClasses.Clear();
