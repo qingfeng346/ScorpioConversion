@@ -17,6 +17,7 @@ public class __ClassName : IMessage {");
         builder.Append(GenerateMessageFields());
         builder.Append(GenerateMessageWrite());
         builder.Append(GenerateMessageRead());
+        builder.Append(GenerateMessageReadimpl());
         builder.Append(GenerateMessageDeserialize());
         builder.Append(@"
 }
@@ -81,27 +82,25 @@ public class __ClassName : IMessage {");
     }");
         return builder.ToString();
     }
-    string GenerateMessageRead()
-    {
+    string GenerateMessageRead() {
         StringBuilder builder = new StringBuilder();
         builder.Append(@"
-    public static __ClassName Read(ScorpioReader reader) {
-        __ClassName ret = new __ClassName();
-        ret.__Sign = reader.ReadInt32();");
+    public override void Read(ScorpioReader reader) {
+        __Sign = reader.ReadInt32();");
         foreach (var field in m_Fields) {
             string str = "";
             if (field.Array) {
                 str = @"
-        if (ret.HasSign(__Index)) {
+        if (HasSign(__Index)) {
             int number = reader.ReadInt32();
-            ret.___Name = new List<__Type>();
-            for (int i = 0;i < number; ++i) { ret.___Name.Add(__FieldRead); }
+            ___Name = new List<__Type>();
+            for (int i = 0;i < number; ++i) { ___Name.Add(__FieldRead); }
         }";
             } else {
                 str = @"
-        if (ret.HasSign(__Index)) { ret.___Name = __FieldRead; }";
+        if (HasSign(__Index)) { ___Name = __FieldRead; }";
             }
-            str = str.Replace("__FieldRead", field.IsBasic ? "reader.__Read()" : (field.Enum ? "(__Type)reader.ReadInt32()" : "__Type.Read(reader)"));
+            str = str.Replace("__FieldRead", field.IsBasic ? "reader.__Read()" : (field.Enum ? "(__Type)reader.ReadInt32()" : "__Type.Readimpl(reader)"));
             str = str.Replace("__Read", field.IsBasic ? field.Info.ReadFunction : "");
             str = str.Replace("__Type", GetCodeType(field.Type));
             str = str.Replace("__Index", field.Index.ToString());
@@ -109,15 +108,21 @@ public class __ClassName : IMessage {");
             builder.Append(str);
         }
         builder.Append(@"
-        return ret;
     }");
         return builder.ToString();
     }
-    static string GenerateMessageDeserialize()
-    {
+    static string GenerateMessageReadimpl() {
+        return @"
+    public static __ClassName Readimpl(ScorpioReader reader) {
+        __ClassName ret = new __ClassName();
+        ret.Read(reader);
+        return ret;
+    }";
+    }
+    static string GenerateMessageDeserialize() {
         return @"
     public static __ClassName Deserialize(byte[] data) {
-        return Read(new ScorpioReader(data));
+        return Readimpl(new ScorpioReader(data));
     }";
     }
 }
