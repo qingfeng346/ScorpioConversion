@@ -29,25 +29,28 @@ public class Msg_C2G_Test3 : IMessage {
             for (int i = 0;i < _Value4.Count; ++i) { writer.WriteInt32((int)_Value4[i]); }
         }
     }
-    public static Msg_C2G_Test3 Read(ScorpioReader reader) {
+    public override void Read(ScorpioReader reader) {
+        __Sign = reader.ReadInt32();
+        if (HasSign(1)) {
+            int number = reader.ReadInt32();
+            _Value1 = new List<Msg_C2G_Test>();
+            for (int i = 0;i < number; ++i) { _Value1.Add(Msg_C2G_Test.Readimpl(reader)); }
+        }
+        if (HasSign(2)) { _Value2 = Msg_C2G_Test2.Readimpl(reader); }
+        if (HasSign(3)) { _Value3 = (TestEnum)reader.ReadInt32(); }
+        if (HasSign(4)) {
+            int number = reader.ReadInt32();
+            _Value4 = new List<TestEnum>();
+            for (int i = 0;i < number; ++i) { _Value4.Add((TestEnum)reader.ReadInt32()); }
+        }
+    }
+    public static Msg_C2G_Test3 Readimpl(ScorpioReader reader) {
         Msg_C2G_Test3 ret = new Msg_C2G_Test3();
-        ret.__Sign = reader.ReadInt32();
-        if (ret.HasSign(1)) {
-            int number = reader.ReadInt32();
-            ret._Value1 = new List<Msg_C2G_Test>();
-            for (int i = 0;i < number; ++i) { ret._Value1.Add(Msg_C2G_Test.Read(reader)); }
-        }
-        if (ret.HasSign(2)) { ret._Value2 = Msg_C2G_Test2.Read(reader); }
-        if (ret.HasSign(3)) { ret._Value3 = (TestEnum)reader.ReadInt32(); }
-        if (ret.HasSign(4)) {
-            int number = reader.ReadInt32();
-            ret._Value4 = new List<TestEnum>();
-            for (int i = 0;i < number; ++i) { ret._Value4.Add((TestEnum)reader.ReadInt32()); }
-        }
+        ret.Read(reader);
         return ret;
     }
     public static Msg_C2G_Test3 Deserialize(byte[] data) {
-        return Read(new ScorpioReader(data));
+        return Readimpl(new ScorpioReader(data));
     }
 }
 }

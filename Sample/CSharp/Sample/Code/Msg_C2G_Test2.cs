@@ -11,14 +11,17 @@ public class Msg_C2G_Test2 : IMessage {
         writer.WriteInt32(__Sign);
         if (HasSign(1)) { _Value1.Write(writer); }
     }
-    public static Msg_C2G_Test2 Read(ScorpioReader reader) {
+    public override void Read(ScorpioReader reader) {
+        __Sign = reader.ReadInt32();
+        if (HasSign(1)) { _Value1 = Msg_C2G_Test.Readimpl(reader); }
+    }
+    public static Msg_C2G_Test2 Readimpl(ScorpioReader reader) {
         Msg_C2G_Test2 ret = new Msg_C2G_Test2();
-        ret.__Sign = reader.ReadInt32();
-        if (ret.HasSign(1)) { ret._Value1 = Msg_C2G_Test.Read(reader); }
+        ret.Read(reader);
         return ret;
     }
     public static Msg_C2G_Test2 Deserialize(byte[] data) {
-        return Read(new ScorpioReader(data));
+        return Readimpl(new ScorpioReader(data));
     }
 }
 }
