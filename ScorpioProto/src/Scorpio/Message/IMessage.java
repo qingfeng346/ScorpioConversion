@@ -1,5 +1,6 @@
 package Scorpio.Message;
 
+import Scorpio.Commons.ScorpioReader;
 import Scorpio.Commons.ScorpioUtil;
 import Scorpio.Commons.ScorpioWriter;
 
@@ -16,5 +17,9 @@ public abstract class IMessage {
         Write(writer);
         return writer.ToArray();
     }
+    public final void Parser(byte[] buffer) {
+    	Read(new ScorpioReader(buffer));
+    }
     public abstract void Write(ScorpioWriter writer);
+    public abstract void Read(ScorpioReader reader);
 }
