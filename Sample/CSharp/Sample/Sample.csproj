@@ -47,6 +47,7 @@
     <Compile Include="Code\MessageManager.cs" />
     <Compile Include="Code\Msg_C2G_Test.cs" />
     <Compile Include="Code\Msg_C2G_Test2.cs" />
+    <Compile Include="Code\Msg_C2G_Test3.cs" />
     <Compile Include="Code\TableManager.cs" />
     <Compile Include="Code\TableSpawn.cs" />
     <Compile Include="Code\TableTest.cs" />
