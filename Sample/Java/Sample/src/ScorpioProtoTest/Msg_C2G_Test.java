@@ -24,19 +24,23 @@ public class Msg_C2G_Test extends IMessage {
             for (int i = 0;i < _Value3.size(); ++i) { writer.WriteInt32(_Value3.get(i)); }
         }
     }
-    public static Msg_C2G_Test Read(ScorpioReader reader) {
-        Msg_C2G_Test ret = new Msg_C2G_Test();
-        ret.__Sign = reader.ReadInt32();
-        if (ret.HasSign(1)) { ret._Value1 = reader.ReadInt32(); }
-        if (ret.HasSign(2)) { ret._Value2 = reader.ReadString(); }
-        if (ret.HasSign(3)) {
+    @Override
+    public void Read(ScorpioReader reader) {
+        __Sign = reader.ReadInt32();
+        if (HasSign(1)) { _Value1 = reader.ReadInt32(); }
+        if (HasSign(2)) { _Value2 = reader.ReadString(); }
+        if (HasSign(3)) {
             int number = reader.ReadInt32();
-            ret._Value3 = new java.util.ArrayList<Integer>();
-            for (int i = 0;i < number; ++i) { ret._Value3.add(reader.ReadInt32()); }
+            _Value3 = new java.util.ArrayList<Integer>();
+            for (int i = 0;i < number; ++i) { _Value3.add(reader.ReadInt32()); }
         }
+    }
+    public static Msg_C2G_Test Readimpl(ScorpioReader reader) {
+        Msg_C2G_Test ret = new Msg_C2G_Test();
+        ret.Read(reader);
         return ret;
     }
     public static Msg_C2G_Test Deserialize(byte[] data) {
-        return Read(new ScorpioReader(data));
+        return Readimpl(new ScorpioReader(data));
     }
 }

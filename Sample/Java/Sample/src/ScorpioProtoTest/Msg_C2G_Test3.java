@@ -33,24 +33,28 @@ public class Msg_C2G_Test3 extends IMessage {
             for (int i = 0;i < _Value4.size(); ++i) { writer.WriteInt32(_Value4.get(i).getValue()); }
         }
     }
-    public static Msg_C2G_Test3 Read(ScorpioReader reader) {
+    @Override
+    public void Read(ScorpioReader reader) {
+        __Sign = reader.ReadInt32();
+        if (HasSign(1)) {
+            int number = reader.ReadInt32();
+            _Value1 = new java.util.ArrayList<Msg_C2G_Test>();
+            for (int i = 0;i < number; ++i) { _Value1.add(Msg_C2G_Test.Readimpl(reader)); }
+        }
+        if (HasSign(2)) { _Value2 = Msg_C2G_Test2.Readimpl(reader); }
+        if (HasSign(3)) { _Value3 = TestEnum.valueOf(reader.ReadInt32()); }
+        if (HasSign(4)) {
+            int number = reader.ReadInt32();
+            _Value4 = new java.util.ArrayList<TestEnum>();
+            for (int i = 0;i < number; ++i) { _Value4.add(TestEnum.valueOf(reader.ReadInt32())); }
+        }
+    }
+    public static Msg_C2G_Test3 Readimpl(ScorpioReader reader) {
         Msg_C2G_Test3 ret = new Msg_C2G_Test3();
-        ret.__Sign = reader.ReadInt32();
-        if (ret.HasSign(1)) {
-            int number = reader.ReadInt32();
-            ret._Value1 = new java.util.ArrayList<Msg_C2G_Test>();
-            for (int i = 0;i < number; ++i) { ret._Value1.add(Msg_C2G_Test.Read(reader)); }
-        }
-        if (ret.HasSign(2)) { ret._Value2 = Msg_C2G_Test2.Read(reader); }
-        if (ret.HasSign(3)) { ret._Value3 = TestEnum.valueOf(reader.ReadInt32()); }
-        if (ret.HasSign(4)) {
-            int number = reader.ReadInt32();
-            ret._Value4 = new java.util.ArrayList<TestEnum>();
-            for (int i = 0;i < number; ++i) { ret._Value4.add(TestEnum.valueOf(reader.ReadInt32())); }
-        }
+        ret.Read(reader);
         return ret;
     }
     public static Msg_C2G_Test3 Deserialize(byte[] data) {
-        return Read(new ScorpioReader(data));
+        return Readimpl(new ScorpioReader(data));
     }
 }
