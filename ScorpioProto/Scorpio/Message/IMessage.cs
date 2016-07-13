@@ -15,6 +15,10 @@ namespace Scorpio.Message
             Write(writer);
             return writer.ToArray();
         }
+        public void Parser(byte[] buffer) {
+            Read(new ScorpioReader(buffer));
+        }
         public abstract void Write(ScorpioWriter writer);
+        public abstract void Read(ScorpioReader reader);
     }
 }
