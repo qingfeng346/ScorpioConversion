@@ -5,8 +5,7 @@ using System.IO;
 public class GenerateMessageJava : IGenerate
 {
     public GenerateMessageJava() : base(PROGRAM.Java) { }
-    protected override string Generate_impl()
-    {
+    protected override string Generate_impl() {
         StringBuilder builder = new StringBuilder();
         builder.Append(@"//本文件为自动生成，请不要手动修改
 package __Package;
@@ -16,6 +15,7 @@ public class __ClassName extends IMessage {");
         builder.Append(GenerateMessageFields());
         builder.Append(GenerateMessageWrite());
         builder.Append(GenerateMessageRead());
+        builder.Append(GenerateMessageNew());
         builder.Append(GenerateMessageReadimpl());
         builder.Append(GenerateMessageDeserialize());
         builder.Append(@"
@@ -24,23 +24,18 @@ public class __ClassName extends IMessage {");
         builder.Replace("__Package", m_Package);
         return builder.ToString();
     }
-    string GenerateMessageFields()
-    {
+    string GenerateMessageFields() {
         StringBuilder builder = new StringBuilder();
-        foreach (var field in m_Fields)
-        {
+        foreach (var field in m_Fields) {
             string str = "";
-            if (field.Array)
-            {
+            if (field.Array) {
                 str = @"
     private java.util.List<__Type> ___Name = new java.util.ArrayList<__Type>();
     public java.util.List<__Type> get__Name() { return ___Name; }
     public __ClassName set__Name(java.util.List<__Type> value) { ___Name = value; AddSign(__Index); return this; }
     public __ClassName add__Name(__Type value) { ___Name.add(value); AddSign(__Index); return this; }
     public __ClassName insert__Name(int index, __Type value) { ___Name.add(index, value); AddSign(__Index); return this; } ";
-            }
-            else
-            {
+            } else {
                 str = @"
     private __Type ___Name;
     public __Type get__Name() { return ___Name; }
@@ -116,6 +111,13 @@ public class __ClassName extends IMessage {");
         builder.Append(@"
     }");
         return builder.ToString();
+    }
+    static string GenerateMessageNew() {
+        return @"
+    @Override
+    public IMessage New() {
+        return new __ClassName();
+    }";
     }
     static string GenerateMessageReadimpl() {
         return @"
