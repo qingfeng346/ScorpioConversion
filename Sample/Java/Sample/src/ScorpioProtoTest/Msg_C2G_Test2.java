@@ -16,6 +16,10 @@ public class Msg_C2G_Test2 extends IMessage {
         __Sign = reader.ReadInt32();
         if (HasSign(1)) { _Value1 = Msg_C2G_Test.Readimpl(reader); }
     }
+    @Override
+    public IMessage New() {
+        return new Msg_C2G_Test2();
+    }
     public static Msg_C2G_Test2 Readimpl(ScorpioReader reader) {
         Msg_C2G_Test2 ret = new Msg_C2G_Test2();
         ret.Read(reader);
