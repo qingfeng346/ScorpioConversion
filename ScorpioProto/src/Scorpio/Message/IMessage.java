@@ -22,4 +22,5 @@ public abstract class IMessage {
     }
     public abstract void Write(ScorpioWriter writer);
     public abstract void Read(ScorpioReader reader);
+    public abstract IMessage New();
 }
