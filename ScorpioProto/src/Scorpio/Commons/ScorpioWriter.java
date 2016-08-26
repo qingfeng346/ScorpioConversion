@@ -1,11 +1,11 @@
 package Scorpio.Commons;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
-public class ScorpioWriter
-{
+public class ScorpioWriter {
+	private static final int MAX_LENGTH = 1024 * 1024;
     ByteBuffer writer;
     public ScorpioWriter() {
-        writer = ByteBuffer.allocate(81920).order(ByteOrder.LITTLE_ENDIAN);
+        writer = ByteBuffer.allocate(MAX_LENGTH).order(ByteOrder.LITTLE_ENDIAN);
     }
     public void WriteBool(boolean value) {
         writer.put(value ? (byte)1 : (byte)0);
