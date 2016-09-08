@@ -81,6 +81,10 @@ public class PackageConst
     public BasicEnum Type;  //常量类型 目前只有 int32 int64 string
     public string Value;    //常量值
 }
+//单个数据库的配置
+public class PackageDatabase {
+    public Dictionary<string, DatabaseTable> tables = new Dictionary<string, DatabaseTable>();      //所有table列表
+}
 public static class BasicUtil
 {
     private static readonly List<BasicType> BasicTypes = new List<BasicType>()

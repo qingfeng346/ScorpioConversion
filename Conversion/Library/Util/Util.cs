@@ -56,12 +56,12 @@ public static partial class Util
             return string.Format("{0:f2} MB", Convert.ToDouble(by) / GB_LENGTH);
     }
     public static void ParseStructure(string dir, 
-        Dictionary<string, List<PackageField>> customClass, 
-        Dictionary<string, List<PackageEnum>> customEnum,
-        Dictionary<string, List<PackageField>> customTable, 
-        Dictionary<string, Dictionary<string, DatabaseTable>> customDatabase,
-        Dictionary<string, List<PackageField>> customDatabaseClass,
-        Dictionary<string, List<PackageConst>> customConst)
+        Dictionary<string, List<PackageField>> customClass,             //自定义类
+        Dictionary<string, List<PackageEnum>> customEnum,               //自定义枚举
+        Dictionary<string, List<PackageField>> customTable,             //excel表自定义类
+        Dictionary<string, PackageDatabase> customDatabase,             //单个数据库
+        Dictionary<string, List<PackageField>> customDatabaseClass,     //数据库类
+        Dictionary<string, List<PackageConst>> customConst)             //自定义常量
     {
         if (customClass != null) customClass.Clear();
         if (customEnum != null) customEnum.Clear();
@@ -79,9 +79,7 @@ public static partial class Util
                 GlobalBasic.Add(itor.Current.Value);
         }
         string[] files = System.IO.Directory.Exists(dir) ? System.IO.Directory.GetFiles(dir, "*.sco", SearchOption.AllDirectories) :  new string[0];
-        foreach (var file in files) {
-            Script.LoadFile(file);
-        }
+        foreach (var file in files) { Script.LoadFile(file); }
         {
             var itor = Script.GetGlobalTable().GetIterator();
             while (itor.MoveNext()) {
@@ -90,6 +88,7 @@ public static partial class Util
                 string name = itor.Current.Key as string;
                 ScriptTable table = itor.Current.Value as ScriptTable;
                 if (name == null || table == null) continue;
+                //枚举类型
                 if (name.StartsWith(ENUM_KEYWORD)) {
                     if (customEnum != null)                     {
                         List<PackageEnum> enums = new List<PackageEnum>();
@@ -106,6 +105,7 @@ public static partial class Util
                         enums.Sort((m1, m2) => { return m1.Index.CompareTo(m2.Index); });
                         customEnum[name.Substring(ENUM_KEYWORD.Length)] = enums;
                     }
+                //常量类型
                 } else if (name.StartsWith(CONST_KEYWORD)) {
                     if (customConst != null) {
                         List<PackageConst> consts = new List<PackageConst>();
@@ -132,16 +132,20 @@ public static partial class Util
                         }
                         customConst[name.Substring(CONST_KEYWORD.Length)] = consts;
                     }
+                //数据库类
                 } else if (name.StartsWith(DATABASE_KEYWORD)) {
                     if (customDatabase != null) {
-                        Dictionary<string, DatabaseTable> tables = new Dictionary<string, DatabaseTable>();
-                        var tItor = table.GetIterator();
-                        while (tItor.MoveNext()) {
-                            string tableName = tItor.Current.Key as string;
-                            if (tableName.StartsWith(DATABASE_KEYWORD)) continue;
-                            tables.Add(tableName, JsonUtil.JsonToObject<DatabaseTable>(tItor.Current.Value.ToJson()));
+                        PackageDatabase package = new PackageDatabase();
+                        var tables = table.GetValue("tables") as ScriptTable;
+                        if (tables != null) {
+                            var tItor = tables.GetIterator();
+                            while (tItor.MoveNext()) {
+                                string tableName = tItor.Current.Key as string;
+                                if (tableName.StartsWith(DATABASE_KEYWORD)) continue;
+                                package.tables.Add(tableName, JsonUtil.JsonToObject<DatabaseTable>(tItor.Current.Value.ToJson()));
+                            }
                         }
-                        customDatabase[name.Substring(ENUM_KEYWORD.Length)] = tables;
+                        customDatabase[name.Substring(DATABASE_KEYWORD.Length)] = package;
                     }
                 } else {
                     List<PackageField> fields = new List<PackageField>();
@@ -174,15 +178,12 @@ public static partial class Util
                         fields.Add(packageField);
                     }
                     fields.Sort((m1, m2) => { return m1.Index.CompareTo(m2.Index); });
-                    if (name.StartsWith(DATABASE_CLASS_KEYWORD)) {
-                        if (customDatabaseClass != null)
-                            customDatabaseClass[name.Substring(DATABASE_CLASS_KEYWORD.Length)] = fields;
-                    } else if (name.StartsWith(TABLE_KEYWORD)) {
-                        if (customTable != null)
-                            customTable[name.Substring(TABLE_KEYWORD.Length)] = fields;
+                    if (name.StartsWith(DATABASE_CLASS_KEYWORD)) {      //数据库内使用类
+                        if (customDatabaseClass != null) customDatabaseClass[name.Substring(DATABASE_CLASS_KEYWORD.Length)] = fields;
+                    } else if (name.StartsWith(TABLE_KEYWORD)) {        //excel表使用类
+                        if (customTable != null) customTable[name.Substring(TABLE_KEYWORD.Length)] = fields;
                     } else {
-                        if (customClass != null)
-                            customClass[name] = fields;
+                        if (customClass != null) customClass[name] = fields;
                     }
                 }
             }

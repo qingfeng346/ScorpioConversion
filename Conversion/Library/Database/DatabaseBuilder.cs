@@ -8,7 +8,7 @@ public class DatabaseBuilder
     private string mPackage;
     private Dictionary<string, List<PackageField>> mCustoms = new Dictionary<string, List<PackageField>>();
     private Dictionary<string, List<PackageEnum>> mEnums = new Dictionary<string, List<PackageEnum>>();
-    private Dictionary<string, Dictionary<string, DatabaseTable>> mDatabases = new Dictionary<string, Dictionary<string, DatabaseTable>>();
+    private Dictionary<string, PackageDatabase> mDatabases = new Dictionary<string, PackageDatabase>();
     public void Transform(string configPath, string package, Dictionary<PROGRAM, ProgramConfig> programConfigs)
     {
         try {
@@ -21,8 +21,8 @@ public class DatabaseBuilder
             Progress.Current = 0;
             foreach (var pair in mDatabases) {
                 ++Progress.Current;
-                foreach (var table in pair.Value) {
-                    Logger.info("正在转换数据库 {0}/{1} [{2}]", Progress.Current, Progress.Count, table.Key);
+                foreach (var table in pair.Value.tables) {
+                    Logger.info("正在转换数据库 {0}/{1} [{2}.{3}]", Progress.Current, Progress.Count, pair.Key, table.Key);
                     info.CreateFile("Database" + table.Key, new GenerateDatabaseJava().Generate(table.Key, mPackage, table.Value));
                 }
             }
