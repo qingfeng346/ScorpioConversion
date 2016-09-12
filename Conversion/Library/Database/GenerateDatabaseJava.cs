@@ -22,11 +22,11 @@ import java.sql.Timestamp;
 import java.sql.Date;
 import java.io.Serializable;
 import com.commons.util.Utility;
-import com.commons.database.DatabaseSimple;
-import com.commons.database.DatabaseFieldAttribute;
-import com.commons.database.DatabaseTableDataBase;
-import com.commons.database.DatabaseFieldDataBase;
-import com.commons.database.DatabaseInsertUpdateResult;
+import com.commons.database.advanced.DatabaseSimple;
+import com.commons.database.advanced.DatabaseFieldAttribute;
+import com.commons.database.advanced.DatabaseTableDataBase;
+import com.commons.database.advanced.DatabaseFieldDataBase;
+import com.commons.database.advanced.DatabaseInsertUpdateResult;
 //================__TableComment===========================
 @SuppressWarnings(""unused"")
 public class Database__ClassName implements DatabaseTableDataBase<Database__ClassName> {
