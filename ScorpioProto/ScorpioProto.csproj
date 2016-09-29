@@ -38,14 +38,14 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Scorpio\Commons\ScorpioReader.cs" />
-    <Compile Include="Scorpio\Commons\ScorpioSerializer.cs" />
-    <Compile Include="Scorpio\Commons\ScorpioUtil.cs" />
-    <Compile Include="Scorpio\Commons\ScorpioWriter.cs" />
-    <Compile Include="Scorpio\Message\IMessage.cs" />
-    <Compile Include="Scorpio\Table\IData.cs" />
-    <Compile Include="Scorpio\Table\ITable.cs" />
-    <Compile Include="Scorpio\Table\TableUtil.cs" />
+    <Compile Include="src\Commons\ScorpioReader.cs" />
+    <Compile Include="src\Commons\ScorpioSerializer.cs" />
+    <Compile Include="src\Commons\ScorpioUtil.cs" />
+    <Compile Include="src\Commons\ScorpioWriter.cs" />
+    <Compile Include="src\Message\IMessage.cs" />
+    <Compile Include="src\Table\IData.cs" />
+    <Compile Include="src\Table\ITable.cs" />
+    <Compile Include="src\Table\TableUtil.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
