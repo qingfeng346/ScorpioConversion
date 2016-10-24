@@ -9,7 +9,7 @@ public class GenerateDatabaseTableJava : IGenerate
         StringBuilder builder = new StringBuilder();
         builder.Append(@"//本文件为自动生成，请不要手动修改
 package __Package;
-import com.commons.database.DatabaseFieldDataBase;
+import com.commons.database.advanced.DatabaseFieldDataBase;
 public class __ClassName implements DatabaseFieldDataBase<__ClassName> {");
         builder.Append(GenerateDatabaseFields());
         builder.Append(GenerateDatabaseConstructor());
