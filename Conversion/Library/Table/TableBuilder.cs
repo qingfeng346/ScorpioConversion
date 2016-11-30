@@ -232,22 +232,52 @@ public partial class TableBuilder {
     //刷新表注释
     private void RefreshNote(string fileFullName)
     {
+        bool change = false;
+        for (int i = 0; i < mFields.Count; ++i) {
+            var filed = mFields[i];
+            if (filed.Enum) { change = true; break; }
+        }
+        if (!change) { return; }
         IWorkbook workbook = new HSSFWorkbook(new FileStream(fileFullName, FileMode.Open, FileAccess.ReadWrite));
         ISheet sheet = workbook.GetSheetAt(0);
-        sheet.CreateFreezePane(2, START_ROW);
-        for (int i = 0; i < mFields.Count;++i ) {
-            var filed = mFields[i];
-            if (filed.Enum) {
-                CellRangeAddressList reg = new CellRangeAddressList(START_ROW, 65535, i, i);
-                var con = DVConstraint.CreateExplicitListConstraint(GetEnumList(filed.Type));
-                HSSFDataValidation dataValidate = new HSSFDataValidation(reg, con);
-                dataValidate.CreatePromptBox(filed.Type, GetEnumComment(filed.Type));
-                sheet.AddValidationData(dataValidate);
+        string sheetName = sheet.SheetName;
+        ISheet sheetBack = workbook.CreateSheet("__sheetBackup");
+        sheetBack.CreateFreezePane(2, START_ROW);
+        int columnNum = 0;
+        for (int i = sheet.FirstRowNum; i <= sheet.LastRowNum; ++i) {
+            IRow row = sheet.GetRow(i);
+            if (row == null) continue;
+            if (row.LastCellNum > columnNum) columnNum = row.LastCellNum;
+            IRow rowBack = sheetBack.CreateRow(i);
+            for (int j = 0; j < (mMaxColumn == -1 ? row.LastCellNum : mMaxColumn); ++j) {
+                string val = Util.GetCellString(row.GetCell(j, MissingCellPolicy.CREATE_NULL_AS_BLANK));
+                var cell = rowBack.GetCell(j, MissingCellPolicy.CREATE_NULL_AS_BLANK);
+                Util.SetCellString(cell, val);
             }
         }
-        FileStream stream = new FileStream(fileFullName, FileMode.Create);
-        workbook.Write(stream);
-        stream.Close();
+        for (int i = 0; i < columnNum; ++i) {
+            sheetBack.SetColumnWidth(i, sheet.GetColumnWidth(i));
+        }
+        for (int i = 0; i < mFields.Count; ++i ) {
+            var filed = mFields[i];
+            if (filed.Enum) {
+                IDataValidationHelper helper = sheet.GetDataValidationHelper();
+                CellRangeAddressList cellRange = new CellRangeAddressList(START_ROW, 65535, i, i);
+                IDataValidationConstraint constraint = helper.CreateExplicitListConstraint(GetEnumList(filed.Type));
+                IDataValidation dataValidation = helper.CreateValidation(constraint, cellRange);
+                dataValidation.SuppressDropDownArrow = false;
+                dataValidation.CreatePromptBox(filed.Type, GetEnumComment(filed.Type));
+                sheetBack.AddValidationData(dataValidation);
+                Logger.info(fileFullName + " : " + GetEnumComment(filed.Type));
+            }
+        }
+        workbook.RemoveSheetAt(0);
+        workbook.SetSheetOrder(sheetBack.SheetName, 0);
+        workbook.SetSheetName(0, sheetName);
+        Logger.info("RefreshNote : " + fileFullName);
+        using (FileStream stream = new FileStream(fileFullName, FileMode.Create)) {
+            workbook.Write(stream);
+        }
     }
     public void Transform(string files, string configPath, string package, string spawnList, bool generateManager, bool refreshNote, Dictionary<PROGRAM, ProgramConfig> programConfigs)
     {

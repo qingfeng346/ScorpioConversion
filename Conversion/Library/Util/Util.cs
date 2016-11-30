@@ -261,4 +261,9 @@ public static partial class Util
         cell.SetCellType(CellType.String);
         return cell.StringCellValue;
     }
+    public static void SetCellString(ICell cell, string val) {
+        if (cell == null) return;
+        cell.SetCellType(CellType.String);
+        cell.SetCellValue(val);
+    }
 }
