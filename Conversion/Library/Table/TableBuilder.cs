@@ -268,13 +268,11 @@ public partial class TableBuilder {
                 dataValidation.SuppressDropDownArrow = false;
                 dataValidation.CreatePromptBox(filed.Type, GetEnumComment(filed.Type));
                 sheetBack.AddValidationData(dataValidation);
-                Logger.info(fileFullName + " : " + GetEnumComment(filed.Type));
             }
         }
         workbook.RemoveSheetAt(0);
         workbook.SetSheetOrder(sheetBack.SheetName, 0);
         workbook.SetSheetName(0, sheetName);
-        Logger.info("RefreshNote : " + fileFullName);
         using (FileStream stream = new FileStream(fileFullName, FileMode.Create)) {
             workbook.Write(stream);
         }
