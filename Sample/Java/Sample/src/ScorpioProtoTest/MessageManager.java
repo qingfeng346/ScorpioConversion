@@ -3,6 +3,14 @@ package ScorpioProtoTest;
 import java.util.HashMap;
 @SuppressWarnings("serial")
 public class MessageManager {
+    public static final IMessage parseByteToMsg(int msgType, byte[] buff) {
+        switch (msgType) {
+        case 0: return Msg_C2G_Test.Deserialize(buff);
+        case 1: return Msg_C2G_Test2.Deserialize(buff);
+        case 2: return Msg_C2G_Test3.Deserialize(buff);
+        default: throw new RuntimeException("找不到MsgType : " + msgType);
+        }
+    };
     public static final HashMap<String, Integer> MessageToID = new HashMap<String, Integer>() {
         {
             put("Msg_C2G_Test", 0);
