@@ -11,6 +11,7 @@ namespace ScorpioConversion {
             InitializeComponent();
         }
         private void FormMain_Load(object sender, EventArgs e) {
+            this.Text = "转表工具 : " + Util.CurrentDirectory;
             Init();
         }
         private void CodeFoldButton_Click(object sender, EventArgs e) {
