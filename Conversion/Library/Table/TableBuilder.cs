@@ -216,7 +216,7 @@ public partial class TableBuilder {
             field.Type = fieldType;
             bool basic = BasicUtil.HasType(fieldType);
             if (!basic && !mCustoms.ContainsKey(fieldType) && !mEnums.ContainsKey(fieldType))
-                throw new System.Exception(string.Format("第 {0:d} 数据内容为 列的字段类型不能识别 : \"{1}\"", i, columnType));
+                throw new System.Exception(string.Format("第[{0}]列的 字段类型[{1}] 不能识别", Util.GetLineName(i), columnType));
             if (i == 0 && (field.Array == true || field.Info.BasicIndex != BasicEnum.INT32))
                 throw new System.Exception("第一列的数据类型必须为int32类型");
             field.Enum = mEnums.ContainsKey(fieldType);
