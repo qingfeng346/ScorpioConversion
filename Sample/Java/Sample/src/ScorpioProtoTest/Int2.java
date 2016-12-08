@@ -11,10 +11,10 @@ import Scorpio.Table.*;
 public class Int2 implements IData {
     private boolean m_IsInvalid = false;
     private Integer _Value1;
-    /** () */
+    /**   默认值() */
     public Integer getValue1() { return _Value1; }
     private Integer _Value2;
-    /** () */
+    /**   默认值() */
     public Integer getValue2() { return _Value2; }
     public Object GetData(String key ) {
         if (key.equals("Value1")) return _Value1;

@@ -17,10 +17,10 @@ namespace ScorpioProtoTest{
 class Int2 : public IData {
     private: bool m_IsInvalid;
     private: __int32 _Value1;
-    /// <summary> () </summary>
+    /* <summary>   默认值() </summary> */
     public: __int32 getValue1() { return _Value1; }
     private: __int32 _Value2;
-    /// <summary> () </summary>
+    /* <summary>   默认值() </summary> */
     public: __int32 getValue2() { return _Value2; }
     public: void* GetData(char * key ) {
         if (strcmp(key, "Value1") == 0) return &_Value1;

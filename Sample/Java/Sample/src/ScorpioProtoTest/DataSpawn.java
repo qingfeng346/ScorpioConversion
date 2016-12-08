@@ -11,23 +11,23 @@ import Scorpio.Table.*;
 public class DataSpawn implements IData {
     private boolean m_IsInvalid = false;
     private Integer _ID;
-    /** 测试ID 此值必须唯一 而且必须为int型() */
+    /** 测试ID 此值必须唯一 而且必须为int型  默认值() */
     public Integer getID() { return _ID; }
     public Integer ID() { return _ID; }
     private Integer _TestInt;
-    /** int类型() */
+    /** int类型  默认值() */
     public Integer getTestInt() { return _TestInt; }
     private String _TestString;
-    /** string类型() */
+    /** string类型  默认值() */
     public String getTestString() { return _TestString; }
     private Boolean _TestBool;
-    /** bool类型() */
+    /** bool类型  默认值() */
     public Boolean getTestBool() { return _TestBool; }
     private Int2 _TestInt2;
-    /** 自定义类型 根据ExcelConfig下 table.sco文件定义的Int2解析 类型为table_后面的名字 格式为 , 隔开() */
+    /** 自定义类型 根据ExcelConfig下 table.sco文件定义的Int2解析 类型为table_后面的名字 格式为 , 隔开  默认值() */
     public Int2 getTestInt2() { return _TestInt2; }
     private TestEnum _TestEnumName;
-    /** 自定义枚举() */
+    /** 自定义枚举  默认值() */
     public TestEnum getTestEnumName() { return _TestEnumName; }
     public Object GetData(String key ) {
         if (key.equals("ID")) return _ID;

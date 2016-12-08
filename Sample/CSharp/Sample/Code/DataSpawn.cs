@@ -8,23 +8,23 @@ namespace ScorpioProtoTest {
 public class DataSpawn : IData {
     private bool m_IsInvalid;
     private int _ID;
-    /// <summary> 测试ID 此值必须唯一 而且必须为int型() </summary>
+    /* <summary> 测试ID 此值必须唯一 而且必须为int型  默认值() </summary> */
     public int getID() { return _ID; }
     public int ID() { return _ID; }
     private int _TestInt;
-    /// <summary> int类型() </summary>
+    /* <summary> int类型  默认值() </summary> */
     public int getTestInt() { return _TestInt; }
     private string _TestString;
-    /// <summary> string类型() </summary>
+    /* <summary> string类型  默认值() </summary> */
     public string getTestString() { return _TestString; }
     private bool _TestBool;
-    /// <summary> bool类型() </summary>
+    /* <summary> bool类型  默认值() </summary> */
     public bool getTestBool() { return _TestBool; }
     private Int2 _TestInt2;
-    /// <summary> 自定义类型 根据ExcelConfig下 table.sco文件定义的Int2解析 类型为table_后面的名字 格式为 , 隔开() </summary>
+    /* <summary> 自定义类型 根据ExcelConfig下 table.sco文件定义的Int2解析 类型为table_后面的名字 格式为 , 隔开  默认值() </summary> */
     public Int2 getTestInt2() { return _TestInt2; }
     private TestEnum _TestEnumName;
-    /// <summary> 自定义枚举() </summary>
+    /* <summary> 自定义枚举  默认值() </summary> */
     public TestEnum getTestEnumName() { return _TestEnumName; }
     public object GetData(string key ) {
         if (key == "ID") return _ID;

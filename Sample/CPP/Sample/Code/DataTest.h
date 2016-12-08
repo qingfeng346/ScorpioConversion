@@ -20,32 +20,33 @@ namespace ScorpioProtoTest{
 class DataTest : public IData {
     private: bool m_IsInvalid;
     private: __int32 _ID;
-    /// <summary> 测试ID 此值必须唯一 而且必须为int型() </summary>
+    /* <summary> 测试ID 此值必须唯一 而且必须为int型  默认值() </summary> */
     public: __int32 getID() { return _ID; }
     public: __int32 ID() { return _ID; }
     private: __int32 _TestInt;
-    /// <summary> int类型(20) </summary>
+    /* <summary> int类型
+测试注释回车  默认值(20) </summary> */
     public: __int32 getTestInt() { return _TestInt; }
     private: char * _TestString;
-    /// <summary> string类型(aaa) </summary>
+    /* <summary> string类型  默认值(aaa) </summary> */
     public: char * getTestString() { return _TestString; }
     private: bool _TestBool;
-    /// <summary> bool类型() </summary>
+    /* <summary> bool类型  默认值() </summary> */
     public: bool getTestBool() { return _TestBool; }
     private: Int2 * _TestInt2;
-    /// <summary> 自定义类型 根据ExcelConfig下 table.sco文件定义的Int2解析 类型为table_后面的名字 格式为 , 隔开() </summary>
+    /* <summary> 自定义类型 根据ExcelConfig下 table.sco文件定义的Int2解析 类型为table_后面的名字 格式为 , 隔开  默认值() </summary> */
     public: Int2 * getTestInt2() { return _TestInt2; }
     private: TestEnum _TestEnumName;
-    /// <summary> 自定义枚举() </summary>
+    /* <summary> 自定义枚举  默认值() </summary> */
     public: TestEnum getTestEnumName() { return _TestEnumName; }
     private: std::vector<__int32> _TestArray;
-    /// <summary> array类型 以逗号隔开() </summary>
+    /* <summary> array类型 以逗号隔开  默认值() </summary> */
     public: std::vector<__int32> getTestArray() { return _TestArray; }
     private: std::vector<Int2 *> _TestArray2;
-    /// <summary> array类型 自定义类型 每一个中括号为一个单位() </summary>
+    /* <summary> array类型 自定义类型 每一个中括号为一个单位  默认值() </summary> */
     public: std::vector<Int2 *> getTestArray2() { return _TestArray2; }
     private: Int3 * _TestInt3;
-    /// <summary> 嵌套类型() </summary>
+    /* <summary> 嵌套类型  默认值() </summary> */
     public: Int3 * getTestInt3() { return _TestInt3; }
     public: void* GetData(char * key ) {
         if (strcmp(key, "ID") == 0) return &_ID;

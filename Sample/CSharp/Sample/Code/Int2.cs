@@ -8,10 +8,10 @@ namespace ScorpioProtoTest {
 public class Int2 : IData {
     private bool m_IsInvalid;
     private int _Value1;
-    /// <summary> () </summary>
+    /* <summary>   默认值() </summary> */
     public int getValue1() { return _Value1; }
     private int _Value2;
-    /// <summary> () </summary>
+    /* <summary>   默认值() </summary> */
     public int getValue2() { return _Value2; }
     public object GetData(string key ) {
         if (key == "Value1") return _Value1;

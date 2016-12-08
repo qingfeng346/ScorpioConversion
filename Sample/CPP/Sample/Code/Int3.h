@@ -18,10 +18,10 @@ namespace ScorpioProtoTest{
 class Int3 : public IData {
     private: bool m_IsInvalid;
     private: std::vector<Int2 *> _Value1;
-    /// <summary> () </summary>
+    /* <summary>   默认值() </summary> */
     public: std::vector<Int2 *> getValue1() { return _Value1; }
     private: __int32 _Value2;
-    /// <summary> () </summary>
+    /* <summary>   默认值() </summary> */
     public: __int32 getValue2() { return _Value2; }
     public: void* GetData(char * key ) {
         if (strcmp(key, "Value1") == 0) return &_Value1;
