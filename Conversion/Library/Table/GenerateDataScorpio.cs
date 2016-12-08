@@ -9,7 +9,7 @@ public class GenerateDataScorpio : IGenerate
 __ClassName = [");
         foreach (var field in m_Fields) {
             string str = @"
-    { Index = __Index, Name = ""__Name"", Type = ""__Type"", Array = __Array, Attribute = __Attribute },     //__Note(__Default)";
+    { Index = __Index, Name = ""__Name"", Type = ""__Type"", Array = __Array, Attribute = __Attribute },     /* __Note  默认值(__Default) */";
             str = str.Replace("__Index", field.Index.ToString());
             str = str.Replace("__Name", field.Name);
             str = str.Replace("__Type", field.Enum ? BasicUtil.GetType(BasicEnum.INT32).ScorpioName : field.Type);

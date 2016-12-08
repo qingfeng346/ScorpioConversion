@@ -28,12 +28,12 @@ public class GenerateDataJava : IGenerate
             if (field.Array) {
                 str = @"
     private List<__Type> ___Name;
-    /** __Note(__Default) */
+    /** __Note  默认值(__Default) */
     public List<__Type> get__Name() { return ___Name; }";
             } else {
                 str = @"
     private __Type ___Name;
-    /** __Note(__Default) */
+    /** __Note  默认值(__Default) */
     public __Type get__Name() { return ___Name; }";
                 if (first && (bool)m_Parameter) {
                     first = false;

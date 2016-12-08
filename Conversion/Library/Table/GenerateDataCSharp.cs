@@ -29,12 +29,12 @@ public class GenerateDataCSharp : IGenerate
             if (field.Array) {
                 str = @"
     private ReadOnlyCollection<__Type> ___Name;
-    /// <summary> __Note(__Default) </summary>
+    /* <summary> __Note  默认值(__Default) </summary> */
     public ReadOnlyCollection<__Type> get__Name() { return ___Name; }";
             } else {
                 str = @"
     private __Type ___Name;
-    /// <summary> __Note(__Default) </summary>
+    /* <summary> __Note  默认值(__Default) </summary> */
     public __Type get__Name() { return ___Name; }";
                 if (first && (bool)m_Parameter) {
                     first = false;
