@@ -27,13 +27,20 @@
     <ClInclude Include="Scorpio\Commons\ScorpioReader.h" />
     <ClInclude Include="Scorpio\Commons\TableUtil.h" />
     <ClInclude Include="Scorpio\Table\TableUtil.h" />
+    <ClInclude Include="src\Commons\ScorpioReader.h" />
+    <ClInclude Include="src\Commons\ScorpioUtil.h" />
+    <ClInclude Include="src\Commons\ScorpioWriter.h" />
+    <ClInclude Include="src\Message\IMessage.h" />
+    <ClInclude Include="src\Table\IData.h" />
+    <ClInclude Include="src\Table\ITable.h" />
+    <ClInclude Include="src\Table\TableUtil.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Scorpio\Commons\ScorpioUtil.cpp" />
-    <ClCompile Include="Scorpio\Commons\ScorpioWriter.cpp" />
-    <ClCompile Include="Scorpio\Commons\ScorpioReader.cpp" />
-    <ClCompile Include="Scorpio\Message\IMessage.cpp" />
-    <ClCompile Include="Scorpio\Table\TableUtil.cpp" />
+    <ClCompile Include="src\Commons\ScorpioReader.cpp" />
+    <ClCompile Include="src\Commons\ScorpioUtil.cpp" />
+    <ClCompile Include="src\Commons\ScorpioWriter.cpp" />
+    <ClCompile Include="src\Message\IMessage.cpp" />
+    <ClCompile Include="src\Table\TableUtil.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{0C433BF7-E220-4699-A041-57C7C4827D90}</ProjectGuid>
