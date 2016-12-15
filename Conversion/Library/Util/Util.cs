@@ -25,7 +25,7 @@ public static partial class Util
     private const double MB_LENGTH = 1048576;           //1MB 的字节数
     private const double GB_LENGTH = 1073741824;		//1GB 的字节数
 
-    public static string CurrentDirectory { get { return AppDomain.CurrentDomain.BaseDirectory; } }
+    public static string WorkspaceDirectory { get; set; }
 
 
     public static Script Script;
@@ -69,7 +69,7 @@ public static partial class Util
         if (customDatabase != null) customDatabase.Clear();
         if (customDatabaseClass != null) customDatabaseClass.Clear();
         if (customConst != null) customConst.Clear();
-        dir = Path.Combine(CurrentDirectory, dir);
+        dir = Path.Combine(WorkspaceDirectory, dir);
         Script = new Script();
         Script.LoadLibrary();
         List<ScriptObject> GlobalBasic = new List<ScriptObject>();

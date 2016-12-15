@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.Text;
 using System.IO;
 /// <summary> File工具类 </summary>
-public static class FileUtil
-{
+public static class FileUtil {
+    public static readonly byte[] BomBuffer = new byte[] { 0xef, 0xbb, 0xbf };
     /// <summary> 字符串头一个字母大写 </summary>
     public static string ToOneUpper(string str) {
         if (string.IsNullOrEmpty(str))
@@ -14,13 +14,16 @@ public static class FileUtil
         return char.ToUpper(str[0]) + str.Substring(1);
     }
     /// <summary> 创建一个目录 </summary>
-    public static void CreateDirectory(string path)
+    public static bool CreateDirectory(string path)
     {
         try {
-            if (!PathExist(path)) Directory.CreateDirectory(path);
+            if (!PathExist(path))
+                Directory.CreateDirectory(path);
+            return true;
         } catch (System.Exception ex) {
             Logger.error("CreateDirectory is error : {0}", ex.ToString());
         }
+        return false;
     }
     /// <summary> 获得完整路径，包括解析../类似相对路径 </summary>
     public static string GetFullPath(string path) {
@@ -38,18 +41,14 @@ public static class FileUtil
         return !string.IsNullOrEmpty(file) && File.Exists(file);
     }
     /// <summary> 判断文件夹是否存在 </summary>
-    public static bool PathExist(String path)
-    {
+    public static bool PathExist(String path) {
         return !string.IsNullOrEmpty(path) && Directory.Exists(path);
     }
     /// <summary> 根据字符串创建文件 </summary>
-    public static void CreateFile(string fileName, string buffer, bool bom, string[] filePath)
-    {
+    public static void CreateFile(string fileName, string buffer, bool bom, string[] filePath) {
         if (filePath == null || filePath.Length < 0) return;
-        for (int i = 0; i < filePath.Length; ++i)
-        {
-            if (!string.IsNullOrEmpty(filePath[i]))
-            {
+        for (int i = 0; i < filePath.Length; ++i) {
+            if (!string.IsNullOrEmpty(filePath[i])) {
                 CreateFile(filePath[i] + "/" + fileName, buffer, bom);
             }
         }
@@ -91,15 +90,13 @@ public static class FileUtil
             string path = Path.GetDirectoryName(fileName);
             CreateDirectory(path);
             if (File.Exists(fileName)) File.Delete(fileName);
-            FileStream fs = new FileStream(fileName, FileMode.Create);
-            if (bom)
-            {
-                byte[] bomBuffer = new byte[] { 0xef, 0xbb, 0xbf };
-                fs.Write(bomBuffer, 0, bomBuffer.Length);
+            using (FileStream fs = new FileStream(fileName, FileMode.Create)) {
+                if (bom) {
+                    fs.Write(BomBuffer, 0, BomBuffer.Length);
+                }
+                fs.Write(buffer, 0, buffer.Length);
+                fs.Flush();
             }
-            fs.Write(buffer, 0, buffer.Length);
-            fs.Flush();
-            fs.Close();
         } catch (System.Exception ex) {
             Logger.error("CreateFile is error : {0}", ex.ToString());
         }

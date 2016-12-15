@@ -298,7 +298,7 @@ public partial class TableBuilder {
             for (int i = 0; i < fileNames.Count; ++i) {
                 string fileName = fileNames[i];
                 Logger.info("正在转换文件 {0}/{1} [{2}]", i + 1, fileNames.Count, fileName);
-                string tempFileName = Util.CurrentDirectory + "temp.xls";
+                string tempFileName = Util.WorkspaceDirectory + "temp.xls";
                 FileUtil.DeleteFile(tempFileName);
                 File.Copy(fileName, tempFileName);
                 Progress.Current = (i + 1);
