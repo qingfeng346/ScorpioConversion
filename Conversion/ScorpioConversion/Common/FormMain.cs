@@ -12,6 +12,7 @@ using System.Windows.Forms;
 namespace ScorpioConversion {
     public partial class FormMain {
 		private StringBuilder builder = new StringBuilder();
+        private Dictionary<PROGRAM, CodeControl> controls = new Dictionary<PROGRAM, CodeControl>();
         private void Init() {
             Logger.SetLogger(new LibLogger());
 			#if MONO_GTK
@@ -25,10 +26,13 @@ namespace ScorpioConversion {
             for (int i = (int)PROGRAM.NONE + 1; i < (int)PROGRAM.COUNT; ++i) {
                 var codeControl = new CodeControl();
                 codeControl.Dock = DockStyle.Bottom;
-                codeControl.SetProgram(((PROGRAM)i));
                 CodeFoldPanel.Controls.Add(codeControl);
+                controls[(PROGRAM)i] = codeControl;
             }
 			#endif
+        }
+        private void Bind() {
+            ConversionUtil.Cleanup();
             ConversionUtil.Bind(textBoxPackage, ConfigKey.PackageName, ConfigFile.InitConfig);
             ConversionUtil.Bind(textBoxSpawns, ConfigKey.SpawnList, ConfigFile.InitConfig);
 
@@ -40,6 +44,10 @@ namespace ScorpioConversion {
             ConversionUtil.Bind(textBoxAllLanguages, ConfigKey.AllLanguage, ConfigFile.LanguageConfig);
             ConversionUtil.Bind(textBoxTranslation, ConfigKey.TranslationDirectory, ConfigFile.LanguageConfig);
             ConversionUtil.Bind(textBoxLanguage, ConfigKey.LanguageDirectory, ConfigFile.LanguageConfig);
+            foreach (var pair in controls) {
+                pair.Value.SetProgram(pair.Key);
+            } 
+
         }
         private void Tick() {
             if (Progress.Count > 0) {
@@ -52,39 +60,41 @@ namespace ScorpioConversion {
 				#endif
 			}
             lock (ConversionLogger.OutMessage) {
-                FileStream stream = new FileStream(ConversionUtil.CurrentDirectory + "log.log", FileMode.Append, FileAccess.Write);
-                while (ConversionLogger.OutMessage.Count > 0) {
-                    LogValue value = ConversionLogger.OutMessage.Dequeue();
-					string str = DateTime.Now.ToString() + "  [" + value.type + "]" + value.message + "\r\n";
-					#if MONO_GTK
-					TextIter iter = TextIter.Zero;
-					builder.Append(str);
-					richTextBoxLog.Buffer.Text = builder.ToString();
-					richTextBoxLog.ScrollToIter(richTextBoxLog.Buffer.EndIter, 0, true, 0, 0);
-					#else
-					richTextBoxLog.SelectionStart = richTextBoxLog.Text.Length;
-					if (value.type == LogType.Info)
-					richTextBoxLog.SelectionColor = System.Drawing.Color.Black;
-					else if (value.type == LogType.Warn)
-					richTextBoxLog.SelectionColor = System.Drawing.Color.Red;
-					else
-					richTextBoxLog.SelectionColor = System.Drawing.Color.Red;
-					richTextBoxLog.AppendText(str);
-					richTextBoxLog.ScrollToCaret();
-					#endif
-                    byte[] buffer = Encoding.UTF8.GetBytes(str);
-                    stream.Write(buffer, 0, buffer.Length);
+                using (FileStream stream = new FileStream(ConversionUtil.GetPath("log.log"), FileMode.Append, FileAccess.Write)) {
+                    while (ConversionLogger.OutMessage.Count > 0) {
+                        LogValue value = ConversionLogger.OutMessage.Dequeue();
+                        string str = DateTime.Now.ToString() + "  [" + value.type + "]" + value.message + "\r\n";
+#if MONO_GTK
+					    TextIter iter = TextIter.Zero;
+					    builder.Append(str);
+					    richTextBoxLog.Buffer.Text = builder.ToString();
+					    richTextBoxLog.ScrollToIter(richTextBoxLog.Buffer.EndIter, 0, true, 0, 0);
+#else
+                        richTextBoxLog.SelectionStart = richTextBoxLog.Text.Length;
+                        if (value.type == LogType.Info)
+                            richTextBoxLog.SelectionColor = System.Drawing.Color.Black;
+                        else if (value.type == LogType.Warn)
+                            richTextBoxLog.SelectionColor = System.Drawing.Color.Red;
+                        else
+                            richTextBoxLog.SelectionColor = System.Drawing.Color.Red;
+                        richTextBoxLog.AppendText(str);
+                        richTextBoxLog.ScrollToCaret();
+#endif
+                        byte[] buffer = Encoding.UTF8.GetBytes(str);
+                        stream.Write(buffer, 0, buffer.Length);
+                    }
                 }
-                stream.Close();
             }
         }
         void StartRun(ThreadStart start) {
             builder = new StringBuilder();
             new Thread(() => {
-                try {
-                    if (start != null) start();
-                } catch (System.Exception ex) {
-                    Logger.error(string.Format("Run is Error method : {0}  error : {1}", start.ToString(), ex.ToString()));
+                lock(this) {
+                    try {
+                        if (start != null) start();
+                    } catch (System.Exception ex) {
+                        Logger.error(string.Format("Run is Error method : {0}  error : {1}", start.ToString(), ex.ToString()));
+                    }
                 }
                 EndRun();
             }).Start();
@@ -93,7 +103,7 @@ namespace ScorpioConversion {
         }
         private void buttonTransformFolder_Click(object sender, EventArgs e) {
             StartRun(() => {
-                var files = Directory.GetFiles(textTableFolder.Text, "*.xls", SearchOption.AllDirectories);
+                var files = Directory.GetFiles(ConversionUtil.GetPath(textTableFolder.Text), "*.xls", SearchOption.AllDirectories);
                 if (files.Length == 0)
                     throw new Exception(string.Format("路径[{0}]下的文件数量为0", textTableFolder.Text));
                 TableBuilder tableBuilder = new TableBuilder();
@@ -109,7 +119,7 @@ namespace ScorpioConversion {
                     }
                 };
                 tableBuilder.Transform(string.Join(";", files),
-                    textTableConfig.Text,
+                    ConversionUtil.GetPath(textTableConfig.Text),
                     textBoxPackage.Text,
                     ConversionUtil.GetConfig(ConfigKey.SpawnList, ConfigFile.InitConfig),
                     Extends.GetChecked(getManager),
@@ -142,7 +152,7 @@ namespace ScorpioConversion {
 			#else
             OpenFileDialog dialog = new OpenFileDialog();
             dialog.Multiselect = true;
-            dialog.InitialDirectory = ConversionUtil.GetConfig(ConfigKey.TransformDirectory, ConfigFile.PathConfig);
+            dialog.InitialDirectory = ConversionUtil.GetPath(ConversionUtil.GetConfig(ConfigKey.TransformDirectory, ConfigFile.PathConfig));
             dialog.Filter = "Excel文件|*.xls;|所有文件|*.*";
             dialog.Title = "请选择要转换的文件";
             if (dialog.ShowDialog() == DialogResult.OK) {
@@ -158,7 +168,7 @@ namespace ScorpioConversion {
         private void buttonTransform_Click(object sender, EventArgs e) {
             StartRun(() => {
                 new TableBuilder().Transform(this.textTransformFiles.Text,
-                    textTableConfig.Text,
+                    ConversionUtil.GetPath(textTableConfig.Text),
                     textBoxPackage.Text,
                     ConversionUtil.GetConfig(ConfigKey.SpawnList, ConfigFile.InitConfig),
                     Extends.GetChecked(getManager),
@@ -168,11 +178,11 @@ namespace ScorpioConversion {
         }
         private void BuildLanguage(Dictionary<string, LanguageTable> tables, bool build) {
             string allLanguages = ConversionUtil.GetConfig(ConfigKey.AllLanguage, ConfigFile.LanguageConfig);
-            string languageDirectory = ConversionUtil.GetConfig(ConfigKey.LanguageDirectory, ConfigFile.LanguageConfig);
+            string languageDirectory = ConversionUtil.GetPath(ConversionUtil.GetConfig(ConfigKey.LanguageDirectory, ConfigFile.LanguageConfig));
             LanguageBuilder builder = new LanguageBuilder(
                 allLanguages,
                 languageDirectory,
-                ConversionUtil.GetConfig(ConfigKey.TranslationDirectory, ConfigFile.LanguageConfig),
+                ConversionUtil.GetPath(ConversionUtil.GetConfig(ConfigKey.TranslationDirectory, ConfigFile.LanguageConfig)),
                 tables);
             if (build) {
                 builder.Build();
@@ -216,7 +226,7 @@ namespace ScorpioConversion {
 			#else
 			OpenFileDialog dialog = new OpenFileDialog();
 			dialog.Multiselect = true;
-			dialog.InitialDirectory = ConversionUtil.GetConfig(ConfigKey.RollbackDirectory, ConfigFile.PathConfig);
+			dialog.InitialDirectory = ConversionUtil.GetPath(ConversionUtil.GetConfig(ConfigKey.RollbackDirectory, ConfigFile.PathConfig));
 			dialog.Filter = "data文件|*.data|所有文件|*.*";
 			dialog.Title = "请选择要反转的文件";
 			if (dialog.ShowDialog() == DialogResult.OK) {
@@ -238,7 +248,7 @@ namespace ScorpioConversion {
 
         private void buttonMessage_Click(object sender, EventArgs e) {
             StartRun(() => {
-                new MessageBuilder().Transform(textMessage.Text,
+                new MessageBuilder().Transform(ConversionUtil.GetPath(textMessage.Text),
                     textBoxPackage.Text,
                     ConversionUtil.GetProgramConfig());
             });
@@ -246,7 +256,7 @@ namespace ScorpioConversion {
 
         private void buttonDatabase_Click(object sender, EventArgs e) {
             StartRun(() => {
-                new DatabaseBuilder().Transform(textDatabaseConfig.Text,
+                new DatabaseBuilder().Transform(ConversionUtil.GetPath(textDatabaseConfig.Text),
                     textBoxPackage.Text,
                     ConversionUtil.GetProgramConfig());
             });

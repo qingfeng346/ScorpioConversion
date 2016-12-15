@@ -7,6 +7,7 @@ using CheckBox = global::Gtk.ToggleButton;
 #else
 using System.Windows.Forms;
 #endif
+using ScorpioConversion;
 public static class Extends
 {
 	public static bool GetChecked(CheckBox checkBox) {
@@ -96,6 +97,7 @@ public class ConfigKey {
 }
 public static partial class ConversionUtil {
     public static string CurrentDirectory { get { return AppDomain.CurrentDomain.BaseDirectory; } }
+    public static string WorkspaceDirectory { get; set; }
     public static Dictionary<PROGRAM, ProgramConfig> GetProgramConfig() {
         Dictionary<PROGRAM, ProgramConfig> configs = new Dictionary<PROGRAM, ProgramConfig>();
         for (int i = (int)PROGRAM.NONE + 1; i < (int)PROGRAM.COUNT; ++i) {
@@ -116,6 +118,19 @@ public static partial class ConversionUtil {
     }
     private static Dictionary<ConfigFile, Config> m_Configs = new Dictionary<ConfigFile, Config>();
     private static Dictionary<object, AutoConfig> m_AutoConfigs = new Dictionary<object, AutoConfig>();
+    public static void Cleanup() {
+        m_Configs.Clear();
+        m_AutoConfigs.Clear();
+    }
+    public static void CheckExit() {
+        if (FormWorkspace.GetInstance().Visible) return;
+        if (FormMain.GetInstance().Visible) return;
+        if (FormTiny.GetInstance().Visible) return;
+        Environment.Exit(0);
+    }
+    public static string GetPath(string path) {
+        return System.IO.Path.Combine(WorkspaceDirectory, path);
+    }
     public static void Bind(RichTextBox textBox, string key, ConfigFile file) {
         Bind(textBox, PROGRAM.NONE, key, file);
     }
@@ -164,8 +179,7 @@ public static partial class ConversionUtil {
         m_AutoConfigs[textBox] = config;
     }
     private static void CheckedChanged(object sender, EventArgs e) {
-        if (m_AutoConfigs.ContainsKey(sender))
-        {
+        if (m_AutoConfigs.ContainsKey(sender)) {
             AutoConfig config = m_AutoConfigs[sender];
 			SetConfig(config.program, config.key, Extends.GetChecked((CheckBox)sender) ? "true" : "false", config.file);
         }
@@ -173,7 +187,7 @@ public static partial class ConversionUtil {
     private static Config GetConfig(ConfigFile file) {
         Config config = null;
         if (!m_Configs.ContainsKey(file)) {
-            config = new Config(CurrentDirectory + file.ToString() + ".ini", true);
+            config = new Config(WorkspaceDirectory + file.ToString() + ".ini", true);
             m_Configs.Add(file, config);
         } else {
             config = m_Configs[file];
