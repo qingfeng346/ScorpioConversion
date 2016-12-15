@@ -75,6 +75,10 @@
             this.toolStrip1 = new System.Windows.Forms.ToolStrip();
             this.toolStripButtonTiny = new System.Windows.Forms.ToolStripButton();
             this.toolStripContainer2 = new System.Windows.Forms.ToolStripContainer();
+            this.menuStrip1 = new System.Windows.Forms.MenuStrip();
+            this.文件ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.ChangeWorkspace = new System.Windows.Forms.ToolStripMenuItem();
+            this.关于ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.splitContainerMain.Panel1.SuspendLayout();
             this.splitContainerMain.Panel2.SuspendLayout();
             this.splitContainerMain.SuspendLayout();
@@ -90,6 +94,7 @@
             this.toolStripContainer2.ContentPanel.SuspendLayout();
             this.toolStripContainer2.TopToolStripPanel.SuspendLayout();
             this.toolStripContainer2.SuspendLayout();
+            this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
             // splitContainerMain
@@ -113,7 +118,7 @@
             // 
             this.splitContainerMain.Panel2.AutoScroll = true;
             this.splitContainerMain.Panel2.Controls.Add(this.splitContainerFunc);
-            this.splitContainerMain.Size = new System.Drawing.Size(882, 506);
+            this.splitContainerMain.Size = new System.Drawing.Size(882, 520);
             this.splitContainerMain.SplitterDistance = 309;
             this.splitContainerMain.SplitterIncrement = 10;
             this.splitContainerMain.SplitterWidth = 10;
@@ -316,14 +321,15 @@
             // splitContainerFunc.Panel2
             // 
             this.splitContainerFunc.Panel2.Controls.Add(this.richTextBoxLog);
-            this.splitContainerFunc.Size = new System.Drawing.Size(563, 506);
-            this.splitContainerFunc.SplitterDistance = 250;
+            this.splitContainerFunc.Size = new System.Drawing.Size(563, 520);
+            this.splitContainerFunc.SplitterDistance = 256;
             this.splitContainerFunc.SplitterIncrement = 10;
             this.splitContainerFunc.SplitterWidth = 10;
             this.splitContainerFunc.TabIndex = 0;
             // 
             // buttonRefreshLanguage
             // 
+            this.buttonRefreshLanguage.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.buttonRefreshLanguage.Location = new System.Drawing.Point(467, 24);
             this.buttonRefreshLanguage.Name = "buttonRefreshLanguage";
             this.buttonRefreshLanguage.Size = new System.Drawing.Size(75, 23);
@@ -344,6 +350,7 @@
             // 
             // buttonTransformFolder
             // 
+            this.buttonTransformFolder.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.buttonTransformFolder.Location = new System.Drawing.Point(382, 79);
             this.buttonTransformFolder.Name = "buttonTransformFolder";
             this.buttonTransformFolder.Size = new System.Drawing.Size(75, 22);
@@ -354,6 +361,8 @@
             // 
             // textTableFolder
             // 
+            this.textTableFolder.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.textTableFolder.Location = new System.Drawing.Point(144, 79);
             this.textTableFolder.Name = "textTableFolder";
             this.textTableFolder.Size = new System.Drawing.Size(232, 21);
@@ -370,6 +379,8 @@
             // 
             // textTableConfig
             // 
+            this.textTableConfig.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.textTableConfig.Location = new System.Drawing.Point(145, 52);
             this.textTableConfig.Name = "textTableConfig";
             this.textTableConfig.Size = new System.Drawing.Size(232, 21);
@@ -386,6 +397,7 @@
             // 
             // buttonDatabase
             // 
+            this.buttonDatabase.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.buttonDatabase.Location = new System.Drawing.Point(382, 192);
             this.buttonDatabase.Name = "buttonDatabase";
             this.buttonDatabase.Size = new System.Drawing.Size(75, 22);
@@ -396,6 +408,8 @@
             // 
             // textDatabaseConfig
             // 
+            this.textDatabaseConfig.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.textDatabaseConfig.Location = new System.Drawing.Point(144, 193);
             this.textDatabaseConfig.Name = "textDatabaseConfig";
             this.textDatabaseConfig.Size = new System.Drawing.Size(232, 21);
@@ -412,6 +426,7 @@
             // 
             // buttonMessage
             // 
+            this.buttonMessage.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.buttonMessage.Location = new System.Drawing.Point(382, 164);
             this.buttonMessage.Name = "buttonMessage";
             this.buttonMessage.Size = new System.Drawing.Size(75, 22);
@@ -422,6 +437,8 @@
             // 
             // textMessage
             // 
+            this.textMessage.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.textMessage.Location = new System.Drawing.Point(144, 165);
             this.textMessage.Name = "textMessage";
             this.textMessage.Size = new System.Drawing.Size(232, 21);
@@ -467,6 +484,8 @@
             // 
             // progressBar
             // 
+            this.progressBar.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.progressBar.Location = new System.Drawing.Point(81, 223);
             this.progressBar.MarqueeAnimationSpeed = 0;
             this.progressBar.Name = "progressBar";
@@ -476,6 +495,7 @@
             // 
             // buttonRollback
             // 
+            this.buttonRollback.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.buttonRollback.Location = new System.Drawing.Point(467, 136);
             this.buttonRollback.Name = "buttonRollback";
             this.buttonRollback.Size = new System.Drawing.Size(75, 22);
@@ -486,6 +506,7 @@
             // 
             // buttonTransform
             // 
+            this.buttonTransform.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.buttonTransform.Location = new System.Drawing.Point(467, 107);
             this.buttonTransform.Name = "buttonTransform";
             this.buttonTransform.Size = new System.Drawing.Size(75, 22);
@@ -496,6 +517,7 @@
             // 
             // selectRollbackFiles
             // 
+            this.selectRollbackFiles.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.selectRollbackFiles.Location = new System.Drawing.Point(382, 136);
             this.selectRollbackFiles.Name = "selectRollbackFiles";
             this.selectRollbackFiles.Size = new System.Drawing.Size(75, 22);
@@ -506,6 +528,7 @@
             // 
             // selectTransformFiles
             // 
+            this.selectTransformFiles.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.selectTransformFiles.Location = new System.Drawing.Point(382, 107);
             this.selectTransformFiles.Name = "selectTransformFiles";
             this.selectTransformFiles.Size = new System.Drawing.Size(75, 22);
@@ -516,6 +539,8 @@
             // 
             // textRollbackFiles
             // 
+            this.textRollbackFiles.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.textRollbackFiles.Location = new System.Drawing.Point(145, 138);
             this.textRollbackFiles.Name = "textRollbackFiles";
             this.textRollbackFiles.ReadOnly = true;
@@ -524,6 +549,8 @@
             // 
             // textTransformFiles
             // 
+            this.textTransformFiles.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.textTransformFiles.Location = new System.Drawing.Point(145, 109);
             this.textTransformFiles.Name = "textTransformFiles";
             this.textTransformFiles.ReadOnly = true;
@@ -554,7 +581,7 @@
             this.richTextBoxLog.Dock = System.Windows.Forms.DockStyle.Fill;
             this.richTextBoxLog.Location = new System.Drawing.Point(0, 0);
             this.richTextBoxLog.Name = "richTextBoxLog";
-            this.richTextBoxLog.Size = new System.Drawing.Size(561, 244);
+            this.richTextBoxLog.Size = new System.Drawing.Size(561, 252);
             this.richTextBoxLog.TabIndex = 0;
             this.richTextBoxLog.Text = "";
             // 
@@ -584,13 +611,13 @@
             // 
             this.toolStripContainer1.ContentPanel.AutoScroll = true;
             this.toolStripContainer1.ContentPanel.Controls.Add(this.splitContainerMain);
-            this.toolStripContainer1.ContentPanel.Size = new System.Drawing.Size(882, 506);
+            this.toolStripContainer1.ContentPanel.Size = new System.Drawing.Size(882, 520);
             this.toolStripContainer1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.toolStripContainer1.LeftToolStripPanelVisible = false;
             this.toolStripContainer1.Location = new System.Drawing.Point(0, 0);
             this.toolStripContainer1.Name = "toolStripContainer1";
             this.toolStripContainer1.RightToolStripPanelVisible = false;
-            this.toolStripContainer1.Size = new System.Drawing.Size(882, 528);
+            this.toolStripContainer1.Size = new System.Drawing.Size(882, 542);
             this.toolStripContainer1.TabIndex = 2;
             this.toolStripContainer1.Text = "toolStripContainer1";
             this.toolStripContainer1.TopToolStripPanelVisible = false;
@@ -600,7 +627,7 @@
             this.toolStrip1.Dock = System.Windows.Forms.DockStyle.None;
             this.toolStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.toolStripButtonTiny});
-            this.toolStrip1.Location = new System.Drawing.Point(3, 0);
+            this.toolStrip1.Location = new System.Drawing.Point(3, 25);
             this.toolStrip1.Name = "toolStrip1";
             this.toolStrip1.Size = new System.Drawing.Size(35, 25);
             this.toolStrip1.TabIndex = 3;
@@ -624,26 +651,62 @@
             // 
             this.toolStripContainer2.ContentPanel.AutoScroll = true;
             this.toolStripContainer2.ContentPanel.Controls.Add(this.toolStripContainer1);
-            this.toolStripContainer2.ContentPanel.Size = new System.Drawing.Size(882, 528);
+            this.toolStripContainer2.ContentPanel.Size = new System.Drawing.Size(882, 542);
             this.toolStripContainer2.Dock = System.Windows.Forms.DockStyle.Fill;
             this.toolStripContainer2.LeftToolStripPanelVisible = false;
             this.toolStripContainer2.Location = new System.Drawing.Point(0, 0);
             this.toolStripContainer2.Name = "toolStripContainer2";
             this.toolStripContainer2.RightToolStripPanelVisible = false;
-            this.toolStripContainer2.Size = new System.Drawing.Size(882, 553);
+            this.toolStripContainer2.Size = new System.Drawing.Size(882, 592);
             this.toolStripContainer2.TabIndex = 4;
             this.toolStripContainer2.Text = "toolStripContainer2";
             // 
             // toolStripContainer2.TopToolStripPanel
             // 
+            this.toolStripContainer2.TopToolStripPanel.Controls.Add(this.menuStrip1);
             this.toolStripContainer2.TopToolStripPanel.Controls.Add(this.toolStrip1);
+            // 
+            // menuStrip1
+            // 
+            this.menuStrip1.Dock = System.Windows.Forms.DockStyle.None;
+            this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.文件ToolStripMenuItem,
+            this.关于ToolStripMenuItem});
+            this.menuStrip1.Location = new System.Drawing.Point(0, 0);
+            this.menuStrip1.Name = "menuStrip1";
+            this.menuStrip1.Size = new System.Drawing.Size(882, 25);
+            this.menuStrip1.TabIndex = 4;
+            this.menuStrip1.Text = "menuStrip1";
+            // 
+            // 文件ToolStripMenuItem
+            // 
+            this.文件ToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.ChangeWorkspace});
+            this.文件ToolStripMenuItem.Name = "文件ToolStripMenuItem";
+            this.文件ToolStripMenuItem.Size = new System.Drawing.Size(44, 21);
+            this.文件ToolStripMenuItem.Text = "文件";
+            // 
+            // ChangeWorkspace
+            // 
+            this.ChangeWorkspace.Name = "ChangeWorkspace";
+            this.ChangeWorkspace.Size = new System.Drawing.Size(152, 22);
+            this.ChangeWorkspace.Text = "切换工作目录";
+            this.ChangeWorkspace.Click += new System.EventHandler(this.ChangeWorkspace_Click);
+            // 
+            // 关于ToolStripMenuItem
+            // 
+            this.关于ToolStripMenuItem.Name = "关于ToolStripMenuItem";
+            this.关于ToolStripMenuItem.Size = new System.Drawing.Size(44, 21);
+            this.关于ToolStripMenuItem.Text = "关于";
             // 
             // FormMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(882, 553);
+            this.ClientSize = new System.Drawing.Size(882, 592);
             this.Controls.Add(this.toolStripContainer2);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.MainMenuStrip = this.menuStrip1;
             this.Name = "FormMain";
             this.Text = "转表工具";
             this.Load += new System.EventHandler(this.FormMain_Load);
@@ -670,6 +733,8 @@
             this.toolStripContainer2.TopToolStripPanel.PerformLayout();
             this.toolStripContainer2.ResumeLayout(false);
             this.toolStripContainer2.PerformLayout();
+            this.menuStrip1.ResumeLayout(false);
+            this.menuStrip1.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -726,6 +791,10 @@
         private System.Windows.Forms.ToolStrip toolStrip1;
         private System.Windows.Forms.ToolStripContainer toolStripContainer2;
         private System.Windows.Forms.ToolStripButton toolStripButtonTiny;
+        private System.Windows.Forms.MenuStrip menuStrip1;
+        private System.Windows.Forms.ToolStripMenuItem 文件ToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem ChangeWorkspace;
+        private System.Windows.Forms.ToolStripMenuItem 关于ToolStripMenuItem;
     }
 }
 

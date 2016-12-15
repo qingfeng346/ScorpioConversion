@@ -7,12 +7,22 @@ using System.Threading;
 
 namespace ScorpioConversion {
     public partial class FormMain : Form {
+        private static FormMain instance;
+        public static FormMain GetInstance() { return instance ?? (instance = new FormMain()); }
         public FormMain() {
             InitializeComponent();
+            FormClosing += (sender, e) => { this.Visible = false; e.Cancel = true; };
+            VisibleChanged += (sender, e) => { ConversionUtil.CheckExit(); };
         }
         private void FormMain_Load(object sender, EventArgs e) {
-            this.Text = "转表工具 : " + Util.CurrentDirectory;
             Init();
+        }
+        public void Show(string path) {
+            this.Show();
+            ConversionUtil.WorkspaceDirectory = path;
+            Util.WorkspaceDirectory = path;
+            this.Text = "转表工具 : " + path;
+            Bind();
         }
         private void CodeFoldButton_Click(object sender, EventArgs e) {
             this.CodeFoldPanel.Visible = !this.CodeFoldPanel.Visible;
@@ -26,9 +36,12 @@ namespace ScorpioConversion {
         private void timerMain_Tick(object sender, EventArgs e) {
             Tick();
         }
-
         private void toolStripButtonTiny_Click(object sender, EventArgs e) {
-            new FormTiny().Show();
+            FormTiny.GetInstance().Show();
+        }
+
+        private void ChangeWorkspace_Click(object sender, EventArgs e) {
+            FormWorkspace.GetInstance().Show();
         }
     }
 }
