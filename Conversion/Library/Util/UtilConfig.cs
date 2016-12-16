@@ -56,7 +56,7 @@ public class ProgramConfig
         set {
             string[] dirs = value.Split(';');
             for (int i = 0; i < dirs.Length; ++i) {
-                dirs[i] = FileUtil.GetFullPath(dirs[i]);
+                dirs[i] = Util.GetPath(dirs[i]);
             }
             mCodeDirectory = string.Join(";", dirs);
         }
@@ -66,7 +66,7 @@ public class ProgramConfig
         set {
             string[] dirs = value.Split(';');
             for (int i = 0; i < dirs.Length; ++i) {
-                dirs[i] = FileUtil.GetFullPath(dirs[i]);
+                dirs[i] = Util.GetPath(dirs[i]);
             }
             mDataDirectory = string.Join(";", dirs);
         }
@@ -153,6 +153,7 @@ public static partial class Util
             info.Bom = defaultInfo.Bom;
             m_ProgramInfos.Add(program, info);
         }
+        PrintDirectory();
     }
     public static ProgramInfo GetProgramInfo(PROGRAM program)
     {
@@ -163,6 +164,12 @@ public static partial class Util
     public static Dictionary<PROGRAM, ProgramInfo> GetProgramInfos()
     {
         return m_ProgramInfos;
+    }
+    public static void PrintDirectory() {
+        foreach (var pair in m_ProgramInfos) {
+            Logger.info("[" + pair.Key + "] CodeDirectory : " + pair.Value.CodeDirectory);
+            Logger.info("[" + pair.Key + "] DataDirectory : " + pair.Value.DataDirectory);
+        }
     }
 }
 

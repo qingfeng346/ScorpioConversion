@@ -266,4 +266,7 @@ public static partial class Util
         cell.SetCellType(CellType.String);
         cell.SetCellValue(val);
     }
+    public static string GetPath(string path) {
+        return System.IO.Path.Combine(WorkspaceDirectory, path);
+    }
 }

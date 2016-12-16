@@ -25,16 +25,6 @@ public static class FileUtil {
         }
         return false;
     }
-    /// <summary> 获得完整路径，包括解析../类似相对路径 </summary>
-    public static string GetFullPath(string path) {
-        if (string.IsNullOrEmpty(path)) return path;
-        try {
-            return Path.GetFullPath(path);
-        } catch (System.Exception ex) {
-            Logger.error("GetFullPath is error path : {0}  {1}", path, ex.ToString());
-        }
-        return path;
-    }
     /// <summary> 判断文件是否存在 </summary>
     public static bool FileExist(String file)
     {
@@ -124,7 +114,7 @@ public static class FileUtil {
         Directory.Delete(sourceFolder);
     }
     /// <summary> 获得文件字符串 </summary>
-    public static String GetFileString(string fileName)
+    public static string GetFileString(string fileName)
     {
         var buffer = GetFileBuffer(fileName);
         if (buffer == null) return "";
@@ -134,12 +124,12 @@ public static class FileUtil {
     public static byte[] GetFileBuffer(string fileName)
     {
         if (!FileExist(fileName)) return null;
-        FileStream fs = new FileStream(fileName, FileMode.Open);
-        long length = fs.Length;
-        byte[] buffer = new byte[length];
-        fs.Read(buffer, 0, (int)length);
-        fs.Close();
-        return buffer;
+        using (FileStream fs = new FileStream(fileName, FileMode.Open)) {
+            long length = fs.Length;
+            byte[] buffer = new byte[length];
+            fs.Read(buffer, 0, (int)length);
+            return buffer;
+        }
     }
     /// <summary> 获得一个文件的MD5码 </summary>
     public static string GetMD5FromFile(string fileName)

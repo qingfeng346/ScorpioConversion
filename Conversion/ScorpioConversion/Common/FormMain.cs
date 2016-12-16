@@ -103,6 +103,7 @@ namespace ScorpioConversion {
         }
         private void buttonTransformFolder_Click(object sender, EventArgs e) {
             StartRun(() => {
+                if (string.IsNullOrEmpty(textTableFolder.Text)) return;
                 var files = Directory.GetFiles(ConversionUtil.GetPath(textTableFolder.Text), "*.xls", SearchOption.AllDirectories);
                 if (files.Length == 0)
                     throw new Exception(string.Format("路径[{0}]下的文件数量为0", textTableFolder.Text));
@@ -248,6 +249,7 @@ namespace ScorpioConversion {
 
         private void buttonMessage_Click(object sender, EventArgs e) {
             StartRun(() => {
+                if (string.IsNullOrEmpty(textMessage.Text)) { return; }
                 new MessageBuilder().Transform(ConversionUtil.GetPath(textMessage.Text),
                     textBoxPackage.Text,
                     ConversionUtil.GetProgramConfig());
@@ -256,6 +258,7 @@ namespace ScorpioConversion {
 
         private void buttonDatabase_Click(object sender, EventArgs e) {
             StartRun(() => {
+                if (string.IsNullOrEmpty(textDatabaseConfig.Text)) { return; }
                 new DatabaseBuilder().Transform(ConversionUtil.GetPath(textDatabaseConfig.Text),
                     textBoxPackage.Text,
                     ConversionUtil.GetProgramConfig());

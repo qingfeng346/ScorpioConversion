@@ -13,8 +13,11 @@ public partial class TableBuilder
     public void Rollback(string files)
     {
         List<string> fileNames = new List<string>(files.Split(';'));
-        if (fileNames.Count == 0)
-            throw new Exception("请选择要转换的文件");
+        while (fileNames.Remove("")) { }
+        if (fileNames.Count == 0) {
+            Logger.info("请选择要转换的文件");
+            return;
+        }
         Progress.Count = fileNames.Count;
         int Count = 0;
         for (int i = 0; i < fileNames.Count; ++i) {

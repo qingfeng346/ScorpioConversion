@@ -15,7 +15,13 @@ namespace ScorpioConversion {
             InitializeComponent();
             FormClosing += (sender, e) => { e.Cancel = true;  this.Hide(); };
             VisibleChanged += (sender, e) => { ConversionUtil.CheckExit(); };
-            Shown += (sender, e) => { if (checkDefault.Checked) Enter(); };
+            Shown += (sender, e) => {
+                if (checkDefault.Checked) {
+                    Enter();
+                    this.Hide();
+                }
+            };
+            listPaths.DoubleClick += listPaths_DoubleClick;
         }
         private string workspaceConfig = "";
         private string workspaceDefault = "";
@@ -27,11 +33,8 @@ namespace ScorpioConversion {
             while (true) {
                 if (!RemoveInvalidPath()) break;
             }
-            comboWorkspace.Items.AddRange(paths.ToArray());
-            if (paths.Count > 0)
-                comboWorkspace.Text = paths[0];
-            else
-                comboWorkspace.Text = ConversionUtil.CurrentDirectory;
+            listPaths.Items.AddRange(paths.ToArray());
+            textWorkspace.Text = (paths.Count > 0) ? paths[0] : ConversionUtil.CurrentDirectory;
             if (FileUtil.FileExist(workspaceDefault)) {
                 checkDefault.Checked = FileUtil.GetFileString(workspaceDefault) == "1";
             } else {
@@ -50,23 +53,27 @@ namespace ScorpioConversion {
         void InsertPath(string path) {
             paths.Remove(path);
             paths.Insert(0, path);
-            comboWorkspace.Items.Remove(path);
-            comboWorkspace.Items.Insert(0, path);
-            comboWorkspace.Text = path;
+            if (!listPaths.Items.Contains(path))
+                listPaths.Items.Add(path);
             FileUtil.CreateFile(workspaceConfig, string.Join(";", paths.ToArray()));
+        }
+        private void listPaths_DoubleClick(object sender, EventArgs e) {
+            int index = listPaths.SelectedIndex;
+            if (index < 0) { return; }
+            textWorkspace.Text = listPaths.Items[index].ToString();
+            Enter();
         }
         private void buttonOK_Click(object sender, EventArgs e) {
             Enter();
         }
         private void Enter() {
-            var path = comboWorkspace.Text;
+            var path = textWorkspace.Text;
             if (string.IsNullOrEmpty(path) || !FileUtil.CreateDirectory(path)) {
                 MessageBox.Show("清输入有效目录");
                 return;
             }
             InsertPath(path);
             FormMain.GetInstance().Show(path + "/");
-            this.Hide();
         }
         private void buttonClose_Click(object sender, EventArgs e) {
             this.Hide();

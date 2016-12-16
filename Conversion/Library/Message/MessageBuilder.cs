@@ -11,7 +11,6 @@ public partial class MessageBuilder
     public void Transform(string configPath, string package, Dictionary<PROGRAM, ProgramConfig> programConfigs)
     {
         try {
-            configPath = FileUtil.GetFullPath(configPath);
             Util.InitializeProgram(programConfigs);
             Util.ParseStructure(configPath, mCustoms, mEnums, null, null, null, mConsts);
             mPackage = package;

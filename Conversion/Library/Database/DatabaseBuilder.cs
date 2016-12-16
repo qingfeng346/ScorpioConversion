@@ -12,7 +12,6 @@ public class DatabaseBuilder
     public void Transform(string configPath, string package, Dictionary<PROGRAM, ProgramConfig> programConfigs)
     {
         try {
-            configPath = FileUtil.GetFullPath(configPath);
             Util.InitializeProgram(programConfigs);
             Util.ParseStructure(configPath, null, mEnums, null, mDatabases, mCustoms, null);
             mPackage = package;

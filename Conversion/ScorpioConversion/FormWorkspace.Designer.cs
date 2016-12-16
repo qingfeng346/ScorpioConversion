@@ -24,33 +24,17 @@
         /// </summary>
         private void InitializeComponent() {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FormWorkspace));
-            this.label1 = new System.Windows.Forms.Label();
-            this.comboWorkspace = new System.Windows.Forms.ComboBox();
             this.buttonOK = new System.Windows.Forms.Button();
             this.checkDefault = new System.Windows.Forms.CheckBox();
             this.buttonClose = new System.Windows.Forms.Button();
+            this.listPaths = new System.Windows.Forms.ListBox();
+            this.textWorkspace = new System.Windows.Forms.TextBox();
             this.SuspendLayout();
-            // 
-            // label1
-            // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(12, 29);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(53, 12);
-            this.label1.TabIndex = 0;
-            this.label1.Text = "工作目录";
-            // 
-            // comboWorkspace
-            // 
-            this.comboWorkspace.FormattingEnabled = true;
-            this.comboWorkspace.Location = new System.Drawing.Point(81, 26);
-            this.comboWorkspace.Name = "comboWorkspace";
-            this.comboWorkspace.Size = new System.Drawing.Size(346, 20);
-            this.comboWorkspace.TabIndex = 1;
             // 
             // buttonOK
             // 
-            this.buttonOK.Location = new System.Drawing.Point(352, 87);
+            this.buttonOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.buttonOK.Location = new System.Drawing.Point(520, 333);
             this.buttonOK.Name = "buttonOK";
             this.buttonOK.Size = new System.Drawing.Size(75, 23);
             this.buttonOK.TabIndex = 2;
@@ -60,8 +44,9 @@
             // 
             // checkDefault
             // 
+            this.checkDefault.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.checkDefault.AutoSize = true;
-            this.checkDefault.Location = new System.Drawing.Point(12, 91);
+            this.checkDefault.Location = new System.Drawing.Point(12, 337);
             this.checkDefault.Name = "checkDefault";
             this.checkDefault.Size = new System.Drawing.Size(108, 16);
             this.checkDefault.TabIndex = 3;
@@ -71,7 +56,8 @@
             // 
             // buttonClose
             // 
-            this.buttonClose.Location = new System.Drawing.Point(271, 87);
+            this.buttonClose.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.buttonClose.Location = new System.Drawing.Point(439, 333);
             this.buttonClose.Name = "buttonClose";
             this.buttonClose.Size = new System.Drawing.Size(75, 23);
             this.buttonClose.TabIndex = 4;
@@ -79,17 +65,36 @@
             this.buttonClose.UseVisualStyleBackColor = true;
             this.buttonClose.Click += new System.EventHandler(this.buttonClose_Click);
             // 
+            // listPaths
+            // 
+            this.listPaths.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.listPaths.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
+            this.listPaths.FormattingEnabled = true;
+            this.listPaths.ItemHeight = 12;
+            this.listPaths.Location = new System.Drawing.Point(12, 17);
+            this.listPaths.Name = "listPaths";
+            this.listPaths.Size = new System.Drawing.Size(583, 280);
+            this.listPaths.TabIndex = 5;
+            // 
+            // textWorkspace
+            // 
+            this.textWorkspace.Location = new System.Drawing.Point(12, 306);
+            this.textWorkspace.Name = "textWorkspace";
+            this.textWorkspace.Size = new System.Drawing.Size(583, 21);
+            this.textWorkspace.TabIndex = 6;
+            // 
             // FormWorkspace
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(438, 120);
+            this.ClientSize = new System.Drawing.Size(607, 368);
+            this.Controls.Add(this.textWorkspace);
+            this.Controls.Add(this.listPaths);
             this.Controls.Add(this.buttonClose);
             this.Controls.Add(this.checkDefault);
             this.Controls.Add(this.buttonOK);
-            this.Controls.Add(this.comboWorkspace);
-            this.Controls.Add(this.label1);
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
             this.MinimizeBox = false;
@@ -102,11 +107,10 @@
         }
 
         #endregion
-
-        private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.ComboBox comboWorkspace;
         private System.Windows.Forms.Button buttonOK;
         private System.Windows.Forms.CheckBox checkDefault;
         private System.Windows.Forms.Button buttonClose;
+        private System.Windows.Forms.ListBox listPaths;
+        private System.Windows.Forms.TextBox textWorkspace;
     }
 }
