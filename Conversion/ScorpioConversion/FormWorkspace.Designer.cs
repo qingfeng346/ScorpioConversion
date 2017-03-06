@@ -80,6 +80,8 @@
             // 
             // textWorkspace
             // 
+            this.textWorkspace.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.textWorkspace.Location = new System.Drawing.Point(12, 306);
             this.textWorkspace.Name = "textWorkspace";
             this.textWorkspace.Size = new System.Drawing.Size(583, 21);
@@ -96,8 +98,6 @@
             this.Controls.Add(this.checkDefault);
             this.Controls.Add(this.buttonOK);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            this.MaximizeBox = false;
-            this.MinimizeBox = false;
             this.Name = "FormWorkspace";
             this.Text = "选择工作目录";
             this.Load += new System.EventHandler(this.FormWorkspace_Load);
