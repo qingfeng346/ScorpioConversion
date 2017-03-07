@@ -73,11 +73,23 @@ public class MessageManager {
     };
     public static final HashMap<Class<?>, Integer> TypeToID = new HashMap<Class<?>, Integer>() {
         {");
-        for (int i = 0; i < mKeys.Count; ++i)
-        {
+        for (int i = 0; i < mKeys.Count; ++i) {
             string key = mKeys[i];
             string str = @"
             put(__Filer.class, __Index);";
+            str = str.Replace("__Filer", key);
+            str = str.Replace("__Index", i.ToString());
+            builder.Append(str);
+        }
+        builder.Append(@"
+        }
+    };
+    public static final HashMap<Integer, IMessage> IDToObject = new HashMap<Integer, IMessage>() {
+        {");
+        for (int i = 0; i < mKeys.Count; ++i) {
+            string key = mKeys[i];
+            string str = @"
+            put(__Index, new __Filer());";
             str = str.Replace("__Filer", key);
             str = str.Replace("__Index", i.ToString());
             builder.Append(str);

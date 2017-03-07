@@ -17,6 +17,7 @@ public class __ClassName : IMessage {");
         builder.Append(GenerateMessageFields());
         builder.Append(GenerateMessageWrite());
         builder.Append(GenerateMessageRead());
+        builder.Append(GenerateMessageNew());
         builder.Append(GenerateMessageReadimpl());
         builder.Append(GenerateMessageDeserialize());
         builder.Append(@"
@@ -110,6 +111,12 @@ public class __ClassName : IMessage {");
         builder.Append(@"
     }");
         return builder.ToString();
+    }
+    static string GenerateMessageNew() {
+        return @"
+    public override IMessage New() {
+        return new __ClassName();
+    }";
     }
     static string GenerateMessageReadimpl() {
         return @"
