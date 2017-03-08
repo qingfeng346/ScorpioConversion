@@ -17,7 +17,7 @@ namespace ScorpioConversion {
             VisibleChanged += (sender, e) => { ConversionUtil.CheckExit(); };
             Shown += (sender, e) => {
                 if (checkDefault.Checked) {
-                    Enter();
+                    EnterWorkspace();
                     this.Hide();
                 }
             };
@@ -61,12 +61,12 @@ namespace ScorpioConversion {
             int index = listPaths.SelectedIndex;
             if (index < 0) { return; }
             textWorkspace.Text = listPaths.Items[index].ToString();
-            Enter();
+            EnterWorkspace();
         }
         private void buttonOK_Click(object sender, EventArgs e) {
-            Enter();
+            EnterWorkspace();
         }
-        private void Enter() {
+        private void EnterWorkspace() {
             var path = textWorkspace.Text;
             if (string.IsNullOrEmpty(path) || !FileUtil.CreateDirectory(path)) {
                 MessageBox.Show("清输入有效目录");
