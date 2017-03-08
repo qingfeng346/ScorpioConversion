@@ -138,17 +138,21 @@ public class __ClassName : IMessage {");
         builder.Append(@"
     public override string ToString() {
         return ");
-        bool first = true;
-        foreach (var field in m_Fields) {
-            if (first) {
-                first = false;
-            } else {
-                builder.Append(@" +
+        if (m_Fields.Count > 0) {
+            bool first = true;
+            foreach (var field in m_Fields) {
+                if (first) {
+                    first = false;
+                } else {
+                    builder.Append(@" +
                ");
+                }
+                string str = @"""__Name"" + ___Name + "" , """;
+                str = str.Replace("__Name", field.Name);
+                builder.Append(str);
             }
-            string str = @"""__Name"" + ___Name";
-            str = str.Replace("__Name", field.Name);
-            builder.Append(str);
+        } else {
+            builder.Append("\"\"");
         }
         builder.Append(@";
     }");
