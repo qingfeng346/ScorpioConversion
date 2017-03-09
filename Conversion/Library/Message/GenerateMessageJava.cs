@@ -149,7 +149,7 @@ public class __ClassName extends IMessage {");
                     builder.Append(@" +
                ");
                 }
-                string str = @"""__Name"" + ___Name + "" , """;
+                string str = @"""__Name : "" + ___Name + "" , """;
                 str = str.Replace("__Name", field.Name);
                 builder.Append(str);
             }
