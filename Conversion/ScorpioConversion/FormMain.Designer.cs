@@ -78,7 +78,7 @@
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.文件ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.ChangeWorkspace = new System.Windows.Forms.ToolStripMenuItem();
-            this.关于ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.MenuAbout = new System.Windows.Forms.ToolStripMenuItem();
             this.splitContainerMain.Panel1.SuspendLayout();
             this.splitContainerMain.Panel2.SuspendLayout();
             this.splitContainerMain.SuspendLayout();
@@ -671,7 +671,7 @@
             this.menuStrip1.Dock = System.Windows.Forms.DockStyle.None;
             this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.文件ToolStripMenuItem,
-            this.关于ToolStripMenuItem});
+            this.MenuAbout});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
             this.menuStrip1.Size = new System.Drawing.Size(882, 25);
@@ -689,15 +689,16 @@
             // ChangeWorkspace
             // 
             this.ChangeWorkspace.Name = "ChangeWorkspace";
-            this.ChangeWorkspace.Size = new System.Drawing.Size(152, 22);
+            this.ChangeWorkspace.Size = new System.Drawing.Size(148, 22);
             this.ChangeWorkspace.Text = "切换工作目录";
             this.ChangeWorkspace.Click += new System.EventHandler(this.ChangeWorkspace_Click);
             // 
-            // 关于ToolStripMenuItem
+            // MenuAbout
             // 
-            this.关于ToolStripMenuItem.Name = "关于ToolStripMenuItem";
-            this.关于ToolStripMenuItem.Size = new System.Drawing.Size(44, 21);
-            this.关于ToolStripMenuItem.Text = "关于";
+            this.MenuAbout.Name = "MenuAbout";
+            this.MenuAbout.Size = new System.Drawing.Size(44, 21);
+            this.MenuAbout.Text = "关于";
+            this.MenuAbout.Click += new System.EventHandler(this.MenuAbout_Click);
             // 
             // FormMain
             // 
@@ -794,7 +795,7 @@
         private System.Windows.Forms.MenuStrip menuStrip1;
         private System.Windows.Forms.ToolStripMenuItem 文件ToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem ChangeWorkspace;
-        private System.Windows.Forms.ToolStripMenuItem 关于ToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem MenuAbout;
     }
 }
 

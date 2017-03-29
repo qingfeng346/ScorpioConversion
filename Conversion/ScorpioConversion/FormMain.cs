@@ -13,9 +13,11 @@ namespace ScorpioConversion {
             InitializeComponent();
             FormClosing += (sender, e) => { this.Visible = false; e.Cancel = true; };
             VisibleChanged += (sender, e) => { ConversionUtil.CheckExit(); };
+            UpdateUtil.Init(this);
         }
         private void FormMain_Load(object sender, EventArgs e) {
             Init();
+            UpdateUtil.CheckVersion(false);
         }
         public void Show(string path) {
             this.Show();
@@ -42,6 +44,11 @@ namespace ScorpioConversion {
 
         private void ChangeWorkspace_Click(object sender, EventArgs e) {
             FormWorkspace.GetInstance().Show();
+        }
+
+        private void MenuAbout_Click(object sender, EventArgs e)
+        {
+            new FormAbout().Show(this);
         }
     }
 }
