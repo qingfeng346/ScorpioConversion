@@ -13,6 +13,9 @@ namespace Scorpio.Commons
         const string Type = "Type";         //数据类型
         const string Array = "Array";       //是否是数组
 
+        const string Attribute = "Attribute";	//字段属性
+        const string Language = "Language";		//该字段是否有多国语言
+
         const string BoolType = "bool";
         const string Int8Type = "int8";
         const string Int16Type = "int16";
@@ -24,48 +27,73 @@ namespace Scorpio.Commons
         const string BytesType = "bytes";
         const string IntType = "int";
 
-        public static ScriptTable Deserialize(Script script, byte[] data, string name, bool hasSign)
+        //解析一个网络协议
+        public static ScriptTable Deserialize(Script script, byte[] data, string name)
         {
-            return Read(script, new ScorpioReader(data), name, hasSign);
+            return Read(script, new ScorpioReader(data), name, true);
         }
-        public static ScriptTable Read(Script script, ScorpioReader reader, string tableName, bool hasSign)
+        //读取一个网络协议或者一行table数据
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="script">脚本引擎对象</param>
+        /// <param name="reader">读取类</param>
+        /// <param name="tableName">结构名字</param>
+        /// <param name="message">是否是网络协议</param>
+        /// <returns></returns>
+        public static ScriptTable Read(Script script, ScorpioReader reader, string tableName, bool message)
         {
             ScriptTable table = script.CreateTable();
             ScriptArray layout = (ScriptArray)script.GetValue(tableName);
             bool isInvalid = true;
-            int sign = hasSign ? reader.ReadInt32() : 0;
+            int sign = message ? reader.ReadInt32() : 0;
+            string id = null;
             for (int i = 0; i < layout.Count(); ++i) {
                 ScriptObject config = layout.GetValue(i);
-                if (!hasSign || ScorpioUtil.HasSign(sign, ScorpioUtil.ToInt32(config.GetValue(Index).ObjectValue))) {
-                    string name = (string)config.GetValue(Name).ObjectValue;
-                    string type = (string)config.GetValue(Type).ObjectValue;
-                    bool array = (bool)config.GetValue(Array).ObjectValue;
-                    Invalid invalid = new Invalid();
-                    if (array) {
-                        int count = reader.ReadInt32();
-                        ScriptArray value = script.CreateArray();
-                        for (int j = 0; j < count;++j ) {
-							value.Add(ReadObject(script, reader, type, hasSign, invalid));
-                        }
-						table.SetValue(name, value);
-                        if (count > 0) isInvalid = false;
-                    } else {
-                        table.SetValue(name, ReadObject(script, reader, type, hasSign, invalid));
+                if (message && !ScorpioUtil.HasSign(sign, ScorpioUtil.ToInt32(config.GetValue(Index).ObjectValue))) { continue; }
+                string name = config.GetValue(Name).ToString();             //字段名字
+                string type = config.GetValue(Type).ToString();             //字段类型
+                bool array = config.GetValue(Array).LogicOperation();       //是否是数组
+                Invalid invalid = new Invalid();                            //本行是否是无效行
+                if (array) {
+                    int count = reader.ReadInt32();             //读取元素个数
+                    ScriptArray value = script.CreateArray();
+                    for (int j = 0; j < count;++j ) {
+						value.Add(ReadObject(script, reader, type, message, invalid));
+                    }
+					table.SetValue(name, value);
+                    if (count > 0) isInvalid = false;
+                } else {
+                    if (message) {
+                        table.SetValue(name, ReadObject(script, reader, type, message, invalid));
                         if (!invalid.value) isInvalid = false;
+                    } else {
+                        ScriptTable attribute = config.GetValue(Attribute) as ScriptTable;
+                        if (attribute != null && attribute.GetValue(Language).LogicOperation()) {   //判断字段是否有多国语言
+                            ReadObject(script, reader, type, message, invalid);     //先读取一个值  如果是多国语言 生成数据的时候会写入一个空字符串
+                            table.SetValue(name, script.CreateString(TableUtil.GetLanguage(tableName.Substring(4) + "_" + name + "_" + id)));
+                        } else {
+                            var obj = ReadObject(script, reader, type, message, invalid);
+                            table.SetValue(name, obj);
+                            if (!invalid.value) isInvalid = false;
+                            if (string.IsNullOrEmpty(id)) {
+                                id = ScorpioUtil.ToInt32(obj.ObjectValue).ToString();
+                            }
+                        }
                     }
                 }
             }
-            table.SetValue("IsInvalid", script.CreateBool(isInvalid));
+            if (!message) table.SetValue("IsInvalid", script.CreateBool(isInvalid));
             return table;
         }
-        private static ScriptObject ReadObject(Script script, ScorpioReader reader, string type, bool hasSign, Invalid invalid)
+        private static ScriptObject ReadObject(Script script, ScorpioReader reader, string type, bool message, Invalid invalid)
         {
             object value = ReadField(reader, type);
             if (value != null) {
                 invalid.value = TableUtil.IsInvalid(value);
                 return script.CreateObject(value);
             } else {
-                ScriptTable ret = Read(script, reader, type, hasSign);
+                ScriptTable ret = Read(script, reader, type, message);
                 invalid.value = (bool)ret.GetValue("IsInvalid").ObjectValue;
                 return ret;
             }

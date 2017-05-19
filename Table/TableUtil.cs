@@ -9,6 +9,7 @@ namespace Scorpio.Table
         public interface ITableUtil {
             byte[] GetBuffer(string resource);
             void Warning(string str);
+            string GetLanguage(string key);
         }
         private static ITableUtil IUtil = null;
         public static void SetTableUtil(ITableUtil util) {
@@ -19,6 +20,9 @@ namespace Scorpio.Table
         }
         public static void Warning(string str) {
             if (IUtil != null) IUtil.Warning(str);
+        }
+        public static string GetLanguage(string key) {
+            return IUtil != null ? IUtil.GetLanguage(key) : null;
         }
 #if SCORPIO_PROTO_SCO
         public static ScriptTable ReadDatas(Script script, string fileName, string dataName, string keyName, string MD5) {
