@@ -94,7 +94,7 @@ namespace Scorpio.Commons
                 return script.CreateObject(value);
             } else {
                 ScriptTable ret = Read(script, reader, type, message);
-                invalid.value = (bool)ret.GetValue("IsInvalid").ObjectValue;
+                if (!message) invalid.value = ret.GetValue("IsInvalid").LogicOperation();
                 return ret;
             }
         }
