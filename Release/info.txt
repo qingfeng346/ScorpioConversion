@@ -1,5 +1,6 @@
 Path=
 Overwrite=1
+Shortcut=D, ScorpioConversion\ScorpioConversion.exe, , , ScorpioConversion, 
 Title=ScorpioConversion转表，协议生成工具
 Text
 {
