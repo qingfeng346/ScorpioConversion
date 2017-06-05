@@ -28,6 +28,9 @@ class DataSpawn : public IData {
     private: char * _TestString;
     /* <summary> string类型  默认值() </summary> */
     public: char * getTestString() { return _TestString; }
+    private: char * _TestLanguage;
+    /* <summary> 测试多国语言  默认值() </summary> */
+    public: char * getTestLanguage() { return _TestLanguage; }
     private: bool _TestBool;
     /* <summary> bool类型  默认值() </summary> */
     public: bool getTestBool() { return _TestBool; }
@@ -41,6 +44,7 @@ class DataSpawn : public IData {
         if (strcmp(key, "ID") == 0) return &_ID;
         if (strcmp(key, "TestInt") == 0) return &_TestInt;
         if (strcmp(key, "TestString") == 0) return &_TestString;
+        if (strcmp(key, "TestLanguage") == 0) return &_TestLanguage;
         if (strcmp(key, "TestBool") == 0) return &_TestBool;
         if (strcmp(key, "TestInt2") == 0) return &_TestInt2;
         if (strcmp(key, "TestEnumName") == 0) return &_TestEnumName;
@@ -51,6 +55,7 @@ class DataSpawn : public IData {
         if (!TableUtil::IsInvalid(_ID)) return false;
         if (!TableUtil::IsInvalid(_TestInt)) return false;
         if (!TableUtil::IsInvalid(_TestString)) return false;
+        if (!TableUtil::IsInvalid(_TestLanguage)) return false;
         if (!TableUtil::IsInvalid(_TestBool)) return false;
         if (!TableUtil::IsInvalid(_TestInt2)) return false;
         if (!TableUtil::IsInvalid(_TestEnumName)) return false;
@@ -61,6 +66,7 @@ class DataSpawn : public IData {
         ret->_ID = reader->ReadInt32();
         ret->_TestInt = reader->ReadInt32();
         ret->_TestString = reader->ReadString();
+        ret->_TestLanguage = reader->ReadString();
         ret->_TestBool = reader->ReadBool();
         ret->_TestInt2 = Int2::Read(reader);
         ret->_TestEnumName = (TestEnum)reader->ReadInt32();

@@ -15,7 +15,7 @@ using namespace Scorpio::Message;
 #include "DataTest.h"
 namespace ScorpioProtoTest{
 class TableTest : public ITable {
-	const char * FILE_MD5_CODE = "a3c72d072e44d2c473850e1cd61b0e24";
+	const char * FILE_MD5_CODE = "6002b60ed2ddc12ffecf09c9435044d2";
     private:
         size_t m_count;
         std::unordered_map<__int32, DataTest*> m_dataArray;

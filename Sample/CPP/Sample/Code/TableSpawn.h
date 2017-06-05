@@ -15,7 +15,7 @@ using namespace Scorpio::Message;
 #include "DataSpawn.h"
 namespace ScorpioProtoTest{
 class TableSpawn : public ITable {
-	const char * FILE_MD5_CODE = "34a59b0b8327d56e524598fdec293a9b";
+	const char * FILE_MD5_CODE = "0ba5325ff1b00e87895cb7961961320a";
     private:
         size_t m_count;
         std::unordered_map<__int32, DataSpawn*> m_dataArray;
