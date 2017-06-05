@@ -27,12 +27,19 @@ public class Int3 implements IData {
         if (!TableUtil.IsInvalid(this._Value2)) return false;
         return true;
     }
-    public static Int3 Read(ScorpioReader reader) {
+    @Override
+    public String toString() {
+        return "{ " + 
+                "Value1 : " + ScorpioUtil.ToString(_Value1) + "," + 
+                "Value2 : " + _Value2 + 
+                " }";
+    }
+    public static Int3 Read(TableManager tableManager, String fileName, ScorpioReader reader) {
         Int3 ret = new Int3();
         {
             int number = reader.ReadInt32();
             ArrayList<Int2> list = new ArrayList<Int2>();
-            for (int i = 0;i < number; ++i) { list.add(Int2.Read(reader)); }
+            for (int i = 0;i < number; ++i) { list.add(Int2.Read(tableManager, fileName, reader)); }
             ret._Value1 = Collections.unmodifiableList(list);
         }
         ret._Value2 = reader.ReadInt32();

@@ -9,15 +9,15 @@ import Scorpio.Commons.*;
 import Scorpio.Table.*;
 @SuppressWarnings("unused")
 public class TableSpawn extends ITable {
-	final String FILE_MD5_CODE = "34a59b0b8327d56e524598fdec293a9b";
+	final String FILE_MD5_CODE = "0ba5325ff1b00e87895cb7961961320a";
     private int m_count = 0;
     private HashMap<Integer, DataSpawn> m_dataArray = new HashMap<Integer, DataSpawn>();
-    public TableSpawn Initialize(String fileName) {
+    public TableSpawn Initialize(TableManager tableManager, String fileName) {
         m_dataArray.clear();
         ScorpioReader reader = new ScorpioReader(TableUtil.GetBuffer(fileName));
         int iRow = TableUtil.ReadHead(reader, fileName, FILE_MD5_CODE);
         for (int i = 0; i < iRow; ++i) {
-            DataSpawn pData = DataSpawn.Read(reader);
+            DataSpawn pData = DataSpawn.Read(tableManager, fileName, reader);
             if (m_dataArray.containsKey(pData.ID()))
                 throw new RuntimeException("文件" + fileName + "有重复项 ID : " + pData.ID());
             m_dataArray.put(pData.ID(), pData);

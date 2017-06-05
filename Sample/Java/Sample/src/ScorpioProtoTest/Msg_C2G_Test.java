@@ -47,4 +47,12 @@ public class Msg_C2G_Test extends IMessage {
     public static Msg_C2G_Test Deserialize(byte[] data) {
         return Readimpl(new ScorpioReader(data));
     }
+    @Override
+    public String toString() {
+        return "{ " + 
+                "Value1 : " + _Value1 + "," + 
+                "Value2 : " + _Value2 + "," + 
+                "Value3 : " + ScorpioUtil.ToString(_Value3) + 
+                " }";
+    }
 }

@@ -27,7 +27,14 @@ public class Int2 implements IData {
         if (!TableUtil.IsInvalid(this._Value2)) return false;
         return true;
     }
-    public static Int2 Read(ScorpioReader reader) {
+    @Override
+    public String toString() {
+        return "{ " + 
+                "Value1 : " + _Value1 + "," + 
+                "Value2 : " + _Value2 + 
+                " }";
+    }
+    public static Int2 Read(TableManager tableManager, String fileName, ScorpioReader reader) {
         Int2 ret = new Int2();
         ret._Value1 = reader.ReadInt32();
         ret._Value2 = reader.ReadInt32();

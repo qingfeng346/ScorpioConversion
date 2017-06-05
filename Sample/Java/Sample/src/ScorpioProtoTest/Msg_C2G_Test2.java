@@ -28,4 +28,10 @@ public class Msg_C2G_Test2 extends IMessage {
     public static Msg_C2G_Test2 Deserialize(byte[] data) {
         return Readimpl(new ScorpioReader(data));
     }
+    @Override
+    public String toString() {
+        return "{ " + 
+                "Value1 : " + _Value1 + 
+                " }";
+    }
 }

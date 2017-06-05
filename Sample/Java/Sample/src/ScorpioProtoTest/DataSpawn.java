@@ -20,6 +20,9 @@ public class DataSpawn implements IData {
     private String _TestString;
     /** string类型  默认值() */
     public String getTestString() { return _TestString; }
+    private String _TestLanguage;
+    /** 测试多国语言  默认值() */
+    public String getTestLanguage() { return _TestLanguage; }
     private Boolean _TestBool;
     /** bool类型  默认值() */
     public Boolean getTestBool() { return _TestBool; }
@@ -33,6 +36,7 @@ public class DataSpawn implements IData {
         if (key.equals("ID")) return _ID;
         if (key.equals("TestInt")) return _TestInt;
         if (key.equals("TestString")) return _TestString;
+        if (key.equals("TestLanguage")) return _TestLanguage;
         if (key.equals("TestBool")) return _TestBool;
         if (key.equals("TestInt2")) return _TestInt2;
         if (key.equals("TestEnumName")) return _TestEnumName;
@@ -43,18 +47,33 @@ public class DataSpawn implements IData {
         if (!TableUtil.IsInvalid(this._ID)) return false;
         if (!TableUtil.IsInvalid(this._TestInt)) return false;
         if (!TableUtil.IsInvalid(this._TestString)) return false;
+        if (!TableUtil.IsInvalid(this._TestLanguage)) return false;
         if (!TableUtil.IsInvalid(this._TestBool)) return false;
         if (!TableUtil.IsInvalid(this._TestInt2)) return false;
         if (!TableUtil.IsInvalid(this._TestEnumName)) return false;
         return true;
     }
-    public static DataSpawn Read(ScorpioReader reader) {
+    @Override
+    public String toString() {
+        return "{ " + 
+                "ID : " + _ID + "," + 
+                "TestInt : " + _TestInt + "," + 
+                "TestString : " + _TestString + "," + 
+                "TestLanguage : " + _TestLanguage + "," + 
+                "TestBool : " + _TestBool + "," + 
+                "TestInt2 : " + _TestInt2 + "," + 
+                "TestEnumName : " + _TestEnumName + 
+                " }";
+    }
+    public static DataSpawn Read(TableManager tableManager, String fileName, ScorpioReader reader) {
         DataSpawn ret = new DataSpawn();
         ret._ID = reader.ReadInt32();
         ret._TestInt = reader.ReadInt32();
         ret._TestString = reader.ReadString();
+        reader.ReadString();
+        ret._TestLanguage = tableManager.getLanguageText(fileName +  "_TestLanguage_" + ret._ID);
         ret._TestBool = reader.ReadBool();
-        ret._TestInt2 = Int2.Read(reader);
+        ret._TestInt2 = Int2.Read(tableManager, fileName, reader);
         ret._TestEnumName = TestEnum.valueOf(reader.ReadInt32());
         ret.m_IsInvalid = ret.IsInvalid_impl();
         return ret;
