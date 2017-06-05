@@ -15,6 +15,9 @@ public class Msg_C2G_Test2 : IMessage {
         __Sign = reader.ReadInt32();
         if (HasSign(1)) { _Value1 = Msg_C2G_Test.Readimpl(reader); }
     }
+    public override IMessage New() {
+        return new Msg_C2G_Test2();
+    }
     public static Msg_C2G_Test2 Readimpl(ScorpioReader reader) {
         Msg_C2G_Test2 ret = new Msg_C2G_Test2();
         ret.Read(reader);
@@ -22,6 +25,11 @@ public class Msg_C2G_Test2 : IMessage {
     }
     public static Msg_C2G_Test2 Deserialize(byte[] data) {
         return Readimpl(new ScorpioReader(data));
+    }
+    public override string ToString() {
+        return "{ " + 
+                "Value1 : " + _Value1 + 
+                " }";
     }
 }
 }

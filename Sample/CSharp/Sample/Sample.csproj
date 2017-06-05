@@ -40,14 +40,17 @@
     <Reference Include="System" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Code\DataLanguage.cs" />
     <Compile Include="Code\DataSpawn.cs" />
     <Compile Include="Code\DataTest.cs" />
     <Compile Include="Code\Int2.cs" />
     <Compile Include="Code\Int3.cs" />
     <Compile Include="Code\MessageManager.cs" />
+    <Compile Include="Code\Msg_C2G_Empty.cs" />
     <Compile Include="Code\Msg_C2G_Test.cs" />
     <Compile Include="Code\Msg_C2G_Test2.cs" />
     <Compile Include="Code\Msg_C2G_Test3.cs" />
+    <Compile Include="Code\TableLanguage.cs" />
     <Compile Include="Code\TableManager.cs" />
     <Compile Include="Code\TableSpawn.cs" />
     <Compile Include="Code\TableTest.cs" />

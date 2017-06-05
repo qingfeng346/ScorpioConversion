@@ -1,8 +1,6 @@
 using Scorpio.Commons;
-namespace Scorpio.Message
-{
-    public abstract class IMessage
-    {
+namespace Scorpio.Message {
+    public abstract class IMessage {
         protected int __Sign = 0;
         protected void AddSign(int index) {
             __Sign = ScorpioUtil.AddSign(__Sign, index);

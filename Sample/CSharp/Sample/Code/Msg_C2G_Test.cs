@@ -32,6 +32,9 @@ public class Msg_C2G_Test : IMessage {
             for (int i = 0;i < number; ++i) { _Value3.Add(reader.ReadInt32()); }
         }
     }
+    public override IMessage New() {
+        return new Msg_C2G_Test();
+    }
     public static Msg_C2G_Test Readimpl(ScorpioReader reader) {
         Msg_C2G_Test ret = new Msg_C2G_Test();
         ret.Read(reader);
@@ -39,6 +42,13 @@ public class Msg_C2G_Test : IMessage {
     }
     public static Msg_C2G_Test Deserialize(byte[] data) {
         return Readimpl(new ScorpioReader(data));
+    }
+    public override string ToString() {
+        return "{ " + 
+                "Value1 : " + _Value1 + "," + 
+                "Value2 : " + _Value2 + "," + 
+                "Value3 : " + ScorpioUtil.ToString(_Value3) + 
+                " }";
     }
 }
 }

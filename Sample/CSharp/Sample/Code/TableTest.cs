@@ -6,15 +6,15 @@ using Scorpio.Commons;
 using Scorpio.Table;
 namespace ScorpioProtoTest {
 public class TableTest : ITable {
-	const string FILE_MD5_CODE = "a3c72d072e44d2c473850e1cd61b0e24";
+	const string FILE_MD5_CODE = "6002b60ed2ddc12ffecf09c9435044d2";
     private int m_count = 0;
     private Dictionary<int, DataTest> m_dataArray = new Dictionary<int, DataTest>();
-    public TableTest Initialize(string fileName) {
+    public TableTest Initialize(TableManager tableManager, string fileName) {
         m_dataArray.Clear();
         ScorpioReader reader = new ScorpioReader(TableUtil.GetBuffer(fileName));
         int iRow = TableUtil.ReadHead(reader, fileName, FILE_MD5_CODE);
         for (int i = 0; i < iRow; ++i) {
-            DataTest pData = DataTest.Read(reader);
+            DataTest pData = DataTest.Read(tableManager, fileName, reader);
             if (Contains(pData.ID()))
                 throw new System.Exception("文件[" + fileName + "]有重复项 ID : " + pData.ID());
             m_dataArray.Add(pData.ID(), pData);

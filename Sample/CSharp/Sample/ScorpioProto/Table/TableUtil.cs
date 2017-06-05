@@ -3,13 +3,11 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Text;
 using Scorpio.Commons;
-namespace Scorpio.Table
-{
+namespace Scorpio.Table {
     public static class TableUtil {
         public interface ITableUtil {
             byte[] GetBuffer(string resource);
             void Warning(string str);
-            string GetLanguage(string key);
         }
         private static ITableUtil IUtil = null;
         public static void SetTableUtil(ITableUtil util) {
@@ -21,32 +19,12 @@ namespace Scorpio.Table
         public static void Warning(string str) {
             if (IUtil != null) IUtil.Warning(str);
         }
-        public static string GetLanguage(string key) {
-            return IUtil != null ? IUtil.GetLanguage(key) : null;
-        }
-#if SCORPIO_PROTO_SCO
-        public static ScriptTable ReadDatas(Script script, string fileName, string dataName, string keyName, string MD5) {
-            ScriptTable ret = script.CreateTable();
-            ScorpioReader reader = new ScorpioReader(GetBuffer(fileName));
-            int iRow = ReadHead(reader, fileName, MD5);
-            ScriptTable data = null;
-            double key = 0;
-            for (int i = 0; i < iRow;++i ) {
-                data = ScorpioSerializer.Read(script, reader, dataName, false);
-                key = ScorpioUtil.ToDouble(data.GetValue(keyName).ObjectValue);
-                if (ret.HasValue(key))
-                    throw new System.Exception("文件[" + fileName + "]有重复项 ID : " + key);
-                ret.SetValue(key, data);
-				data.SetValue("ID", script.CreateDouble(key));
-            }
-            return ret;
-        }
-#endif
+        /// <summary> 读取Excel文件头结构 </summary>
         public static int ReadHead(ScorpioReader reader, string fileName, string MD5) {
             int iRow = reader.ReadInt32();          //行数
             if (reader.ReadString() != MD5)         //验证文件MD5(检测结构是否改变)
                 throw new System.Exception("文件[" + fileName + "]版本验证失败");
-            int i,j,number;
+            int i, j, number;
             {
                 number = reader.ReadInt32();        //字段数量
                 for (i = 0; i < number; ++i) {
@@ -103,11 +81,11 @@ namespace Scorpio.Table
             return string.IsNullOrEmpty(val);
         }
         public static bool IsInvalidList(IList val) {
-		    return val.Count == 0;
-	    }
+            return val.Count == 0;
+        }
         public static bool IsInvalidData(IData val) {
-		    return val.IsInvalid();
-	    }
+            return val.IsInvalid();
+        }
         public static bool IsInvalid(object val) {
             if (val is sbyte)
                 return IsInvalidInt8((sbyte)val);
@@ -124,9 +102,9 @@ namespace Scorpio.Table
             else if (val is string)
                 return IsInvalidString((string)val);
             else if (val is IList)
-        	    return IsInvalidList((IList)val);
+                return IsInvalidList((IList)val);
             else if (val is IData)
-        	    return IsInvalidData((IData)val);
+                return IsInvalidData((IData)val);
             return false;
         }
     }

@@ -1,8 +1,10 @@
 TableSpawn = {
+    m_tableManager = null,
     m_count = 0,
     m_dataArray = {},
-    function Initialize(fileName) {
-        this.m_dataArray = TableUtil.ReadDatas(_SCRIPT, fileName, "DataSpawn", "ID", "34a59b0b8327d56e524598fdec293a9b")
+    function Initialize(tableManager, fileName) {
+        this.m_tableManager = tableManager
+        this.m_dataArray = ScorpioSerializer.ReadDatas(_SCRIPT, tableManager, fileName, "DataSpawn", "ID", "0ba5325ff1b00e87895cb7961961320a")
         this.m_count = table.count(this.m_dataArray)
         return this
     }

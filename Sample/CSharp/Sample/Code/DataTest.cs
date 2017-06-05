@@ -18,6 +18,9 @@ public class DataTest : IData {
     private string _TestString;
     /* <summary> string类型  默认值(aaa) </summary> */
     public string getTestString() { return _TestString; }
+    private string _TestLanguage;
+    /* <summary> 测试多国语言  默认值() </summary> */
+    public string getTestLanguage() { return _TestLanguage; }
     private bool _TestBool;
     /* <summary> bool类型  默认值() </summary> */
     public bool getTestBool() { return _TestBool; }
@@ -40,6 +43,7 @@ public class DataTest : IData {
         if (key == "ID") return _ID;
         if (key == "TestInt") return _TestInt;
         if (key == "TestString") return _TestString;
+        if (key == "TestLanguage") return _TestLanguage;
         if (key == "TestBool") return _TestBool;
         if (key == "TestInt2") return _TestInt2;
         if (key == "TestEnumName") return _TestEnumName;
@@ -53,6 +57,7 @@ public class DataTest : IData {
         if (!TableUtil.IsInvalid(this._ID)) return false;
         if (!TableUtil.IsInvalid(this._TestInt)) return false;
         if (!TableUtil.IsInvalid(this._TestString)) return false;
+        if (!TableUtil.IsInvalid(this._TestLanguage)) return false;
         if (!TableUtil.IsInvalid(this._TestBool)) return false;
         if (!TableUtil.IsInvalid(this._TestInt2)) return false;
         if (!TableUtil.IsInvalid(this._TestEnumName)) return false;
@@ -61,13 +66,29 @@ public class DataTest : IData {
         if (!TableUtil.IsInvalid(this._TestInt3)) return false;
         return true;
     }
-    public static DataTest Read(ScorpioReader reader) {
+    public override string ToString() {
+        return "{ " + 
+                "ID : " + _ID + "," + 
+                "TestInt : " + _TestInt + "," + 
+                "TestString : " + _TestString + "," + 
+                "TestLanguage : " + _TestLanguage + "," + 
+                "TestBool : " + _TestBool + "," + 
+                "TestInt2 : " + _TestInt2 + "," + 
+                "TestEnumName : " + _TestEnumName + "," + 
+                "TestArray : " + ScorpioUtil.ToString(_TestArray) + "," + 
+                "TestArray2 : " + ScorpioUtil.ToString(_TestArray2) + "," + 
+                "TestInt3 : " + _TestInt3 + 
+                " }";
+    }
+    public static DataTest Read(TableManager tableManager, String fileName, ScorpioReader reader) {
         DataTest ret = new DataTest();
         ret._ID = reader.ReadInt32();
         ret._TestInt = reader.ReadInt32();
         ret._TestString = reader.ReadString();
+        reader.ReadString();
+        ret._TestLanguage = tableManager.getLanguageText(fileName +  "_TestLanguage_" + ret._ID);
         ret._TestBool = reader.ReadBool();
-        ret._TestInt2 = Int2.Read(reader);
+        ret._TestInt2 = Int2.Read(tableManager, fileName, reader);
         ret._TestEnumName = (TestEnum)reader.ReadInt32();
         {
             int number = reader.ReadInt32();
@@ -78,10 +99,10 @@ public class DataTest : IData {
         {
             int number = reader.ReadInt32();
             List<Int2> list = new List<Int2> ();
-            for (int i = 0;i < number; ++i) { list.Add(Int2.Read(reader)); }
+            for (int i = 0;i < number; ++i) { list.Add(Int2.Read(tableManager, fileName, reader)); }
             ret._TestArray2 = list.AsReadOnly();
         }
-        ret._TestInt3 = Int3.Read(reader);
+        ret._TestInt3 = Int3.Read(tableManager, fileName, reader);
         ret.m_IsInvalid = ret.IsInvalid_impl();
         return ret;
     }
