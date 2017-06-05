@@ -38,72 +38,59 @@ public partial class TableBuilder {
     private List<TableClass> mNormalClasses = new List<TableClass>();                                   //所有普通table类
     private Dictionary<string, SpawnsClass> mSpawnsClasses = new Dictionary<string, SpawnsClass>();     //所有关键字table类
 
-    private class TableClass
-    {
+    private class TableClass {
         public string Filer { get; private set; }       //Filter
         public string Class { get; private set; }       //类名称
         public string KeyName { get; private set; }     //ID名称
         public Dictionary<PROGRAM, ProgramInfo> Info { get; private set; }
-        public TableClass(string filer, string clazz, string keyName, Dictionary<PROGRAM, ProgramInfo> info)
-        {
+        public TableClass(string filer, string clazz, string keyName, Dictionary<PROGRAM, ProgramInfo> info) {
             Filer = filer;
             Class = clazz;
             KeyName = keyName;
             Info = info;
         }
-        public bool IsCreate(PROGRAM program)
-        {
+        public bool IsCreate(PROGRAM program) {
             return Info[program].Create;
         }
     }
-    private class SpawnsClass
-    {
+    private class SpawnsClass {
         public string Filer { get; private set; }       //Filter
         public string Class { get; private set; }       //类名称
         public string KeyName { get; private set; }     //ID名称
         public string MD5 { get; private set; }         //文件结构MD5
         public Dictionary<PROGRAM, ProgramInfo> Info { get; private set; }
         public List<string> Files = new List<string>(); //此关键字的所有文件
-        public SpawnsClass(string filer, string clazz, string keyName, string md5, Dictionary<PROGRAM, ProgramInfo> info)
-        {
+        public SpawnsClass(string filer, string clazz, string keyName, string md5, Dictionary<PROGRAM, ProgramInfo> info) {
             Filer = filer;
             Class = clazz;
             KeyName = keyName;
             MD5 = md5;
             Info = info;
         }
-        public void AddString(string str)
-        {
+        public void AddString(string str) {
             Files.Add(str);
         }
-        public bool IsCreate(PROGRAM program)
-        {
+        public bool IsCreate(PROGRAM program) {
             return Info[program].Create;
         }
     }
-    private List<TableClass> GetNormalClasses(PROGRAM program)
-    {
+    private List<TableClass> GetNormalClasses(PROGRAM program) {
         List<TableClass> ret = new List<TableClass>();
-        foreach (var clazz in mNormalClasses)
-        {
+        foreach (var clazz in mNormalClasses) {
             if (clazz.IsCreate(program)) ret.Add(clazz);
         }
         return ret;
     }
-    private List<SpawnsClass> GetSpawnsClasses(PROGRAM program)
-    {
+    private List<SpawnsClass> GetSpawnsClasses(PROGRAM program) {
         List<SpawnsClass> ret = new List<SpawnsClass>();
-        foreach (var pair in mSpawnsClasses)
-        {
+        foreach (var pair in mSpawnsClasses) {
             if (pair.Value.IsCreate(program)) ret.Add(pair.Value);
         }
         return ret;
     }
-    private string GetClassMD5Code()
-    {
+    private string GetClassMD5Code() {
         StringBuilder builder = new StringBuilder();
-        for (int i = 0; i < mFields.Count; ++i)
-        {
+        for (int i = 0; i < mFields.Count; ++i) {
             builder.Append(mFields[i].Name).Append(":");
             builder.Append(mFields[i].Type).Append(":");
             builder.Append(mFields[i].Array ? "1" : "0").Append(":");
@@ -111,8 +98,7 @@ public partial class TableBuilder {
         return FileUtil.GetMD5FromString(builder.ToString());
     }
     //获得枚举值
-    private int GetEnumValue(string enumName, string value)
-    {
+    private int GetEnumValue(string enumName, string value) {
         var enums = mEnums[enumName];
         foreach (var pair in enums) {
             if (pair.Name == value)
@@ -121,8 +107,7 @@ public partial class TableBuilder {
         throw new Exception(string.Format("枚举:{0} 找不到枚举值:{1}", enumName, value));
     }
     //获得枚举列表
-    private string[] GetEnumList(string enumName)
-    {
+    private string[] GetEnumList(string enumName) {
         var enums = mEnums[enumName];
         List<string> ret = new List<string>();
         foreach (var pair in enums)
@@ -130,8 +115,7 @@ public partial class TableBuilder {
         return ret.ToArray();
     }
     //获得枚举注释
-    private string GetEnumComment(string enumName)
-    {
+    private string GetEnumComment(string enumName) {
         var enums = mEnums[enumName];
         string ret = "";
         foreach (var pair in enums)
@@ -139,8 +123,7 @@ public partial class TableBuilder {
         return ret;
     }
     //初始化此文件的配置
-    private void Initialize(string fileName)
-    {
+    private void Initialize(string fileName) {
         string[] spawnsList = mSpawnList.Split(';');
         mStrFiler = Path.GetFileNameWithoutExtension(fileName);
         string strSection = mStrFiler;
@@ -160,8 +143,7 @@ public partial class TableBuilder {
         }
     }
     //读取文件内容
-    private void LoadFile(string fileFullName)
-    {
+    private void LoadFile(string fileFullName) {
         IWorkbook workbook = new HSSFWorkbook(new FileStream(fileFullName, FileMode.Open, FileAccess.Read));
         ISheet sheet = workbook.GetSheetAt(0);
         mDataTable.Clear();
@@ -185,8 +167,7 @@ public partial class TableBuilder {
         mMaxRow = mDataTable.Count;
     }
     //解析文件结构
-    private void ParseLayout()
-    {
+    private void ParseLayout() {
         mFields.Clear();
         mUsedCustoms.Clear();
         for (int i = 0; i < mMaxColumn; ++i) {
@@ -230,8 +211,7 @@ public partial class TableBuilder {
         mKeyName = mFields[0].Name;
     }
     //刷新表注释
-    private void RefreshNote(string fileFullName)
-    {
+    private void RefreshNote(string fileFullName) {
         bool change = false;
         for (int i = 0; i < mFields.Count; ++i) {
             var filed = mFields[i];
@@ -258,7 +238,7 @@ public partial class TableBuilder {
         for (int i = 0; i < columnNum; ++i) {
             sheetBack.SetColumnWidth(i, sheet.GetColumnWidth(i));
         }
-        for (int i = 0; i < mFields.Count; ++i ) {
+        for (int i = 0; i < mFields.Count; ++i) {
             var filed = mFields[i];
             if (filed.Enum) {
                 IDataValidationHelper helper = sheet.GetDataValidationHelper();
@@ -277,8 +257,7 @@ public partial class TableBuilder {
             workbook.Write(stream);
         }
     }
-    public void Transform(string files, string configPath, string package, string spawnList, bool generateManager, bool refreshNote, Dictionary<PROGRAM, ProgramConfig> programConfigs)
-    {
+    public void Transform(string files, string configPath, string package, string spawnList, bool generateManager, bool refreshNote, Dictionary<PROGRAM, ProgramConfig> programConfigs) {
         try {
             List<string> fileNames = new List<string>(files.Split(';'));
             while (fileNames.Remove("")) { }
@@ -294,7 +273,7 @@ public partial class TableBuilder {
             mNormalClasses.Clear();
             mSpawnsClasses.Clear();
             mPackage = package;
-            mSpawnList = spawnList;
+            mSpawnList = "Language;" + spawnList;
             Progress.Count = fileNames.Count;
             int ValidCount = 0;
             for (int i = 0; i < fileNames.Count; ++i) {
@@ -344,8 +323,7 @@ public partial class TableBuilder {
             Logger.error("转换文件出错 " + ex.ToString());
         }
     }
-    private void WriteFields(TableWriter writer, List<PackageField> fields)
-    {
+    private void WriteFields(TableWriter writer, List<PackageField> fields) {
         writer.WriteInt32(fields.Count);
         for (int i = 0; i < fields.Count; ++i) {
             var field = fields[i];
@@ -414,8 +392,7 @@ public partial class TableBuilder {
         writer.WriteInt32(count);
         Create_impl(writer.ToArray());
     }
-    private void WriteCustom(TableWriter writer, ScriptArray list, List<PackageField> fields, bool array)
-    {
+    private void WriteCustom(TableWriter writer, ScriptArray list, List<PackageField> fields, bool array) {
         if (array) {
             if (Util.IsEmptyValue(list)) {
                 writer.WriteInt32(0);
@@ -439,8 +416,7 @@ public partial class TableBuilder {
             }
         }
     }
-    private void WriteField(TableWriter writer, object value, PackageField field)
-    {
+    private void WriteField(TableWriter writer, object value, PackageField field) {
         var basic = BasicUtil.GetType(field.Type);
         if (basic != null) {
             if (field.Array) {
@@ -450,7 +426,7 @@ public partial class TableBuilder {
                 } else {
                     int count = list.Count();
                     writer.WriteInt32(count);
-                    for (int i = 0;i < count; ++i) {
+                    for (int i = 0; i < count; ++i) {
                         basic.WriteValue(writer, list.GetValue(i).ToString());
                     }
                 }
@@ -476,8 +452,7 @@ public partial class TableBuilder {
             WriteCustom(writer, value as ScriptArray, mCustoms[field.Type], field.Array);
         }
     }
-    private void Create_impl(byte[] buffer)
-    {
+    private void Create_impl(byte[] buffer) {
         byte[] bytes = GZipUtil.Compress(buffer);
         foreach (var pair in mProgramInfos) {
             PROGRAM program = pair.Key;
@@ -502,8 +477,7 @@ public partial class TableBuilder {
         str = str.Replace("__MD5", GetClassMD5Code());
         info.CreateFile(TableClassName, str);
     }
-    private void CreateCustom(string name, string package, List<PackageField> fields, ProgramInfo info, bool conID)
-    {
+    private void CreateCustom(string name, string package, List<PackageField> fields, ProgramInfo info, bool conID) {
         info.CreateFile(name, info.GenerateData.Generate(name, package, fields, conID));
     }
 }

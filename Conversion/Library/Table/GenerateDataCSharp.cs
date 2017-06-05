@@ -1,9 +1,7 @@
 ﻿using System.Text;
-public class GenerateDataCSharp : IGenerate
-{
+public class GenerateDataCSharp : IGenerate {
     public GenerateDataCSharp() : base(PROGRAM.CSharp) { }
-    protected override string Generate_impl()
-    {
+    protected override string Generate_impl() {
         StringBuilder builder = new StringBuilder();
         builder.Append(TemplateCSharp.Head);
         builder.AppendLine("namespace " + m_Package + " {");
@@ -12,6 +10,7 @@ public class GenerateDataCSharp : IGenerate
         builder.Append(GenerateMessageFields());
         builder.Append(GenerateMessageGetData());
         builder.Append(GenerateMessageIsInvalid());
+        builder.Append(GenerateCSharpToString());
         builder.Append(GenerateMessageRead());
         builder.Append(@"
 }
@@ -19,12 +18,10 @@ public class GenerateDataCSharp : IGenerate
         builder.Replace("__ClassName", m_ClassName);
         return builder.ToString();
     }
-    string GenerateMessageFields()
-    {
+    string GenerateMessageFields() {
         StringBuilder builder = new StringBuilder();
         bool first = true;
-        foreach (var field in m_Fields)
-        {
+        foreach (var field in m_Fields) {
             string str = "";
             if (field.Array) {
                 str = @"
@@ -50,13 +47,11 @@ public class GenerateDataCSharp : IGenerate
         }
         return builder.ToString();
     }
-    string GenerateMessageGetData()
-    {
+    string GenerateMessageGetData() {
         StringBuilder builder = new StringBuilder();
         builder.Append(@"
     public object GetData(string key ) {");
-        foreach (var field in m_Fields)
-        {
+        foreach (var field in m_Fields) {
             builder.Append(@"
         if (key == ""__Key"") return ___Key;".Replace("__Key", field.Name));
         }
@@ -65,14 +60,12 @@ public class GenerateDataCSharp : IGenerate
     }");
         return builder.ToString();
     }
-    string GenerateMessageIsInvalid()
-    {
+    string GenerateMessageIsInvalid() {
         StringBuilder builder = new StringBuilder();
         builder.Append(@"
     public bool IsInvalid() { return m_IsInvalid; }
     private bool IsInvalid_impl() {");
-        foreach (var field in m_Fields)
-        {
+        foreach (var field in m_Fields) {
             string str = @"
         if (!TableUtil.IsInvalid(this.___Name)) return false;";
             str = str.Replace("__Name", field.Name);
@@ -83,11 +76,10 @@ public class GenerateDataCSharp : IGenerate
     }");
         return builder.ToString();
     }
-    string GenerateMessageRead()
-    {
+    string GenerateMessageRead() {
         StringBuilder builder = new StringBuilder();
         builder.Append(@"
-    public static __ClassName Read(ScorpioReader reader) {
+    public static __ClassName Read(TableManager tableManager, String fileName, ScorpioReader reader) {
         __ClassName ret = new __ClassName();");
         foreach (var field in m_Fields) {
             string str = "";
@@ -103,7 +95,14 @@ public class GenerateDataCSharp : IGenerate
                 str = @"
         ret.___Name = __FieldRead;";
             }
-            str = str.Replace("__FieldRead", field.IsBasic ? "reader.__Read()" : (field.Enum ? "(__Type)reader.ReadInt32()" : "__Type.Read(reader)"));
+            if (field.Attribute != null && field.Attribute.GetValue("Language").LogicOperation()) {
+                str = @"
+        reader.ReadString();
+        ret.___Name = __FieldRead;";
+                str = str.Replace("__FieldRead", string.Format("tableManager.getLanguageText(fileName +  \"_{0}_\" + ret._ID)", field.Name));
+            } else {
+                str = str.Replace("__FieldRead", field.IsBasic ? "reader.__Read()" : (field.Enum ? "(__Type)reader.ReadInt32()" : "__Type.Read(tableManager, fileName, reader)"));
+            }
             str = str.Replace("__Read", field.IsBasic ? field.Info.ReadFunction : "");
             str = str.Replace("__Type", GetCodeType(field.Type));
             str = str.Replace("__Index", field.Index.ToString());

@@ -11,6 +11,7 @@ public class GenerateDataJava : IGenerate
         builder.Append(GenerateMessageFields());
         builder.Append(GenerateMessageGetData());
         builder.Append(GenerateMessageIsInvalid());
+        builder.Append(GenerateJavaToString());
         builder.Append(GenerateMessageRead());
         builder.Append(@"
 }");
@@ -85,7 +86,7 @@ public class GenerateDataJava : IGenerate
     {
         StringBuilder builder = new StringBuilder();
         builder.Append(@"
-    public static __ClassName Read(ScorpioReader reader) {
+    public static __ClassName Read(TableManager tableManager, String fileName, ScorpioReader reader) {
         __ClassName ret = new __ClassName();");
         foreach (var field in m_Fields) {
             string str = "";
@@ -101,7 +102,14 @@ public class GenerateDataJava : IGenerate
                 str = @"
         ret.___Name = __FieldRead;";
             }
-            str = str.Replace("__FieldRead", field.IsBasic ? "reader.__Read()" : (field.Enum ? "__Type.valueOf(reader.ReadInt32())" : "__Type.Read(reader)"));
+            if (field.Attribute != null && field.Attribute.GetValue("Language").LogicOperation()) {
+                str = @"
+        reader.ReadString();
+        ret.___Name = __FieldRead;";
+                str = str.Replace("__FieldRead", string.Format("tableManager.getLanguageText(fileName +  \"_{0}_\" + ret._ID)", field.Name));
+            } else {
+                str = str.Replace("__FieldRead", field.IsBasic ? "reader.__Read()" : (field.Enum ? "__Type.valueOf(reader.ReadInt32())" : "__Type.Read(tableManager, fileName, reader)"));
+            }
             str = str.Replace("__Read", field.IsBasic ? field.Info.ReadFunction : "");
             str = str.Replace("__Type", GetCodeType(field.Type));
             str = str.Replace("__Index", field.Index.ToString());

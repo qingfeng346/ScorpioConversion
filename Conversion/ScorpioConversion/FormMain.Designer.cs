@@ -33,8 +33,6 @@
             this.label4 = new System.Windows.Forms.Label();
             this.OtherFoldButton = new System.Windows.Forms.Button();
             this.LanguageFoldPanel = new System.Windows.Forms.Panel();
-            this.textBoxLanguage = new System.Windows.Forms.TextBox();
-            this.label3 = new System.Windows.Forms.Label();
             this.textBoxTranslation = new System.Windows.Forms.TextBox();
             this.label2 = new System.Windows.Forms.Label();
             this.textBoxAllLanguages = new System.Windows.Forms.TextBox();
@@ -131,7 +129,7 @@
             this.OtherFoldPanel.Controls.Add(this.textBoxSpawns);
             this.OtherFoldPanel.Controls.Add(this.label4);
             this.OtherFoldPanel.Dock = System.Windows.Forms.DockStyle.Top;
-            this.OtherFoldPanel.Location = new System.Drawing.Point(0, 270);
+            this.OtherFoldPanel.Location = new System.Drawing.Point(0, 239);
             this.OtherFoldPanel.Name = "OtherFoldPanel";
             this.OtherFoldPanel.Size = new System.Drawing.Size(307, 66);
             this.OtherFoldPanel.TabIndex = 5;
@@ -175,7 +173,7 @@
             // OtherFoldButton
             // 
             this.OtherFoldButton.Dock = System.Windows.Forms.DockStyle.Top;
-            this.OtherFoldButton.Location = new System.Drawing.Point(0, 247);
+            this.OtherFoldButton.Location = new System.Drawing.Point(0, 216);
             this.OtherFoldButton.Name = "OtherFoldButton";
             this.OtherFoldButton.Size = new System.Drawing.Size(307, 23);
             this.OtherFoldButton.TabIndex = 4;
@@ -185,8 +183,6 @@
             // 
             // LanguageFoldPanel
             // 
-            this.LanguageFoldPanel.Controls.Add(this.textBoxLanguage);
-            this.LanguageFoldPanel.Controls.Add(this.label3);
             this.LanguageFoldPanel.Controls.Add(this.textBoxTranslation);
             this.LanguageFoldPanel.Controls.Add(this.label2);
             this.LanguageFoldPanel.Controls.Add(this.textBoxAllLanguages);
@@ -194,32 +190,14 @@
             this.LanguageFoldPanel.Dock = System.Windows.Forms.DockStyle.Top;
             this.LanguageFoldPanel.Location = new System.Drawing.Point(0, 146);
             this.LanguageFoldPanel.Name = "LanguageFoldPanel";
-            this.LanguageFoldPanel.Size = new System.Drawing.Size(307, 101);
+            this.LanguageFoldPanel.Size = new System.Drawing.Size(307, 70);
             this.LanguageFoldPanel.TabIndex = 3;
-            // 
-            // textBoxLanguage
-            // 
-            this.textBoxLanguage.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.textBoxLanguage.Location = new System.Drawing.Point(106, 69);
-            this.textBoxLanguage.Name = "textBoxLanguage";
-            this.textBoxLanguage.Size = new System.Drawing.Size(209, 21);
-            this.textBoxLanguage.TabIndex = 5;
-            // 
-            // label3
-            // 
-            this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(11, 74);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(89, 12);
-            this.label3.TabIndex = 4;
-            this.label3.Text = "最终表生成目录";
             // 
             // textBoxTranslation
             // 
             this.textBoxTranslation.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.textBoxTranslation.Location = new System.Drawing.Point(106, 40);
+            this.textBoxTranslation.Location = new System.Drawing.Point(106, 36);
             this.textBoxTranslation.Name = "textBoxTranslation";
             this.textBoxTranslation.Size = new System.Drawing.Size(209, 21);
             this.textBoxTranslation.TabIndex = 3;
@@ -227,7 +205,7 @@
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(11, 45);
+            this.label2.Location = new System.Drawing.Point(11, 41);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(89, 12);
             this.label2.TabIndex = 2;
@@ -237,7 +215,7 @@
             // 
             this.textBoxAllLanguages.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.textBoxAllLanguages.Location = new System.Drawing.Point(106, 13);
+            this.textBoxAllLanguages.Location = new System.Drawing.Point(106, 9);
             this.textBoxAllLanguages.Name = "textBoxAllLanguages";
             this.textBoxAllLanguages.Size = new System.Drawing.Size(209, 21);
             this.textBoxAllLanguages.TabIndex = 1;
@@ -245,7 +223,7 @@
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(11, 18);
+            this.label1.Location = new System.Drawing.Point(11, 14);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(77, 12);
             this.label1.TabIndex = 0;
@@ -753,8 +731,6 @@
         private System.Windows.Forms.RichTextBox richTextBoxLog;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.TextBox textBoxAllLanguages;
-        private System.Windows.Forms.TextBox textBoxLanguage;
-        private System.Windows.Forms.Label label3;
         private System.Windows.Forms.TextBox textBoxTranslation;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.TextBox textBoxSpawns;

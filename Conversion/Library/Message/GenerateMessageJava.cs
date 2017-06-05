@@ -18,7 +18,7 @@ public class __ClassName extends IMessage {");
         builder.Append(GenerateMessageNew());
         builder.Append(GenerateMessageReadimpl());
         builder.Append(GenerateMessageDeserialize());
-        builder.Append(GenerateMessageToString());
+        builder.Append(GenerateJavaToString());
         builder.Append(@"
 }");
         builder.Replace("__ClassName", m_ClassName);
@@ -133,31 +133,5 @@ public class __ClassName extends IMessage {");
     public static __ClassName Deserialize(byte[] data) {
         return Readimpl(new ScorpioReader(data));
     }";
-    }
-    string GenerateMessageToString() {
-        StringBuilder builder = new StringBuilder();
-        builder.Append(@"
-    @Override
-    public String toString() {
-        return ");
-        if (m_Fields.Count > 0) {
-            bool first = true;
-            foreach (var field in m_Fields) {
-                if (first) {
-                    first = false;
-                } else {
-                    builder.Append(@" +
-               ");
-                }
-                string str = @"""__Name : "" + ___Name + "" , """;
-                str = str.Replace("__Name", field.Name);
-                builder.Append(str);
-            }
-        } else {
-            builder.Append("\"\"");
-        }
-builder.Append(@";
-    }");
-        return builder.ToString();
     }
 }

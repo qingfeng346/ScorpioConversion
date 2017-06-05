@@ -5,10 +5,12 @@ using System.Text;
 public class TemplateScorpio {
     public const string Head = @"";
     public const string Table = @"__TableName = {
+    m_tableManager = null,
     m_count = 0,
     m_dataArray = {},
-    function Initialize(fileName) {
-        this.m_dataArray = TableUtil.ReadDatas(_SCRIPT, fileName, ""__DataName"", ""__KeyName"", ""__MD5"")
+    function Initialize(tableManager, fileName) {
+        this.m_tableManager = tableManager
+        this.m_dataArray = ScorpioSerializer.ReadDatas(_SCRIPT, tableManager, fileName, ""__DataName"", ""__KeyName"", ""__MD5"")
         this.m_count = table.count(this.m_dataArray)
         return this
     }

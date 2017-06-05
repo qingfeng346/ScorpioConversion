@@ -8,7 +8,10 @@ public partial class LanguageBuilder {
         public Dictionary<string, string> Text = new Dictionary<string, string>();      //躲过语言数据
     }
     private Dictionary<string, LanguageItem> m_Items = new Dictionary<string, LanguageItem>();
-    public void RefreshLanguage() {
+    public bool RefreshLanguage() {
+        if (!Check()) {
+            return false;
+        }
         Logger.info("正在生成Language表");
         m_Items.Clear();
         IWorkbook workbook = new HSSFWorkbook(new FileStream(m_TranslationFile, FileMode.Open, FileAccess.Read));
@@ -37,6 +40,7 @@ public partial class LanguageBuilder {
         foreach (var language in m_Languages) {
             CreateLanguageXLS(language);
         }
+        return true;
     }
     public void CreateLanguageXLS(string language) {
         IWorkbook workbook = new HSSFWorkbook();
@@ -70,7 +74,7 @@ public partial class LanguageBuilder {
             row.CreateCell(2).SetCellValue(val);
             ++index;
         }
-        FileStream stream = new FileStream(m_LanguageDirectory + "Language_" + language + ".xls", FileMode.Create);
+        FileStream stream = new FileStream(m_LanguageDirectory + "/Language_" + language + ".xls", FileMode.Create);
         workbook.Write(stream);
         stream.Close();
     }

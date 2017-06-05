@@ -17,12 +17,12 @@ import Scorpio.Table.*;
 	final String FILE_MD5_CODE = ""__MD5"";
     private int m_count = 0;
     private HashMap<__KeyType, __DataName> m_dataArray = new HashMap<__KeyType, __DataName>();
-    public __TableName Initialize(String fileName) {
+    public __TableName Initialize(TableManager tableManager, String fileName) {
         m_dataArray.clear();
         ScorpioReader reader = new ScorpioReader(TableUtil.GetBuffer(fileName));
         int iRow = TableUtil.ReadHead(reader, fileName, FILE_MD5_CODE);
         for (int i = 0; i < iRow; ++i) {
-            __DataName pData = __DataName.Read(reader);
+            __DataName pData = __DataName.Read(tableManager, fileName, reader);
             if (m_dataArray.containsKey(pData.ID()))
                 throw new RuntimeException(""文件"" + fileName + ""有重复项 ID : "" + pData.ID());
             m_dataArray.put(pData.ID(), pData);

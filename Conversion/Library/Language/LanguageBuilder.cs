@@ -36,17 +36,41 @@ public partial class LanguageBuilder {
     private string m_TranslationFile;       //翻译表
     private string m_TranslationBackUp;     //翻译表备份
     public LanguageBuilder(string languages, string languageDirectory, string translationDirectory, Dictionary<string, LanguageTable> tables) {
-        m_Languages = languages.Split(';');
+        var list = new List<string>();
+        list.AddRange(languages.Split(';'));
+        while (list.Remove("")) { }
+        m_Languages = list.ToArray();
         m_LanguageDirectory = languageDirectory;
         m_TranslationDirectory = translationDirectory;
         m_Tables = tables;
         m_TranslationFile = m_TranslationDirectory + "/Translation.xls";
         m_TranslationBackUp = m_TranslationDirectory + "/Translation备份.xls";
     }
-    public void Build() {
+    public string[] GetLanguages() {
+        return m_Languages;
+    }
+    public bool Check() {
+        int length = m_Languages.Length;
+        if (length == 0) {
+            Logger.error("多国语言列表格式错误，列表以【;】隔开，第一个语言为默认语言，单个语言不能为空");
+            return false;
+        }
+        for (int i = 0; i < length; ++i) {
+            if (string.IsNullOrEmpty(m_Languages[i])) {
+                Logger.error("多国语言列表格式错误，列表以【;】隔开，第一个语言为默认语言，单个语言不能为空");
+                return false;
+            }
+        }
+        return true;
+    }
+    public bool Build() {
+        if (!Check()) {
+            return false;
+        }
         GetCacheLanguages();
         CreateTranslation();
         RefreshLanguage();
+        return true;
     }
     //获取就得翻译表数据
     public void GetCacheLanguages() {

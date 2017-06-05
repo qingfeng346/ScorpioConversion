@@ -43,11 +43,9 @@ namespace ScorpioConversion {
 
             ConversionUtil.Bind(textBoxAllLanguages, ConfigKey.AllLanguage, ConfigFile.LanguageConfig);
             ConversionUtil.Bind(textBoxTranslation, ConfigKey.TranslationDirectory, ConfigFile.LanguageConfig);
-            ConversionUtil.Bind(textBoxLanguage, ConfigKey.LanguageDirectory, ConfigFile.LanguageConfig);
             foreach (var pair in controls) {
                 pair.Value.SetProgram(pair.Key);
-            } 
-
+            }
         }
         private void Tick() {
             if (Progress.Count > 0) {
@@ -179,29 +177,28 @@ namespace ScorpioConversion {
         }
         private void BuildLanguage(Dictionary<string, LanguageTable> tables, bool build) {
             string allLanguages = ConversionUtil.GetConfig(ConfigKey.AllLanguage, ConfigFile.LanguageConfig);
-            string languageDirectory = ConversionUtil.GetPath(ConversionUtil.GetConfig(ConfigKey.LanguageDirectory, ConfigFile.LanguageConfig));
+            //string languageDirectory = ConversionUtil.GetPath(ConversionUtil.GetConfig(ConfigKey.LanguageDirectory, ConfigFile.LanguageConfig));
+            string languageDirectory = ConversionUtil.GetPath(textTableFolder.Text);
             LanguageBuilder builder = new LanguageBuilder(
                 allLanguages,
                 languageDirectory,
                 ConversionUtil.GetPath(ConversionUtil.GetConfig(ConfigKey.TranslationDirectory, ConfigFile.LanguageConfig)),
                 tables);
-            if (build) {
-                builder.Build();
-            } else {
-                builder.RefreshLanguage();
+            bool success = build ? builder.Build() : builder.RefreshLanguage();
+            if (success) {
+                string[] languages = builder.GetLanguages();
+                List<string> languageFiles = new List<string>();
+                foreach (var language in languages) {
+                    languageFiles.Add(languageDirectory + "/Language_" + language + ".xls");
+                }
+                new TableBuilder().Transform(string.Join(";", languageFiles.ToArray()),
+                    textTableConfig.Text,
+                    textBoxPackage.Text,
+                    ConversionUtil.GetConfig(ConfigKey.SpawnList, ConfigFile.InitConfig),
+                    false,
+                    Extends.GetChecked(refreshNote),
+                    ConversionUtil.GetProgramConfig());
             }
-            string[] languages = allLanguages.Split(';');
-            List<string> languageFiles = new List<string>();
-            foreach (var language in languages) {
-                languageFiles.Add(languageDirectory + "/Language_" + language + ".xls");
-            }
-            new TableBuilder().Transform(string.Join(";", languageFiles.ToArray()),
-                textTableConfig.Text,
-                textBoxPackage.Text,
-                ConversionUtil.GetConfig(ConfigKey.SpawnList, ConfigFile.InitConfig),
-                false,
-                Extends.GetChecked(refreshNote),
-                ConversionUtil.GetProgramConfig());
         }
 
         private void selectRollbackFiles_Click(object sender, EventArgs e) {

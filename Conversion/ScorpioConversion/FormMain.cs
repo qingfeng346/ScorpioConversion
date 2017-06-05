@@ -4,6 +4,7 @@ using System.Windows.Forms;
 using System.IO;
 using System.Text;
 using System.Threading;
+using System.Diagnostics;
 
 namespace ScorpioConversion {
     public partial class FormMain : Form {
@@ -13,11 +14,9 @@ namespace ScorpioConversion {
             InitializeComponent();
             FormClosing += (sender, e) => { this.Visible = false; e.Cancel = true; };
             VisibleChanged += (sender, e) => { ConversionUtil.CheckExit(); };
-            UpdateUtil.Init(this);
         }
         private void FormMain_Load(object sender, EventArgs e) {
             Init();
-            UpdateUtil.CheckVersion(false);
         }
         public void Show(string path) {
             this.Show();
@@ -46,9 +45,9 @@ namespace ScorpioConversion {
             FormWorkspace.GetInstance().Show();
         }
 
-        private void MenuAbout_Click(object sender, EventArgs e)
-        {
-            new FormAbout().Show(this);
+        private void MenuAbout_Click(object sender, EventArgs e) {
+            string version = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString();
+            Process.Start("ScorpioUpdater.exe", version + " http://www.fengyuezhu.com/app.php?app=ScorpioConversion http://www.fengyuezhu.com/project/ScorpioConversion/");
         }
     }
 }
