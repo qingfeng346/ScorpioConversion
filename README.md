@@ -26,14 +26,14 @@
 
 **需要导入的库**
 * sco脚本暂时只支持c#版和java版
-* 要使用c#语言 请导入**ScorpioProto-CSharp**库 源码地址 https://github.com/qingfeng346/ScorpioProto-CSharp
-* 要使用Java语言 请导入**ScorpioProto-Java**库 源码地址 https://github.com/qingfeng346/ScorpioProto-Java
-* 要使用c++语言 请导入**ScorpioProto-CPP**库 源码地址 https://github.com/qingfeng346/ScorpioProto-CPP
+* 要使用c#语言 请导入**ScorpioProto-CSharp**库的**ScorpioProto/src**目录 源码地址 https://github.com/qingfeng346/ScorpioProto-CSharp
+* 要使用Java语言 请导入**ScorpioProto-Java**库的**ScorpioProto/src**目录 源码地址 https://github.com/qingfeng346/ScorpioProto-Java
+* 要使用c++语言 请导入**ScorpioProto-CPP**库的**ScorpioProto/src**目录 源码地址 https://github.com/qingfeng346/ScorpioProto-CPP
 
 ## 生成文件后使用方法
 -----------
 **网络协议源文件说明**
-```javascript
+``` javascript
 //测试信息
 Msg_C2G_Test = {
     Value1 = "1,int",
