@@ -44,7 +44,9 @@ namespace ScorpioConversion {
         private void ChangeWorkspace_Click(object sender, EventArgs e) {
             FormWorkspace.GetInstance().Show();
         }
-
+        private void OpenWorkspace_Click(object sender, EventArgs e) {
+            Process.Start(ConversionUtil.WorkspaceDirectory);
+        }
         private void MenuAbout_Click(object sender, EventArgs e) {
             string version = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString();
             Process.Start("ScorpioUpdater.exe", version + " http://www.fengyuezhu.com/app.php?app=ScorpioConversion http://www.fengyuezhu.com/project/ScorpioConversion/");
