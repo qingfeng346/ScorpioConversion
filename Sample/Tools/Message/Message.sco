@@ -1,6 +1,5 @@
 //测试信息
-enum_TestEnum =
-{
+enum_TestEnum = {
 	Test1 = 1,
 	Test2 = 2,
 	Test3 = 3,

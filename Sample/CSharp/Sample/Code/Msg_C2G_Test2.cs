@@ -18,6 +18,10 @@ public class Msg_C2G_Test2 : IMessage {
     public override IMessage New() {
         return new Msg_C2G_Test2();
     }
+    public override int GetID() {
+        return 1;
+    }
+    
     public static Msg_C2G_Test2 Readimpl(ScorpioReader reader) {
         Msg_C2G_Test2 ret = new Msg_C2G_Test2();
         ret.Read(reader);

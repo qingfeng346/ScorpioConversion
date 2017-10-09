@@ -39,6 +39,11 @@ public class Msg_C2G_Test extends IMessage {
     public IMessage New() {
         return new Msg_C2G_Test();
     }
+    @Override
+    public int GetID() {
+        return 0;
+    }
+    
     public static Msg_C2G_Test Readimpl(ScorpioReader reader) {
         Msg_C2G_Test ret = new Msg_C2G_Test();
         ret.Read(reader);
