@@ -4,9 +4,10 @@ using System.Text;
 using System.IO;
 public class GenerateMessageCSharp : IGenerate
 {
+    Dictionary<string, int> mKeys = null;
     public GenerateMessageCSharp() : base(PROGRAM.CSharp) {}
-    protected override string Generate_impl()
-    {
+    protected override string Generate_impl() {
+        mKeys = (Dictionary<string, int>)m_Parameter;
         StringBuilder builder = new StringBuilder();
         builder.Append(@"//本文件为自动生成，请不要手动修改
 using System.Collections.Generic;
@@ -18,6 +19,7 @@ public class __ClassName : IMessage {");
         builder.Append(GenerateMessageWrite());
         builder.Append(GenerateMessageRead());
         builder.Append(GenerateMessageNew());
+        builder.Append(GenerateMessageGetID());
         builder.Append(GenerateMessageReadimpl());
         builder.Append(GenerateMessageDeserialize());
         builder.Append(GenerateCSharpToString());
@@ -118,6 +120,14 @@ public class __ClassName : IMessage {");
     public override IMessage New() {
         return new __ClassName();
     }";
+    }
+    string GenerateMessageGetID() {
+        int id = mKeys[m_ClassName];
+        return string.Format(@"
+    public override int GetID() {{
+        return {0};
+    }}
+    ", id);
     }
     string GenerateMessageReadimpl() {
         return @"

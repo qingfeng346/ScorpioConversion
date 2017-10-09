@@ -4,7 +4,7 @@ using System.Text;
 public partial class MessageBuilder
 {
     private string mPackage;
-    private List<string> mKeys;
+    private Dictionary<string, int> mKeys = new Dictionary<string, int>();
     private Dictionary<string, List<PackageField>> mCustoms = new Dictionary<string, List<PackageField>>();
     private Dictionary<string, List<PackageEnum>> mEnums = new Dictionary<string, List<PackageEnum>>();
     private Dictionary<string, List<PackageConst>> mConsts = new Dictionary<string, List<PackageConst>>();
@@ -14,8 +14,13 @@ public partial class MessageBuilder
             Util.InitializeProgram(programConfigs);
             Util.ParseStructure(configPath, mCustoms, mEnums, null, null, null, mConsts);
             mPackage = package;
-            mKeys = new List<string>(mCustoms.Keys);
-            mKeys.Sort();
+            var keys = new List<string>(mCustoms.Keys);
+            keys.Sort();
+            for (int i = 0; i< keys.Count; ++i) {
+                mKeys[keys[i]] = i;
+            }
+            //mKeys = new List<string>(mCustoms.Keys);
+            //mKeys.Sort();
             var infos = Util.GetProgramInfos();
             Progress.Count = mCustoms.Count + mEnums.Count + mConsts.Count;
             Progress.Current = 0;
@@ -24,7 +29,7 @@ public partial class MessageBuilder
                 Logger.info("正在生成消息 {0}/{1} [{2}]", Progress.Current, Progress.Count, pair.Key);
                 foreach (var info in infos.Values) {
                     if (!info.Create) continue;
-                    info.CreateFile(pair.Key, info.GenerateMessage.Generate(pair.Key, mPackage, pair.Value, false));
+                    info.CreateFile(pair.Key, info.GenerateMessage.Generate(pair.Key, mPackage, pair.Value, mKeys));
                 }
             }
             foreach (var pair in mEnums) {

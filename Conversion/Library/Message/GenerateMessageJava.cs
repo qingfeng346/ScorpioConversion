@@ -4,8 +4,10 @@ using System.Text;
 using System.IO;
 public class GenerateMessageJava : IGenerate
 {
+    Dictionary<string, int> mKeys = null;
     public GenerateMessageJava() : base(PROGRAM.Java) { }
     protected override string Generate_impl() {
+        mKeys = (Dictionary<string, int>)m_Parameter;
         StringBuilder builder = new StringBuilder();
         builder.Append(@"//本文件为自动生成，请不要手动修改
 package __Package;
@@ -16,6 +18,7 @@ public class __ClassName extends IMessage {");
         builder.Append(GenerateMessageWrite());
         builder.Append(GenerateMessageRead());
         builder.Append(GenerateMessageNew());
+        builder.Append(GenerateMessageGetID());
         builder.Append(GenerateMessageReadimpl());
         builder.Append(GenerateMessageDeserialize());
         builder.Append(GenerateJavaToString());
@@ -120,6 +123,15 @@ public class __ClassName extends IMessage {");
         return new __ClassName();
     }";
     }
+    string GenerateMessageGetID() {
+        int id = mKeys[m_ClassName];
+        return string.Format(@"
+    @Override
+    public int GetID() {{
+        return {0};
+    }}
+    ", id);
+    }
     string GenerateMessageReadimpl() {
         return @"
     public static __ClassName Readimpl(ScorpioReader reader) {
@@ -134,4 +146,5 @@ public class __ClassName extends IMessage {");
         return Readimpl(new ScorpioReader(data));
     }";
     }
+
 }
