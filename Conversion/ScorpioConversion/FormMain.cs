@@ -51,5 +51,10 @@ namespace ScorpioConversion {
             string version = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString();
             Process.Start("ScorpioUpdater.exe", version + " http://www.fengyuezhu.com/app.php?app=ScorpioConversion http://www.fengyuezhu.com/project/ScorpioConversion/");
         }
+
+        private void mD5ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            new FormMD5().Show();
+        }
     }
 }

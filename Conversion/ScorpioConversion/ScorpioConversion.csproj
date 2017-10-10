@@ -91,6 +91,12 @@
     <Compile Include="FormMain.Designer.cs">
       <DependentUpon>FormMain.cs</DependentUpon>
     </Compile>
+    <Compile Include="FormMD5.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormMD5.Designer.cs">
+      <DependentUpon>FormMD5.cs</DependentUpon>
+    </Compile>
     <Compile Include="FormTiny.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -110,6 +116,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="FormMain.resx">
       <DependentUpon>FormMain.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FormMD5.resx">
+      <DependentUpon>FormMD5.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="FormTiny.resx">
       <DependentUpon>FormTiny.cs</DependentUpon>

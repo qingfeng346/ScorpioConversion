@@ -76,8 +76,10 @@
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.文件ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.ChangeWorkspace = new System.Windows.Forms.ToolStripMenuItem();
-            this.MenuAbout = new System.Windows.Forms.ToolStripMenuItem();
             this.OpenWorkspace = new System.Windows.Forms.ToolStripMenuItem();
+            this.MenuAbout = new System.Windows.Forms.ToolStripMenuItem();
+            this.小工具ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.mD5ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.splitContainerMain.Panel1.SuspendLayout();
             this.splitContainerMain.Panel2.SuspendLayout();
             this.splitContainerMain.SuspendLayout();
@@ -650,6 +652,7 @@
             this.menuStrip1.Dock = System.Windows.Forms.DockStyle.None;
             this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.文件ToolStripMenuItem,
+            this.小工具ToolStripMenuItem,
             this.MenuAbout});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
@@ -673,6 +676,13 @@
             this.ChangeWorkspace.Text = "切换工作目录";
             this.ChangeWorkspace.Click += new System.EventHandler(this.ChangeWorkspace_Click);
             // 
+            // OpenWorkspace
+            // 
+            this.OpenWorkspace.Name = "OpenWorkspace";
+            this.OpenWorkspace.Size = new System.Drawing.Size(172, 22);
+            this.OpenWorkspace.Text = "打开当前工作目录";
+            this.OpenWorkspace.Click += new System.EventHandler(this.OpenWorkspace_Click);
+            // 
             // MenuAbout
             // 
             this.MenuAbout.Name = "MenuAbout";
@@ -680,12 +690,20 @@
             this.MenuAbout.Text = "关于";
             this.MenuAbout.Click += new System.EventHandler(this.MenuAbout_Click);
             // 
-            // OpenWorkspace
+            // 小工具ToolStripMenuItem
             // 
-            this.OpenWorkspace.Name = "OpenWorkspace";
-            this.OpenWorkspace.Size = new System.Drawing.Size(172, 22);
-            this.OpenWorkspace.Text = "打开当前工作目录";
-            this.OpenWorkspace.Click += new System.EventHandler(this.OpenWorkspace_Click);
+            this.小工具ToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.mD5ToolStripMenuItem});
+            this.小工具ToolStripMenuItem.Name = "小工具ToolStripMenuItem";
+            this.小工具ToolStripMenuItem.Size = new System.Drawing.Size(56, 21);
+            this.小工具ToolStripMenuItem.Text = "小工具";
+            // 
+            // mD5ToolStripMenuItem
+            // 
+            this.mD5ToolStripMenuItem.Name = "mD5ToolStripMenuItem";
+            this.mD5ToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.mD5ToolStripMenuItem.Text = "MD5";
+            this.mD5ToolStripMenuItem.Click += new System.EventHandler(this.mD5ToolStripMenuItem_Click);
             // 
             // FormMain
             // 
@@ -782,6 +800,8 @@
         private System.Windows.Forms.ToolStripMenuItem ChangeWorkspace;
         private System.Windows.Forms.ToolStripMenuItem MenuAbout;
         private System.Windows.Forms.ToolStripMenuItem OpenWorkspace;
+        private System.Windows.Forms.ToolStripMenuItem 小工具ToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem mD5ToolStripMenuItem;
     }
 }
 
