@@ -14,8 +14,7 @@ public static class FileUtil {
         return char.ToUpper(str[0]) + str.Substring(1);
     }
     /// <summary> 创建一个目录 </summary>
-    public static bool CreateDirectory(string path)
-    {
+    public static bool CreateDirectory(string path) {
         try {
             if (!PathExist(path))
                 Directory.CreateDirectory(path);
@@ -26,8 +25,7 @@ public static class FileUtil {
         return false;
     }
     /// <summary> 判断文件是否存在 </summary>
-    public static bool FileExist(String file)
-    {
+    public static bool FileExist(String file) {
         return !string.IsNullOrEmpty(file) && File.Exists(file);
     }
     /// <summary> 判断文件夹是否存在 </summary>
@@ -44,13 +42,11 @@ public static class FileUtil {
         }
     }
     /// <summary> 根据字符串创建一个文件 </summary>
-	public static void CreateFile(string fileName, string buffer)
-	{
-		CreateFile(fileName,buffer,false);
-	}
+	public static void CreateFile(string fileName, string buffer) {
+        CreateFile(fileName, buffer, false);
+    }
     /// <summary> 根据字符串创建一个文件 </summary>
-    public static void CreateFile(string fileName, string buffer, bool bom)
-    {
+    public static void CreateFile(string fileName, string buffer, bool bom) {
         try {
             CreateFile(fileName, Encoding.UTF8.GetBytes(buffer), bom);
         } catch (System.Exception ex) {
@@ -58,8 +54,7 @@ public static class FileUtil {
         }
     }
     /// <summary> 根据byte[]创建文件 </summary>
-    public static void CreateFile(string fileName, byte[] buffer, bool bom, string[] filePath)
-    {
+    public static void CreateFile(string fileName, byte[] buffer, bool bom, string[] filePath) {
         if (filePath == null || filePath.Length < 0) return;
         for (int i = 0; i < filePath.Length; ++i) {
             if (!string.IsNullOrEmpty(filePath[i])) {
@@ -68,13 +63,11 @@ public static class FileUtil {
         }
     }
     /// <summary> 根据byte[]创建一个文件 </summary>
-	public static void CreateFile(string fileName, byte[] buffer)
-	{
-		CreateFile(fileName,buffer,false);
-	}
+	public static void CreateFile(string fileName, byte[] buffer) {
+        CreateFile(fileName, buffer, false);
+    }
     /// <summary> 根据byte[]创建一个文件 </summary>
-    public static void CreateFile(string fileName, byte[] buffer, bool bom)
-    {
+    public static void CreateFile(string fileName, byte[] buffer, bool bom) {
         try {
             if (string.IsNullOrEmpty(fileName)) return;
             string path = Path.GetDirectoryName(fileName);
@@ -92,13 +85,11 @@ public static class FileUtil {
         }
     }
     /// <summary> 删除文件 </summary>
-    public static void DeleteFile(string fileName)
-    {
+    public static void DeleteFile(string fileName) {
         if (FileExist(fileName)) File.Delete(fileName);
     }
     /// <summary> 删除文件夹 </summary>
-    public static void DeleteFiles(string sourceFolder, string strFilePattern, bool recursive)
-    {
+    public static void DeleteFiles(string sourceFolder, string strFilePattern, bool recursive) {
         if (!PathExist(sourceFolder)) return;
         string[] files = Directory.GetFiles(sourceFolder, strFilePattern);
         foreach (string file in files) {
@@ -114,15 +105,13 @@ public static class FileUtil {
         Directory.Delete(sourceFolder);
     }
     /// <summary> 获得文件字符串 </summary>
-    public static string GetFileString(string fileName)
-    {
+    public static string GetFileString(string fileName) {
         var buffer = GetFileBuffer(fileName);
         if (buffer == null) return "";
         return Encoding.UTF8.GetString(buffer);
     }
     /// <summary> 获得文件byte[] </summary>
-    public static byte[] GetFileBuffer(string fileName)
-    {
+    public static byte[] GetFileBuffer(string fileName) {
         if (!FileExist(fileName)) return null;
         using (FileStream fs = new FileStream(fileName, FileMode.Open)) {
             long length = fs.Length;
@@ -132,18 +121,15 @@ public static class FileUtil {
         }
     }
     /// <summary> 获得一个文件的MD5码 </summary>
-    public static string GetMD5FromFile(string fileName)
-    {
+    public static string GetMD5FromFile(string fileName) {
         return GetMD5FromBuffer(GetFileBuffer(fileName));
     }
     /// <summary> 获得一段字符串的MD5 </summary>
-    public static string GetMD5FromString(string buffer)
-    {
+    public static string GetMD5FromString(string buffer) {
         return GetMD5FromBuffer(Encoding.UTF8.GetBytes(buffer));
     }
     /// <summary> 根据一段内存获得MD5码 </summary>
-    public static string GetMD5FromBuffer(byte[] buffer)
-    {
+    public static string GetMD5FromBuffer(byte[] buffer) {
         if (buffer == null) return null;
         return MD5.GetMd5String(buffer);
     }

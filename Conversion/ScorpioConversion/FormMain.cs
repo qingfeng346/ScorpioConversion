@@ -56,5 +56,9 @@ namespace ScorpioConversion {
         {
             new FormMD5().Show();
         }
+
+        private void timeToolStripMenuItem_Click(object sender, EventArgs e) {
+            new FormTime().Show();
+        }
     }
 }

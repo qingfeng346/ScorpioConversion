@@ -89,7 +89,7 @@
             this.Controls.Add(this.textBoxResult);
             this.Controls.Add(this.richTextBoxSource);
             this.Name = "FormMD5";
-            this.Text = "FormMD5";
+            this.Text = "MD5工具";
             this.ResumeLayout(false);
             this.PerformLayout();
 

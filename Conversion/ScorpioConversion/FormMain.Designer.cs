@@ -77,9 +77,10 @@
             this.文件ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.ChangeWorkspace = new System.Windows.Forms.ToolStripMenuItem();
             this.OpenWorkspace = new System.Windows.Forms.ToolStripMenuItem();
-            this.MenuAbout = new System.Windows.Forms.ToolStripMenuItem();
             this.小工具ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.mD5ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.MenuAbout = new System.Windows.Forms.ToolStripMenuItem();
+            this.timeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.splitContainerMain.Panel1.SuspendLayout();
             this.splitContainerMain.Panel2.SuspendLayout();
             this.splitContainerMain.SuspendLayout();
@@ -683,17 +684,11 @@
             this.OpenWorkspace.Text = "打开当前工作目录";
             this.OpenWorkspace.Click += new System.EventHandler(this.OpenWorkspace_Click);
             // 
-            // MenuAbout
-            // 
-            this.MenuAbout.Name = "MenuAbout";
-            this.MenuAbout.Size = new System.Drawing.Size(44, 21);
-            this.MenuAbout.Text = "关于";
-            this.MenuAbout.Click += new System.EventHandler(this.MenuAbout_Click);
-            // 
             // 小工具ToolStripMenuItem
             // 
             this.小工具ToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.mD5ToolStripMenuItem});
+            this.mD5ToolStripMenuItem,
+            this.timeToolStripMenuItem});
             this.小工具ToolStripMenuItem.Name = "小工具ToolStripMenuItem";
             this.小工具ToolStripMenuItem.Size = new System.Drawing.Size(56, 21);
             this.小工具ToolStripMenuItem.Text = "小工具";
@@ -702,8 +697,22 @@
             // 
             this.mD5ToolStripMenuItem.Name = "mD5ToolStripMenuItem";
             this.mD5ToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
-            this.mD5ToolStripMenuItem.Text = "MD5";
+            this.mD5ToolStripMenuItem.Text = "MD5工具";
             this.mD5ToolStripMenuItem.Click += new System.EventHandler(this.mD5ToolStripMenuItem_Click);
+            // 
+            // MenuAbout
+            // 
+            this.MenuAbout.Name = "MenuAbout";
+            this.MenuAbout.Size = new System.Drawing.Size(44, 21);
+            this.MenuAbout.Text = "关于";
+            this.MenuAbout.Click += new System.EventHandler(this.MenuAbout_Click);
+            // 
+            // timeToolStripMenuItem
+            // 
+            this.timeToolStripMenuItem.Name = "timeToolStripMenuItem";
+            this.timeToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.timeToolStripMenuItem.Text = "时间戳工具";
+            this.timeToolStripMenuItem.Click += new System.EventHandler(this.timeToolStripMenuItem_Click);
             // 
             // FormMain
             // 
@@ -802,6 +811,7 @@
         private System.Windows.Forms.ToolStripMenuItem OpenWorkspace;
         private System.Windows.Forms.ToolStripMenuItem 小工具ToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem mD5ToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem timeToolStripMenuItem;
     }
 }
 
