@@ -37,10 +37,6 @@ namespace ScorpioConversion {
         private void timerMain_Tick(object sender, EventArgs e) {
             Tick();
         }
-        private void toolStripButtonTiny_Click(object sender, EventArgs e) {
-            FormTiny.GetInstance().Show();
-        }
-
         private void ChangeWorkspace_Click(object sender, EventArgs e) {
             FormWorkspace.GetInstance().Show();
         }
@@ -51,14 +47,14 @@ namespace ScorpioConversion {
             string version = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString();
             Process.Start("ScorpioUpdater.exe", version + " http://www.fengyuezhu.com/app.php?app=ScorpioConversion http://www.fengyuezhu.com/project/ScorpioConversion/");
         }
-
-        private void mD5ToolStripMenuItem_Click(object sender, EventArgs e)
-        {
+        private void md5ToolStripMenuItem_Click(object sender, EventArgs e) {
             new FormMD5().Show();
         }
-
         private void timeToolStripMenuItem_Click(object sender, EventArgs e) {
             new FormTime().Show();
+        }
+        private void imageToolStripMenuItem_Click(object sender, EventArgs e) {
+            new FormTiny().Show();
         }
     }
 }

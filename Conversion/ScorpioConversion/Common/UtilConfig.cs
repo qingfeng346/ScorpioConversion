@@ -116,7 +116,7 @@ public static partial class ConversionUtil {
         public string key;          //key值
         public ConfigFile file;     //保存文件
     }
-    private static Dictionary<ConfigFile, Config> m_Configs = new Dictionary<ConfigFile, Config>();
+    private static Dictionary<ConfigFile, ScorpioIni> m_Configs = new Dictionary<ConfigFile, ScorpioIni>();
     private static Dictionary<object, AutoConfig> m_AutoConfigs = new Dictionary<object, AutoConfig>();
     public static void Cleanup() {
         m_Configs.Clear();
@@ -125,7 +125,6 @@ public static partial class ConversionUtil {
     public static void CheckExit() {
         if (FormWorkspace.GetInstance().Visible) return;
         if (FormMain.GetInstance().Visible) return;
-        if (FormTiny.GetInstance().Visible) return;
         Environment.Exit(0);
     }
     public static string GetPath(string path) {
@@ -184,10 +183,10 @@ public static partial class ConversionUtil {
 			SetConfig(config.program, config.key, Extends.GetChecked((CheckBox)sender) ? "true" : "false", config.file);
         }
     }
-    private static Config GetConfig(ConfigFile file) {
-        Config config = null;
+    private static ScorpioIni GetConfig(ConfigFile file) {
+        ScorpioIni config = null;
         if (!m_Configs.ContainsKey(file)) {
-            config = new Config(WorkspaceDirectory + file.ToString() + ".ini", true);
+            config = new ScorpioIni(WorkspaceDirectory + file.ToString() + ".ini", System.Text.Encoding.UTF8);
             m_Configs.Add(file, config);
         } else {
             config = m_Configs[file];
@@ -201,16 +200,16 @@ public static partial class ConversionUtil {
         SetConfig(PROGRAM.NONE, key, value, file);
     }
     public static string GetConfig(PROGRAM program, string key, ConfigFile file) {
-        Config config = GetConfig(file);
+        ScorpioIni config = GetConfig(file);
         return config.Get(program == PROGRAM.NONE ? "" : program.ToString(), key);
     }
     public static void SetConfig(PROGRAM program, string key, string value, ConfigFile file) {
-        Config config = GetConfig(file);
+        ScorpioIni config = GetConfig(file);
         config.Set(program == PROGRAM.NONE ? "" : program.ToString(), key, value);
-        config.Save(false);
+        FileUtil.CreateFile(WorkspaceDirectory + file.ToString() + ".ini", config.GetString());
     }
     public static string GetConfig(string section, string key, ConfigFile file) {
-        Config config = GetConfig(file);
+        ScorpioIni config = GetConfig(file);
         return config.Get(section, key);
     }
 	public static void SetToolTip(object control, string text) {

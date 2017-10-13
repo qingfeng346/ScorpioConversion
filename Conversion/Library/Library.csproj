@@ -91,7 +91,7 @@
     <Compile Include="Template\TemplateScorpio.cs" />
     <Compile Include="Template\TemplateJava.cs" />
     <Compile Include="Util\BasicUtil.cs" />
-    <Compile Include="Util\Config.cs" />
+    <Compile Include="Util\ScorpioIni.cs" />
     <Compile Include="Util\DatabaseUtil.cs" />
     <Compile Include="Util\FileUtil.cs" />
     <Compile Include="Util\GZipUtil.cs" />

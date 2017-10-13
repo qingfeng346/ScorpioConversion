@@ -25,7 +25,6 @@
         private void InitializeComponent() {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FormWorkspace));
             this.buttonOK = new System.Windows.Forms.Button();
-            this.checkDefault = new System.Windows.Forms.CheckBox();
             this.buttonClose = new System.Windows.Forms.Button();
             this.listPaths = new System.Windows.Forms.ListBox();
             this.textWorkspace = new System.Windows.Forms.TextBox();
@@ -41,18 +40,6 @@
             this.buttonOK.Text = "确定";
             this.buttonOK.UseVisualStyleBackColor = true;
             this.buttonOK.Click += new System.EventHandler(this.buttonOK_Click);
-            // 
-            // checkDefault
-            // 
-            this.checkDefault.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.checkDefault.AutoSize = true;
-            this.checkDefault.Location = new System.Drawing.Point(12, 337);
-            this.checkDefault.Name = "checkDefault";
-            this.checkDefault.Size = new System.Drawing.Size(108, 16);
-            this.checkDefault.TabIndex = 3;
-            this.checkDefault.Text = "默认使用此目录";
-            this.checkDefault.UseVisualStyleBackColor = true;
-            this.checkDefault.CheckedChanged += new System.EventHandler(this.checkDefault_CheckedChanged);
             // 
             // buttonClose
             // 
@@ -95,7 +82,6 @@
             this.Controls.Add(this.textWorkspace);
             this.Controls.Add(this.listPaths);
             this.Controls.Add(this.buttonClose);
-            this.Controls.Add(this.checkDefault);
             this.Controls.Add(this.buttonOK);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "FormWorkspace";
@@ -108,7 +94,6 @@
 
         #endregion
         private System.Windows.Forms.Button buttonOK;
-        private System.Windows.Forms.CheckBox checkDefault;
         private System.Windows.Forms.Button buttonClose;
         private System.Windows.Forms.ListBox listPaths;
         private System.Windows.Forms.TextBox textWorkspace;
