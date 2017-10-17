@@ -19,7 +19,8 @@ namespace ScorpioConversion {
         }
         private List<string> paths = new List<string>();
         private void FormWorkspace_Load(object sender, EventArgs e) {
-            paths.AddRange(localStroage.get(workspacelist).Split(';'));
+            var str = localStroage.get(workspacelist) ?? "";
+            paths.AddRange(str.Split(';'));
             while (true) {
                 if (!RemoveInvalidPath()) break;
             }

@@ -196,16 +196,12 @@ public static partial class ConversionUtil {
     }
     public static string GetConfig(PROGRAM program, string key, ConfigFile file) {
         ScorpioIni config = GetConfig(file);
-        return config.Get(program == PROGRAM.NONE ? "" : program.ToString(), key);
+        return config.Get(program == PROGRAM.NONE ? "" : program.ToString(), key) ?? "";
     }
     public static void SetConfig(PROGRAM program, string key, string value, ConfigFile file) {
         ScorpioIni config = GetConfig(file);
         config.Set(program == PROGRAM.NONE ? "" : program.ToString(), key, value);
         FileUtil.CreateFile(WorkspaceDirectory + file.ToString() + ".ini", config.GetString());
-    }
-    public static string GetConfig(string section, string key, ConfigFile file) {
-        ScorpioIni config = GetConfig(file);
-        return config.Get(section, key);
     }
 	public static void SetToolTip(object control, string text) {
         
