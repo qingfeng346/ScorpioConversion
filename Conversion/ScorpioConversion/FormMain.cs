@@ -5,25 +5,83 @@ using System.IO;
 using System.Text;
 using System.Threading;
 using System.Diagnostics;
+using System.Runtime.InteropServices;
 
 namespace ScorpioConversion {
     public partial class FormMain : Form {
+
+        //如果函数执行成功，返回值不为0。
+        //如果函数执行失败，返回值为0。要得到扩展错误信息，调用GetLastError。
+        [DllImport("user32.dll", SetLastError = true)]
+        public static extern bool RegisterHotKey(
+            IntPtr hWnd,                //要定义热键的窗口的句柄
+            int id,                     //定义热键ID（不能与其它ID重复）
+            KeyModifiers fsModifiers,   //标识热键是否在按Alt、Ctrl、Shift、Windows等键时才会生效
+            Keys vk                     //定义热键的内容
+            );
+        [DllImport("user32.dll", SetLastError = true)]
+        public static extern bool UnregisterHotKey(
+            IntPtr hWnd,                //要取消热键的窗口的句柄
+            int id                      //要取消热键的ID
+            );
+        //定义了辅助键的名称（将数字转变为字符以便于记忆，也可去除此枚举而直接使用数值）
+        [Flags()]
+        public enum KeyModifiers {
+            None = 0,
+            Alt = 1,
+            Ctrl = 2,
+            Shift = 4,
+            WindowsKey = 8
+        }
+
         private static FormMain instance;
         public static FormMain GetInstance() { return instance ?? (instance = new FormMain()); }
         public FormMain() {
             InitializeComponent();
-            FormClosing += (sender, e) => { this.Visible = false; e.Cancel = true; };
-            VisibleChanged += (sender, e) => { ConversionUtil.CheckExit(); };
         }
         private void FormMain_Load(object sender, EventArgs e) {
             Init();
+            Show(ConversionUtil.CurrentDirectory);
+            //注册热键Shift+S，Id号为100。HotKey.KeyModifiers.Shift也可以直接使用数字4来表示。
+            RegisterHotKey(Handle, 100, KeyModifiers.Alt, Keys.W);
+        }
+        private void FormMain_Closed(object sender, EventArgs e) {
+            //this.notifyIcon1.Visible = false;
+        }
+        private void FormMain_SizeChanged(object sender, EventArgs e) {
+            if (this.WindowState == FormWindowState.Minimized) {
+                this.Hide();
+            }
         }
         public void Show(string path) {
-            this.Show();
             ConversionUtil.WorkspaceDirectory = path;
             Util.WorkspaceDirectory = path;
             this.Text = "转表工具 : " + path;
+            this.Show();
             Bind();
+        }
+        protected override void WndProc(ref Message m) {
+            const int WM_HOTKEY = 0x0312;
+            //按快捷键 
+            switch (m.Msg) {
+                case WM_HOTKEY:
+                    switch (m.WParam.ToInt32()) {
+                        case 100:
+                            Switch();
+                            break;
+                    }
+                    break;
+            }
+            base.WndProc(ref m);
+        }
+        private void Switch() {
+            if (this.Visible) {
+                this.Hide();
+            } else {
+                this.Show();
+                this.WindowState = FormWindowState.Normal;
+                this.Activate();
+            }
         }
         private void CodeFoldButton_Click(object sender, EventArgs e) {
             this.CodeFoldPanel.Visible = !this.CodeFoldPanel.Visible;
@@ -55,6 +113,12 @@ namespace ScorpioConversion {
         }
         private void imageToolStripMenuItem_Click(object sender, EventArgs e) {
             new FormTiny().Show();
+        }
+        private void notifyIcon1_MouseDoubleClick(object sender, MouseEventArgs e) {
+            Switch();
+        }
+        private void toolStripMenuItem1_Click(object sender, EventArgs e) {
+            this.Close();
         }
     }
 }

@@ -80,7 +80,6 @@
     <Compile Include="Common\FormMain.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Common\localStroage.cs" />
     <Compile Include="Common\Logger.cs" />
     <Compile Include="Common\UtilConfig.cs" />
     <Compile Include="FormMain.cs">

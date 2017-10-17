@@ -15,8 +15,6 @@ namespace ScorpioConversion {
         public FormWorkspace() {
             InitializeComponent();
             FormClosing += (sender, e) => { e.Cancel = true;  this.Hide(); };
-            VisibleChanged += (sender, e) => { ConversionUtil.CheckExit(); };
-            Shown += (sender, e) => { this.Hide(); };
             listPaths.DoubleClick += listPaths_DoubleClick;
         }
         private List<string> paths = new List<string>();

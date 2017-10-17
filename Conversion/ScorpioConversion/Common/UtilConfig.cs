@@ -122,11 +122,6 @@ public static partial class ConversionUtil {
         m_Configs.Clear();
         m_AutoConfigs.Clear();
     }
-    public static void CheckExit() {
-        if (FormWorkspace.GetInstance().Visible) return;
-        if (FormMain.GetInstance().Visible) return;
-        Environment.Exit(0);
-    }
     public static string GetPath(string path) {
         return System.IO.Path.Combine(WorkspaceDirectory, path);
     }

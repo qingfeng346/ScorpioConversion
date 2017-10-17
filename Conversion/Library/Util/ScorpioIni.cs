@@ -127,24 +127,20 @@ public class ScorpioIni {
     }
     /// <summary> 设置Value </summary>
     public string Get(string section, string key) {
-        if (m_ConfigData.Count <= 0)
-            return "";
+        if (m_ConfigData.Count <= 0) return null;
         if (section == null) section = "";
-        if (!m_ConfigData.ContainsKey(section))
-            return "";
+        if (!m_ConfigData.ContainsKey(section)) return null;
         var configValue = m_ConfigData[section].Get(key);
-        return configValue != null ? configValue.value : "";
+        return configValue != null ? configValue.value : null;
     }
     public ScorpioIniValue GetValue(string key) {
         return GetValue("", key);
     }
     /// <summary> 设置Value </summary>
     public ScorpioIniValue GetValue(string section, string key) {
-        if (m_ConfigData.Count <= 0)
-            return null;
+        if (m_ConfigData.Count <= 0) return null;
         if (section == null) section = "";
-        if (!m_ConfigData.ContainsKey(section))
-            return null;
+        if (!m_ConfigData.ContainsKey(section)) return null;
         return m_ConfigData[section].Get(key);
     }
     /// <summary> 设置Value </summary>

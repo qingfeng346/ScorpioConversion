@@ -10,7 +10,7 @@ namespace ScorpioConversion {
         static void Main() {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(FormWorkspace.GetInstance());
+            Application.Run(FormMain.GetInstance());
         }
     }
 }

@@ -2,11 +2,12 @@
 using System.Collections.Generic;
 using System.Text;
 public class localStroage {
+    public static string CurrentDirectory { get { return AppDomain.CurrentDomain.BaseDirectory; } }
     private static ScorpioIni getConfig() {
-        return new ScorpioIni(ConversionUtil.CurrentDirectory + "config.ini", Encoding.UTF8);
+        return new ScorpioIni(CurrentDirectory + "config.ini", Encoding.UTF8);
     }
     private static void save(ScorpioIni config) {
-        FileUtil.CreateFile(ConversionUtil.CurrentDirectory + "config.ini", config.GetString());
+        FileUtil.CreateFile(CurrentDirectory + "config.ini", config.GetString());
     }
     public static void set(string key, string value) {
         var config = getConfig();
@@ -15,6 +16,9 @@ public class localStroage {
     }
     public static string get(string key) {
         return getConfig().Get(key);
+    }
+    public static bool has(string key) {
+        return getConfig().Get(key) != null;
     }
     public static void remove(string key) {
         var config = getConfig();
