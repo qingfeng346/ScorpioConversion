@@ -12,12 +12,13 @@ public class DatabaseTable
 //一个表字段的数据
 public class DatabaseField
 {
-    public string name;     //名字
-    public string type;     //类型
-    public string @default; //默认值
-    public string @class;   //转为指定类
-    public bool array;      //是否为数组
-    public string comment;  //注释
+    public string name;                 //名字
+    public string type;                 //类型
+    public long auto_increment = -1;    //自动增长值
+    public string @default;             //默认值
+    public string @class;               //转为指定类
+    public bool array;                  //是否为数组
+    public string comment;              //注释
 }
 public static class DatabaseUtil
 {

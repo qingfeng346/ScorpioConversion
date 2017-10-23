@@ -5,8 +5,10 @@ using System.Text;
 using System.IO;
 public class GenerateDatabaseJava : IGenerate
 {
-    private string m_PrimaryKeyName = "";
-    private string m_PrimaryKeyType = "";
+    private string m_PrimaryKeyName = "";       //主键名字
+    private string m_PrimaryKeyType = "";       //主键类型
+    private string m_GeneratedKeyName = "";     //自动递增的字段名字
+    private string m_GeneratedKeyType = "";     //自动递增的字段类型
     public GenerateDatabaseJava() : base(PROGRAM.Java) { }
     protected override string Generate_impl()
     {
@@ -45,7 +47,7 @@ public class Database__ClassName implements DatabaseTableDataBase<Database__Clas
         builder = builder.Replace("__ClassName", m_ClassName);
         builder = builder.Replace("__PrimaryKeyName", string.IsNullOrEmpty(m_PrimaryKeyName) ? "" : m_PrimaryKeyName);
         builder = builder.Replace("__PrimaryKeyValue", string.IsNullOrEmpty(m_PrimaryKeyName) ? "null" : m_PrimaryKeyName);
-        builder = builder.Replace("__PrimaryKeySet", string.IsNullOrEmpty(m_PrimaryKeyName) ? "" : (m_PrimaryKeyName + " = (" + m_PrimaryKeyType + ")value;"));
+        builder = builder.Replace("__GeneratedKeySet", string.IsNullOrEmpty(m_GeneratedKeyName) ? "" : (m_GeneratedKeyName + " = (" + m_GeneratedKeyType + ")value;"));
         return builder.ToString();
     }
     string GenerateDatabaseFields() {
@@ -61,6 +63,10 @@ public class Database__ClassName implements DatabaseTableDataBase<Database__Clas
             str = str.Replace("__FinishType", DatabaseUtil.GetFinishType(field, true));
             str = str.Replace("__ArrayType", DatabaseUtil.GetFinishType(field, false));
             if (m_PrimaryKeyName == field.name) m_PrimaryKeyType = DatabaseUtil.GetFinishType(field, true);
+            if (field.auto_increment != -1) {
+                m_GeneratedKeyName = field.name;
+                m_GeneratedKeyType = DatabaseUtil.GetFinishType(field, false);
+            }
             builder.Append(str);
         }
         return builder.ToString();
@@ -81,7 +87,7 @@ public class Database__ClassName implements DatabaseTableDataBase<Database__Clas
     @Override
     public Object getPrimaryKeyValue() { return __PrimaryKeyValue; }
     @Override
-    public void setPrimaryKeyValue(Object value) { __PrimaryKeySet }
+    public void setGeneratedKeyValue(Object value) { __GeneratedKeySet }
     @Override
     public DatabaseInsertUpdateResult save() throws Exception { return (__simple != null && getPrimaryKeyValue() != null) ? __simple.Update(this) : new DatabaseInsertUpdateResult(); }");
         return builder.ToString();
