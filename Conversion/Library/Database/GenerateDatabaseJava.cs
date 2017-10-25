@@ -6,7 +6,6 @@ using System.IO;
 public class GenerateDatabaseJava : IGenerate
 {
     private string m_PrimaryKeyName = "";       //主键名字
-    private string m_PrimaryKeyType = "";       //主键类型
     private string m_GeneratedKeyName = "";     //自动递增的字段名字
     private string m_GeneratedKeyType = "";     //自动递增的字段类型
     public GenerateDatabaseJava() : base(PROGRAM.Java) { }
@@ -45,6 +44,14 @@ public class Database__ClassName implements DatabaseTableDataBase<Database__Clas
 }");
         builder = builder.Replace("__Package", m_Package);
         builder = builder.Replace("__ClassName", m_ClassName);
+        if (string.IsNullOrEmpty(m_PrimaryKeyName)) {
+            builder = builder.Replace("__PrimaryKeyName", "null");
+            builder = builder.Replace("__PrimaryKeyValue", "null");
+        } else {
+            var keys = m_PrimaryKeyName.Split(',');
+            builder = builder.Replace("__PrimaryKeyName", @"new String[] { """ + string.Join("\" , \"", keys) + "\" }");
+            builder = builder.Replace("__PrimaryKeyValue", @"new Object[] { " + string.Join(" , ", keys) + " }");
+        }
         builder = builder.Replace("__PrimaryKeyName", string.IsNullOrEmpty(m_PrimaryKeyName) ? "" : m_PrimaryKeyName);
         builder = builder.Replace("__PrimaryKeyValue", string.IsNullOrEmpty(m_PrimaryKeyName) ? "null" : m_PrimaryKeyName);
         builder = builder.Replace("__GeneratedKeySet", string.IsNullOrEmpty(m_GeneratedKeyName) ? "" : (m_GeneratedKeyName + " = (" + m_GeneratedKeyType + ")value;"));
@@ -62,7 +69,6 @@ public class Database__ClassName implements DatabaseTableDataBase<Database__Clas
             str = str.Replace("__DatabaseType", DatabaseUtil.GetDatabaseType(field));
             str = str.Replace("__FinishType", DatabaseUtil.GetFinishType(field, true));
             str = str.Replace("__ArrayType", DatabaseUtil.GetFinishType(field, false));
-            if (m_PrimaryKeyName == field.name) m_PrimaryKeyType = DatabaseUtil.GetFinishType(field, true);
             if (field.auto_increment != -1) {
                 m_GeneratedKeyName = field.name;
                 m_GeneratedKeyType = DatabaseUtil.GetFinishType(field, false);
@@ -83,9 +89,9 @@ public class Database__ClassName implements DatabaseTableDataBase<Database__Clas
     @Override
     public void sync() { __self = new Database__ClassName().set(this); }
     @Override
-    public String getPrimaryKeyName() { return ""__PrimaryKeyName""; }
+    public String[] getPrimaryKeyName() { return __PrimaryKeyName; }
     @Override
-    public Object getPrimaryKeyValue() { return __PrimaryKeyValue; }
+    public Object[] getPrimaryKeyValue() { return __PrimaryKeyValue; }
     @Override
     public void setGeneratedKeyValue(Object value) { __GeneratedKeySet }
     @Override
