@@ -57,7 +57,7 @@ public partial class MessageBuilder
                 }
             }
         } catch (Exception ex) {
-            Logger.error("转换消息出错 " + ex.ToString());
+            Logger.error("转换消息出错 : {0}" , ex.ToString());
         }
     }
 }
