@@ -11,3 +11,7 @@
 /Sample/CPP/Sample/x64
 /Sample/CSharp/Sample/obj
 /Sample/CSharp/Sample/bin
+/Conversion/Conversion/bin
+/Conversion/ScorpioConversion/bin
+/Sample/Tools/*.config
+/Sample/Tools/log.log
