@@ -15,3 +15,6 @@
 /Conversion/ScorpioConversion/bin
 /Sample/Tools/*.config
 /Sample/Tools/log.log
+/bin/ScorpioConversion/*.config
+/bin/ScorpioConversion/*.ini
+/bin/ScorpioConversion/log.log
