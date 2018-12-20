@@ -13,13 +13,15 @@ public class PackageParser {
 
     private Dictionary<string, List<PackageEnum>> mEnums = new Dictionary<string, List<PackageEnum>>();
     private Dictionary<string, List<PackageConst>> mConsts = new Dictionary<string, List<PackageConst>>();
-    private Dictionary<string, List<PackageField>> mMessageFields = new Dictionary<string, List<PackageField>>();
-    private Dictionary<string, List<PackageField>> mTableFields = new Dictionary<string, List<PackageField>>();
+    private Dictionary<string, List<PackageField>> mMessages = new Dictionary<string, List<PackageField>>();
+    private Dictionary<string, List<PackageField>> mTables = new Dictionary<string, List<PackageField>>();
+    private Dictionary<string, List<PackageField>> mClasses = new Dictionary<string, List<PackageField>>();
     private Script mScript = null;
     public Dictionary<string, List<PackageEnum>> Enums { get { return mEnums; } }
     public Dictionary<string, List<PackageConst>> Consts { get { return mConsts; } }
-    public Dictionary<string, List<PackageField>> MessageFields { get { return mMessageFields; } }
-    public Dictionary<string, List<PackageField>> TableFields { get { return mTableFields; } }
+    public Dictionary<string, List<PackageField>> Messages { get { return mMessages; } }
+    public Dictionary<string, List<PackageField>> Tables { get { return mTables; } }
+    public Dictionary<string, List<PackageField>> Classes { get { return mClasses; } }
     void ParseEnum(string name, ScriptTable table) {
         var enums = new List<PackageEnum>();
         var itor = table.GetIterator();
@@ -91,20 +93,20 @@ public class PackageParser {
             fields.Add(packageField);
         }
         fields.Sort((m1, m2) => { return m1.Index.CompareTo(m2.Index); });
-        //if (name.StartsWith(DATABASE_CLASS_KEYWORD)) {      //数据库内使用类
-        //    if (customDatabaseClass != null) customDatabaseClass[name.Substring(DATABASE_CLASS_KEYWORD.Length)] = fields;
-        //} else if (name.StartsWith(TABLE_KEYWORD)) {        //excel表使用类
-        //    if (customTable != null) customTable[name.Substring(TABLE_KEYWORD.Length)] = fields;
-        //} else {
-        //    if (customClass != null) customClass[name] = fields;
-        //}
+        if (name.StartsWith(MESSAGE_KEYWORD)) {         //协议结构
+            mMessages[name.Substring(MESSAGE_KEYWORD.Length)] = fields;
+        } else if (name.StartsWith(TABLE_KEYWORD)) {    //table结构
+            mTables[name.Substring(TABLE_KEYWORD.Length)] = fields;
+        } else {
+            mClasses[name] = fields;
+        }
     }
     public void Parse(string dir, bool clear = false) {
         if (clear) {
             mEnums.Clear();
             mConsts.Clear();
-            mMessageFields.Clear();
-            mTableFields.Clear();
+            mMessages.Clear();
+            mTables.Clear();
         }
         mScript = new Script();
         mScript.LoadLibrary();

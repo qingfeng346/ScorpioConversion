@@ -21,7 +21,7 @@ public static class Extend {
         return Scorpio.Commons.Util.GetExcelColumn(line);
     }
     public static bool IsEmptyString(this string str) {
-        return str == EmptyString || string.IsNullOrWhiteSpace(str);
+        return string.IsNullOrWhiteSpace(str) || str == EmptyString;
     }
     public static bool ToBoolean(this string value) {
         if (value.IsEmptyString()) { return INVALID_BOOL; }
@@ -56,14 +56,24 @@ public static class Extend {
     public static double ToDouble(this string value) {
         return value.IsEmptyString() ? INVALID_DOUBLE : Convert.ToDouble(value);
     }
+    public static string GetCellString(this IRow row, int index) {
+        return GetCellString(row, index, "");
+    }
+    public static string GetCellString(this IRow row, int index, string def) {
+        return row.GetCell(index, MissingCellPolicy.CREATE_NULL_AS_BLANK).GetCellString(def);
+    }
     public static string GetCellString(this ICell cell) {
-        if (cell == null) return "";
+        return GetCellString(cell, "");
+    }
+    public static string GetCellString(this ICell cell, string def) {
+        if (cell == null) return def;
         cell.SetCellType(CellType.String);
-        return cell.StringCellValue;
+        var value = cell.StringCellValue.Trim();
+        return string.IsNullOrWhiteSpace(value) ? def : value;
     }
     public static void SetCellString(this ICell cell, string value) {
         if (cell == null) return;
         cell.SetCellType(CellType.String);
-        cell.SetCellValue(value);
+        cell.SetCellValue(value != null ? value.Trim() : value);
     }
 }
