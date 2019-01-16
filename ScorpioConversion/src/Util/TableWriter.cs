@@ -1,16 +1,17 @@
 ﻿using System;
 using System.IO;
 using System.Text;
-public class TableWriter {
-    MemoryStream stream = new MemoryStream();
+public class TableWriter :IDisposable {
+    MemoryStream stream;
     BinaryWriter writer;
     public TableWriter() {
+        stream = new MemoryStream();
         writer = new BinaryWriter(stream);
     }
     public void Seek(int offset) {
         writer.Seek(offset, SeekOrigin.Begin);
     }
-    public void WriteBool(bool value) {
+    public void WriteBoolean(bool value) {
         writer.Write(value ? (sbyte)1 : (sbyte)0);
     }
     public void WriteInt8(sbyte value) {
@@ -51,6 +52,10 @@ public class TableWriter {
     public byte[] ToArray() {
         stream.Position = 0;
         return stream.ToArray();
+    }
+    public void Dispose() {
+        stream.Close();
+        writer.Close();
     }
 }
 

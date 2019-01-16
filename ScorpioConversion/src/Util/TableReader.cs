@@ -2,14 +2,14 @@
 using System.IO;
 using System.Text;
 using System.Collections.Generic;
-public class TableReader {
+public class TableReader : IDisposable {
     MemoryStream stream;
     BinaryReader reader;
     public TableReader(byte[] buffer) {
         stream = new MemoryStream(buffer);
         reader = new BinaryReader(stream);
     }
-    public bool ReadBool() {
+    public bool ReadBoolean() {
         return ReadInt8() == 1;
     }
     public sbyte ReadInt8() {
@@ -37,7 +37,7 @@ public class TableReader {
             sb.Add(ch);
         return Encoding.UTF8.GetString(sb.ToArray());
     }
-    public void Close() {
+    public void Dispose() {
         stream.Close();
         reader.Close();
     }

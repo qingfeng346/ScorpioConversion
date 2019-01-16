@@ -14,7 +14,6 @@ public class PackageField {
     public bool Enum = false;           //是否是枚举
     public bool Const = false;          //是否是常量
     public bool Array = false;          //是否是数组
-
     //是否是基本数据
     public bool IsBasic {       
         get { return true; }

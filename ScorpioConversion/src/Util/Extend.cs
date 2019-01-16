@@ -4,7 +4,6 @@ using NPOI.SS.UserModel;
 using NPOI.HSSF.UserModel;
 
 public static class Extend {
-
     private const string EmptyString = "####";
     public const bool INVALID_BOOL = false;
     public const sbyte INVALID_INT8 = sbyte.MaxValue;

@@ -5,25 +5,27 @@ using Scorpio;
 using NPOI.SS.UserModel;
 
 public class TableBuilder {
-    private const string KEYWORD_PACKAGE = "/Package";          //命名空间,不填默认为空
-    private const string KEYWORD_CLASSNAME = "/ClassName";      //生成类的名字,不填默认为传入的默认名字
+    private const string KEYWORD_PACKAGE = "/Package";                  //命名空间,不填默认为空
+    private const string KEYWORD_CLASSNAME = "/ClassName";              //生成类的名字,不填默认为传入的默认名字
 
-    private const string KEYWORD_COMMENT = "/Comment";          //注释
-    private const string KEYWORD_NAME = "/Name";                //字段名
-    private const string KEYWORD_TYPE = "/Type";                //字段类型
-    private const string KEYWORD_ATTRIBUTE = "/Attribute";      //字段属性
-    private const string KEYWORD_DEFAULT = "/Default";          //字段默认值
+    private const string KEYWORD_COMMENT = "/Comment";                  //注释
+    private const string KEYWORD_NAME = "/Name";                        //字段名
+    private const string KEYWORD_TYPE = "/Type";                        //字段类型
+    private const string KEYWORD_ATTRIBUTE = "/Attribute";              //字段属性
+    private const string KEYWORD_DEFAULT = "/Default";                  //字段默认值
 
-    private const string KEYWORD_BEGIN = "/Begin";              //数据开始
-    private const string KEYWORD_END = "/End";                  //数据结束
+    private const string KEYWORD_BEGIN = "/Begin";                      //数据开始
+    private const string KEYWORD_END = "/End";                          //数据结束
 
-    private string mClassName = "";         //生成类的名字
-    private string mPackage = "";           //命名空间
-    private List<PackageField> mFields = new List<PackageField>();              //列数组
-    private List<string> mUsedCustoms = new List<string>();                     //正在转换的表已使用的自定义类
-    private List<RowData> mDatas = new List<RowData>();                         //Excel表数据
-    public void Parse(ISheet sheet, string className, bool isSpawn, PackageParser packageParser) {
-        mClassName = className;
+    private string mClassName = "";                                     //生成类的名字
+    private string mPackage = "";                                       //命名空间
+    private PackageParser mParser = null;                               //自定义类
+    private List<PackageField> mFields = new List<PackageField>();      //Excel结构
+    private List<RowData> mDatas = new List<RowData>();                 //Excel内容
+    private List<string> mUsedCustoms = new List<string>();             //正在转换的表已使用的自定义类
+    public void Parse(ISheet sheet, string className, bool isSpawn, PackageParser parser) {
+        mClassName = string.IsNullOrWhiteSpace(className) ? sheet.SheetName : className;
+        mParser = parser;
         LoadLayout(sheet);
         LoadData(sheet);
     }
@@ -50,6 +52,7 @@ public class TableBuilder {
         }
         return mFields[index];
     }
+    //解析文件头
     void ParseHead(string key, IRow row) {
         for (var i = 1; i < row.LastCellNum; ++i) {
             var value = row.GetCellString(i);
@@ -82,18 +85,25 @@ public class TableBuilder {
             var row = sheet.GetRow(i);
             if (row == null) { continue; }
             var keyCell = row.GetCellString(0);
-            if (keyCell == KEYWORD_BEGIN) {
-                begin = true;
-                ParseRow(row);
-            } else if (keyCell == KEYWORD_END) {
-                begin = false;
+            if (keyCell == KEYWORD_BEGIN || keyCell == KEYWORD_END) {
+                begin = keyCell == KEYWORD_BEGIN;
                 ParseRow(row);
             } else if (begin) {
                 ParseRow(row);
             }
         }
     }
+    //解析一行数据
     void ParseRow(IRow row) {
-
+        var data = new RowData();
+        data.RowNumber = row.RowNum;
+        data.Key = row.GetCellString(1);
+        if (data.Key.IsEmptyString()) {
+            return;
+        }
+        for (var i = 0; i < mFields.Count; ++i) {
+            data.Values.Add(row.GetCellString(i + 1));
+        }
+        mDatas.Add(data);
     }
 }

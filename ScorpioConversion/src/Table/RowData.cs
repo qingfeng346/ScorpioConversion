@@ -4,6 +4,7 @@ using System.Text;
 
 public class RowData {
     public int RowNumber = 0;
+    public string Key = "";
     public List<string> Values = new List<string>();
     public string this[int index] { get { return Values[index]; } }
 }

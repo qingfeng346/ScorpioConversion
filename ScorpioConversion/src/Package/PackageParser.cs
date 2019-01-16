@@ -129,7 +129,6 @@ public class PackageParser {
 
                 if (name.StartsWith(ENUM_KEYWORD)) {                //枚举类型
                     ParseEnum(name, table);
-
                 } else if (name.StartsWith(CONST_KEYWORD)) {        //常量类型
                     ParseConst(name, table);
                 } else {
