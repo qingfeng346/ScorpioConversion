@@ -50,7 +50,7 @@ public class TableBuilder {
     }
     PackageField GetField(int index) {
         for (var i = mFields.Count; i <= index; ++i) {
-            mFields.Add(new PackageField());
+            mFields.Add(new PackageField(mParser) { Index = index });
         }
         return mFields[index];
     }
@@ -122,6 +122,21 @@ public class TableBuilder {
         }
         return Scorpio.Commons.Util.GetMD5FromString(builder.ToString());
     }
+    ScriptArray ReadValue(string value) {
+        var builder = new StringBuilder();
+        if (mParser != null) {
+            foreach (var pair in mParser.Enums) {
+                foreach (var data in pair.Value) {
+                    builder.AppendLine($"{data.Name} = \"{data.Name}\"");
+                }
+            }
+        }
+        value = "[" + value + "]";
+        var script = new Script();
+        script.LoadLibrary();
+        script.LoadString(builder.ToString());
+        return script.LoadString("return " + value) as ScriptArray;
+    }
     void CreateDataFile() {
         var writer = new TableWriter();
         writer.WriteInt32(mDatas.Count);
@@ -144,8 +159,75 @@ public class TableBuilder {
             }
             keys.Add(data.Key);
             for (var i = 0; i < mFields.Count; ++i) {
+                var field = mFields[i];
                 var value = data.Values[i];
-
+                value = value.IsEmptyString() ? field.Default : value;
+                if (!field.Array && (field.IsBasic || field.IsEnum)) {
+                    WriteField(writer, value, field);
+                    //if (field.IsBasic) {
+                    //    field.BasicType.WriteValue(writer, value);
+                    //} else {
+                    //    writer.WriteInt32(field.GetEnumValue(value));
+                    //}
+                } else {
+                    WriteField(writer, ReadValue(value), field);
+                }
+            }
+        }
+    }
+    void WriteField(TableWriter writer, object value, PackageField field) {
+        if (field.IsBasic) {
+            if (field.Array) {
+                var list = value as ScriptArray;
+                if (list.IsEmptyValue()) {
+                    writer.WriteInt32(0);
+                } else {
+                    writer.WriteInt32(list.Count());
+                    for (var i = 0; i < list.Count(); ++i) {
+                        field.BasicType.WriteValue(writer, list.GetValue(i).ToString());
+                    }
+                }
+            } else {
+                field.BasicType.WriteValue(writer, value.ToString());
+            }
+        } else if (field.IsEnum) {
+            if (field.Array) {
+                var list = value as ScriptArray;
+                if (list.IsEmptyValue()) {
+                    writer.WriteInt32(0);
+                } else {
+                    writer.WriteInt32(list.Count());
+                    for (var i = 0; i < list.Count(); ++i) {
+                        writer.WriteInt32(field.GetEnumValue(list.GetValue(i).ToString()));
+                    }
+                }
+            } else {
+                writer.WriteInt32(field.GetEnumValue(value.ToString()));
+            }
+        } else {
+            WriteCustom(writer, value as ScriptArray, field.CustomType, field.Array);
+        }
+    }
+    void WriteCustom(TableWriter writer, ScriptArray list, List<PackageField> fields, bool array) {
+        if (array) {
+            if (list.IsEmptyValue()) {
+                writer.WriteInt32(0);
+            } else {
+                writer.WriteInt32(list.Count());
+                for (var i = 0; i < list.Count(); ++i) {
+                    WriteCustom(writer, list.GetValue(i) as ScriptArray, fields, false);
+                }
+            }
+        } else {
+            if (list.IsEmptyValue()) {
+                for (var i = 0; i < fields.Count; ++i)
+                    WriteField(writer, string.Empty, fields[i]);
+            } else {
+                int count = list.Count();
+                if (count != fields.Count)
+                    throw new Exception($"填写字段数量与数据机构字段数量不一致 需要数量 {fields.Count}  填写数量{count}");
+                for (var i = 0; i < count; ++i)
+                    WriteField(writer, list.GetValue(i), fields[i]);
             }
         }
     }

@@ -78,11 +78,10 @@ public class PackageParser {
                 Comment = infos.Length > 3 ? infos[3] : "",
             };
             if (!packageField.IsBasic) {
-                if (mScript.HasValue(ENUM_KEYWORD + packageField.Type)) {
-                    packageField.Enum = true;
-                } else if (!mScript.HasValue(packageField.Type) &&                              //判断网络协议自定义类
-                            !mScript.HasValue(MESSAGE_KEYWORD + packageField.Type) &&           //判断数据库内嵌类
-                            !mScript.HasValue(TABLE_KEYWORD + packageField.Type)                //判断Table内嵌类
+                if (!mScript.HasValue(packageField.Type) &&                             //判断网络协议自定义类
+                    !mScript.HasValue(ENUM_KEYWORD + packageField.Type) &&              //判断是否是枚举
+                    !mScript.HasValue(MESSAGE_KEYWORD + packageField.Type) &&           //判断网络协议自定义类
+                    !mScript.HasValue(TABLE_KEYWORD + packageField.Type)                //判断Table内嵌类
                            ) {
                     throw new Exception($"Class:{name} Field:{fieldName} 未知类型:{packageField.Type}");
                 }
@@ -97,6 +96,23 @@ public class PackageParser {
         } else {
             mClasses[name] = fields;
         }
+    }
+    public int GetEnumValue(string name, string value) {
+        var enums = mEnums[name];
+        foreach (var pair in enums) {
+            if (pair.Name == value)
+                return pair.Index;
+        }
+        throw new Exception($"枚举:{name} 找不到枚举值:{value}");
+    }
+    public List<PackageField> GetClasses(string name) {
+        if (mMessages.ContainsKey(name))
+            return mMessages[name];
+        else if (mTables.ContainsKey(name))
+            return mTables[name];
+        else if (mClasses.ContainsKey(name))
+            return mClasses[name];
+        throw new Exception($"找不到自定义类 : {name}");
     }
     public void Parse(string dir, bool clear = false) {
         if (clear) {
