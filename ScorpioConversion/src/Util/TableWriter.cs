@@ -11,7 +11,7 @@ public class TableWriter :IDisposable {
     public void Seek(int offset) {
         writer.Seek(offset, SeekOrigin.Begin);
     }
-    public void WriteBoolean(bool value) {
+    public void WriteBool(bool value) {
         writer.Write(value ? (sbyte)1 : (sbyte)0);
     }
     public void WriteInt8(sbyte value) {

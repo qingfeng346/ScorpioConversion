@@ -5,6 +5,7 @@ using NPOI.HSSF.UserModel;
 
 public static class Extend {
     private const string EmptyString = "####";
+    private const string ArrayString = "array";
     public const bool INVALID_BOOL = false;
     public const sbyte INVALID_INT8 = sbyte.MaxValue;
     public const short INVALID_INT16 = Int16.MaxValue;
@@ -21,6 +22,15 @@ public static class Extend {
     }
     public static bool IsEmptyString(this string str) {
         return string.IsNullOrWhiteSpace(str) || str == EmptyString;
+    }
+    public static bool IsInvalid(this string str) {
+        return str.StartsWith("!");
+    }
+    public static bool IsArrayType(this string str) {
+        return str.StartsWith(ArrayString);
+    }
+    public static string GetFinalType(this string str) {
+        return str.Substring(ArrayString.Length);
     }
     public static bool ToBoolean(this string value) {
         if (value.IsEmptyString()) { return INVALID_BOOL; }

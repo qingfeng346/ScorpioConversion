@@ -22,12 +22,14 @@ public class TableBuilder {
     private PackageParser mParser = null;                               //自定义类
     private List<PackageField> mFields = new List<PackageField>();      //Excel结构
     private List<RowData> mDatas = new List<RowData>();                 //Excel内容
-    private List<string> mUsedCustoms = new List<string>();             //正在转换的表已使用的自定义类
+    private readonly List<string> mUsedCustoms = new List<string>();    //正在转换的表已使用的自定义类
     public void Parse(ISheet sheet, string className, bool isSpawn, PackageParser parser) {
         mClassName = string.IsNullOrWhiteSpace(className) ? sheet.SheetName : className;
         mParser = parser;
         LoadLayout(sheet);
         LoadData(sheet);
+        mFields.RemoveAll((_) => { return !_.Valid; });
+        CreateDataFile();
     }
     //解析文件结构
     void LoadLayout(ISheet sheet) {
@@ -59,11 +61,17 @@ public class TableBuilder {
             var field = GetField(i - 1);
             if (key == KEYWORD_NAME) {
                 field.Name = value;
-                if (key.StartsWith("!")) {
-                    field.valid = false;
+                if (value.IsInvalid()) {
+                    field.Valid = false;
                 }
             } else if (key == KEYWORD_TYPE) {
-                field.Type = value;
+                if (value.IsArrayType()) {
+                    field.Array = true;
+                    field.Type = value.GetFinalType();
+                } else {
+                    field.Array = false;
+                    field.Type = value;
+                }
             } else if (key == KEYWORD_COMMENT) {
                 field.Comment = value;
             } else if (key == KEYWORD_DEFAULT) {
@@ -95,15 +103,50 @@ public class TableBuilder {
     }
     //解析一行数据
     void ParseRow(IRow row) {
-        var data = new RowData();
-        data.RowNumber = row.RowNum;
-        data.Key = row.GetCellString(1);
+        var data = new RowData() { RowNumber = row.RowNum + 1, Key = row.GetCellString(1) };
         if (data.Key.IsEmptyString()) {
             return;
         }
         for (var i = 0; i < mFields.Count; ++i) {
-            data.Values.Add(row.GetCellString(i + 1));
+            if (mFields[i].Valid) {
+                data.Values.Add(row.GetCellString(i + 1));
+            }
         }
         mDatas.Add(data);
+    }
+    string GetClassMD5Code() {
+        var builder = new StringBuilder();
+        for (int i = 0; i < mFields.Count; ++i) {
+            builder.Append(mFields[i].Type).Append(":");
+            builder.Append(mFields[i].Array ? "1" : "0").Append(":");
+        }
+        return Scorpio.Commons.Util.GetMD5FromString(builder.ToString());
+    }
+    void CreateDataFile() {
+        var writer = new TableWriter();
+        writer.WriteInt32(mDatas.Count);
+        writer.WriteString(GetClassMD5Code());
+        writer.WriteInt32(mFields.Count);
+        foreach (var field in mFields) {
+            if (field.IsBasic) {
+                writer.WriteInt8(0);
+                writer.WriteInt8((sbyte)field.BasicType.Index);
+            } else {
+                writer.WriteInt8(1);
+                writer.WriteString(field.Type);
+            }
+            writer.WriteBool(field.Array);
+        }
+        var keys = new List<string>();
+        foreach (var data in mDatas) {
+            if (keys.Contains(data.Key)) {
+                throw new Exception($"ID有重复项[{data.Key}], 行:[{data.RowNumber}]");
+            }
+            keys.Add(data.Key);
+            for (var i = 0; i < mFields.Count; ++i) {
+                var value = data.Values[i];
+
+            }
+        }
     }
 }

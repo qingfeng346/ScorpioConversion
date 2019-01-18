@@ -2,7 +2,7 @@
   "profiles": {
     "ScorpioConversion": {
       "commandName": "Project",
-      "commandLineArgs": "C:\\Users\\qingf\\Desktop\\Test.xls,C:\\Users\\qingf\\Desktop\\BuiltinUI_cn.xlsx"
+      "commandLineArgs": "C:\\Users\\qingf\\Desktop\\Test.xls"
     }
   }
 }

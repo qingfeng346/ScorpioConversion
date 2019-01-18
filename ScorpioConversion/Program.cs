@@ -9,41 +9,55 @@ namespace ScorpioConversion
 {
     public class LogHelper : ILogger {
         public void info(string value) {
+            value += "\n";
             Console.WriteLine(value);
             Debugger.Log(0, null, value);
         }
         public void warn(string value) {
-            Console.WriteLine("[warn] " + value);
-            Debugger.Log(0, null, "[warn] " + value);
+            value = "[warn]" + value + "\n";
+            Console.WriteLine(value);
+            Debugger.Log(0, null, value);
         }
         public void error(string value) {
-            Console.WriteLine("[error] " + value);
-            Debugger.Log(0, null, "[error] " + value);
+            value = "[error]" + value + "\n";
+            Console.WriteLine(value);
+            Debugger.Log(0, null, value);
         }
     }
     class Program
     {
         static void Main(string[] args)
         {
-            if (args.Length == 0) { return; }
             Logger.SetLogger(new LogHelper());
+            if (args.Length == 0) { return; }
             var files = args[0].Split(",");
-            var baseTemp = Path.GetFullPath("E:/ScorpioConversion/ScorpioConversion/temp");
             foreach (var file in files) {
-                var temp = baseTemp + Path.GetExtension(file);
+                var fullFile = Path.GetFullPath(Path.Combine(Environment.CurrentDirectory, file));
+                var fileName = Path.GetFileNameWithoutExtension(file);
+                var extension = Path.GetExtension(file);
+                var tempFile = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "temp" + extension);
                 try {
-                    File.Copy(file, temp, true);
-                    if (temp.EndsWith(".xlsx")) { continue; }
-                    IWorkbook workbook = new HSSFWorkbook(new FileStream(temp, FileMode.Open, FileAccess.Read));
-                    for (var i = 0; i < workbook.NumberOfSheets; ++i) {
-                        var sheet = workbook.GetSheetAt(i);
-                        if (sheet.SheetName.Trim().StartsWith("!")) { continue; }
-                        new TableBuilder().Parse(workbook.GetSheetAt(i), Path.GetFileNameWithoutExtension(file), false, null);
+                    File.Copy(fullFile, tempFile, true);
+                    using (var fileStream = new FileStream(tempFile, FileMode.Open, FileAccess.Read)) {
+                        IWorkbook workbook = null;
+                        if (extension.EndsWith(".xls")) {
+                            workbook = new HSSFWorkbook(fileStream);
+                        } else if (extension.EndsWith(".xlsx")) {
+                            workbook = new XSSFWorkbook(fileStream);
+                        }
+                        if (workbook == null) {
+                            throw new Exception("不支持的文件后缀 : " + extension);
+                        }
+                        for (var i = 0; i < workbook.NumberOfSheets; ++i) {
+                            var sheet = workbook.GetSheetAt(i);
+                            if (sheet.SheetName.Trim().IsInvalid()) { continue; }
+                            new TableBuilder().Parse(sheet, fileName, false, null);
+                        }
                     }
                 } catch (Exception e) {
-                    Logger.error($"file [{file}] is error : " + e.ToString());
+                    Logger.error($"file [{fullFile}] is error : " + e.ToString());
                 } finally {
-                    File.Delete(temp);
+                    File.Delete(tempFile);
                 }
             }
         }

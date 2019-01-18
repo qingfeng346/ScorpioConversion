@@ -15,7 +15,7 @@ public class PackageParser {
     private Dictionary<string, List<PackageConst>> mConsts = new Dictionary<string, List<PackageConst>>();
     private Dictionary<string, List<PackageField>> mMessages = new Dictionary<string, List<PackageField>>();
     private Dictionary<string, List<PackageField>> mTables = new Dictionary<string, List<PackageField>>();
-    private Dictionary<string, List<PackageField>> mClasses = new Dictionary<string, List<PackageField>>();
+    private readonly Dictionary<string, List<PackageField>> mClasses = new Dictionary<string, List<PackageField>>();
     private Script mScript = null;
     public Dictionary<string, List<PackageEnum>> Enums { get { return mEnums; } }
     public Dictionary<string, List<PackageConst>> Consts { get { return mConsts; } }
@@ -28,7 +28,7 @@ public class PackageParser {
         while (itor.MoveNext()) {
             var fieldName = itor.Current.Key as string;
             var val = itor.Current.Value as ScriptNumber;
-            if (string.IsNullOrEmpty(fieldName) || val == null) throw new Exception(string.Format("Enum:{0} Field:{1} 参数出错", name, fieldName));
+            if (string.IsNullOrEmpty(fieldName) || val == null) throw new Exception($"Enum:{name} Field:{fieldName} 参数出错");
             enums.Add(new PackageEnum() {
                 Index = Convert.ToInt32(val.ObjectValue),
                 Name = fieldName,
@@ -42,9 +42,8 @@ public class PackageParser {
         var itor = table.GetIterator();
         while (itor.MoveNext()) {
             var fieldName = itor.Current.Key as string;
-            if (string.IsNullOrEmpty(fieldName)) throw new Exception(string.Format("Const:{0} Field:{1} 参数出错", name, fieldName));
-            var pack = new PackageConst();
-            pack.Name = fieldName;
+            if (string.IsNullOrEmpty(fieldName)) throw new Exception($"Const:{name} Field:{fieldName} 参数出错");
+            var pack = new PackageConst() { Name = fieldName };
             ScriptObject value = itor.Current.Value;
             if (value is ScriptNumberDouble) {
                 pack.Type = BasicEnum.INT32;
@@ -68,26 +67,24 @@ public class PackageParser {
         while (itor.MoveNext()) {
             var fieldName = itor.Current.Key as string;
             var val = itor.Current.Value as ScriptString;
-            if (string.IsNullOrEmpty(fieldName) || val == null) throw new Exception(string.Format("Class:{0} Field:{1} 参数出错 参数模版 \"索引,类型,是否数组=false,注释\"", name, fieldName));
+            if (string.IsNullOrEmpty(fieldName) || val == null) throw new Exception($"Class:{name} Field:{fieldName} 参数出错 参数模版 \"索引,类型,是否数组=false,注释\"");
             var infos = val.Value.Split(',');
-            if (infos.Length < 2) throw new Exception(string.Format("Class:{0} Field:{1} 参数出错 参数模版 \"索引,类型,是否数组=false,注释\"", name, fieldName));
+            if (infos.Length < 2) throw new Exception($"Class:{name} Field:{fieldName} 参数出错 参数模版 \"索引,类型,是否数组=false,注释\"");
             var packageField = new PackageField() {
+                Name = fieldName,
                 Index = infos[0].ToInt32(),
                 Type = infos[1],
-                Name = fieldName,
                 Array = infos.Length > 2 && infos[2].ToBoolean(),
                 Comment = infos.Length > 3 ? infos[3] : "",
             };
             if (!packageField.IsBasic) {
                 if (mScript.HasValue(ENUM_KEYWORD + packageField.Type)) {
                     packageField.Enum = true;
-                } else if (mScript.HasValue(CONST_KEYWORD + packageField.Type)) {
-                    packageField.Const = true;
                 } else if (!mScript.HasValue(packageField.Type) &&                              //判断网络协议自定义类
                             !mScript.HasValue(MESSAGE_KEYWORD + packageField.Type) &&           //判断数据库内嵌类
                             !mScript.HasValue(TABLE_KEYWORD + packageField.Type)                //判断Table内嵌类
                            ) {
-                    throw new Exception(string.Format("Class:{0} Field:{1} 未知类型:{2}", name, fieldName, packageField.Type));
+                    throw new Exception($"Class:{name} Field:{fieldName} 未知类型:{packageField.Type}");
                 }
             }
             fields.Add(packageField);
