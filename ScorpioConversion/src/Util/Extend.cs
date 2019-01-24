@@ -89,4 +89,7 @@ public static class Extend {
         cell.SetCellType(CellType.String);
         cell.SetCellValue(value != null ? value.Trim() : value);
     }
+    public static LanguageInfo GetInfo(this Language language) {
+        return Attribute.GetCustomAttribute(language.GetType().GetMember(language.ToString())[0], typeof(LanguageInfo)) as LanguageInfo;
+    }
 }

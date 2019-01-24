@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using Scorpio;
+using Scorpio.Commons;
 using NPOI.SS.UserModel;
 
 public class TableBuilder {
@@ -17,19 +18,26 @@ public class TableBuilder {
     private const string KEYWORD_BEGIN = "/Begin";                      //数据开始
     private const string KEYWORD_END = "/End";                          //数据结束
 
+    private string mPackageName = "";                                   //命名空间
     private string mClassName = "";                                     //生成类的名字
-    private string mPackage = "";                                       //命名空间
     private PackageParser mParser = null;                               //自定义类
-    private List<PackageField> mFields = new List<PackageField>();      //Excel结构
+    private List<FieldClass> mFields = new List<FieldClass>();          //Excel结构
     private List<RowData> mDatas = new List<RowData>();                 //Excel内容
-    private readonly List<string> mUsedCustoms = new List<string>();    //正在转换的表已使用的自定义类
-    public void Parse(ISheet sheet, string className, bool isSpawn, PackageParser parser) {
-        mClassName = string.IsNullOrWhiteSpace(className) ? sheet.SheetName : className;
+    private List<string> mUsedCustoms = new List<string>();             //正在转换的表已使用的自定义类
+
+    private string mDataDirectory;
+    private Dictionary<Language, string> mLanguageDirectory;
+    public void Parse(ISheet sheet, string packageName, string className, bool isSpawn, string dataDirectory, Dictionary<Language, string> languageDirectory, PackageParser parser) {
+        mPackageName = packageName;
+        mClassName = className;
         mParser = parser;
+        mDataDirectory = dataDirectory;
+        mLanguageDirectory = languageDirectory;
         LoadLayout(sheet);
         LoadData(sheet);
         mFields.RemoveAll((_) => { return !_.Valid; });
         CreateDataFile();
+        CreateLanguageFile();
     }
     //解析文件结构
     void LoadLayout(ISheet sheet) {
@@ -40,7 +48,7 @@ public class TableBuilder {
             var keyCell = row.GetCellString(0);
             if (keyCell.IsEmptyString() || keyCell == KEYWORD_BEGIN || keyCell == KEYWORD_END) { continue; }
             if (keyCell == KEYWORD_PACKAGE) {
-                mPackage = row.GetCellString(1);
+                mPackageName = row.GetCellString(1);
             } else if (keyCell == KEYWORD_CLASSNAME) {
                 mClassName = row.GetCellString(1, mClassName);
             } else {
@@ -48,9 +56,9 @@ public class TableBuilder {
             }
         }
     }
-    PackageField GetField(int index) {
+    FieldClass GetField(int index) {
         for (var i = mFields.Count; i <= index; ++i) {
-            mFields.Add(new PackageField(mParser) { Index = index });
+            mFields.Add(new FieldClass(mParser) { Index = index });
         }
         return mFields[index];
     }
@@ -126,7 +134,7 @@ public class TableBuilder {
         var builder = new StringBuilder();
         if (mParser != null) {
             foreach (var pair in mParser.Enums) {
-                foreach (var data in pair.Value) {
+                foreach (var data in pair.Value.Fields) {
                     builder.AppendLine($"{data.Name} = \"{data.Name}\"");
                 }
             }
@@ -137,45 +145,45 @@ public class TableBuilder {
         script.LoadString(builder.ToString());
         return script.LoadString("return " + value) as ScriptArray;
     }
+    //生成data文件
     void CreateDataFile() {
-        var writer = new TableWriter();
-        writer.WriteInt32(mDatas.Count);
-        writer.WriteString(GetClassMD5Code());
-        writer.WriteInt32(mFields.Count);
-        foreach (var field in mFields) {
-            if (field.IsBasic) {
-                writer.WriteInt8(0);
-                writer.WriteInt8((sbyte)field.BasicType.Index);
-            } else {
-                writer.WriteInt8(1);
-                writer.WriteString(field.Type);
-            }
-            writer.WriteBool(field.Array);
-        }
-        var keys = new List<string>();
-        foreach (var data in mDatas) {
-            if (keys.Contains(data.Key)) {
-                throw new Exception($"ID有重复项[{data.Key}], 行:[{data.RowNumber}]");
-            }
-            keys.Add(data.Key);
-            for (var i = 0; i < mFields.Count; ++i) {
-                var field = mFields[i];
-                var value = data.Values[i];
-                value = value.IsEmptyString() ? field.Default : value;
-                if (!field.Array && (field.IsBasic || field.IsEnum)) {
-                    WriteField(writer, value, field);
-                    //if (field.IsBasic) {
-                    //    field.BasicType.WriteValue(writer, value);
-                    //} else {
-                    //    writer.WriteInt32(field.GetEnumValue(value));
-                    //}
+        if (string.IsNullOrWhiteSpace(mDataDirectory))
+            return;
+        using (var writer = new TableWriter()) {
+            writer.WriteInt32(mDatas.Count);
+            writer.WriteString(GetClassMD5Code());
+            writer.WriteInt32(mFields.Count);
+            foreach (var field in mFields) {
+                if (field.IsBasic) {
+                    writer.WriteInt8(0);
+                    writer.WriteInt8((sbyte)field.BasicType.Index);
                 } else {
-                    WriteField(writer, ReadValue(value), field);
+                    writer.WriteInt8(1);
+                    writer.WriteString(field.Type);
+                }
+                writer.WriteBool(field.Array);
+            }
+            var keys = new List<string>();
+            foreach (var data in mDatas) {
+                if (keys.Contains(data.Key)) {
+                    throw new Exception($"ID有重复项[{data.Key}], 行:[{data.RowNumber}]");
+                }
+                keys.Add(data.Key);
+                for (var i = 0; i < mFields.Count; ++i) {
+                    var field = mFields[i];
+                    var value = data.Values[i];
+                    value = value.IsEmptyString() ? field.Default : value;
+                    if (!field.Array && (field.IsBasic || field.IsEnum)) {
+                        WriteField(writer, value, field);
+                    } else {
+                        WriteField(writer, ReadValue(value), field);
+                    }
                 }
             }
+            FileUtil.CreateFile(mClassName + ".data", writer.ToArray(), mDataDirectory.Split(","));
         }
     }
-    void WriteField(TableWriter writer, object value, PackageField field) {
+    void WriteField(TableWriter writer, object value, FieldClass field) {
         if (field.IsBasic) {
             if (field.Array) {
                 var list = value as ScriptArray;
@@ -208,27 +216,36 @@ public class TableBuilder {
             WriteCustom(writer, value as ScriptArray, field.CustomType, field.Array);
         }
     }
-    void WriteCustom(TableWriter writer, ScriptArray list, List<PackageField> fields, bool array) {
+    void WriteCustom(TableWriter writer, ScriptArray list, PackageClass classes, bool array) {
         if (array) {
             if (list.IsEmptyValue()) {
                 writer.WriteInt32(0);
             } else {
                 writer.WriteInt32(list.Count());
                 for (var i = 0; i < list.Count(); ++i) {
-                    WriteCustom(writer, list.GetValue(i) as ScriptArray, fields, false);
+                    WriteCustom(writer, list.GetValue(i) as ScriptArray, classes, false);
                 }
             }
         } else {
             if (list.IsEmptyValue()) {
-                for (var i = 0; i < fields.Count; ++i)
-                    WriteField(writer, string.Empty, fields[i]);
+                for (var i = 0; i < classes.Fields.Count; ++i)
+                    WriteField(writer, string.Empty, classes.Fields[i]);
             } else {
-                int count = list.Count();
-                if (count != fields.Count)
-                    throw new Exception($"填写字段数量与数据机构字段数量不一致 需要数量 {fields.Count}  填写数量{count}");
+                var count = list.Count();
+                if (count != classes.Fields.Count)
+                    throw new Exception($"填写字段数量与数据机构字段数量不一致 需要数量 {classes.Fields.Count}  填写数量{count}");
                 for (var i = 0; i < count; ++i)
-                    WriteField(writer, list.GetValue(i), fields[i]);
+                    WriteField(writer, list.GetValue(i), classes.Fields[i]);
             }
+        }
+    }
+    void CreateLanguageFile() {
+        foreach (var pair in mLanguageDirectory) {
+            var generate = Activator.CreateInstance(Type.GetType("GenerateData" + pair.Key)) as IGenerate;
+            generate.PackageName = mPackageName;
+            generate.ClassName = mClassName;
+            generate.Language = pair.Key;
+
         }
     }
 }

@@ -11,39 +11,34 @@ public class PackageParser {
     private const string MESSAGE_KEYWORD = "message_";      //消息格式关键字
     private const string TABLE_KEYWORD = "table_";          //Table格式关键字
 
-    private Dictionary<string, List<PackageEnum>> mEnums = new Dictionary<string, List<PackageEnum>>();
-    private Dictionary<string, List<PackageConst>> mConsts = new Dictionary<string, List<PackageConst>>();
-    private Dictionary<string, List<PackageField>> mMessages = new Dictionary<string, List<PackageField>>();
-    private Dictionary<string, List<PackageField>> mTables = new Dictionary<string, List<PackageField>>();
-    private readonly Dictionary<string, List<PackageField>> mClasses = new Dictionary<string, List<PackageField>>();
     private Script mScript = null;
-    public Dictionary<string, List<PackageEnum>> Enums { get { return mEnums; } }
-    public Dictionary<string, List<PackageConst>> Consts { get { return mConsts; } }
-    public Dictionary<string, List<PackageField>> Messages { get { return mMessages; } }
-    public Dictionary<string, List<PackageField>> Tables { get { return mTables; } }
-    public Dictionary<string, List<PackageField>> Classes { get { return mClasses; } }
+    public Dictionary<string, PackageEnum> Enums { get; set; } = new Dictionary<string, PackageEnum>();
+    public Dictionary<string, PackageConst> Consts { get; set; } = new Dictionary<string, PackageConst>();
+    public Dictionary<string, PackageClass> Messages { get; set; } = new Dictionary<string, PackageClass>();
+    public Dictionary<string, PackageClass> Tables { get; set; } = new Dictionary<string, PackageClass>();
+    public Dictionary<string, PackageClass> Classes { get; set; } = new Dictionary<string, PackageClass>();
     void ParseEnum(string name, ScriptTable table) {
-        var enums = new List<PackageEnum>();
+        var enums = new PackageEnum();
         var itor = table.GetIterator();
         while (itor.MoveNext()) {
             var fieldName = itor.Current.Key as string;
             var val = itor.Current.Value as ScriptNumber;
             if (string.IsNullOrEmpty(fieldName) || val == null) throw new Exception($"Enum:{name} Field:{fieldName} 参数出错");
-            enums.Add(new PackageEnum() {
+            enums.Fields.Add(new FieldEnum() {
                 Index = Convert.ToInt32(val.ObjectValue),
                 Name = fieldName,
             });
         }
-        enums.Sort((m1, m2) => { return m1.Index.CompareTo(m2.Index); });
-        mEnums[name.Substring(ENUM_KEYWORD.Length)] = enums;
+        enums.Fields.Sort((m1, m2) => { return m1.Index.CompareTo(m2.Index); });
+        Enums[name.Substring(ENUM_KEYWORD.Length)] = enums;
     }
     void ParseConst(string name, ScriptTable table) {
-        var consts = new List<PackageConst>();
+        var consts = new PackageConst();
         var itor = table.GetIterator();
         while (itor.MoveNext()) {
             var fieldName = itor.Current.Key as string;
             if (string.IsNullOrEmpty(fieldName)) throw new Exception($"Const:{name} Field:{fieldName} 参数出错");
-            var pack = new PackageConst() { Name = fieldName };
+            var pack = new FieldConst() { Name = fieldName };
             ScriptObject value = itor.Current.Value;
             if (value is ScriptNumberDouble) {
                 pack.Type = BasicEnum.INT32;
@@ -57,12 +52,12 @@ public class PackageParser {
             } else {
                 throw new Exception("不支持此常量类型 " + value.Type);
             }
-            consts.Add(pack);
+            consts.Fields.Add(pack);
         }
-        mConsts[name.Substring(CONST_KEYWORD.Length)] = consts;
+        Consts[name.Substring(CONST_KEYWORD.Length)] = consts;
     }
     void ParseClass(string name, ScriptTable table) {
-        var fields = new List<PackageField>();
+        var classes = new PackageClass();
         var itor = table.GetIterator();
         while (itor.MoveNext()) {
             var fieldName = itor.Current.Key as string;
@@ -70,7 +65,7 @@ public class PackageParser {
             if (string.IsNullOrEmpty(fieldName) || val == null) throw new Exception($"Class:{name} Field:{fieldName} 参数出错 参数模版 \"索引,类型,是否数组=false,注释\"");
             var infos = val.Value.Split(',');
             if (infos.Length < 2) throw new Exception($"Class:{name} Field:{fieldName} 参数出错 参数模版 \"索引,类型,是否数组=false,注释\"");
-            var packageField = new PackageField() {
+            var packageField = new FieldClass() {
                 Name = fieldName,
                 Index = infos[0].ToInt32(),
                 Type = infos[1],
@@ -86,40 +81,41 @@ public class PackageParser {
                     throw new Exception($"Class:{name} Field:{fieldName} 未知类型:{packageField.Type}");
                 }
             }
-            fields.Add(packageField);
+            classes.Fields.Add(packageField);
         }
-        fields.Sort((m1, m2) => { return m1.Index.CompareTo(m2.Index); });
+        classes.Fields.Sort((m1, m2) => { return m1.Index.CompareTo(m2.Index); });
         if (name.StartsWith(MESSAGE_KEYWORD)) {         //协议结构
-            mMessages[name.Substring(MESSAGE_KEYWORD.Length)] = fields;
+            Messages[name.Substring(MESSAGE_KEYWORD.Length)] = classes;
         } else if (name.StartsWith(TABLE_KEYWORD)) {    //table结构
-            mTables[name.Substring(TABLE_KEYWORD.Length)] = fields;
+            Tables[name.Substring(TABLE_KEYWORD.Length)] = classes;
         } else {
-            mClasses[name] = fields;
+            Classes[name] = classes;
         }
     }
     public int GetEnumValue(string name, string value) {
-        var enums = mEnums[name];
-        foreach (var pair in enums) {
+        var enums = Enums[name];
+        foreach (var pair in enums.Fields) {
             if (pair.Name == value)
                 return pair.Index;
         }
         throw new Exception($"枚举:{name} 找不到枚举值:{value}");
     }
-    public List<PackageField> GetClasses(string name) {
-        if (mMessages.ContainsKey(name))
-            return mMessages[name];
-        else if (mTables.ContainsKey(name))
-            return mTables[name];
-        else if (mClasses.ContainsKey(name))
-            return mClasses[name];
+    public PackageClass GetClasses(string name) {
+        if (Messages.ContainsKey(name))
+            return Messages[name];
+        else if (Tables.ContainsKey(name))
+            return Tables[name];
+        else if (Classes.ContainsKey(name))
+            return Classes[name];
         throw new Exception($"找不到自定义类 : {name}");
     }
     public void Parse(string dir, bool clear = false) {
         if (clear) {
-            mEnums.Clear();
-            mConsts.Clear();
-            mMessages.Clear();
-            mTables.Clear();
+            Enums.Clear();
+            Consts.Clear();
+            Messages.Clear();
+            Tables.Clear();
+            Classes.Clear();
         }
         mScript = new Script();
         mScript.LoadLibrary();

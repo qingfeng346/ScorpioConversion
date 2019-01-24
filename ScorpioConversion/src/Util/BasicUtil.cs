@@ -1,15 +1,23 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Reflection;
 using Scorpio.Commons;
-using System.Linq;
 
-using Int8 = System.SByte;
+public class LanguageInfo : Attribute {
+    public string extension;
+    public bool bom;
+    public LanguageInfo(string extension, bool bom) {
+        this.extension = extension;
+        this.bom = bom;
+    }
+}
 //支持的语言列表
 public enum Language {
+    [LanguageInfo("sco", false)]
     Scorpio,
+    [LanguageInfo("cs", false)]
     CSharp,
+    [LanguageInfo("java", false)]
     Java,
 }
 //基础类型列表

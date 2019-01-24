@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.Text;
 using Scorpio;
 
-public class PackageField {
+public class FieldClass {
     private PackageParser mParser;
-    public PackageField() { }
-    public PackageField(PackageParser parser) { mParser = parser; }
+    public FieldClass() { }
+    public FieldClass(PackageParser parser) { mParser = parser; }
     public int Index;                   //字段索引
     public string Name;                 //字段名字
     public string Comment;              //字段注释
@@ -22,14 +22,17 @@ public class PackageField {
     public bool IsEnum { get { return mParser != null && mParser.Enums.ContainsKey(Type); } }
     public int GetEnumValue(string value) {
         if (mParser == null)
-            throw new Exception($"Parser 为空 value:{value}");
+            throw new Exception($"Parser 为空 EnumType : {Type}  Value : {value}");
         return mParser.GetEnumValue(Type, value);
     }
-    public List<PackageField> CustomType {
+    public PackageClass CustomType {
         get {
             if (mParser == null)
-                throw new Exception($"Parser 为空 CustomType");
+                throw new Exception($"Parser 为空 CustomType : {Type}");
             return mParser.GetClasses(Type);
         }
     }
+}
+public class PackageClass {
+    public List<FieldClass> Fields = new List<FieldClass>();
 }
