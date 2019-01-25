@@ -32,7 +32,10 @@ public class FieldClass {
             return mParser.GetClasses(Type);
         }
     }
+    public string GetLanguageType(Language language) {
+        return IsBasic ? BasicType.GetLanguageType(language) : Type;
+    }
 }
-public class PackageClass {
+public class PackageClass : IPackage {
     public List<FieldClass> Fields = new List<FieldClass>();
 }

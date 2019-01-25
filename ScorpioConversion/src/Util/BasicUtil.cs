@@ -52,7 +52,7 @@ public class BasicType {
         this.Key = key;
         return this;
     }
-    public string GetCode(Language language) {
+    public string GetLanguageType(Language language) {
         return Languages.ContainsKey(language) ? Languages[language] : Name;
     }
     public void WriteValue(TableWriter writer, string value) {

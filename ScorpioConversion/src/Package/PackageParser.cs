@@ -5,6 +5,9 @@ using System.IO;
 using Scorpio;
 using Scorpio.Variable;
 
+public interface IPackage {
+
+}
 public class PackageParser {
     private const string ENUM_KEYWORD = "enum_";            //枚举类型关键字
     private const string CONST_KEYWORD = "const_";          //常量类型关键字

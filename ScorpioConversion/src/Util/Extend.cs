@@ -28,7 +28,7 @@ public static class Extend {
         return value == null || value.Count() == 0;
     }
     public static bool IsInvalid(this string str) {
-        return str.StartsWith("!");
+        return str.Trim().StartsWith("!");
     }
     public static bool IsArrayType(this string str) {
         return str.StartsWith(ArrayString);
@@ -82,7 +82,7 @@ public static class Extend {
         if (cell == null) return def;
         cell.SetCellType(CellType.String);
         var value = cell.StringCellValue.Trim();
-        return string.IsNullOrWhiteSpace(value) ? def : value;
+        return value.IsEmptyString() ? def : value;
     }
     public static void SetCellString(this ICell cell, string value) {
         if (cell == null) return;

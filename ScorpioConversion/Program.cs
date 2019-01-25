@@ -32,19 +32,20 @@ namespace ScorpioConversion
             try {
                 Logger.SetLogger(new LogHelper());
                 var command = CommandLine.Parse(args);
-                var package = command.GetValue("-package");
-                var files = command.GetValue("-files");
-                var data = command.GetValue("-data");
-                var name = command.GetValue("-name");
-                var cs = command.GetValue("-cs");
-                var java = command.GetValue("-java");
-                var sco = command.GetValue("-sco");
+                var package = command.GetValue("-package");     //默认 命名空间
+                var files = command.GetValue("-files");         //需要转换的文件 多文件[,]隔开
+                var data = command.GetValue("-data");           //data文件输出目录 多目录[,]隔开
+                var name = command.GetValue("-name");           //名字使用文件名或者sheet名字
+                var cs = command.GetValue("-cs");               //csharp文件输出目录 多目录[,]隔开
+                var java = command.GetValue("-java");           //java文件输出目录 多目录[,]隔开
+                var sco = command.GetValue("-sco");             //sco文件输出目录 多目录[,]隔开
+                var spawn = command.GetValue("-spawn");         //派生文件列表 多个Key[,]隔开
                 if (string.IsNullOrEmpty(files))
                     throw new Exception("找不到 files 参数");
                 var languageDirectory = new Dictionary<Language, string>();
-                if (!string.IsNullOrWhiteSpace(cs)) languageDirectory.Add(Language.CSharp, cs);
-                if (!string.IsNullOrWhiteSpace(java)) languageDirectory.Add(Language.Java, java);
-                if (!string.IsNullOrWhiteSpace(sco)) languageDirectory.Add(Language.Scorpio, sco);
+                if (!cs.IsEmptyString()) languageDirectory.Add(Language.CSharp, cs);
+                if (!java.IsEmptyString()) languageDirectory.Add(Language.Java, java);
+                if (!sco.IsEmptyString()) languageDirectory.Add(Language.Scorpio, sco);
                 foreach (var file in files.Split(",")) {
                     var fullFile = Path.GetFullPath(Path.Combine(Environment.CurrentDirectory, file));
                     var fileName = Path.GetFileNameWithoutExtension(file).Trim();
@@ -64,9 +65,8 @@ namespace ScorpioConversion
                             }
                             for (var i = 0; i < workbook.NumberOfSheets; ++i) {
                                 var sheet = workbook.GetSheetAt(i);
-                                if (sheet.SheetName.Trim().IsInvalid()) { continue; }
-                                var className = string.IsNullOrWhiteSpace(name) || name.ToLower() == "file" ? fileName : sheet.SheetName.Trim();
-                                new TableBuilder().Parse(sheet, package, className, false, data, languageDirectory, null);
+                                if (sheet.SheetName.IsInvalid()) { continue; }
+                                new TableBuilder().Parse(sheet, package, name.IsEmptyString() || name.ToLower() == "file" ? fileName : sheet.SheetName.Trim(), spawn, data, languageDirectory, null);
                             }
                         }
                     } catch (Exception e) {

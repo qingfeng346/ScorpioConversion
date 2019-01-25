@@ -7,7 +7,7 @@ using NPOI.SS.UserModel;
 
 public class TableBuilder {
     private const string KEYWORD_PACKAGE = "/Package";                  //命名空间,不填默认为空
-    private const string KEYWORD_CLASSNAME = "/ClassName";              //生成类的名字,不填默认为传入的默认名字
+    private const string KEYWORD_FILENAME = "/FileName";                //导出data文件名字,不填默认文件或者sheet名字
 
     private const string KEYWORD_COMMENT = "/Comment";                  //注释
     private const string KEYWORD_NAME = "/Name";                        //字段名
@@ -19,23 +19,30 @@ public class TableBuilder {
     private const string KEYWORD_END = "/End";                          //数据结束
 
     private string mPackageName = "";                                   //命名空间
-    private string mClassName = "";                                     //生成类的名字
+    private string mName = "";                                          //导出data文件名字
+    private List<string> mSpawns = new List<string>();                  //派生类
+
     private PackageParser mParser = null;                               //自定义类
     private List<FieldClass> mFields = new List<FieldClass>();          //Excel结构
     private List<RowData> mDatas = new List<RowData>();                 //Excel内容
     private List<string> mUsedCustoms = new List<string>();             //正在转换的表已使用的自定义类
 
-    private string mDataDirectory;
-    private Dictionary<Language, string> mLanguageDirectory;
-    public void Parse(ISheet sheet, string packageName, string className, bool isSpawn, string dataDirectory, Dictionary<Language, string> languageDirectory, PackageParser parser) {
+    private string mDataDirectory;                                      //data文件输出目录
+    private Dictionary<Language, string> mLanguageDirectory;            //所有语言输出目录
+
+    public bool IsSpawn { get; set; }
+    public string DataClassName { get; set; }
+    public string TableClassName { get; set; }
+    public void Parse(ISheet sheet, string packageName, string name, string spawn, string dataDirectory, Dictionary<Language, string> languageDirectory, PackageParser parser) {
         mPackageName = packageName;
-        mClassName = className;
+        mName = name;
         mParser = parser;
+        if (!spawn.IsEmptyString()) mSpawns.AddRange(spawn.Split(","));
         mDataDirectory = dataDirectory;
         mLanguageDirectory = languageDirectory;
         LoadLayout(sheet);
         LoadData(sheet);
-        mFields.RemoveAll((_) => { return !_.Valid; });
+        CheckData();
         CreateDataFile();
         CreateLanguageFile();
     }
@@ -49,8 +56,8 @@ public class TableBuilder {
             if (keyCell.IsEmptyString() || keyCell == KEYWORD_BEGIN || keyCell == KEYWORD_END) { continue; }
             if (keyCell == KEYWORD_PACKAGE) {
                 mPackageName = row.GetCellString(1);
-            } else if (keyCell == KEYWORD_CLASSNAME) {
-                mClassName = row.GetCellString(1, mClassName);
+            } else if (keyCell == KEYWORD_FILENAME) {
+                mName = row.GetCellString(1, mName);
             } else {
                 ParseHead(keyCell, row);
             }
@@ -145,9 +152,24 @@ public class TableBuilder {
         script.LoadString(builder.ToString());
         return script.LoadString("return " + value) as ScriptArray;
     }
+    //检测所有数据
+    void CheckData() {
+        mFields.RemoveAll((_) => { return !_.Valid; });
+        if (mPackageName.IsEmptyString() || mName.IsEmptyString())
+            throw new Exception($"PackageName 或 Name 不能为空  PackageName : {mPackageName}  Name : {mName}");
+        var spawn = mSpawns.Find((str) => mName.StartsWith($"{str}_") );
+        if (spawn.IsEmptyString()) {
+            DataClassName = $"Data{mName}";
+            TableClassName = $"Table{mName}";
+        } else {
+            IsSpawn = true;
+            DataClassName = $"Data{spawn}";
+            TableClassName = $"Table{spawn}";
+        }
+    }
     //生成data文件
     void CreateDataFile() {
-        if (string.IsNullOrWhiteSpace(mDataDirectory))
+        if (mDataDirectory.IsEmptyString())
             return;
         using (var writer = new TableWriter()) {
             writer.WriteInt32(mDatas.Count);
@@ -180,7 +202,7 @@ public class TableBuilder {
                     }
                 }
             }
-            FileUtil.CreateFile(mClassName + ".data", writer.ToArray(), mDataDirectory.Split(","));
+            FileUtil.CreateFile(mName + ".data", writer.ToArray(), mDataDirectory.Split(","));
         }
     }
     void WriteField(TableWriter writer, object value, FieldClass field) {
@@ -241,11 +263,23 @@ public class TableBuilder {
     }
     void CreateLanguageFile() {
         foreach (var pair in mLanguageDirectory) {
-            var generate = Activator.CreateInstance(Type.GetType("GenerateData" + pair.Key)) as IGenerate;
-            generate.PackageName = mPackageName;
-            generate.ClassName = mClassName;
-            generate.Language = pair.Key;
-
+            {
+                var generate = Activator.CreateInstance(Type.GetType("GenerateData" + pair.Key)) as IGenerate;
+                generate.PackageName = mPackageName;
+                generate.ClassName = DataClassName;
+                generate.Language = pair.Key;
+                generate.Package = new PackageClass() { Fields = mFields };
+                generate.Parameter = true;
+                FileUtil.CreateFile($"{DataClassName}.{pair.Key.GetInfo().extension}", generate.Generate(), pair.Value.Split(","));
+            }
+            {
+                var generate = Activator.CreateInstance(Type.GetType("GenerateTable" + pair.Key)) as IGenerate;
+                generate.PackageName = mPackageName;
+                generate.ClassName = TableClassName;
+                generate.Language = pair.Key;
+                generate.Package = new PackageClass() { Fields = mFields };
+                FileUtil.CreateFile($"{TableClassName}.{pair.Key.GetInfo().extension}", generate.Generate(), pair.Value.Split(","));
+            }
         }
     }
 }

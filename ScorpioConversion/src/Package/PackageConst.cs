@@ -5,6 +5,6 @@ public class FieldConst {
     public BasicEnum Type;  //常量类型 目前只有 int32 int64 string
     public string Value;    //常量值
 }
-public class PackageConst {
+public class PackageConst : IPackage {
     public List<FieldConst> Fields = new List<FieldConst>();
 }
