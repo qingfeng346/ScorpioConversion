@@ -16,6 +16,7 @@ public class {ClassName} : IData {{
     {FuncGetData()}
     {FuncIsInvalid()}
     {FuncRead()}
+    {FuncSet()}
 }}
 }}");
         return builder.ToString();
@@ -66,48 +67,60 @@ public class {ClassName} : IData {{
         return builder.ToString();
     }
     string FuncRead() {
-        //    var builder = new StringBuilder();
-        //    builder.Append($@"
-        //public {ClassName} Read(TableManager tableManager, String fileName, ScorpioReader reader) {
-        //    __ClassName ret = new __ClassName();");
-        //    foreach (var field in m_Fields) {
-        //        string str = "";
-        //        if (field.Array) {
-        //            str = @"
-        //    {
-        //        int number = reader.ReadInt32();
-        //        List<__Type> list = new List<__Type> ();
-        //        for (int i = 0;i < number; ++i) { list.Add(__FieldRead); }
-        //        ret.___Name = list.AsReadOnly();
-        //    }";
-        //        } else {
-        //            str = @"
-        //    ret.___Name = __FieldRead;";
-        //        }
-        //        if (field.Attribute != null && field.Attribute.GetValue("Language").LogicOperation()) {
-        //            str = @"
-        //    reader.ReadString();
-        //    ret.___Name = __FieldRead;";
-        //            str = str.Replace("__FieldRead", string.Format("tableManager.getLanguageText(fileName +  \"_{0}_\" + ret._ID)", field.Name));
-        //        } else {
-        //            str = str.Replace("__FieldRead", field.IsBasic ? "reader.__Read()" : (field.Enum ? "(__Type)reader.ReadInt32()" : "__Type.Read(tableManager, fileName, reader)"));
-        //        }
-        //        str = str.Replace("__Read", field.IsBasic ? field.Info.ReadFunction : "");
-        //        str = str.Replace("__Type", GetCodeType(field.Type));
-        //        str = str.Replace("__Index", field.Index.ToString());
-        //        str = str.Replace("__Name", field.Name);
-        //        builder.Append(str);
-        //    }
-        //    builder.Append(@"
-        //    ret.m_IsInvalid = ret.IsInvalid_impl();
-        //    return ret;
-        //}");
-        //    return builder.ToString();
-        return "";
+        var builder = new StringBuilder();
+        builder.Append($@"
+    public static {ClassName} Read(Dictionary<string, string> l10n, string fileName, ScorpioReader reader) {{
+        var ret = new {ClassName}();");
+        foreach (var field in fields) {
+            var fieldRead = "";
+            if (field.Attribute != null && field.Attribute.GetValue("Language").LogicOperation()) {
+                fieldRead = $@"TableUtil.Readl10n(l10n, fileName + ""_{field.Name}_"" + ret.ID())";
+            } else if (field.IsBasic){
+                fieldRead = $"reader.Read{field.BasicType.Name}()";
+            } else if (field.IsEnum) {
+                fieldRead = $"({field.Type})reader.ReadInt32()";
+            } else {
+                fieldRead = $"{field.Type}.Read(l10n, fileName, reader)";
+            }
+            if (field.Array) {
+                builder.Append($@"
+        {{
+            var list = new List<{field.Type}> ();
+            var number = reader.ReadInt32();
+            for (var i = 0; i < number; ++i) {{ list.Add({fieldRead}); }}
+            ret._{field.Name} = list.AsReadOnly();
+        }}");
+            } else {
+                builder.Append($@"
+        ret._{field.Name} = {fieldRead};");
+            }
+        }
+        builder.Append(@"
+        ret.m_IsInvalid = ret.CheckInvalid();
+        return ret;
+    }");
+        return builder.ToString();
+    }
+    string FuncSet() {
+        var builder = new StringBuilder();
+        builder.Append($@"
+    public void Set({ClassName} value) {{");
+        foreach (var field in fields) {
+            builder.Append($@"
+        this._{field.Name} = value._{field.Name};");
+        }
+        builder.Append(@"
+    }");
+        return builder.ToString();
     }
 }
 public class GenerateTableCSharp : IGenerate {
     protected override string Generate_impl() {
-        return "";
+        var builder = new StringBuilder();
+        builder.Append(TemplateCSharp.Head);
+        builder.AppendLine("namespace " + PackageName + " {");
+        builder.Append(TemplateCSharp.Table);
+        builder.AppendLine("}");
+        return builder.ToString();
     }
 }

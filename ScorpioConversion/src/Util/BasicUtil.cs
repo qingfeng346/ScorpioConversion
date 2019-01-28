@@ -33,7 +33,7 @@ public enum BasicEnum {
     BYTES,          //byte[]类型
 }
 //基本类型
-public class BasicType {
+public struct BasicType {
     public string Key { get; private set; }                                 //类型Key
     public string Name { get; private set; }                                //类型名字
     public BasicEnum Index { get; private set; }                            //类型索引
@@ -64,23 +64,26 @@ public class BasicType {
 }
 class BasicUtil {
     private static List<BasicType> BasicTypes = new List<BasicType>() {
-        new BasicType("bool", BasicEnum.BOOL, new Dictionary<Language, string>() { { Language.Java, "Boolean" } }),
-        new BasicType("Int8", BasicEnum.INT8, new Dictionary<Language, string>() { { Language.Java, "Byte" } }),
-        new BasicType("Int16", BasicEnum.INT16, new Dictionary<Language, string>() { { Language.Java, "Short" } }),
-        new BasicType("Int32", BasicEnum.INT32, new Dictionary<Language, string>() { { Language.Java, "Integer" } }),
-        new BasicType("Int64", BasicEnum.INT64, new Dictionary<Language, string>() { { Language.Java, "Long" } }),
-        new BasicType("float", BasicEnum.FLOAT, new Dictionary<Language, string>() { { Language.Java, "Float" } }),
-        new BasicType("double", BasicEnum.DOUBLE, new Dictionary<Language, string>() { { Language.Java, "Double" } }),
-        new BasicType("String", BasicEnum.STRING, new Dictionary<Language, string>() { }),
-        new BasicType("byte[]", BasicEnum.BYTES, new Dictionary<Language, string>() { }),
+        new BasicType("Bool", BasicEnum.BOOL, new Dictionary<Language, string>() { { Language.CSharp, "bool"}, { Language.Java, "boolean" } }),
+        new BasicType("Int8", BasicEnum.INT8, new Dictionary<Language, string>() { { Language.CSharp, "sbyte" }, { Language.Java, "byte" } }),
+        new BasicType("Int16", BasicEnum.INT16, new Dictionary<Language, string>() { { Language.CSharp, "short" }, { Language.Java, "short" } }),
+        new BasicType("Int32", BasicEnum.INT32, new Dictionary<Language, string>() { { Language.CSharp, "int" }, { Language.Java, "int" } }),
+        new BasicType("Int64", BasicEnum.INT64, new Dictionary<Language, string>() { { Language.CSharp, "long" }, { Language.Java, "long" } }),
+        new BasicType("Float", BasicEnum.FLOAT, new Dictionary<Language, string>() { { Language.CSharp, "float" }, { Language.Java, "float" } }),
+        new BasicType("Double", BasicEnum.DOUBLE, new Dictionary<Language, string>() { { Language.CSharp, "double" }, { Language.Java, "double" } }),
+        new BasicType("String", BasicEnum.STRING, new Dictionary<Language, string>() { { Language.CSharp, "string" }}),
+        new BasicType("Bytes", BasicEnum.BYTES, new Dictionary<Language, string>() { }),
     };
     static BasicUtil() {
+        BasicTypes.Add(GetType(BasicEnum.BOOL).SetKey("bool"));
         BasicTypes.Add(GetType(BasicEnum.BOOL).SetKey("Boolean"));
+        
         BasicTypes.Add(GetType(BasicEnum.INT8).SetKey("byte"));
         BasicTypes.Add(GetType(BasicEnum.INT16).SetKey("short"));
         BasicTypes.Add(GetType(BasicEnum.INT32).SetKey("int"));
         BasicTypes.Add(GetType(BasicEnum.INT64).SetKey("long"));
-        BasicTypes.Add(GetType(BasicEnum.BYTES).SetKey("bytes"));
+
+        BasicTypes.Add(GetType(BasicEnum.BYTES).SetKey("byte[]"));
     }
     public static bool HasType(string key) {
         return BasicTypes.Exists(_ => _.Key.ToLower() == key.ToLower());

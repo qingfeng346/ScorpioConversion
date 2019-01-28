@@ -9,7 +9,7 @@ public class TableReader : IDisposable {
         stream = new MemoryStream(buffer);
         reader = new BinaryReader(stream);
     }
-    public bool ReadBoolean() {
+    public bool ReadBool() {
         return ReadInt8() == 1;
     }
     public sbyte ReadInt8() {

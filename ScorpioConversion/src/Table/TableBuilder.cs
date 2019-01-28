@@ -278,7 +278,12 @@ public class TableBuilder {
                 generate.ClassName = TableClassName;
                 generate.Language = pair.Key;
                 generate.Package = new PackageClass() { Fields = mFields };
-                FileUtil.CreateFile($"{TableClassName}.{pair.Key.GetInfo().extension}", generate.Generate(), pair.Value.Split(","));
+                var str = generate.Generate();
+                str = str.Replace("__KeyType", mFields[0].GetLanguageType(pair.Key));
+                str = str.Replace("__TableName", TableClassName);
+                str = str.Replace("__DataName", DataClassName);
+                str = str.Replace("__MD5", GetClassMD5Code());
+                FileUtil.CreateFile($"{TableClassName}.{pair.Key.GetInfo().extension}", str, pair.Value.Split(","));
             }
         }
     }
