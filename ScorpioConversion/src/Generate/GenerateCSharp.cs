@@ -7,8 +7,7 @@ public class GenerateDataCSharp : IGenerate {
     protected override string Generate_impl() {
         fields = (Package as PackageClass).Fields;
         var builder = new StringBuilder();
-        builder.Append(TemplateCSharp.Head);
-        builder.Append($@"
+        builder.Append($@"{TemplateCSharp.Head}
 namespace {PackageName} {{
 public class {ClassName} : IData {{
     private bool m_IsInvalid;
@@ -17,7 +16,7 @@ public class {ClassName} : IData {{
     {FuncIsInvalid()}
     {FuncRead()}
     {FuncSet()}
-    {fields.Builder()}
+    {fields.ToCSharpString()}
 }}
 }}");
         return builder.ToString();
@@ -43,10 +42,10 @@ public class {ClassName} : IData {{
     string FuncGetData() {
         var builder = new StringBuilder();
         builder.Append(@"
-    public object GetData(string key ) {");
+    public object GetData(string key) {");
         foreach (var field in fields) {
             builder.Append($@"
-        if (key == ""{field.Name}"") return _{field.Name};");
+        if (""{field.Name}"".Equals(key)) return _{field.Name};");
         }
         builder.Append(@"
         return null;
@@ -73,22 +72,23 @@ public class {ClassName} : IData {{
     public static {ClassName} Read(Dictionary<string, string> l10n, string fileName, ScorpioReader reader) {{
         var ret = new {ClassName}();");
         foreach (var field in fields) {
+            var languageType = field.GetLanguageType(Language);
             var fieldRead = "";
             if (field.Attribute != null && field.Attribute.GetValue("Language").LogicOperation()) {
                 fieldRead = $@"TableUtil.Readl10n(l10n, fileName + ""_{field.Name}_"" + ret.ID(), reader)";
             } else if (field.IsBasic){
                 fieldRead = $"reader.Read{field.BasicType.Name}()";
             } else if (field.IsEnum) {
-                fieldRead = $"({field.Type})reader.ReadInt32()";
+                fieldRead = $"({languageType})reader.ReadInt32()";
             } else {
-                fieldRead = $"{field.Type}.Read(l10n, fileName, reader)";
+                fieldRead = $"{languageType}.Read(l10n, fileName, reader)";
             }
             if (field.Array) {
                 builder.Append($@"
         {{
-            var list = new List<{field.Type}> ();
-            var number = reader.ReadInt32();
-            for (var i = 0; i < number; ++i) {{ list.Add({fieldRead}); }}
+            List<{languageType}> list = new List<{languageType}>();
+            int number = reader.ReadInt32();
+            for (int i = 0; i < number; ++i) {{ list.Add({fieldRead}); }}
             ret._{field.Name} = list.AsReadOnly();
         }}");
             } else {

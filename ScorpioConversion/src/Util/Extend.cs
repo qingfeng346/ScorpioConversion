@@ -70,7 +70,7 @@ public static class Extend {
     public static double ToDouble(this string value) {
         return value.IsEmptyString() ? INVALID_DOUBLE : Convert.ToDouble(value);
     }
-    public static string Builder(this List<FieldClass> value) {
+    public static string ToCSharpString(this List<FieldClass> value) {
         var builder = new StringBuilder();
         builder.Append(@"
     public override string ToString() {
@@ -87,12 +87,39 @@ public static class Extend {
             ""{0} : "" + _{0}", field.Name);
             }
             if (i != count - 1) {
-                str += @" + "",""";
+                str += @" + "", """;
             }
             builder.Append(str);
         }
         builder.Append(@" + 
-                "" }"";
+            "" }"";
+    }");
+        return builder.ToString();
+    }
+    public static string ToJavaString(this List<FieldClass> value) {
+        var builder = new StringBuilder();
+        builder.Append(@"
+    @Override
+    public String ToString() {
+        return ""{ """);
+        var count = value.Count;
+        for (int i = 0; i < count; ++i) {
+            var field = value[i];
+            string str = "";
+            if (field.Array) {
+                str += string.Format(@" + 
+            ""{0} : "" + {1}", field.Name, "ScorpioUtil.ToString(_" + field.Name + ")");
+            } else {
+                str += string.Format(@" + 
+            ""{0} : "" + _{0}", field.Name);
+            }
+            if (i != count - 1) {
+                str += @" + "", """;
+            }
+            builder.Append(str);
+        }
+        builder.Append(@" + 
+            "" }"";
     }");
         return builder.ToString();
     }
