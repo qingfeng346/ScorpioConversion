@@ -2,7 +2,7 @@
   "profiles": {
     "ScorpioConversion": {
       "commandName": "Project",
-      "commandLineArgs": "-files C:\\Users\\qingf\\Desktop\\test\\Test.xlsx -name file -data C:\\Users\\qingf\\Desktop\\test\\output -cs C:\\Users\\qingf\\Desktop\\test\\output\\dotnet"
+      "commandLineArgs": "-files C:\\Users\\qingf\\Desktop\\test\\Test.xlsx -name file -data C:\\Users\\qingf\\Desktop\\test\\output\\dotnet -cs C:\\Users\\qingf\\Desktop\\test\\output\\dotnet"
     }
   }
 }

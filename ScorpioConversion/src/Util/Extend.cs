@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Text;
+using System.Collections.Generic;
 using NPOI.SS.UserModel;
 using NPOI.HSSF.UserModel;
 using Scorpio;
@@ -68,6 +69,32 @@ public static class Extend {
     }
     public static double ToDouble(this string value) {
         return value.IsEmptyString() ? INVALID_DOUBLE : Convert.ToDouble(value);
+    }
+    public static string Builder(this List<FieldClass> value) {
+        var builder = new StringBuilder();
+        builder.Append(@"
+    public override string ToString() {
+        return ""{ """);
+        var count = value.Count;
+        for (int i = 0; i < count; ++i) {
+            var field = value[i];
+            string str = "";
+            if (field.Array) {
+                str += string.Format(@" + 
+            ""{0} : "" + {1}", field.Name, "ScorpioUtil.ToString(_" + field.Name + ")");
+            } else {
+                str += string.Format(@" + 
+            ""{0} : "" + _{0}", field.Name);
+            }
+            if (i != count - 1) {
+                str += @" + "",""";
+            }
+            builder.Append(str);
+        }
+        builder.Append(@" + 
+                "" }"";
+    }");
+        return builder.ToString();
     }
     public static string GetCellString(this IRow row, int index) {
         return GetCellString(row, index, "");

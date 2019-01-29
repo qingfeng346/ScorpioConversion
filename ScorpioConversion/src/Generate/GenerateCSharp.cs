@@ -17,6 +17,7 @@ public class {ClassName} : IData {{
     {FuncIsInvalid()}
     {FuncRead()}
     {FuncSet()}
+    {fields.Builder()}
 }}
 }}");
         return builder.ToString();
@@ -74,7 +75,7 @@ public class {ClassName} : IData {{
         foreach (var field in fields) {
             var fieldRead = "";
             if (field.Attribute != null && field.Attribute.GetValue("Language").LogicOperation()) {
-                fieldRead = $@"TableUtil.Readl10n(l10n, fileName + ""_{field.Name}_"" + ret.ID())";
+                fieldRead = $@"TableUtil.Readl10n(l10n, fileName + ""_{field.Name}_"" + ret.ID(), reader)";
             } else if (field.IsBasic){
                 fieldRead = $"reader.Read{field.BasicType.Name}()";
             } else if (field.IsEnum) {

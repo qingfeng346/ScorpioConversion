@@ -172,9 +172,9 @@ public class TableBuilder {
         if (mDataDirectory.IsEmptyString())
             return;
         using (var writer = new TableWriter()) {
-            writer.WriteInt32(mDatas.Count);
-            writer.WriteString(GetClassMD5Code());
-            writer.WriteInt32(mFields.Count);
+            writer.WriteInt32(mDatas.Count);            //数据数量
+            writer.WriteString(GetClassMD5Code());      //文件结构MD5
+            writer.WriteInt32(mFields.Count);           //字段数量
             foreach (var field in mFields) {
                 if (field.IsBasic) {
                     writer.WriteInt8(0);
@@ -185,6 +185,7 @@ public class TableBuilder {
                 }
                 writer.WriteBool(field.Array);
             }
+            writer.WriteInt32(0);                       //自定义类数量
             var keys = new List<string>();
             foreach (var data in mDatas) {
                 if (keys.Contains(data.Key)) {

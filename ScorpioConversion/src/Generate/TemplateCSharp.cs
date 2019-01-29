@@ -14,9 +14,9 @@ using Scorpio.Table;
 	const string FILE_MD5_CODE = ""__MD5"";
     private int m_count = 0;
     private Dictionary<__KeyType, __DataName> m_dataArray = new Dictionary<__KeyType, __DataName>();
-    public __TableName Initialize(Dictionary<string, string> l10n, string fileName) {
-        using (var reader = new ScorpioReader(TableUtil.GetBuffer(fileName))) {
-            int iRow = TableUtil.ReadHead(reader, fileName, FILE_MD5_CODE);
+    public __TableName Initialize(Dictionary<string, string> l10n, string fileName, byte[] buffer) {
+        using (var reader = new ScorpioReader(buffer)) {
+            var iRow = TableUtil.ReadHead(reader, fileName, FILE_MD5_CODE);
             for (var i = 0; i < iRow; ++i) {
                 var pData = __DataName.Read(l10n, fileName, reader);
                 if (m_dataArray.ContainsKey(pData.ID())) {
@@ -29,7 +29,7 @@ using Scorpio.Table;
             return this;
         }
     }
-    public IData GetValue(__KeyType ID) {
+    public __DataName GetValue(__KeyType ID) {
         if (m_dataArray.ContainsKey(ID)) return m_dataArray[ID];
         TableUtil.Warning(""__DataName key is not exist "" + ID);
         return null;
