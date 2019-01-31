@@ -14,7 +14,7 @@ public class {ClassName} : IData {{
     {FuncIsInvalid()}
     {FuncRead()}
     {FuncSet()}
-    {Fields.ToCSharpString()}
+    {FucToString()}
 }}
 }}");
         return builder.ToString();
@@ -109,6 +109,26 @@ public class {ClassName} : IData {{
         this._{field.Name} = value._{field.Name};");
         }
         builder.Append(@"
+    }");
+        return builder.ToString();
+    }
+    string FucToString() {
+        var builder = new StringBuilder();
+        builder.Append(@"
+    public override string ToString() {
+        return ""{ """);
+        var count = Fields.Count;
+        for (int i = 0; i < count; ++i) {
+            var field = Fields[i];
+            var toString = field.Array ? $"ScorpioUtil.ToString(_{field.Name})" : $"_{field.Name}";
+            builder.Append($@" + 
+            ""{field.Name} : "" +  {toString}");
+            if (i != count - 1) {
+                builder.Append(" + \",\"");
+            }
+        }
+        builder.Append(@" + 
+            "" }"";
     }");
         return builder.ToString();
     }

@@ -6,19 +6,21 @@ using Scorpio.Commons;
 public class LanguageInfo : Attribute {
     public string extension;
     public bool bom;
-    public LanguageInfo(string extension, bool bom) {
+    public LanguageInfo(string extension, bool bom = false) {
         this.extension = extension;
         this.bom = bom;
     }
 }
 //支持的语言列表
 public enum Language {
-    [LanguageInfo("sco", false)]
+    [LanguageInfo("sco")]
     Scorpio,
-    [LanguageInfo("cs", false)]
+    [LanguageInfo("cs")]
     CSharp,
-    [LanguageInfo("java", false)]
+    [LanguageInfo("java")]
     Java,
+    [LanguageInfo("js")]
+    Nodejs,
 }
 //基础类型列表
 public enum BasicEnum {

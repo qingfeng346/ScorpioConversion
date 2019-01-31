@@ -70,47 +70,6 @@ public static class Extend {
     public static double ToDouble(this string value) {
         return value.IsEmptyString() ? INVALID_DOUBLE : Convert.ToDouble(value);
     }
-    public static string ToCSharpString(this List<FieldClass> value) {
-        var builder = new StringBuilder();
-        builder.Append(@"
-    public override string ToString() {
-        return ""{ """);
-        var count = value.Count;
-        for (int i = 0; i < count; ++i) {
-            var field = value[i];
-            var toString = field.Array ? $"ScorpioUtil.ToString(_{field.Name})" : $"_{field.Name}";
-            builder.Append($@" + 
-            ""{field.Name}"" +  {toString}");
-            if (i != count - 1) {
-                builder.Append(" + \",\"");
-            }
-        }
-        builder.Append(@" + 
-            "" }"";
-    }");
-        return builder.ToString();
-    }
-    public static string ToJavaString(this List<FieldClass> value) {
-        var builder = new StringBuilder();
-        builder.Append(@"
-    @Override
-    public String toString() {
-        return ""{ """);
-        var count = value.Count;
-        for (int i = 0; i < count; ++i) {
-            var field = value[i];
-            var toString = field.Array ? $"ScorpioUtil.ToString(_{field.Name})" : $"_{field.Name}";
-            builder.Append($@" + 
-            ""{field.Name}"" +  {toString}");
-            if (i != count - 1) {
-                builder.Append(" + \",\"");
-            }
-        }
-        builder.Append(@" + 
-            "" }"";
-    }");
-        return builder.ToString();
-    }
     public static string GetCellString(this IRow row, int index) {
         return GetCellString(row, index, "");
     }

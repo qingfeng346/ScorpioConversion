@@ -39,6 +39,7 @@ namespace ScorpioConversion
                 var cs = command.GetValue("-cs");               //csharp文件输出目录 多目录[,]隔开
                 var java = command.GetValue("-java");           //java文件输出目录 多目录[,]隔开
                 var sco = command.GetValue("-sco");             //sco文件输出目录 多目录[,]隔开
+                var node = command.GetValue("-node");           //nodejs文件输出目录 多目录[,]隔开
                 var spawn = command.GetValue("-spawn");         //派生文件列表 多个Key[,]隔开
                 if (string.IsNullOrEmpty(files))
                     throw new Exception("找不到 files 参数");
@@ -46,6 +47,7 @@ namespace ScorpioConversion
                 if (!cs.IsEmptyString()) languageDirectory.Add(Language.CSharp, cs);
                 if (!java.IsEmptyString()) languageDirectory.Add(Language.Java, java);
                 if (!sco.IsEmptyString()) languageDirectory.Add(Language.Scorpio, sco);
+                if (!node.IsEmptyString()) languageDirectory.Add(Language.Nodejs, node);
                 foreach (var file in files.Split(",")) {
                     var fullFile = Path.GetFullPath(Path.Combine(Environment.CurrentDirectory, file));
                     var fileName = Path.GetFileNameWithoutExtension(file).Trim();
