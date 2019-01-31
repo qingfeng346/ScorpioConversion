@@ -286,6 +286,7 @@ public class TableBuilder {
                 generate.Package = new PackageClass() { Fields = mFields };
                 var str = generate.Generate();
                 str = str.Replace("__KeyType", mFields[0].GetLanguageType(pair.Key));
+                str = str.Replace("__KeyName", mFields[0].Name);
                 str = str.Replace("__TableName", TableClassName);
                 str = str.Replace("__DataName", DataClassName);
                 str = str.Replace("__MD5", GetClassMD5Code());

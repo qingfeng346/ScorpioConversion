@@ -19,6 +19,7 @@ public class FieldClass {
     public bool IsBasic { get { return BasicUtil.HasType(Type); } }
     public BasicType BasicType { get { return BasicUtil.GetType(Type); } }
 
+    public string AttributeString { get { return Attribute != null ? Attribute.ToJson() : "{}"; } }
     public bool IsEnum { get { return mParser != null && mParser.Enums.ContainsKey(Type); } }
     public int GetEnumValue(string value) {
         if (mParser == null)
