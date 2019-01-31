@@ -3,9 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 
 public class GenerateDataJava : IGenerate {
-    private List<FieldClass> fields;
     protected override string Generate_impl() {
-        fields = (Package as PackageClass).Fields;
         var builder = new StringBuilder();
         builder.Append($@"
 package {PackageName};
@@ -17,14 +15,14 @@ public class {ClassName} implements IData {{
     {FuncIsInvalid()}
     {FuncRead()}
     {FuncSet()}
-    {fields.ToJavaString()}
+    {Fields.ToJavaString()}
 }}");
         return builder.ToString();
     }
     string AllFields() {
         var builder = new StringBuilder();
         var first = true;
-        foreach (var field in fields) {
+        foreach (var field in Fields) {
             var languageType = field.GetLanguageType(Language);
             if (field.Array) { languageType = $"List<{languageType}>"; }
             builder.Append($@"
@@ -43,7 +41,7 @@ public class {ClassName} implements IData {{
         var builder = new StringBuilder();
         builder.Append(@"
     public Object GetData(String key ) {");
-        foreach (var field in fields) {
+        foreach (var field in Fields) {
             builder.Append($@"
         if (""{field.Name}"".equals(key)) return _{field.Name};");
         }
@@ -57,7 +55,7 @@ public class {ClassName} implements IData {{
         builder.Append(@"
     public boolean IsInvalid() { return m_IsInvalid; }
     private boolean CheckInvalid() {");
-        foreach (var field in fields) {
+        foreach (var field in Fields) {
             builder.Append($@"
         if (!TableUtil.IsInvalid(this._{field.Name})) return false;");
         }
@@ -69,9 +67,9 @@ public class {ClassName} implements IData {{
     string FuncRead() {
         var builder = new StringBuilder();
         builder.Append($@"
-    public static {ClassName} Read(Map<String, String> l10n, String fileName, ScorpioReader reader) {{
+    public static {ClassName} Read(HashMap<String, String> l10n, String fileName, ScorpioReader reader) {{
         {ClassName} ret = new {ClassName}();");
-        foreach (var field in fields) {
+        foreach (var field in Fields) {
             var languageType = field.GetLanguageType(Language);
             var fieldRead = "";
             if (field.Attribute != null && field.Attribute.GetValue("Language").LogicOperation()) {
@@ -88,7 +86,7 @@ public class {ClassName} implements IData {{
         {{
             ArrayList<{languageType}> list = new ArrayList<{languageType}>();
             int number = reader.ReadInt32();
-            for (int i = 0; i < number; ++i) {{ list.Add({fieldRead}); }}
+            for (int i = 0; i < number; ++i) {{ list.add({fieldRead}); }}
             ret._{field.Name} = Collections.unmodifiableList(list);
         }}");
             } else {
@@ -106,7 +104,7 @@ public class {ClassName} implements IData {{
         var builder = new StringBuilder();
         builder.Append($@"
     public void Set({ClassName} value) {{");
-        foreach (var field in fields) {
+        foreach (var field in Fields) {
             builder.Append($@"
         this._{field.Name} = value._{field.Name};");
         }
@@ -117,11 +115,8 @@ public class {ClassName} implements IData {{
 }
 public class GenerateTableJava : IGenerate {
     protected override string Generate_impl() {
-        var builder = new StringBuilder();
-        builder.Append(TemplateCSharp.Head);
-        builder.AppendLine("namespace " + PackageName + " {");
-        builder.Append(TemplateCSharp.Table);
-        builder.AppendLine("}");
-        return builder.ToString();
+        return $@"package {PackageName};
+{TemplateJava.Head}
+{TemplateJava.Table}";
     }
 }

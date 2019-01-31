@@ -3,9 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 
 public class GenerateDataCSharp : IGenerate {
-    private List<FieldClass> fields;
     protected override string Generate_impl() {
-        fields = (Package as PackageClass).Fields;
         var builder = new StringBuilder();
         builder.Append($@"{TemplateCSharp.Head}
 namespace {PackageName} {{
@@ -16,7 +14,7 @@ public class {ClassName} : IData {{
     {FuncIsInvalid()}
     {FuncRead()}
     {FuncSet()}
-    {fields.ToCSharpString()}
+    {Fields.ToCSharpString()}
 }}
 }}");
         return builder.ToString();
@@ -24,7 +22,7 @@ public class {ClassName} : IData {{
     string AllFields() {
         var builder = new StringBuilder();
         var first = true;
-        foreach (var field in fields) {
+        foreach (var field in Fields) {
             var languageType = field.GetLanguageType(Language);
             if (field.Array) { languageType = $"ReadOnlyCollection<{languageType}>"; }
             builder.Append($@"
@@ -43,7 +41,7 @@ public class {ClassName} : IData {{
         var builder = new StringBuilder();
         builder.Append(@"
     public object GetData(string key) {");
-        foreach (var field in fields) {
+        foreach (var field in Fields) {
             builder.Append($@"
         if (""{field.Name}"".Equals(key)) return _{field.Name};");
         }
@@ -57,7 +55,7 @@ public class {ClassName} : IData {{
         builder.Append(@"
     public bool IsInvalid() { return m_IsInvalid; }
     private bool CheckInvalid() {");
-        foreach (var field in fields) {
+        foreach (var field in Fields) {
             builder.Append($@"
         if (!TableUtil.IsInvalid(this._{field.Name})) return false;");
         }
@@ -71,7 +69,7 @@ public class {ClassName} : IData {{
         builder.Append($@"
     public static {ClassName} Read(Dictionary<string, string> l10n, string fileName, ScorpioReader reader) {{
         var ret = new {ClassName}();");
-        foreach (var field in fields) {
+        foreach (var field in Fields) {
             var languageType = field.GetLanguageType(Language);
             var fieldRead = "";
             if (field.Attribute != null && field.Attribute.GetValue("Language").LogicOperation()) {
@@ -106,7 +104,7 @@ public class {ClassName} : IData {{
         var builder = new StringBuilder();
         builder.Append($@"
     public void Set({ClassName} value) {{");
-        foreach (var field in fields) {
+        foreach (var field in Fields) {
             builder.Append($@"
         this._{field.Name} = value._{field.Name};");
         }
@@ -117,11 +115,10 @@ public class {ClassName} : IData {{
 }
 public class GenerateTableCSharp : IGenerate {
     protected override string Generate_impl() {
-        var builder = new StringBuilder();
-        builder.Append(TemplateCSharp.Head);
-        builder.AppendLine("namespace " + PackageName + " {");
-        builder.Append(TemplateCSharp.Table);
-        builder.AppendLine("}");
-        return builder.ToString();
+        return $@"
+{TemplateCSharp.Head}
+namespace {PackageName} {{
+{TemplateCSharp.Table}
+}}";
     }
 }

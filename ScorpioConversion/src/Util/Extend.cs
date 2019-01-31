@@ -78,18 +78,12 @@ public static class Extend {
         var count = value.Count;
         for (int i = 0; i < count; ++i) {
             var field = value[i];
-            string str = "";
-            if (field.Array) {
-                str += string.Format(@" + 
-            ""{0} : "" + {1}", field.Name, "ScorpioUtil.ToString(_" + field.Name + ")");
-            } else {
-                str += string.Format(@" + 
-            ""{0} : "" + _{0}", field.Name);
-            }
+            var toString = field.Array ? $"ScorpioUtil.ToString(_{field.Name})" : $"_{field.Name}";
+            builder.Append($@" + 
+            ""{field.Name}"" +  {toString}");
             if (i != count - 1) {
-                str += @" + "", """;
+                builder.Append(" + \",\"");
             }
-            builder.Append(str);
         }
         builder.Append(@" + 
             "" }"";
@@ -100,23 +94,17 @@ public static class Extend {
         var builder = new StringBuilder();
         builder.Append(@"
     @Override
-    public String ToString() {
+    public String toString() {
         return ""{ """);
         var count = value.Count;
         for (int i = 0; i < count; ++i) {
             var field = value[i];
-            string str = "";
-            if (field.Array) {
-                str += string.Format(@" + 
-            ""{0} : "" + {1}", field.Name, "ScorpioUtil.ToString(_" + field.Name + ")");
-            } else {
-                str += string.Format(@" + 
-            ""{0} : "" + _{0}", field.Name);
-            }
+            var toString = field.Array ? $"ScorpioUtil.ToString(_{field.Name})" : $"_{field.Name}";
+            builder.Append($@" + 
+            ""{field.Name}"" +  {toString}");
             if (i != count - 1) {
-                str += @" + "", """;
+                builder.Append(" + \",\"");
             }
-            builder.Append(str);
         }
         builder.Append(@" + 
             "" }"";

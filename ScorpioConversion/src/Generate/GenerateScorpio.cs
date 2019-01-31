@@ -2,5 +2,13 @@
 using System.Collections.Generic;
 using System.Text;
 
-public class GenerateScorpio {
+public class GenerateDataScorpio : IGenerate {
+    protected override string Generate_impl() {
+        return "";
+    }
+}
+public class GenerateTableScorpio : IGenerate {
+    protected override string Generate_impl() {
+        return "";
+    }
 }

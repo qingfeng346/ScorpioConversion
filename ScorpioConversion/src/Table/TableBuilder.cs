@@ -264,6 +264,7 @@ public class TableBuilder {
     }
     void CreateLanguageFile() {
         foreach (var pair in mLanguageDirectory) {
+            var extension = pair.Key.GetInfo().extension;
             {
                 var generate = Activator.CreateInstance(Type.GetType("GenerateData" + pair.Key)) as IGenerate;
                 generate.PackageName = mPackageName;
@@ -271,7 +272,11 @@ public class TableBuilder {
                 generate.Language = pair.Key;
                 generate.Package = new PackageClass() { Fields = mFields };
                 generate.Parameter = true;
-                FileUtil.CreateFile($"{DataClassName}.{pair.Key.GetInfo().extension}", generate.Generate(), pair.Value.Split(","));
+                var fileName = $"{DataClassName}.{extension}";
+                if (pair.Key == Language.Java) {
+                    fileName = string.Join("/", mPackageName.Split(".")) + "/" + fileName;
+                }
+                FileUtil.CreateFile(fileName, generate.Generate(), pair.Value.Split(","));
             }
             {
                 var generate = Activator.CreateInstance(Type.GetType("GenerateTable" + pair.Key)) as IGenerate;
@@ -284,7 +289,11 @@ public class TableBuilder {
                 str = str.Replace("__TableName", TableClassName);
                 str = str.Replace("__DataName", DataClassName);
                 str = str.Replace("__MD5", GetClassMD5Code());
-                FileUtil.CreateFile($"{TableClassName}.{pair.Key.GetInfo().extension}", str, pair.Value.Split(","));
+                var fileName = $"{TableClassName}.{extension}";
+                if (pair.Key == Language.Java) {
+                    fileName = string.Join("/", mPackageName.Split(".")) + "/" + fileName;
+                }
+                FileUtil.CreateFile(fileName, str, pair.Value.Split(","));
             }
         }
     }

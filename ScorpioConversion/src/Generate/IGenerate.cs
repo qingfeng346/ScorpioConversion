@@ -8,8 +8,9 @@ public abstract class IGenerate {
     public IPackage Package { get; set; }
     public object Parameter { get; set; }
     public Language Language { get; set; }
-    public string Generate() {
-        return Generate_impl();
-    }
+
+    public List<FieldClass> Fields { get { return (Package as PackageClass).Fields; } }
+
+    public string Generate() { return Generate_impl(); }
     protected abstract string Generate_impl();
 }
