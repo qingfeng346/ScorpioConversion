@@ -43,10 +43,11 @@ public class TableWriter :IDisposable {
     }
     public void WriteString(string value) {
         if (value.IsEmptyString()) {
-            writer.Write((byte)0);
+            writer.Write((int)0);
         } else {
-            writer.Write(Encoding.UTF8.GetBytes(value));
-            writer.Write((byte)0);
+            var bytes = Encoding.UTF8.GetBytes(value);
+            writer.Write(bytes.Length);
+            writer.Write(bytes);
         }
     }
     public void WriteDateTime(string value) {

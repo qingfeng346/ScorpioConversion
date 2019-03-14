@@ -2,16 +2,23 @@
 using System.Collections.Generic;
 using System.Text;
 public class TemplateGo {
-    public const string Head = @"import (
+    public const string HeadList = @"import (
     ""container/list""
     ""ScorpioProto""
 )";
+    public const string Head = @"import (
+    ""ScorpioProto""
+)";
     public const string Table = @"
+
+// __TableName 类名
 type __TableName struct {
     count int
     dataArray map[__KeyType]*__DataName
 }
-func (table __TableName) Initialize(fileName string, reader *ScorpioProto.ScorpioReader) {
+
+// Initialize 初始化
+func (table *__TableName) Initialize(fileName string, reader *ScorpioProto.ScorpioReader) {
     if table.dataArray == nil {
 		table.dataArray = map[__KeyType]*__DataName{}
 	}
@@ -26,31 +33,40 @@ func (table __TableName) Initialize(fileName string, reader *ScorpioProto.Scorpi
     }
     table.count = len(table.dataArray)
 }
-func (table __TableName) Contains(ID __KeyType) bool {
+
+// Contains 是否包含数据
+func (table *__TableName) Contains(ID __KeyType) bool {
     if _, ok := table.dataArray[ID]; ok {
         return true
-    } else {
-        return false    
     }
+    return false
 }
-func (table __TableName) GetValue(ID __KeyType) *__DataName {
+
+// GetValue 获取数据
+func (table *__TableName) GetValue(ID __KeyType) *__DataName {
     if table.Contains(ID) {
         return table.dataArray[ID];
     }
     //TableUtilWarning(""__DataName key is not exist "" + ID);
     return nil;
 }
-func (table __TableName) Datas() map[__KeyType]*__DataName {
+
+// Datas 所有数据
+func (table *__TableName) Datas() map[__KeyType]*__DataName {
     return table.dataArray
 }
-func (table __TableName) Count() int {
+
+// Count 数量
+func (table *__TableName) Count() int {
     return table.count
 }";
 }
 public class GenerateDataGo : IGenerate {
     protected override string Generate_impl() {
         return $@"package {PackageName}
-{TemplateGo.Head}
+{GetHead()}
+
+// {ClassName} 类名
 type {ClassName} struct {{
     {AllFields()}
 }}
@@ -58,12 +74,22 @@ type {ClassName} struct {{
 {FuncGetData()}
 {FuncSet()}
 {FuncRead()}
+
+// {ClassName}Read 读取数据
 func {ClassName}Read(fileName string, reader *ScorpioProto.ScorpioReader) *{ClassName} {{
-    ret := &{ClassName}{{}}
+    ret := new({ClassName})
     ret.Read(fileName, reader)
     return ret
 }}
 ";
+    }
+    string GetHead() {
+        foreach (var field in Fields) {
+            if (field.Array) {
+                return TemplateGo.HeadList;
+            }
+        }
+        return TemplateGo.Head;
     }
     string AllFields() {
         var builder = new StringBuilder();
@@ -81,23 +107,27 @@ func {ClassName}Read(fileName string, reader *ScorpioProto.ScorpioReader) *{Clas
             var field = Fields[0];
             var languageType = field.GetLanguageType(Language);
             builder.Append($@"
-/* {field.Comment}  默认值({field.Default}) */
-func (data {ClassName}) ID() {languageType} {{ return data._{field.Name}; }}");
+
+// ID {field.Comment}  默认值({field.Default})
+func (data *{ClassName}) ID() {languageType} {{ return data._{field.Name}; }}");
         }
 
         foreach (var field in Fields) {
             var languageType = field.GetLanguageType(Language);
             if (field.Array) { languageType = $"*list.List"; }
             builder.Append($@"
-/* {field.Comment}  默认值({field.Default}) */
-func (data {ClassName}) Get{field.Name}() {languageType} {{ return data._{field.Name}; }}");
+
+// Get{field.Name} {field.Comment}  默认值({field.Default})
+func (data *{ClassName}) Get{field.Name}() {languageType} {{ return data._{field.Name}; }}");
         }
         return builder.ToString();
     }
     string FuncGetData() {
         var builder = new StringBuilder();
         builder.Append($@"
-func (data {ClassName}) GetData(key string) interface{{}} {{");
+
+// GetData 获取数据
+func (data *{ClassName}) GetData(key string) interface{{}} {{");
         foreach (var field in Fields) {
             builder.Append($@"
     if ""{field.Name}"" == key {{
@@ -112,7 +142,9 @@ func (data {ClassName}) GetData(key string) interface{{}} {{");
     string FuncSet() {
         var builder = new StringBuilder();
         builder.Append($@"
-func (data {ClassName}) Set(value *{ClassName}) {{");
+
+// Set 设置数据
+func (data *{ClassName}) Set(value *{ClassName}) {{");
         foreach (var field in Fields) {
             builder.Append($@"
     data._{field.Name} = value._{field.Name};");
@@ -124,7 +156,9 @@ func (data {ClassName}) Set(value *{ClassName}) {{");
     string FuncRead() {
         var builder = new StringBuilder();
         builder.Append($@"
-func (data {ClassName}) Read(fileName string, reader *ScorpioProto.ScorpioReader) {{");
+
+// Read 读取数据
+func (data *{ClassName}) Read(fileName string, reader *ScorpioProto.ScorpioReader) {{");
         foreach (var field in Fields) {
             var languageType = field.GetLanguageType(Language);
             var fieldRead = "";
