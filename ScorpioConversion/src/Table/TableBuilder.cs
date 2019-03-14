@@ -1,4 +1,5 @@
-﻿using System;
+﻿
+using System;
 using System.Collections.Generic;
 using System.Text;
 using Scorpio;
@@ -94,7 +95,8 @@ public class TableBuilder {
             } else if (key == KEYWORD_ATTRIBUTE) {
                 Script script = new Script();
                 script.LoadLibrary();
-                field.Attribute = (script.LoadString($"return {{{value}}}") as ScriptTable) ?? script.CreateTable();
+                script.LoadString(value);
+                field.Attribute = script.GetGlobalTable();
             } else {
                 throw new Exception($"不能识别的Key : {key}");
             }
@@ -123,8 +125,13 @@ public class TableBuilder {
             return;
         }
         for (var i = 0; i < mFields.Count; ++i) {
-            if (mFields[i].Valid) {
-                data.Values.Add(row.GetCellString(i + 1));
+            var field = mFields[i];
+            if (field.Valid) {
+                //var cell = row.GetCell(i + 1, MissingCellPolicy.CREATE_NULL_AS_BLANK);
+                //var a = cell.DateCellValue.ToOADate();
+                //var value = field.IsDateTime ? cell.DateCellValue.ToString() : cell.GetCellString();
+                var value = row.GetCellString(i + 1);
+                data.Values.Add(new RowValue() { value = value.IsEmptyString() ? field.Default : value });
             }
         }
         mDatas.Add(data);
@@ -194,8 +201,7 @@ public class TableBuilder {
                 keys.Add(data.Key);
                 for (var i = 0; i < mFields.Count; ++i) {
                     var field = mFields[i];
-                    var value = data.Values[i];
-                    value = value.IsEmptyString() ? field.Default : value;
+                    var value = data.Values[i].value;
                     if (!field.Array && (field.IsBasic || field.IsEnum)) {
                         WriteField(writer, value, field);
                     } else {

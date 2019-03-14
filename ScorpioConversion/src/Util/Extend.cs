@@ -1,11 +1,14 @@
 ﻿using System;
 using System.Text;
+using System.Data;
 using System.Collections.Generic;
 using NPOI.SS.UserModel;
 using NPOI.HSSF.UserModel;
 using Scorpio;
+using Scorpio.Commons;
 
 public static class Extend {
+    private readonly static DateTime BaseTime = new DateTime(1970, 1, 1, 0, 0, 0, 0);
     private const string EmptyString = "####";
     private const string ArrayString = "array";
     public const bool INVALID_BOOL = false;
@@ -81,14 +84,21 @@ public static class Extend {
     }
     public static string GetCellString(this ICell cell, string def) {
         if (cell == null) return def;
-        cell.SetCellType(CellType.String);
-        var value = cell.StringCellValue.Trim();
-        return value.IsEmptyString() ? def : value;
+        if (cell.CellType == CellType.Numeric) {
+            return cell.NumericCellValue.ToString();
+        } else {
+            cell.SetCellType(CellType.String);
+            var value = cell.StringCellValue.Trim();
+            return value.IsEmptyString() ? def : value;
+        }
     }
     public static void SetCellString(this ICell cell, string value) {
         if (cell == null) return;
         cell.SetCellType(CellType.String);
         cell.SetCellValue(value != null ? value.Trim() : value);
+    }
+    public static long GetTimeSpan(this DateTime time) {
+        return Convert.ToInt64((time - BaseTime).TotalMilliseconds);
     }
     public static LanguageInfo GetInfo(this Language language) {
         return Attribute.GetCustomAttribute(language.GetType().GetMember(language.ToString())[0], typeof(LanguageInfo)) as LanguageInfo;

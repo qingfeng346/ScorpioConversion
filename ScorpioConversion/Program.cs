@@ -36,18 +36,27 @@ namespace ScorpioConversion
                 var files = command.GetValue("-files");         //需要转换的文件 多文件[,]隔开
                 var data = command.GetValue("-data");           //data文件输出目录 多目录[,]隔开
                 var name = command.GetValue("-name");           //名字使用文件名或者sheet名字
-                var cs = command.GetValue("-cs");               //csharp文件输出目录 多目录[,]隔开
-                var java = command.GetValue("-java");           //java文件输出目录 多目录[,]隔开
-                var sco = command.GetValue("-sco");             //sco文件输出目录 多目录[,]隔开
-                var node = command.GetValue("-node");           //nodejs文件输出目录 多目录[,]隔开
+                var config = command.GetValue("-config");       //配置文件路径 多路径[,]隔开
                 var spawn = command.GetValue("-spawn");         //派生文件列表 多个Key[,]隔开
                 if (string.IsNullOrEmpty(files))
                     throw new Exception("找不到 files 参数");
                 var languageDirectory = new Dictionary<Language, string>();
-                if (!cs.IsEmptyString()) languageDirectory.Add(Language.CSharp, cs);
-                if (!java.IsEmptyString()) languageDirectory.Add(Language.Java, java);
-                if (!sco.IsEmptyString()) languageDirectory.Add(Language.Scorpio, sco);
-                if (!node.IsEmptyString()) languageDirectory.Add(Language.Nodejs, node);
+                foreach (Language language in Enum.GetValues(typeof(Language))) {
+                    //各语言文件输出目录 多目录[,]隔开
+                    var dir = command.GetValue("-l" + language.GetInfo().extension.ToLower());
+                    if (string.IsNullOrWhiteSpace(dir)) {
+                        dir = command.GetValue("-" + language.ToString().ToLower());
+                    }
+                    if (!string.IsNullOrWhiteSpace(dir)) {
+                        languageDirectory.Add(language, dir);
+                    }
+                }
+                var parser = new PackageParser();
+                if (config != null) {
+                    foreach (var dir in config.Split(",")) {
+                        parser.Parse(dir);
+                    }
+                }
                 foreach (var file in files.Split(",")) {
                     var fullFile = Path.GetFullPath(Path.Combine(Environment.CurrentDirectory, file));
                     var fileName = Path.GetFileNameWithoutExtension(file).Trim();
@@ -68,7 +77,7 @@ namespace ScorpioConversion
                             for (var i = 0; i < workbook.NumberOfSheets; ++i) {
                                 var sheet = workbook.GetSheetAt(i);
                                 if (sheet.SheetName.IsInvalid()) { continue; }
-                                new TableBuilder().Parse(sheet, package, name.IsEmptyString() || name.ToLower() == "file" ? fileName : sheet.SheetName.Trim(), spawn, data, languageDirectory, null);
+                                new TableBuilder().Parse(sheet, package, name.IsEmptyString() || name.ToLower() == "file" ? fileName : sheet.SheetName.Trim(), spawn, data, languageDirectory, parser);
                             }
                         }
                     } catch (Exception e) {

@@ -21,6 +21,10 @@ public enum Language {
     Java,
     [LanguageInfo("js")]
     Nodejs,
+    [LanguageInfo("ts")]
+    Typescript,
+    [LanguageInfo("go")]
+    Go,
 }
 //基础类型列表
 public enum BasicEnum {
@@ -32,6 +36,7 @@ public enum BasicEnum {
     FLOAT,          //float类型
     DOUBLE,         //double类型
     STRING,         //string类型
+    DATETIME,       //Datetime日期时间
     BYTES,          //byte[]类型
 }
 //基本类型
@@ -65,15 +70,36 @@ public struct BasicType {
     }
 }
 class BasicUtil {
+    private readonly static DateTime BaseTime = new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc);
+
     private static List<BasicType> BasicTypes = new List<BasicType>() {
-        new BasicType("Bool", BasicEnum.BOOL, new Dictionary<Language, string>() { { Language.CSharp, "bool"}, { Language.Java, "boolean" } }),
-        new BasicType("Int8", BasicEnum.INT8, new Dictionary<Language, string>() { { Language.CSharp, "sbyte" }, { Language.Java, "byte" } }),
-        new BasicType("Int16", BasicEnum.INT16, new Dictionary<Language, string>() { { Language.CSharp, "short" }, { Language.Java, "short" } }),
-        new BasicType("Int32", BasicEnum.INT32, new Dictionary<Language, string>() { { Language.CSharp, "int" }, { Language.Java, "int" } }),
-        new BasicType("Int64", BasicEnum.INT64, new Dictionary<Language, string>() { { Language.CSharp, "long" }, { Language.Java, "long" } }),
-        new BasicType("Float", BasicEnum.FLOAT, new Dictionary<Language, string>() { { Language.CSharp, "float" }, { Language.Java, "float" } }),
-        new BasicType("Double", BasicEnum.DOUBLE, new Dictionary<Language, string>() { { Language.CSharp, "double" }, { Language.Java, "double" } }),
-        new BasicType("String", BasicEnum.STRING, new Dictionary<Language, string>() { { Language.CSharp, "string" }}),
+        new BasicType("Bool", BasicEnum.BOOL, new Dictionary<Language, string>() {
+            { Language.CSharp, "bool"}, { Language.Java, "boolean" }, {Language.Typescript, "boolean"}, {Language.Go, "bool"}
+        }),
+        new BasicType("Int8", BasicEnum.INT8, new Dictionary<Language, string>() {
+            { Language.CSharp, "sbyte" }, { Language.Java, "byte" }, {Language.Typescript, "number"}, {Language.Go, "int8"}
+        }),
+        new BasicType("Int16", BasicEnum.INT16, new Dictionary<Language, string>() {
+            { Language.CSharp, "short" }, { Language.Java, "short" }, {Language.Typescript, "number"}, {Language.Go, "int16"}
+        }),
+        new BasicType("Int32", BasicEnum.INT32, new Dictionary<Language, string>() {
+            { Language.CSharp, "int" }, { Language.Java, "int" }, {Language.Typescript, "number"}, {Language.Go, "int32"}
+        }),
+        new BasicType("Int64", BasicEnum.INT64, new Dictionary<Language, string>() {
+            { Language.CSharp, "long" }, { Language.Java, "long" }, {Language.Typescript, "number"}, {Language.Go, "int64"}
+        }),
+        new BasicType("Float", BasicEnum.FLOAT, new Dictionary<Language, string>() {
+            { Language.CSharp, "float" }, { Language.Java, "float" }, {Language.Typescript, "number"}, {Language.Go, "float32"}
+        }),
+        new BasicType("Double", BasicEnum.DOUBLE, new Dictionary<Language, string>() {
+            { Language.CSharp, "double" }, { Language.Java, "double" }, {Language.Typescript, "number"}, {Language.Go, "float64"}
+        }),
+        new BasicType("String", BasicEnum.STRING, new Dictionary<Language, string>() {
+            { Language.CSharp, "string" }, {Language.Typescript, "string"}, {Language.Go, "string"}
+        }),
+        new BasicType("DateTime", BasicEnum.DATETIME, new Dictionary<Language, string>() {
+            
+        }),
         new BasicType("Bytes", BasicEnum.BYTES, new Dictionary<Language, string>() { }),
     };
     static BasicUtil() {
@@ -95,5 +121,11 @@ class BasicUtil {
     }
     public static BasicType GetType(BasicEnum index) {
         return BasicTypes.Find(_ => _.Index == index);
+    }
+    public static long GetTimeSpan(DateTime time) {
+        if (time.Kind == DateTimeKind.Local) {
+            time = TimeZoneInfo.ConvertTime(time, TimeZoneInfo.Utc);
+        }
+        return Convert.ToInt64((time - BaseTime).TotalMilliseconds);
     }
 }

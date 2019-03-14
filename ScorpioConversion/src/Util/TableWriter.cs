@@ -49,6 +49,9 @@ public class TableWriter :IDisposable {
             writer.Write((byte)0);
         }
     }
+    public void WriteDateTime(string value) {
+        writer.Write(BasicUtil.GetTimeSpan(DateTime.FromOADate(double.Parse(value))));
+    }
     public byte[] ToArray() {
         stream.Position = 0;
         return stream.ToArray();

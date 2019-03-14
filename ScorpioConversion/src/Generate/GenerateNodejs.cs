@@ -4,8 +4,7 @@ using System.Text;
 
 public class GenerateDataNodejs : IGenerate {
     protected override string Generate_impl() {
-        var builder = new StringBuilder();
-        builder.Append($@"
+        return $@"
 const ScorpioReader = require(`./ScorpioReader`)
 class {ClassName} {{
     {AllFields()}
@@ -14,8 +13,7 @@ class {ClassName} {{
     {FuncRead()}
     {FuncSet()}
     {FuncToString()}
-}}");
-        return builder.ToString();
+}}";
     }
     string AllFields() {
         var builder = new StringBuilder();

@@ -11,13 +11,14 @@ public class FieldClass {
     public string Name;                 //字段名字
     public string Comment;              //字段注释
     public ScriptTable Attribute;       //字段属性,字段配置
-    public string Default;              //字段默认值
+    public string Default = "";         //字段默认值
     public string Type;                 //字段类型
     public bool Array = false;          //是否是数组
     public bool Valid = true;           //字段是否有效
     //是否是基本数据
     public bool IsBasic { get { return BasicUtil.HasType(Type); } }
     public BasicType BasicType { get { return BasicUtil.GetType(Type); } }
+    public bool IsDateTime { get { return IsBasic && BasicType.Index == BasicEnum.DATETIME; } }
 
     public string AttributeString { get { return Attribute != null ? Attribute.ToJson() : "{}"; } }
     public bool IsEnum { get { return mParser != null && mParser.Enums.ContainsKey(Type); } }
@@ -36,6 +37,7 @@ public class FieldClass {
     public string GetLanguageType(Language language) {
         return IsBasic ? BasicType.GetLanguageType(language) : Type;
     }
+
 }
 public class PackageClass : IPackage {
     public List<FieldClass> Fields = new List<FieldClass>();
