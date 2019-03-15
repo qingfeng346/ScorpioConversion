@@ -3,6 +3,10 @@
     "ScorpioConversion": {
       "commandName": "Project",
       "commandLineArgs": "-files C:\\Users\\qingf\\Desktop\\test\\Test.xlsx -package tabletest -name file -data C:\\Users\\qingf\\Desktop\\test\\output -config C:\\Users\\qingf\\Desktop\\test\\config -lcs C:\\Users\\qingf\\Desktop\\test\\output\\dotnet -ljava  C:\\Users\\qingf\\Desktop\\test\\output\\java\\src -lsco C:\\Users\\qingf\\Desktop\\test\\output\\dotnet\\sco -lts C:\\Users\\qingf\\Desktop\\test\\output\\ts\\src\\sco -lgo C:\\Users\\qingf\\Desktop\\test\\output\\go\\src\\tabletest"
+    },
+    "Install": {
+      "commandName": "Project",
+      "commandLineArgs": "-type install                                          -lcs C:\\Users\\qingf\\Desktop\\test\\output\\dotnet                    -lgo C:\\Users\\qingf\\Desktop\\test\\output\\go\\src         "
     }
   }
 }

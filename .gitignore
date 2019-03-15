@@ -18,3 +18,5 @@
 /bin/ScorpioConversion/*.config
 /bin/ScorpioConversion/*.ini
 /bin/ScorpioConversion/log.log
+/bin
+/ScorpioConversion/*.user
