@@ -2,12 +2,8 @@
 using System.Collections.Generic;
 using System.Text;
 public class TemplateGo {
-    public const string HeadList = @"import (
-    ""container/list""
-    ""ScorpioProto""
-)";
     public const string Head = @"import (
-    ""ScorpioProto""
+    ""scorpioproto""
 )";
     public const string Table = @"
 
@@ -18,11 +14,11 @@ type __TableName struct {
 }
 
 // Initialize 初始化
-func (table *__TableName) Initialize(fileName string, reader *ScorpioProto.ScorpioReader) {
+func (table *__TableName) Initialize(fileName string, reader scorpioproto.IScorpioReader) {
     if table.dataArray == nil {
 		table.dataArray = map[__KeyType]*__DataName{}
 	}
-    iRow := ScorpioProto.TableUtilReadHead(reader, fileName, ""__MD5"");
+    iRow := scorpioproto.TableUtilReadHead(reader, fileName, ""__MD5"");
     for i := 0; i < iRow; i++ {
         pData := __DataNameRead(fileName, reader)
         if table.Contains(pData.ID()) {
@@ -76,7 +72,7 @@ type {ClassName} struct {{
 {FuncRead()}
 
 // {ClassName}Read 读取数据
-func {ClassName}Read(fileName string, reader *ScorpioProto.ScorpioReader) *{ClassName} {{
+func {ClassName}Read(fileName string, reader scorpioproto.IScorpioReader) *{ClassName} {{
     ret := new({ClassName})
     ret.Read(fileName, reader)
     return ret
@@ -84,12 +80,23 @@ func {ClassName}Read(fileName string, reader *ScorpioProto.ScorpioReader) *{Clas
 ";
     }
     string GetHead() {
+        string head = @"import (
+    ""scorpioproto""";
         foreach (var field in Fields) {
             if (field.Array) {
-                return TemplateGo.HeadList;
+                head += @"
+    ""container/list""";
             }
         }
-        return TemplateGo.Head;
+        foreach (var field in Fields) {
+            if (field.IsDateTime) {
+                head += @"
+    ""time""";
+            }
+        }
+        head +=@"
+)";
+        return head;
     }
     string AllFields() {
         var builder = new StringBuilder();
@@ -158,7 +165,7 @@ func (data *{ClassName}) Set(value *{ClassName}) {{");
         builder.Append($@"
 
 // Read 读取数据
-func (data *{ClassName}) Read(fileName string, reader *ScorpioProto.ScorpioReader) {{");
+func (data *{ClassName}) Read(fileName string, reader scorpioproto.IScorpioReader) {{");
         foreach (var field in Fields) {
             var languageType = field.GetLanguageType(Language);
             var fieldRead = "";

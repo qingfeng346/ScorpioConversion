@@ -77,28 +77,28 @@ class BasicUtil {
             { Language.CSharp, "bool"}, { Language.Java, "boolean" }, {Language.Typescript, "boolean"}, {Language.Go, "bool"}
         }),
         new BasicType("Int8", BasicEnum.INT8, new Dictionary<Language, string>() {
-            { Language.CSharp, "sbyte" }, { Language.Java, "byte" }, {Language.Typescript, "number"}, {Language.Go, "int8"}
+            { Language.CSharp, "sbyte" }, { Language.Java, "Byte" }, {Language.Typescript, "number"}, {Language.Go, "int8"}
         }),
         new BasicType("Int16", BasicEnum.INT16, new Dictionary<Language, string>() {
-            { Language.CSharp, "short" }, { Language.Java, "short" }, {Language.Typescript, "number"}, {Language.Go, "int16"}
+            { Language.CSharp, "short" }, { Language.Java, "Short" }, {Language.Typescript, "number"}, {Language.Go, "int16"}
         }),
         new BasicType("Int32", BasicEnum.INT32, new Dictionary<Language, string>() {
-            { Language.CSharp, "int" }, { Language.Java, "int" }, {Language.Typescript, "number"}, {Language.Go, "int32"}
+            { Language.CSharp, "int" }, { Language.Java, "Integer" }, {Language.Typescript, "number"}, {Language.Go, "int32"}
         }),
         new BasicType("Int64", BasicEnum.INT64, new Dictionary<Language, string>() {
-            { Language.CSharp, "long" }, { Language.Java, "long" }, {Language.Typescript, "number"}, {Language.Go, "int64"}
+            { Language.CSharp, "long" }, { Language.Java, "Long" }, {Language.Typescript, "number"}, {Language.Go, "int64"}
         }),
         new BasicType("Float", BasicEnum.FLOAT, new Dictionary<Language, string>() {
-            { Language.CSharp, "float" }, { Language.Java, "float" }, {Language.Typescript, "number"}, {Language.Go, "float32"}
+            { Language.CSharp, "float" }, { Language.Java, "Float" }, {Language.Typescript, "number"}, {Language.Go, "float32"}
         }),
         new BasicType("Double", BasicEnum.DOUBLE, new Dictionary<Language, string>() {
-            { Language.CSharp, "double" }, { Language.Java, "double" }, {Language.Typescript, "number"}, {Language.Go, "float64"}
+            { Language.CSharp, "double" }, { Language.Java, "Double" }, {Language.Typescript, "number"}, {Language.Go, "float64"}
         }),
         new BasicType("String", BasicEnum.STRING, new Dictionary<Language, string>() {
-            { Language.CSharp, "string" }, {Language.Typescript, "string"}, {Language.Go, "string"}
+            { Language.CSharp, "string" }, { Language.Java, "String" }, {Language.Typescript, "string"}, {Language.Go, "string"}
         }),
         new BasicType("DateTime", BasicEnum.DATETIME, new Dictionary<Language, string>() {
-            
+            { Language.Go,"time.Time" }
         }),
         new BasicType("Bytes", BasicEnum.BYTES, new Dictionary<Language, string>() { }),
     };

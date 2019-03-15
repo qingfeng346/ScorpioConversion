@@ -8,27 +8,25 @@ using System.IO;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using Scorpio.Commons;
-using Scorpio.Table;
+using ScorpioProto.Commons;
+using ScorpioProto.Table;
 ";
-    public const string Table = @"public class __TableName : TableBase<__KeyType, __DataName> {
+    public const string Table = @"public class __TableName : ITable {
 	const string FILE_MD5_CODE = ""__MD5"";
     private int m_count = 0;
     private Dictionary<__KeyType, __DataName> m_dataArray = new Dictionary<__KeyType, __DataName>();
-    public __TableName Initialize(Dictionary<string, string> l10n, string fileName, byte[] buffer) {
-        using (var reader = new ScorpioReader(buffer)) {
-            var iRow = TableUtil.ReadHead(reader, fileName, FILE_MD5_CODE);
-            for (var i = 0; i < iRow; ++i) {
-                var pData = __DataName.Read(l10n, fileName, reader);
-                if (m_dataArray.ContainsKey(pData.ID())) {
-                    m_dataArray[pData.ID()].Set(pData);
-                } else {
-                    m_dataArray.Add(pData.ID(), pData);
-                }
+    public __TableName Initialize(string fileName, IScorpioReader reader) {
+        var iRow = TableUtil.ReadHead(reader, fileName, FILE_MD5_CODE);
+        for (var i = 0; i < iRow; ++i) {
+            var pData = __DataName.Read(fileName, reader);
+            if (m_dataArray.ContainsKey(pData.ID())) {
+                m_dataArray[pData.ID()].Set(pData);
+            } else {
+                m_dataArray.Add(pData.ID(), pData);
             }
-            m_count = m_dataArray.Count;
-            return this;
         }
+        m_count = m_dataArray.Count;
+        return this;
     }
     public __DataName GetValue(__KeyType ID) {
         if (m_dataArray.ContainsKey(ID)) return m_dataArray[ID];
@@ -121,7 +119,7 @@ public class {ClassName} : IData {{
     string FuncRead() {
         var builder = new StringBuilder();
         builder.Append($@"
-    public static {ClassName} Read(Dictionary<string, string> l10n, string fileName, ScorpioReader reader) {{
+    public static {ClassName} Read(string fileName, IScorpioReader reader) {{
         var ret = new {ClassName}();");
         foreach (var field in Fields) {
             var languageType = field.GetLanguageType(Language);

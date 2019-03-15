@@ -51,7 +51,17 @@ public class TableWriter :IDisposable {
         }
     }
     public void WriteDateTime(string value) {
-        writer.Write(BasicUtil.GetTimeSpan(DateTime.FromOADate(double.Parse(value))));
+        double span;
+        if (double.TryParse(value, out span)) {
+            writer.Write(BasicUtil.GetTimeSpan(DateTime.FromOADate(span)));
+            return;
+        }
+        DateTime datetime;
+        if (DateTime.TryParse(value, out datetime)) {
+            writer.Write(BasicUtil.GetTimeSpan(datetime));   
+            return;
+        }
+        throw new Exception("不能识别日志字符串 : " + value);
     }
     public byte[] ToArray() {
         stream.Position = 0;

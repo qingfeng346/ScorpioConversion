@@ -3,11 +3,13 @@ using System.Collections.Generic;
 using System.Text;
 
 public class TemplateScorpio {
-    public const string Table = @"__TableName = {
+    public const string Table = @"
+ScorpioSerializer = import_type(""ScorpioProto.Commons.ScorpioSerializer"")
+__TableName = {
     m_count = 0,
     m_dataArray = {},
-    function Initialize(l10n, fileName) {
-        this.m_dataArray = ScorpioSerializer.ReadDatas(_SCRIPT, l10n, fileName, ""__DataName"", ""__KeyName"", ""__MD5"")
+    function Initialize(fileName, reader) {
+        this.m_dataArray = ScorpioSerializer.ReadDatas(_SCRIPT, fileName, reader, this.m_dataArray, ""__DataName"", ""__KeyName"", ""__MD5"")
         this.m_count = table.count(this.m_dataArray)
         return this
     }

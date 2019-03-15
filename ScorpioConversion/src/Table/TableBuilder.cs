@@ -154,6 +154,9 @@ public class TableBuilder {
             }
         }
         value = "[" + value + "]";
+        value = value.Replace("[", "[`");
+        value = value.Replace(";", "`;`");
+        value = value.Replace("]", "`]");
         var script = new Script();
         script.LoadLibrary();
         script.LoadString(builder.ToString());
