@@ -1,26 +1,73 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-
+public class TemplateNodejs {
+    public const string Table = @"class __TableName {
+    constructor() {
+        this.m_count = 0
+        this.m_dataArray = {}
+    }
+    Initialize(fileName, reader) {
+        let iRow = TableUtil.ReadHead(reader, fileName, ""__MD5"");
+        for (let i = 0; i < iRow; ++i) {
+            let pData = __DataName.Read(fileName, reader);
+            if (this.Contains(pData.ID())) {
+                this.m_dataArray[pData.ID()].Set(pData);
+            } else {
+                this.m_dataArray[pData.ID()] = pData;
+            }
+        }
+        this.m_count = Object.getOwnPropertyNames(this.m_dataArray).length;
+        return this;
+    }
+    GetValue(ID) {
+        if (this.Contains(ID)) return this.m_dataArray[ID];
+        //TableUtil.Warning(""__DataName key is not exist "" + ID);
+        return null;
+    }
+    Contains(ID) {
+        return this.m_dataArray[ID] != null;
+    }
+    Datas() {
+        return this.m_dataArray;
+    }
+    GetValueObject(ID) {
+        return this.GetValue(ID);
+    }
+    ContainsObject(ID) {
+        return this.Contains(ID);
+    }
+    GetDatas() {
+        return this.Datas();
+    }
+    Count() {
+        return this.m_count;
+    }
+}
+exports.__TableName = __TableName;
+";
+}
 public class GenerateDataNodejs : IGenerate {
+
     protected override string Generate_impl() {
         return $@"
-const ScorpioReader = require(`./ScorpioReader`)
 class {ClassName} {{
     {AllFields()}
     {FuncGetData()}
     {FuncIsInvalid()}
-    {FuncRead()}
     {FuncSet()}
     {FuncToString()}
-}}";
+    {FuncRead()}
+}}
+exports.{ClassName} = {ClassName};
+";
     }
     string AllFields() {
         var builder = new StringBuilder();
         var first = true;
         foreach (var field in Fields) {
             builder.Append($@"
-    /* <summary> {field.Comment}  默认值({field.Default}) </summary> */
+    /* {field.Comment}  默认值({field.Default}) */
     get{field.Name}() {{ return this._{field.Name}; }}");
             if (first && (bool)Parameter) {
                 first = false;
@@ -44,44 +91,8 @@ class {ClassName} {{
         return builder.ToString();
     }
     string FuncIsInvalid() {
-        return "";
-    }
-    string FuncRead() {
-        return "";
-    //    var builder = new StringBuilder();
-    //    builder.Append($@"
-    //public static {ClassName} Read(Dictionary<string, string> l10n, string fileName, ScorpioReader reader) {{
-    //    var ret = new {ClassName}();");
-    //    foreach (var field in Fields) {
-    //        var languageType = field.GetLanguageType(Language);
-    //        var fieldRead = "";
-    //        if (field.Attribute != null && field.Attribute.GetValue("Language").LogicOperation()) {
-    //            fieldRead = $@"TableUtil.Readl10n(l10n, fileName + ""_{field.Name}_"" + ret.ID(), reader)";
-    //        } else if (field.IsBasic){
-    //            fieldRead = $"reader.Read{field.BasicType.Name}()";
-    //        } else if (field.IsEnum) {
-    //            fieldRead = $"({languageType})reader.ReadInt32()";
-    //        } else {
-    //            fieldRead = $"{languageType}.Read(l10n, fileName, reader)";
-    //        }
-    //        if (field.Array) {
-    //            builder.Append($@"
-    //    {{
-    //        List<{languageType}> list = new List<{languageType}>();
-    //        int number = reader.ReadInt32();
-    //        for (int i = 0; i < number; ++i) {{ list.Add({fieldRead}); }}
-    //        ret._{field.Name} = list.AsReadOnly();
-    //    }}");
-    //        } else {
-    //            builder.Append($@"
-    //    ret._{field.Name} = {fieldRead};");
-    //        }
-    //    }
-    //    builder.Append(@"
-    //    ret.m_IsInvalid = ret.CheckInvalid();
-    //    return ret;
-    //}");
-    //    return builder.ToString();
+        return @"
+    IsInvalid() { return false; }";
     }
     string FuncSet() {
         var builder = new StringBuilder();
@@ -115,13 +126,46 @@ class {ClassName} {{
     }");
         return builder.ToString();
     }
+    string FuncRead() {
+        var builder = new StringBuilder();
+        builder.Append($@"
+    static Read(fileName, reader) {{
+        let ret = new {ClassName}();");
+        foreach (var field in Fields) {
+            var languageType = field.GetLanguageType(Language);
+            var fieldRead = "";
+            if (field.Attribute != null && field.Attribute.GetValue("Language").LogicOperation()) {
+                fieldRead = $@"TableUtil.Readl10n(l10n, fileName + ""_{field.Name}_"" + ret.ID(), reader)";
+            } else if (field.IsBasic) {
+                fieldRead = $"reader.Read{field.BasicType.Name}()";
+            } else if (field.IsEnum) {
+                fieldRead = $"<{languageType}>reader.ReadInt32()";
+            } else {
+                fieldRead = $"{languageType}.Read(l10n, fileName, reader)";
+            }
+            if (field.Array) {
+                builder.Append($@"
+        {{
+            let list = new Array();
+            let number = reader.ReadInt32();
+            for (let i = 0; i < number; ++i) {{ list.push({fieldRead}); }}
+            ret._{field.Name} = list;
+        }}");
+            } else {
+                builder.Append($@"
+        ret._{field.Name} = {fieldRead};");
+            }
+        }
+        builder.Append(@"
+        return ret;
+    }");
+        return builder.ToString();
+    }
 }
 public class GenerateTableNodejs : IGenerate {
     protected override string Generate_impl() {
         return $@"
-{TemplateCSharp.Head}
-namespace {PackageName} {{
-{TemplateCSharp.Table}
-}}";
+const __DataName = require(""./__DataName"").__DataName
+{TemplateNodejs.Table}";
     }
 }
