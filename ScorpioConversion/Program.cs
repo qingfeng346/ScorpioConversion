@@ -13,19 +13,18 @@ namespace ScorpioConversion
 {
     public class LogHelper : ILogger {
         public void info(string value) {
-            value += "\n";
             Console.WriteLine(value);
-            Debugger.Log(0, null, value);
+            Debugger.Log(0, null, value + "\n");
         }
         public void warn(string value) {
-            value = "[warn]" + value + "\n";
+            value = "[warn]" + value;
             Console.WriteLine(value);
-            Debugger.Log(0, null, value);
+            Debugger.Log(0, null, value + "\n");
         }
         public void error(string value) {
-            value = "[error]" + value + "\n";
+            value = "[error]" + value;
             Console.WriteLine(value);
-            Debugger.Log(0, null, value);
+            Debugger.Log(0, null, value + "\n");
         }
     }
     class Program
@@ -35,6 +34,9 @@ namespace ScorpioConversion
         {
             try {
                 Logger.SetLogger(new LogHelper());
+                Util.PirntSystemInfo();
+                Logger.info("scov version : " + ScorpioConversion.Version.version);
+                Logger.info("build date : " + ScorpioConversion.Version.date);
                 var command = CommandLine.Parse(args);
                 var type = command.GetValue("-type");           //操作类型 默认转换excel install 自动拷贝 ScorpioProto库
                 var package = command.GetValue("-package");     //默认 命名空间
@@ -59,6 +61,8 @@ namespace ScorpioConversion
                         throw new Exception("请至少选择一种语言");
                     }
                     Install(languageDirectory);
+                } else if ("register".Equals(type)) {
+                    Register();
                 } else {
                     if (string.IsNullOrEmpty(files))
                         throw new Exception("找不到 files 参数");
@@ -133,9 +137,12 @@ namespace ScorpioConversion
                     }
                 }
             } finally {
-                //FileUtil.DeleteFile($"{fileName}.zip");
-                //FileUtil.DeleteFiles(fileName, "*", true);
+                FileUtil.DeleteFile($"{fileName}.zip");
+                FileUtil.DeleteFiles(fileName, "*", true);
             }
+        }
+        static void Register() {
+            Util.RegisterApplication(Util.BaseDirectory + "/scov");
         }
     }
 }
