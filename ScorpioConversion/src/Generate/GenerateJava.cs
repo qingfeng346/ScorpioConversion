@@ -37,9 +37,11 @@ import ScorpioProto.Table.*;
         TableUtil.Warning(""__DataName key is not exist "" + ID);
         return null;
     }
+
     public boolean Contains(__KeyType ID) {
         return m_dataArray.containsKey(ID);
     }
+
     public final HashMap<__KeyType, __DataName> Datas() {
         return m_dataArray;
     }
@@ -47,9 +49,11 @@ import ScorpioProto.Table.*;
     public IData GetValueObject(Object ID) {
         return GetValue((__KeyType)ID);
     }
+
     public boolean ContainsObject(Object ID) {
         return Contains((__KeyType)ID);
     }
+
     public int Count() {
         return m_count;
     }
