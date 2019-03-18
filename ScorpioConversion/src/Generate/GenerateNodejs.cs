@@ -165,6 +165,7 @@ exports.{ClassName} = {ClassName};
 public class GenerateTableNodejs : IGenerate {
     protected override string Generate_impl() {
         return $@"
+const TableUtil = require(""../ScorpioProto/TableUtil"")
 const __DataName = require(""./__DataName"").__DataName
 {TemplateNodejs.Table}";
     }
