@@ -3,21 +3,19 @@ using System.Collections.Generic;
 using System.Text;
 
 public class TemplateTypescript {
-    public const string Head = @"import { ScorpioReader } from '../ScorpioProto/Commons/ScorpioReader'
+    public const string Head = @"import { IScorpioReader } from '../ScorpioProto/Commons/IScorpioReader'
 import { ScorpioUtil } from '../ScorpioProto/Commons/ScorpioUtil'
 import { TableUtil } from '../ScorpioProto/Table/TableUtil'
 import { IData } from '../ScorpioProto/Table/IData'
 import { ITable } from '../ScorpioProto/Table/ITable'";
 
-    public const string Table = @"export class __TableName extends ITable {
-	private FILE_MD5_CODE:string = ""__MD5"";
+    public const string Table = @"export class __TableName implements ITable {
     private m_count:number = 0;
     private m_dataArray:{[key:__KeyType]:__DataName} = {};
-    public Initialize(l10n:{[key:string]:string}, fileName:string, buffer:any):__TableName {
-        let reader = new ScorpioReader(buffer)
-        let iRow = TableUtil.ReadHead(reader, fileName, this.FILE_MD5_CODE);
+    public Initialize(fileName:string, reader:IScorpioReader):__TableName {
+        let iRow = TableUtil.ReadHead(reader, fileName, ""__MD5"");
         for (let i = 0; i < iRow; ++i) {
-            let pData = __DataName.Read(l10n, fileName, reader);
+            let pData = __DataName.Read(fileName, reader);
             if (this.Contains(pData.ID())) {
                 this.m_dataArray[pData.ID()].Set(pData);
             } else {
@@ -56,7 +54,7 @@ import { ITable } from '../ScorpioProto/Table/ITable'";
 public class GenerateDataTypescript : IGenerate {
     protected override string Generate_impl() {
         return $@"{TemplateTypescript.Head}
-export class {ClassName} extends IData {{
+export class {ClassName} implements IData {{
     private m_IsInvalid:boolean = false;
     {AllFields()}
     {FuncGetData()}
@@ -139,7 +137,7 @@ export class {ClassName} extends IData {{
     string FuncRead() {
         var builder = new StringBuilder();
         builder.Append($@"
-    public static Read(l10n:{{[key:string]:string}}, fileName:string, reader:ScorpioReader):{ClassName} {{
+    public static Read(fileName:string, reader:IScorpioReader):{ClassName} {{
         var ret = new {ClassName}();");
         foreach (var field in Fields) {
             var languageType = field.GetLanguageType(Language);
@@ -151,7 +149,7 @@ export class {ClassName} extends IData {{
             } else if (field.IsEnum) {
                 fieldRead = $"<{languageType}>reader.ReadInt32()";
             } else {
-                fieldRead = $"{languageType}.Read(l10n, fileName, reader)";
+                fieldRead = $"{languageType}.Read(fileName, reader)";
             }
             if (field.Array) {
                 builder.Append($@"

@@ -98,7 +98,7 @@ class BasicUtil {
             { Language.CSharp, "string" }, { Language.Java, "String" }, {Language.Typescript, "string"}, {Language.Go, "string"}
         }),
         new BasicType("DateTime", BasicEnum.DATETIME, new Dictionary<Language, string>() {
-            { Language.Go,"time.Time" }
+            { Language.Java, "java.util.Calendar"}, { Language.Go,"time.Time" }, {Language.Typescript, "Date"}
         }),
         new BasicType("Bytes", BasicEnum.BYTES, new Dictionary<Language, string>() { }),
     };

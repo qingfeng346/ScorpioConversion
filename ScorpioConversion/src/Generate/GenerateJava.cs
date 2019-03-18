@@ -10,19 +10,18 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
-import Scorpio.Commons.*;
-import Scorpio.Table.*;
+import ScorpioProto.Commons.*;
+import ScorpioProto.Table.*;
 @SuppressWarnings(""unused"")
 ";
     public const string Table = @"public class __TableName implements ITable<__KeyType, __DataName> {
 	final String FILE_MD5_CODE = ""__MD5"";
     private int m_count = 0;
     private HashMap<__KeyType, __DataName> m_dataArray = new HashMap<__KeyType, __DataName>();
-    public __TableName Initialize(HashMap<String, String> l10n, String fileName) {
-        ScorpioReader reader = new ScorpioReader(TableUtil.GetBuffer(fileName));
+    public __TableName Initialize(String fileName, IScorpioReader reader) {
         int iRow = TableUtil.ReadHead(reader, fileName, FILE_MD5_CODE);
         for (int i = 0; i < iRow; ++i) {
-            __DataName pData = __DataName.Read(l10n, fileName, reader);
+            __DataName pData = __DataName.Read(fileName, reader);
             if (m_dataArray.containsKey(pData.ID())) {
                 m_dataArray.get(pData.ID()).Set(pData);
             } else {
@@ -30,7 +29,6 @@ import Scorpio.Table.*;
             }
         }
         m_count = m_dataArray.size();
-        reader.Close();
         return this;
     }
     
@@ -123,7 +121,7 @@ public class {ClassName} implements IData {{
     string FuncRead() {
         var builder = new StringBuilder();
         builder.Append($@"
-    public static {ClassName} Read(HashMap<String, String> l10n, String fileName, ScorpioReader reader) {{
+    public static {ClassName} Read(String fileName, IScorpioReader reader) {{
         {ClassName} ret = new {ClassName}();");
         foreach (var field in Fields) {
             var languageType = field.GetLanguageType(Language);
@@ -135,7 +133,7 @@ public class {ClassName} implements IData {{
             } else if (field.IsEnum) {
                 fieldRead = $"({languageType})reader.ReadInt32()";
             } else {
-                fieldRead = $"{languageType}.Read(l10n, fileName, reader)";
+                fieldRead = $"{languageType}.Read(fileName, reader)";
             }
             if (field.Array) {
                 builder.Append($@"
