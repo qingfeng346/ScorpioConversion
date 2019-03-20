@@ -233,7 +233,7 @@ public enum {ClassName} {{");
         builder.Append(@"
         default: return null;
         }
-    }   
+    }
 }");
         return builder.ToString();
     }
