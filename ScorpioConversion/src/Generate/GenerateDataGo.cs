@@ -176,7 +176,8 @@ func (data *{ClassName}) Read(fileName string, reader scorpioproto.IScorpioReade
             } else if (field.IsEnum) {
                 fieldRead = $"reader.ReadInt32()";
             } else {
-                fieldRead = $"{languageType}Read(l10n, fileName, reader)";
+                //languageType.Substring(1) 去除 类型签名的 *
+                fieldRead = $"{languageType.Substring(1)}Read(fileName, reader)";
             }
             if (field.Array) {
                 builder.Append($@"

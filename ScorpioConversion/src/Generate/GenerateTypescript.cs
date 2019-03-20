@@ -54,6 +54,7 @@ import { ITable } from '../ScorpioProto/Table/ITable'";
 public class GenerateDataTypescript : IGenerate {
     protected override string Generate_impl() {
         return $@"{TemplateTypescript.Head}
+{AllImports()}
 export class {ClassName} implements IData {{
     private m_IsInvalid:boolean = false;
     {AllFields()}
@@ -63,6 +64,15 @@ export class {ClassName} implements IData {{
     {FuncToString()}
     {FuncRead()}
 }}";
+    }
+    string AllImports() {
+        var builder = new StringBuilder();
+        foreach (var field in Fields) {
+            if (!field.IsBasic) {
+                builder.Append($"import {{ {field.Type} }} from './{field.Type}'");
+            }
+        }
+        return builder.ToString();
     }
     string AllFields() {
         var builder = new StringBuilder();

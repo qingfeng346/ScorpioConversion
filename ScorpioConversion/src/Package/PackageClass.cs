@@ -34,7 +34,7 @@ public class FieldClass {
         }
     }
     public string GetLanguageType(Language language) {
-        return IsBasic ? BasicType.GetLanguageType(language) : Type;
+        return IsBasic ? BasicType.GetLanguageType(language) : (language == Language.Go ? $"*{Type}" : Type);
     }
 
 }
