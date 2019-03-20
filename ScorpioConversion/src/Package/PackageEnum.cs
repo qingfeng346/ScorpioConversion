@@ -5,5 +5,6 @@ public class FieldEnum {
     public string Name;     //枚举类型
 }
 public class PackageEnum : IPackage {
+    public string Name;
     public List<FieldEnum> Fields = new List<FieldEnum>();
 }

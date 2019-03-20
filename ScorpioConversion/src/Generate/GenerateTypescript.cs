@@ -69,7 +69,7 @@ export class {ClassName} implements IData {{
         var builder = new StringBuilder();
         foreach (var field in Fields) {
             if (!field.IsBasic) {
-                builder.Append($"import {{ {field.Type} }} from './{field.Type}'");
+                builder.AppendLine($"import {{ {field.Type} }} from './{field.Type}'");
             }
         }
         return builder.ToString();
@@ -188,4 +188,17 @@ import {{ __DataName }} from './__DataName';
 {TemplateTypescript.Table}";
     }
 }
-
+public class GenerateEnumTypescript : IGenerate {
+    protected override string Generate_impl() {
+        var builder = new StringBuilder();
+        builder.Append($@"//本文件为自动生成，请不要手动修改
+export enum {ClassName} {{");
+        foreach (var info in Enums.Fields) {
+            builder.Append($@"
+    {info.Name} = {info.Index},");
+        }
+        builder.Append(@"
+}");
+        return builder.ToString();
+    }
+}

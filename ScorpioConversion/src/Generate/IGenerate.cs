@@ -9,6 +9,7 @@ public abstract class IGenerate {
     public object Parameter { get; set; }
     public Language Language { get; set; }
 
+    public PackageEnum Enums { get { return Package as PackageEnum; } }
     public List<FieldClass> Fields { get { return (Package as PackageClass).Fields; } }
 
     public string Generate() { return Generate_impl(); }

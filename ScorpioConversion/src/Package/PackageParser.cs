@@ -33,7 +33,9 @@ public class PackageParser {
             });
         }
         enums.Fields.Sort((m1, m2) => { return m1.Index.CompareTo(m2.Index); });
-        Enums[name.Substring(ENUM_KEYWORD.Length)] = enums;
+        name = name.Substring(ENUM_KEYWORD.Length);
+        enums.Name = name;
+        Enums[name] = enums;
     }
     void ParseConst(string name, ScriptTable table) {
         var consts = new PackageConst();

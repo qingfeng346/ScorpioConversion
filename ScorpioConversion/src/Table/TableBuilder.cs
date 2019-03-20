@@ -260,6 +260,9 @@ public class TableBuilder {
                 foreach (var tab in mParser.Tables) {
                     CreateDataClass(pair.Key, tab.Key, tab.Value.Fields, pair.Value);
                 }
+                foreach (var en in mParser.Enums) {
+                    CreateEnumClass(pair.Key, en.Value, pair.Value);
+                }
             }
             {
                 var extension = pair.Key.GetInfo().extension;
@@ -290,6 +293,19 @@ public class TableBuilder {
         generate.Package = new PackageClass() { Fields = fields };
         generate.Parameter = true;
         var fileName = $"{className}.{language.GetInfo().extension}";
+        if (language == Language.Java) {
+            fileName = string.Join("/", mPackageName.Split(".")) + "/" + fileName;
+        }
+        FileUtil.CreateFile(fileName, generate.Generate(), path.Split(","));
+    }
+    void CreateEnumClass(Language language, PackageEnum enums, string path) {
+        var generate = Activator.CreateInstance(Type.GetType($"GenerateEnum{language}")) as IGenerate;
+        generate.PackageName = mPackageName;
+        generate.Language = language;
+        generate.ClassName = enums.Name;
+        generate.Package = enums;
+        generate.Parameter = true;
+        var fileName = $"{enums.Name}.{language.GetInfo().extension}";
         if (language == Language.Java) {
             fileName = string.Join("/", mPackageName.Split(".")) + "/" + fileName;
         }

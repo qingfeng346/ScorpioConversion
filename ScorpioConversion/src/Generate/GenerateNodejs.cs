@@ -67,7 +67,7 @@ exports.{ClassName} = {ClassName};
         var builder = new StringBuilder();
         foreach (var field in Fields) {
             if (!field.IsBasic) {
-                builder.Append($"const {field.Type} = require('./{field.Type}').{field.Type}");
+                builder.AppendLine($"const {field.Type} = require('./{field.Type}').{field.Type}");
             }
         }
         return builder.ToString();
@@ -149,7 +149,7 @@ exports.{ClassName} = {ClassName};
             } else if (field.IsBasic) {
                 fieldRead = $"reader.Read{field.BasicType.Name}()";
             } else if (field.IsEnum) {
-                fieldRead = $"<{languageType}>reader.ReadInt32()";
+                fieldRead = $"reader.ReadInt32()";
             } else {
                 fieldRead = $"{languageType}.Read(fileName, reader)";
             }
@@ -178,5 +178,19 @@ public class GenerateTableNodejs : IGenerate {
 const TableUtil = require(""../ScorpioProto/TableUtil"")
 const __DataName = require(""./__DataName"").__DataName
 {TemplateNodejs.Table}";
+    }
+}
+public class GenerateEnumNodejs : IGenerate {
+    protected override string Generate_impl() {
+        var builder = new StringBuilder();
+        builder.Append($@"//本文件为自动生成，请不要手动修改
+exports.{ClassName} = {{");
+        foreach (var info in Enums.Fields) {
+            builder.Append($@"
+    {info.Name} : {info.Index},");
+        }
+        builder.Append(@"
+}");
+        return builder.ToString();
     }
 }

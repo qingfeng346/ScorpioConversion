@@ -135,7 +135,7 @@ public class {ClassName} implements IData {{
             } else if (field.IsBasic) {
                 fieldRead = $"reader.Read{field.BasicType.Name}()";
             } else if (field.IsEnum) {
-                fieldRead = $"({languageType})reader.ReadInt32()";
+                fieldRead = $"{languageType}.valueOf(reader.ReadInt32())";
             } else {
                 fieldRead = $"{languageType}.Read(fileName, reader)";
             }
@@ -197,5 +197,44 @@ public class GenerateTableJava : IGenerate {
         return $@"package {PackageName};
 {TemplateJava.Head}
 {TemplateJava.Table}";
+    }
+}
+public class GenerateEnumJava : IGenerate {
+    protected override string Generate_impl() {
+        var builder = new StringBuilder();
+        builder.Append($@"//本文件为自动生成，请不要手动修改
+package {PackageName};
+public enum {ClassName} {{");
+        foreach (var info in Enums.Fields) {
+            builder.Append($@"
+    {info.Name}({info.Index}),");
+        }
+        builder.Append($@"
+    ;
+    private final int value;
+    private {ClassName}(int value) {{ this.value = value; }}
+    public final int getValue() {{ return this.value; }}
+    public static {ClassName} valueOf(int value) {{
+        switch (value) {{");
+        foreach (var info in Enums.Fields) {
+            builder.Append($@"
+        case {info.Index}: return {info.Name};");
+        }
+        builder.Append($@"
+        default: return null;
+        }}
+    }}
+    public static {ClassName} stringOf(String value) {{
+        switch (value) {{");
+        foreach (var info in Enums.Fields) {
+            builder.Append($@"
+        case ""{info.Name}"": return {info.Name};");
+        }
+        builder.Append(@"
+        default: return null;
+        }
+    }   
+}");
+        return builder.ToString();
     }
 }

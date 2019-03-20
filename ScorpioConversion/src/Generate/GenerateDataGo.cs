@@ -174,7 +174,7 @@ func (data *{ClassName}) Read(fileName string, reader scorpioproto.IScorpioReade
             } else if (field.IsBasic) {
                 fieldRead = $"reader.Read{field.BasicType.Name}()";
             } else if (field.IsEnum) {
-                fieldRead = $"reader.ReadInt32()";
+                fieldRead = $"{languageType}(reader.ReadInt32())";
             } else {
                 //languageType.Substring(1) 去除 类型签名的 *
                 fieldRead = $"{languageType.Substring(1)}Read(fileName, reader)";
@@ -204,5 +204,21 @@ public class GenerateTableGo : IGenerate {
 {TemplateGo.Head}
 {TemplateGo.Table}
 ";
+    }
+}
+public class GenerateEnumGo : IGenerate {
+    protected override string Generate_impl() {
+        var builder = new StringBuilder();
+        builder.Append($@"package {PackageName}
+//本文件为自动生成，请不要手动修改
+type {ClassName} int32
+const (");
+        foreach (var info in Enums.Fields) {
+            builder.Append($@"
+    {ClassName}_{info.Name} {ClassName} = {info.Index}");
+        }
+        builder.Append(@"
+)");
+        return builder.ToString();
     }
 }
