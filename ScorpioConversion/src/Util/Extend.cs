@@ -28,8 +28,8 @@ public static class Extend {
     public static bool IsEmptyString(this string str) {
         return string.IsNullOrWhiteSpace(str) || str == EmptyString;
     }
-    public static bool IsEmptyValue(this ScriptArray value) {
-        return value == null || value.Count() == 0;
+    public static bool IsEmptyValue(this ValueList value) {
+        return value == null || value.values.Count == 0;
     }
     public static bool IsInvalid(this string str) {
         return str.Trim().StartsWith("!");

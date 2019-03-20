@@ -11,7 +11,7 @@ using System.Collections.ObjectModel;
 using ScorpioProto.Commons;
 using ScorpioProto.Table;
 ";
-    public const string Table = @"public class __TableName : ITable {
+    public const string Table = @"public partial class __TableName : ITable {
 	const string FILE_MD5_CODE = ""__MD5"";
     private int m_count = 0;
     private Dictionary<__KeyType, __DataName> m_dataArray = new Dictionary<__KeyType, __DataName>();
@@ -60,7 +60,7 @@ public class GenerateDataCSharp : IGenerate {
     protected override string Generate_impl() {
         return $@"{TemplateCSharp.Head}
 namespace {PackageName} {{
-public class {ClassName} : IData {{
+public partial class {ClassName} : IData {{
     private bool m_IsInvalid;
     {AllFields()}
     {FuncGetData()}
@@ -131,7 +131,7 @@ public class {ClassName} : IData {{
             } else if (field.IsEnum) {
                 fieldRead = $"({languageType})reader.ReadInt32()";
             } else {
-                fieldRead = $"{languageType}.Read(l10n, fileName, reader)";
+                fieldRead = $"{languageType}.Read(fileName, reader)";
             }
             if (field.Array) {
                 builder.Append($@"

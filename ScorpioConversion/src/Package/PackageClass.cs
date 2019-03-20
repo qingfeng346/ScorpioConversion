@@ -5,7 +5,6 @@ using Scorpio;
 
 public class FieldClass {
     private PackageParser mParser;
-    public FieldClass() { }
     public FieldClass(PackageParser parser) { mParser = parser; }
     public int Index;                   //字段索引
     public string Name;                 //字段名字

@@ -127,9 +127,6 @@ public class TableBuilder {
         for (var i = 0; i < mFields.Count; ++i) {
             var field = mFields[i];
             if (field.Valid) {
-                //var cell = row.GetCell(i + 1, MissingCellPolicy.CREATE_NULL_AS_BLANK);
-                //var a = cell.DateCellValue.ToOADate();
-                //var value = field.IsDateTime ? cell.DateCellValue.ToString() : cell.GetCellString();
                 var value = row.GetCellString(i + 1);
                 data.Values.Add(new RowValue() { value = value.IsEmptyString() ? field.Default : value });
             }
@@ -144,23 +141,8 @@ public class TableBuilder {
         }
         return Scorpio.Commons.Util.GetMD5FromString(builder.ToString());
     }
-    ScriptArray ReadValue(string value) {
-        var builder = new StringBuilder();
-        if (mParser != null) {
-            foreach (var pair in mParser.Enums) {
-                foreach (var data in pair.Value.Fields) {
-                    builder.AppendLine($"{data.Name} = \"{data.Name}\"");
-                }
-            }
-        }
-        value = "[" + value + "]";
-        value = value.Replace("[", "[`");
-        value = value.Replace(";", "`;`");
-        value = value.Replace("]", "`]");
-        var script = new Script();
-        script.LoadLibrary();
-        script.LoadString(builder.ToString());
-        return script.LoadString("return " + value) as ScriptArray;
+    ValueList ReadValue(string value) {
+        return new ValueParser($"[{value}]").GetObject() as ValueList;
     }
     //检测所有数据
     void CheckData() {
@@ -206,7 +188,7 @@ public class TableBuilder {
                     var field = mFields[i];
                     var value = data.Values[i].value;
                     if (!field.Array && (field.IsBasic || field.IsEnum)) {
-                        WriteField(writer, value, field);
+                        WriteField(writer, new ValueString(value), field);
                     } else {
                         WriteField(writer, ReadValue(value), field);
                     }
@@ -215,79 +197,72 @@ public class TableBuilder {
             FileUtil.CreateFile(mName + ".data", writer.ToArray(), mDataDirectory.Split(","));
         }
     }
-    void WriteField(TableWriter writer, object value, FieldClass field) {
+    void WriteField(TableWriter writer, IValue value, FieldClass field) {
         if (field.IsBasic) {
             if (field.Array) {
-                var list = value as ScriptArray;
+                var list = value as ValueList;
                 if (list.IsEmptyValue()) {
                     writer.WriteInt32(0);
                 } else {
-                    writer.WriteInt32(list.Count());
-                    for (var i = 0; i < list.Count(); ++i) {
-                        field.BasicType.WriteValue(writer, list.GetValue(i).ToString());
+                    writer.WriteInt32(list.Count);
+                    for (var i = 0; i < list.Count; ++i) {
+                        field.BasicType.WriteValue(writer, list[i].Value);
                     }
                 }
             } else {
-                field.BasicType.WriteValue(writer, value.ToString());
+                field.BasicType.WriteValue(writer, value.Value);
             }
         } else if (field.IsEnum) {
             if (field.Array) {
-                var list = value as ScriptArray;
+                var list = value as ValueList;
                 if (list.IsEmptyValue()) {
                     writer.WriteInt32(0);
                 } else {
-                    writer.WriteInt32(list.Count());
-                    for (var i = 0; i < list.Count(); ++i) {
-                        writer.WriteInt32(field.GetEnumValue(list.GetValue(i).ToString()));
+                    writer.WriteInt32(list.Count);
+                    for (var i = 0; i < list.Count; ++i) {
+                        writer.WriteInt32(field.GetEnumValue(list[i].Value));
                     }
                 }
             } else {
-                writer.WriteInt32(field.GetEnumValue(value.ToString()));
+                writer.WriteInt32(field.GetEnumValue(value.Value));
             }
         } else {
-            WriteCustom(writer, value as ScriptArray, field.CustomType, field.Array);
+            WriteCustom(writer, value as ValueList, field.CustomType, field.Array);
         }
     }
-    void WriteCustom(TableWriter writer, ScriptArray list, PackageClass classes, bool array) {
+    void WriteCustom(TableWriter writer, ValueList list, PackageClass classes, bool array) {
         if (array) {
             if (list.IsEmptyValue()) {
                 writer.WriteInt32(0);
             } else {
-                writer.WriteInt32(list.Count());
-                for (var i = 0; i < list.Count(); ++i) {
-                    WriteCustom(writer, list.GetValue(i) as ScriptArray, classes, false);
+                writer.WriteInt32(list.Count);
+                for (var i = 0; i < list.Count; ++i) {
+                    WriteCustom(writer, list[i] as ValueList, classes, false);
                 }
             }
         } else {
             if (list.IsEmptyValue()) {
                 for (var i = 0; i < classes.Fields.Count; ++i)
-                    WriteField(writer, string.Empty, classes.Fields[i]);
+                    WriteField(writer, new ValueString(""), classes.Fields[i]);
             } else {
-                var count = list.Count();
+                var count = list.Count;
                 if (count != classes.Fields.Count)
                     throw new Exception($"填写字段数量与数据机构字段数量不一致 需要数量 {classes.Fields.Count}  填写数量{count}");
                 for (var i = 0; i < count; ++i)
-                    WriteField(writer, list.GetValue(i), classes.Fields[i]);
+                    WriteField(writer, list[i], classes.Fields[i]);
             }
         }
     }
     void CreateLanguageFile() {
         foreach (var pair in mLanguageDirectory) {
-            var extension = pair.Key.GetInfo().extension;
-            {
-                var generate = Activator.CreateInstance(Type.GetType("GenerateData" + pair.Key)) as IGenerate;
-                generate.PackageName = mPackageName;
-                generate.ClassName = DataClassName;
-                generate.Language = pair.Key;
-                generate.Package = new PackageClass() { Fields = mFields };
-                generate.Parameter = true;
-                var fileName = $"{DataClassName}.{extension}";
-                if (pair.Key == Language.Java) {
-                    fileName = string.Join("/", mPackageName.Split(".")) + "/" + fileName;
+            CreateDataClass(pair.Key, DataClassName, mFields, pair.Value);
+            if (mParser != null) {
+                foreach (var tab in mParser.Tables) {
+                    CreateDataClass(pair.Key, tab.Key, tab.Value.Fields, pair.Value);
                 }
-                FileUtil.CreateFile(fileName, generate.Generate(), pair.Value.Split(","));
             }
             {
+                var extension = pair.Key.GetInfo().extension;
                 var generate = Activator.CreateInstance(Type.GetType("GenerateTable" + pair.Key)) as IGenerate;
                 generate.PackageName = mPackageName;
                 generate.ClassName = TableClassName;
@@ -306,5 +281,18 @@ public class TableBuilder {
                 FileUtil.CreateFile(fileName, str, pair.Value.Split(","));
             }
         }
+    }
+    void CreateDataClass(Language language, string className, List<FieldClass> fields, string path) {
+        var generate = Activator.CreateInstance(Type.GetType($"GenerateData{language}")) as IGenerate;
+        generate.PackageName = mPackageName;
+        generate.ClassName = className;
+        generate.Language = language;
+        generate.Package = new PackageClass() { Fields = fields };
+        generate.Parameter = true;
+        var fileName = $"{className}.{language.GetInfo().extension}";
+        if (language == Language.Java) {
+            fileName = string.Join("/", mPackageName.Split(".")) + "/" + fileName;
+        }
+        FileUtil.CreateFile(fileName, generate.Generate(), path.Split(","));
     }
 }

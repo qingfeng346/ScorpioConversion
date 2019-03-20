@@ -45,6 +45,10 @@ namespace ScorpioConversion
                 var name = command.GetValue("-name");           //名字使用文件名或者sheet名字
                 var config = command.GetValue("-config");       //配置文件路径 多路径[,]隔开
                 var spawn = command.GetValue("-spawn");         //派生文件列表 多个Key[,]隔开
+                //var ret = new ValueParser("[[[1;1\\;fewafawef];2];[1;2]]").GetObject();
+                //System.Diagnostics.Debug.WriteLine(ret.ToString());
+                //int a = 0;
+                //return;
                 var languageDirectory = new Dictionary<Language, string>();
                 foreach (Language language in Enum.GetValues(typeof(Language))) {
                     //各语言文件输出目录 多目录[,]隔开

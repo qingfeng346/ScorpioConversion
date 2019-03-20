@@ -68,7 +68,7 @@ public class PackageParser {
             if (string.IsNullOrEmpty(fieldName) || val == null) throw new Exception($"Class:{name} Field:{fieldName} 参数出错 参数模版 \"索引,类型,是否数组=false,注释\"");
             var infos = val.Value.Split(',');
             if (infos.Length < 2) throw new Exception($"Class:{name} Field:{fieldName} 参数出错 参数模版 \"索引,类型,是否数组=false,注释\"");
-            var packageField = new FieldClass() {
+            var packageField = new FieldClass(this) {
                 Name = fieldName,
                 Index = infos[0].ToInt32(),
                 Type = infos[1],
