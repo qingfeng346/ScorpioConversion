@@ -51,6 +51,7 @@ public class GenerateDataNodejs : IGenerate {
 
     protected override string Generate_impl() {
         return $@"
+{AllImports()}
 class {ClassName} {{
     {AllFields()}
     {FuncGetData()}
@@ -61,6 +62,15 @@ class {ClassName} {{
 }}
 exports.{ClassName} = {ClassName};
 ";
+    }
+    string AllImports() {
+        var builder = new StringBuilder();
+        foreach (var field in Fields) {
+            if (!field.IsBasic) {
+                builder.Append($"const {field.Type} = require('./{field.Type}').{field.Type}");
+            }
+        }
+        return builder.ToString();
     }
     string AllFields() {
         var builder = new StringBuilder();
@@ -141,7 +151,7 @@ exports.{ClassName} = {ClassName};
             } else if (field.IsEnum) {
                 fieldRead = $"<{languageType}>reader.ReadInt32()";
             } else {
-                fieldRead = $"{languageType}.Read(l10n, fileName, reader)";
+                fieldRead = $"{languageType}.Read(fileName, reader)";
             }
             if (field.Array) {
                 builder.Append($@"
