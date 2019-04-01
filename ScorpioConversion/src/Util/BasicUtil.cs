@@ -15,6 +15,8 @@ public class LanguageInfo : Attribute {
 public enum Language {
     [LanguageInfo("sco")]
     Scorpio,
+    [LanguageInfo("sco")]
+    Scorpio2,
     [LanguageInfo("cs")]
     CSharp,
     [LanguageInfo("java")]
