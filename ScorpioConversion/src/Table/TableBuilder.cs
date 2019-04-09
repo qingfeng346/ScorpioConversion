@@ -21,6 +21,7 @@ public class TableBuilder {
 
     private string mPackageName = "";                                   //命名空间
     private string mName = "";                                          //导出data文件名字
+    private string mSuffix = "";                                        //data文件后缀
     private List<string> mSpawns = new List<string>();                  //派生类
 
     private PackageParser mParser = null;                               //自定义类
@@ -34,9 +35,10 @@ public class TableBuilder {
     public bool IsSpawn { get; set; }
     public string DataClassName { get; set; }
     public string TableClassName { get; set; }
-    public void Parse(ISheet sheet, string packageName, string name, string spawn, string dataDirectory, Dictionary<Language, string> languageDirectory, PackageParser parser) {
-        mPackageName = packageName;
-        mName = name;
+    public TableBuilder SetSuffix(string value) { mSuffix = value; return this; }
+    public TableBuilder SetName(string value) { mName = value; return this; }
+    public TableBuilder SetPackageName(string value) { mPackageName = value; return this; }
+    public void Parse(ISheet sheet, string spawn, string dataDirectory, Dictionary<Language, string> languageDirectory, PackageParser parser) {
         mParser = parser;
         if (!spawn.IsEmptyString()) mSpawns.AddRange(spawn.Split(","));
         mDataDirectory = dataDirectory;
@@ -194,7 +196,7 @@ public class TableBuilder {
                     }
                 }
             }
-            FileUtil.CreateFile(mName + ".data", writer.ToArray(), mDataDirectory.Split(","));
+            FileUtil.CreateFile(mName + "." + mSuffix, writer.ToArray(), mDataDirectory.Split(","));
         }
     }
     void WriteField(TableWriter writer, IValue value, FieldClass field) {

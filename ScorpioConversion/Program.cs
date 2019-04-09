@@ -42,6 +42,7 @@ namespace ScorpioConversion
                 var package = command.GetValue("-package");     //默认 命名空间
                 var files = command.GetValue("-files");         //需要转换的文件 多文件[,]隔开
                 var data = command.GetValue("-data");           //data文件输出目录 多目录[,]隔开
+                var suffix = command.GetValue("-suffix");       //data文件后缀 默认 .data
                 var name = command.GetValue("-name");           //名字使用文件名或者sheet名字
                 var config = command.GetValue("-config");       //配置文件路径 多路径[,]隔开
                 var spawn = command.GetValue("-spawn");         //派生文件列表 多个Key[,]隔开
@@ -96,7 +97,10 @@ namespace ScorpioConversion
                                 for (var i = 0; i < workbook.NumberOfSheets; ++i) {
                                     var sheet = workbook.GetSheetAt(i);
                                     if (sheet.SheetName.IsInvalid()) { continue; }
-                                    new TableBuilder().Parse(sheet, package, name.IsEmptyString() || name.ToLower() == "file" ? fileName : sheet.SheetName.Trim(), spawn, data, languageDirectory, parser);
+                                    new TableBuilder().SetSuffix(suffix.IsEmptyString() ? "data" : suffix)
+                                        .SetPackageName(package)
+                                        .SetName(name.IsEmptyString() || name.ToLower() == "file" ? fileName : sheet.SheetName.Trim())
+                                        .Parse(sheet, spawn, data, languageDirectory, parser);
                                 }
                             }
                         } catch (Exception e) {
