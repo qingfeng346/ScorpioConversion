@@ -9,8 +9,8 @@
   <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="12.0.1" />
     <PackageReference Include="NPOI" Version="2.4.1" />
-    <PackageReference Include="Scorpio-CSharp" Version="1.0.9" />
-    <PackageReference Include="ScorpioCommons" Version="1.0.3" />
+    <PackageReference Include="Scorpio-CSharp" Version="1.0.10" />
+    <PackageReference Include="ScorpioCommons" Version="1.0.4" />
     <PackageReference Include="ScorpioIni" Version="1.0.1" />
   </ItemGroup>
 

@@ -38,9 +38,9 @@ public class TableBuilder {
     public TableBuilder SetSuffix(string value) { mSuffix = value; return this; }
     public TableBuilder SetName(string value) { mName = value; return this; }
     public TableBuilder SetPackageName(string value) { mPackageName = value; return this; }
-    public void Parse(ISheet sheet, string spawn, string dataDirectory, Dictionary<Language, string> languageDirectory, PackageParser parser) {
+    public TableBuilder SetSpawn(string value) { if (!value.IsEmptyString()) { mSpawns.AddRange(value.Split(",")); } return this; }
+    public void Parse(ISheet sheet, string dataDirectory, Dictionary<Language, string> languageDirectory, PackageParser parser) {
         mParser = parser;
-        if (!spawn.IsEmptyString()) mSpawns.AddRange(spawn.Split(","));
         mDataDirectory = dataDirectory;
         mLanguageDirectory = languageDirectory;
         LoadLayout(sheet);

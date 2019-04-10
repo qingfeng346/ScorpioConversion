@@ -14,12 +14,12 @@ public class PackageParser {
     private const string MESSAGE_KEYWORD = "message_";      //消息格式关键字
     private const string TABLE_KEYWORD = "table_";          //Table格式关键字
 
-    private Script mScript = null;
     public Dictionary<string, PackageEnum> Enums { get; set; } = new Dictionary<string, PackageEnum>();
     public Dictionary<string, PackageConst> Consts { get; set; } = new Dictionary<string, PackageConst>();
     public Dictionary<string, PackageClass> Messages { get; set; } = new Dictionary<string, PackageClass>();
     public Dictionary<string, PackageClass> Tables { get; set; } = new Dictionary<string, PackageClass>();
     public Dictionary<string, PackageClass> Classes { get; set; } = new Dictionary<string, PackageClass>();
+    public Script Script { get; private set; }
     void ParseEnum(string name, ScriptTable table) {
         var enums = new PackageEnum();
         var itor = table.GetIterator();
@@ -78,10 +78,10 @@ public class PackageParser {
                 Comment = infos.Length > 3 ? infos[3] : "",
             };
             if (!packageField.IsBasic) {
-                if (!mScript.HasValue(packageField.Type) &&                             //判断网络协议自定义类
-                    !mScript.HasValue(ENUM_KEYWORD + packageField.Type) &&              //判断是否是枚举
-                    !mScript.HasValue(MESSAGE_KEYWORD + packageField.Type) &&           //判断网络协议自定义类
-                    !mScript.HasValue(TABLE_KEYWORD + packageField.Type)                //判断Table内嵌类
+                if (!Script.HasValue(packageField.Type) &&                             //判断网络协议自定义类
+                    !Script.HasValue(ENUM_KEYWORD + packageField.Type) &&              //判断是否是枚举
+                    !Script.HasValue(MESSAGE_KEYWORD + packageField.Type) &&           //判断网络协议自定义类
+                    !Script.HasValue(TABLE_KEYWORD + packageField.Type)                //判断Table内嵌类
                            ) {
                     throw new Exception($"Class:{name} Field:{fieldName} 未知类型:{packageField.Type}");
                 }
@@ -122,25 +122,23 @@ public class PackageParser {
             Tables.Clear();
             Classes.Clear();
         }
-        mScript = new Script();
-        mScript.LoadLibrary();
+        Script = new Script();
+        Script.LoadLibrary();
         var GlobalBasic = new List<ScriptObject>();
         {
-            var itor = mScript.GetGlobalTable().GetIterator();
+            var itor = Script.GetGlobalTable().GetIterator();
             while (itor.MoveNext())
                 GlobalBasic.Add(itor.Current.Value);
         }
         string[] files = Directory.Exists(dir) ? Directory.GetFiles(dir, "*.sco", SearchOption.AllDirectories) : new string[0];
-        foreach (var file in files) { mScript.LoadFile(file); }
-        {
-            var itor = mScript.GetGlobalTable().GetIterator();
+        foreach (var file in files) { Script.LoadFile(file); } {
+            var itor = Script.GetGlobalTable().GetIterator();
             while (itor.MoveNext()) {
                 if (GlobalBasic.Contains(itor.Current.Value))
                     continue;
                 var name = itor.Current.Key as string;
                 var table = itor.Current.Value as ScriptTable;
                 if (name == null || table == null) continue;
-
                 if (name.StartsWith(ENUM_KEYWORD)) {                //枚举类型
                     ParseEnum(name, table);
                 } else if (name.StartsWith(CONST_KEYWORD)) {        //常量类型

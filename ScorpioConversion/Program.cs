@@ -34,22 +34,19 @@ namespace ScorpioConversion
         {
             try {
                 Logger.SetLogger(new LogHelper());
-                Util.PirntSystemInfo();
+                Util.PrintSystemInfo();
                 Logger.info("scov version : " + ScorpioConversion.Version.version);
                 Logger.info("build date : " + ScorpioConversion.Version.date);
                 var command = CommandLine.Parse(args);
                 var type = command.GetValue("-type");           //操作类型 默认转换excel install 自动拷贝 ScorpioProto库
                 var package = command.GetValue("-package");     //默认 命名空间
                 var files = command.GetValue("-files");         //需要转换的文件 多文件[,]隔开
+                var paths = command.GetValue("-paths");         //需要转换的文件目录 多路径[,]隔开
                 var data = command.GetValue("-data");           //data文件输出目录 多目录[,]隔开
                 var suffix = command.GetValue("-suffix");       //data文件后缀 默认 .data
                 var name = command.GetValue("-name");           //名字使用文件名或者sheet名字
                 var config = command.GetValue("-config");       //配置文件路径 多路径[,]隔开
                 var spawn = command.GetValue("-spawn");         //派生文件列表 多个Key[,]隔开
-                //var ret = new ValueParser("[[[1;1\\;fewafawef];2];[1;2]]").GetObject();
-                //System.Diagnostics.Debug.WriteLine(ret.ToString());
-                //int a = 0;
-                //return;
                 var languageDirectory = new Dictionary<Language, string>();
                 foreach (Language language in Enum.GetValues(typeof(Language))) {
                     //各语言文件输出目录 多目录[,]隔开
@@ -100,7 +97,8 @@ namespace ScorpioConversion
                                     new TableBuilder().SetSuffix(suffix.IsEmptyString() ? "data" : suffix)
                                         .SetPackageName(package)
                                         .SetName(name.IsEmptyString() || name.ToLower() == "file" ? fileName : sheet.SheetName.Trim())
-                                        .Parse(sheet, spawn, data, languageDirectory, parser);
+                                        .SetSpawn(spawn)
+                                        .Parse(sheet, data, languageDirectory, parser);
                                 }
                             }
                         } catch (Exception e) {
