@@ -32,13 +32,17 @@ public enum Language {
 public enum BasicEnum {
     BOOL,           //bool类型
     INT8,           //int8类型
+    UINT8,          //uint8类型
     INT16,          //int16类型
+    UINT16,         //uint16类型
     INT32,          //int32类型
+    UINT32,         //uint32类型
     INT64,          //int64类型
+    UINT64,         //uint64类型
     FLOAT,          //float类型
     DOUBLE,         //double类型
     STRING,         //string类型
-    DATETIME,       //Datetime日期时间
+    DATETIME,       //datetime日期时间
     BYTES,          //byte[]类型
 }
 //基本类型
@@ -78,18 +82,35 @@ class BasicUtil {
         new BasicType("Bool", BasicEnum.BOOL, new Dictionary<Language, string>() {
             { Language.CSharp, "bool"}, { Language.Java, "boolean" }, {Language.Typescript, "boolean"}, {Language.Go, "bool"}
         }),
+
         new BasicType("Int8", BasicEnum.INT8, new Dictionary<Language, string>() {
             { Language.CSharp, "sbyte" }, { Language.Java, "Byte" }, {Language.Typescript, "number"}, {Language.Go, "int8"}
         }),
+        new BasicType("UInt8", BasicEnum.UINT8, new Dictionary<Language, string>() {
+            { Language.CSharp, "byte" }, { Language.Java, "Byte" }, {Language.Typescript, "number"}, {Language.Go, "uint8"}
+        }),
+
         new BasicType("Int16", BasicEnum.INT16, new Dictionary<Language, string>() {
             { Language.CSharp, "short" }, { Language.Java, "Short" }, {Language.Typescript, "number"}, {Language.Go, "int16"}
         }),
+        new BasicType("UInt16", BasicEnum.UINT16, new Dictionary<Language, string>() {
+            { Language.CSharp, "ushort" }, { Language.Java, "Short" }, {Language.Typescript, "number"}, {Language.Go, "uint16"}
+        }),
+
         new BasicType("Int32", BasicEnum.INT32, new Dictionary<Language, string>() {
             { Language.CSharp, "int" }, { Language.Java, "Integer" }, {Language.Typescript, "number"}, {Language.Go, "int32"}
         }),
+        new BasicType("UInt32", BasicEnum.UINT32, new Dictionary<Language, string>() {
+            { Language.CSharp, "uint" }, { Language.Java, "Integer" }, {Language.Typescript, "number"}, {Language.Go, "uint32"}
+        }),
+
         new BasicType("Int64", BasicEnum.INT64, new Dictionary<Language, string>() {
             { Language.CSharp, "long" }, { Language.Java, "Long" }, {Language.Typescript, "number"}, {Language.Go, "int64"}
         }),
+        new BasicType("UInt64", BasicEnum.UINT64, new Dictionary<Language, string>() {
+            { Language.CSharp, "ulong" }, { Language.Java, "Long" }, {Language.Typescript, "number"}, {Language.Go, "uint64"}
+        }),
+
         new BasicType("Float", BasicEnum.FLOAT, new Dictionary<Language, string>() {
             { Language.CSharp, "float" }, { Language.Java, "Float" }, {Language.Typescript, "number"}, {Language.Go, "float32"}
         }),
@@ -106,12 +127,20 @@ class BasicUtil {
     };
     static BasicUtil() {
         BasicTypes.Add(GetType(BasicEnum.BOOL).SetKey("bool"));
-        BasicTypes.Add(GetType(BasicEnum.BOOL).SetKey("Boolean"));
+        BasicTypes.Add(GetType(BasicEnum.BOOL).SetKey("boolean"));
         
-        BasicTypes.Add(GetType(BasicEnum.INT8).SetKey("byte"));
+        BasicTypes.Add(GetType(BasicEnum.INT8).SetKey("sbyte"));
         BasicTypes.Add(GetType(BasicEnum.INT16).SetKey("short"));
         BasicTypes.Add(GetType(BasicEnum.INT32).SetKey("int"));
         BasicTypes.Add(GetType(BasicEnum.INT64).SetKey("long"));
+
+        BasicTypes.Add(GetType(BasicEnum.UINT8).SetKey("byte"));
+        BasicTypes.Add(GetType(BasicEnum.UINT16).SetKey("ushort"));
+        BasicTypes.Add(GetType(BasicEnum.UINT32).SetKey("uint"));
+        BasicTypes.Add(GetType(BasicEnum.UINT64).SetKey("ulong"));
+
+        BasicTypes.Add(GetType(BasicEnum.FLOAT).SetKey("float32"));
+        BasicTypes.Add(GetType(BasicEnum.DOUBLE).SetKey("float64"));
 
         BasicTypes.Add(GetType(BasicEnum.BYTES).SetKey("byte[]"));
     }
