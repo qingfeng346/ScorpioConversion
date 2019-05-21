@@ -3,6 +3,7 @@ using System.IO;
 using System.Text;
 using System.Collections.Generic;
 public class TableReader : IDisposable {
+    private readonly static DateTime BaseTime = new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc);
     MemoryStream stream;
     BinaryReader reader;
     public TableReader(byte[] buffer) {
@@ -15,14 +16,26 @@ public class TableReader : IDisposable {
     public sbyte ReadInt8() {
         return reader.ReadSByte();
     }
+    public byte ReadUInt8() {
+        return reader.ReadByte();
+    }
     public short ReadInt16() {
         return reader.ReadInt16();
+    }
+    public ushort ReadUInt16() {
+        return reader.ReadUInt16();
     }
     public int ReadInt32() {
         return reader.ReadInt32();
     }
+    public uint ReadUInt32() {
+        return reader.ReadUInt32();
+    }
     public long ReadInt64() {
         return reader.ReadInt64();
+    }
+    public ulong ReadUInt64() {
+        return reader.ReadUInt64();
     }
     public float ReadFloat() {
         return reader.ReadSingle();
@@ -30,12 +43,18 @@ public class TableReader : IDisposable {
     public double ReadDouble() {
         return reader.ReadDouble();
     }
-    public String ReadString() {
-        List<byte> sb = new List<byte>();
-        byte ch;
-        while ((ch = reader.ReadByte()) != 0)
-            sb.Add(ch);
-        return Encoding.UTF8.GetString(sb.ToArray());
+    public string ReadString() {
+        var length = reader.ReadUInt16();
+        if (length <= 0) return "";
+        return Encoding.UTF8.GetString(reader.ReadBytes(length));
+    }
+    public DateTime ReadDateTime() {
+        DateTime startTime = BaseTime;
+        return startTime.AddMilliseconds(reader.ReadInt64());
+    }
+    public byte[] ReadBytes() {
+        var length = reader.ReadUInt16();
+        return reader.ReadBytes(length);
     }
     public void Dispose() {
         stream.Close();

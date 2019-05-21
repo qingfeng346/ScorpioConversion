@@ -12,10 +12,14 @@ public static class Extend {
     private const string EmptyString = "####";
     private const string ArrayString = "array";
     public const bool INVALID_BOOL = false;
-    public const sbyte INVALID_INT8 = sbyte.MaxValue;
+    public const sbyte INVALID_INT8 = SByte.MaxValue;
+    public const byte INVALID_UINT8 = Byte.MaxValue;
     public const short INVALID_INT16 = Int16.MaxValue;
+    public const ushort INVALID_UINT16 = UInt16.MaxValue;
     public const int INVALID_INT32 = Int32.MaxValue;
+    public const uint INVALID_UINT32 = UInt32.MaxValue;
     public const long INVALID_INT64 = Int64.MaxValue;
+    public const ulong INVALID_UINT64 = UInt64.MaxValue;
     public const float INVALID_FLOAT = -1.0f;
     public const double INVALID_DOUBLE = -1.0;
     public const string INVALID_STRING = "";
@@ -58,14 +62,26 @@ public static class Extend {
     public static sbyte ToInt8(this string value) {
         return value.IsEmptyString() ? INVALID_INT8 : Convert.ToSByte(value);
     }
+    public static byte ToUInt8(this string value) {
+        return value.IsEmptyString() ? INVALID_UINT8 : Convert.ToByte(value);
+    }
     public static short ToInt16(this string value) {
         return value.IsEmptyString() ? INVALID_INT16 : Convert.ToInt16(value);
+    }
+    public static ushort ToUInt16(this string value) {
+        return value.IsEmptyString() ? INVALID_UINT16 : Convert.ToUInt16(value);
     }
     public static int ToInt32(this string value) {
         return value.IsEmptyString() ? INVALID_INT32 : Convert.ToInt32(value);
     }
+    public static uint ToUInt32(this string value) {
+        return value.IsEmptyString() ? INVALID_UINT32 : Convert.ToUInt32(value);
+    }
     public static long ToInt64(this string value) {
         return value.IsEmptyString() ? INVALID_INT64 : Convert.ToInt64(value);
+    }
+    public static ulong ToUInt64(this string value) {
+        return value.IsEmptyString() ? INVALID_UINT64 : Convert.ToUInt64(value);
     }
     public static float ToFloat(this string value) {
         return value.IsEmptyString() ? INVALID_FLOAT : Convert.ToSingle(value);
