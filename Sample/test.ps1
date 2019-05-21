@@ -1,1 +1,1 @@
-scov -paths ./Excel -config ./Config -lcs ./CSharp/Code
+scov -paths ./Excel -config ./Config -spawns Spawn -lcs ./CSharp/Code -ljava ./Java/src
