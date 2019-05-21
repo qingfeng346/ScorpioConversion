@@ -5,7 +5,7 @@ import java.io.File;
 import java.io.FileInputStream;
 
 import ScorpioProto.Commons.ScorpioReader;
-import tabletest.TableTest;
+import scov.*;
 
 public class launch {
 	public static void main(String[] args) {
@@ -19,11 +19,12 @@ public class launch {
             }
             stream.close();
             TableTest t = new TableTest();
-    		t.Initialize("wwww", new ScorpioReader(output.toByteArray()));
+			t.Initialize("wwww", new ScorpioReader(output.toByteArray()));
+			int a = 0;
     	} catch (Exception e) {
     		
     	}
-    	
+    	System.out.println("222222222222222222");
 		// TODO Auto-generated method stub
 		
 	}

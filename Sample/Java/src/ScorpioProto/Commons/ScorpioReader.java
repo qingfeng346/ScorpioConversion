@@ -13,13 +13,25 @@ public class ScorpioReader implements IScorpioReader {
 	public byte ReadInt8() {
 		return reader.get();
 	}
+	public byte ReadUInt8() {
+		return reader.get();
+	}
 	public short ReadInt16() {
+		return reader.getShort();
+	}
+	public short ReadUInt16() {
 		return reader.getShort();
 	}
 	public int ReadInt32() {
 		return reader.getInt();
 	}
+	public int ReadUInt32() {
+		return reader.getInt();
+	}
 	public long ReadInt64() {
+		return reader.getLong();
+	}
+	public long ReadUInt64() {
 		return reader.getLong();
 	}
 	public float ReadFloat() {
@@ -30,13 +42,11 @@ public class ScorpioReader implements IScorpioReader {
 	}
 	public String ReadString() {
 		try {
-			int length = ReadInt32();
+			int length = ReadUInt16();
 			byte[] bytes = new byte[length];
 			reader.get(bytes);
 			return new String(bytes, "utf-8");
-		} catch (Exception e) {
-			
-		}
+		} catch (Exception e) { }
 		return "";
 	}
 	public Calendar ReadDateTime() {
@@ -45,7 +55,7 @@ public class ScorpioReader implements IScorpioReader {
 		return calendar;
 	}
 	public byte[] ReadBytes() {
-		int length = reader.getInt();
+		int length = ReadUInt16();
 		byte[] bytes = new byte[length];
 		reader.get(bytes);
 		return bytes;
