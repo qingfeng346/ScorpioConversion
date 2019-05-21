@@ -2,7 +2,7 @@
   "profiles": {
     "ScorpioConversion": {
       "commandName": "Project",
-      "commandLineArgs": "-paths C:\\Users\\qingf\\Desktop\\test\\ -package testPackage -lcs C:\\Users\\qingf\\Desktop\\test\\output\\dotnet"
+      "commandLineArgs": "-paths C:\\Users\\qingf\\Desktop\\test\\ -package testPackage -lcs C:\\Users\\qingf\\Desktop\\test\\output\\dotnet -config C:\\Users\\qingf\\Desktop\\test\\config"
     },
     "Install": {
       "commandName": "Project",

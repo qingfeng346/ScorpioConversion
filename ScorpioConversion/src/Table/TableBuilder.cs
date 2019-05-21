@@ -19,7 +19,7 @@ public class TableBuilder {
     private const string KEYWORD_BEGIN = "/Begin";                      //数据开始
     private const string KEYWORD_END = "/End";                          //数据结束
 
-    private string mPackageName = "";                                   //命名空间
+    private string mPackageName = "scov";                               //命名空间
     private string mName = "";                                          //导出data文件名字
     private string mSuffix = "";                                        //data文件后缀
     private List<string> mSpawns = new List<string>();                  //派生类
