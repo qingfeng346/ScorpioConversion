@@ -151,6 +151,8 @@ public class TableBuilder {
         mFields.RemoveAll((_) => { return !_.Valid; });
         if (mPackageName.IsEmptyString() || mName.IsEmptyString())
             throw new Exception($"PackageName 或 Name 不能为空  PackageName : {mPackageName}  Name : {mName}");
+        if (mFields.Count == 0)
+            throw new Exception($"有效字段为0");
         foreach (var pair in mSpawns) {
             if (mName.StartsWith($"{pair.Key}_")) {
                 if (pair.Value.IsEmptyString()) {

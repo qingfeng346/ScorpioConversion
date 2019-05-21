@@ -4,6 +4,8 @@ enum_TestEnum =
 	Test1 = 1,
 	Test2 = 2,
 	Test3 = 3,
+    value1 = 4,
+    value2 = 5,
 }
 //Excel表自定义类型 关键字开头为 table_
 table_Int2 = {

@@ -7,17 +7,17 @@ import { ITable } from '../ScorpioProto/Table/ITable'
 export class Int2 implements IData {
     private m_IsInvalid:boolean = false;
     
-    private _value1:any = null;
+    private _Value1:any = null;
     /*   默认值() */
-    getvalue1():number { return this._value1; }
-    ID():number { return this._value1; }
-    private _value2:any = null;
+    getValue1():number { return this._Value1; }
+    ID():number { return this._Value1; }
+    private _Value2:any = null;
     /*   默认值() */
-    getvalue2():number { return this._value2; }
+    getValue2():number { return this._Value2; }
     
     GetData(key:string):any {
-        if ("value1" == key) return this._value1;
-        if ("value2" == key) return this._value2;
+        if ("Value1" == key) return this._Value1;
+        if ("Value2" == key) return this._Value2;
         return null;
     }
     
@@ -27,21 +27,21 @@ export class Int2 implements IData {
     }
     
     Set(value:Int2) {
-        this._value1 = value._value1;
-        this._value2 = value._value2;
+        this._Value1 = value._Value1;
+        this._Value2 = value._Value2;
     }
     
     ToString() {
         return `{
-            value1 : ${this._value1}, 
-            value2 : ${this._value2}
+            Value1 : ${this._Value1}, 
+            Value2 : ${this._Value2}
             }`;
     }
     
     public static Read(fileName:string, reader:IScorpioReader):Int2 {
         var ret = new Int2();
-        ret._value1 = reader.ReadInt32();
-        ret._value2 = reader.ReadInt32();
+        ret._Value1 = reader.ReadInt32();
+        ret._Value2 = reader.ReadInt32();
         ret.m_IsInvalid = ret.CheckInvalid();
         return ret;
     }

@@ -1,4 +1,4 @@
-package tabletest
+package scov
 import (
     "scorpioproto"
     "container/list"

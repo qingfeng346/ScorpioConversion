@@ -20,3 +20,9 @@
 /bin/ScorpioConversion/log.log
 /bin
 /ScorpioConversion/*.user
+/Sample/CSharp/obj
+/Sample/nodejs/node_modules
+/Sample/nodejs/package-lock.json
+/Sample/go/pkg
+/Sample/ts/node_modules
+/Sample/ts/package-lock.json
