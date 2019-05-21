@@ -47,7 +47,10 @@ namespace ScorpioConversion
                 var name = command.GetValue("-name");           //名字使用文件名或者sheet名字
                 var config = command.GetValue("-config");       //配置文件路径 多路径[,]隔开
                 var spawn = command.GetValue("-spawn");         //派生文件列表 多个Key[,]隔开
-                var languageDirectory = new Dictionary<Language, string>();
+
+
+                var languageDirectory = new Dictionary<Language, string>();     //各语言文件生成目录
+                var fileList = new List<string>();                              //所有要生成的excel文件
                 foreach (Language language in Enum.GetValues(typeof(Language))) {
                     //各语言文件输出目录 多目录[,]隔开
                     var dir = command.GetValue("-l" + language.GetInfo().extension.ToLower());
@@ -62,25 +65,44 @@ namespace ScorpioConversion
                     if (languageDirectory.Count == 0) {
                         throw new Exception("请至少选择一种语言");
                     }
+                    //复制各语言需要的库文件
                     Install(languageDirectory);
                 } else if ("register".Equals(type)) {
+                    //注册命令行
                     Register();
                 } else {
-                    if (string.IsNullOrEmpty(files))
-                        throw new Exception("找不到 files 参数");
+                    if (languageDirectory.Count == 0) {
+                        throw new Exception("至少选择一种语言");
+                    }
                     var parser = new PackageParser();
                     if (config != null) {
                         foreach (var dir in config.Split(",")) {
                             parser.Parse(dir);
                         }
                     }
-                    foreach (var file in files.Split(",")) {
-                        var fullFile = Path.GetFullPath(Path.Combine(Environment.CurrentDirectory, file));
+                    if (!string.IsNullOrEmpty(files)) {
+                        foreach (var file in files.Split(",")) {
+                            fileList.Add(Path.GetFullPath(Path.Combine(Environment.CurrentDirectory, file)));
+                        }
+                    }
+                    if (!string.IsNullOrEmpty(paths)) {
+                        foreach (var path in paths.Split(",")) {
+                            foreach (var file in Directory.GetFiles(Path.GetFullPath(Path.Combine(Environment.CurrentDirectory, path)), "*", SearchOption.AllDirectories)) {
+                                if (!file.Contains("~$") && (file.EndsWith(".xls") || file.EndsWith(".xlsx"))) {
+                                    fileList.Add(file);
+                                }
+                            }
+                        }
+                    }
+                    if (fileList.Count == 0)
+                        throw new Exception("至少选择一个excel文件");
+
+                    foreach (var file in fileList) {
                         var fileName = Path.GetFileNameWithoutExtension(file).Trim();
                         var extension = Path.GetExtension(file);
-                        var tempFile = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "temp" + extension);
+                        var tempFile = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, System.Guid.NewGuid().ToString("N") + extension);
                         try {
-                            File.Copy(fullFile, tempFile, true);
+                            File.Copy(file, tempFile, true);
                             using (var fileStream = new FileStream(tempFile, FileMode.Open, FileAccess.Read)) {
                                 IWorkbook workbook = null;
                                 if (extension.EndsWith(".xls")) {
@@ -102,7 +124,7 @@ namespace ScorpioConversion
                                 }
                             }
                         } catch (Exception e) {
-                            Logger.error($"file [{fullFile}] is error : " + e.ToString());
+                            Logger.error($"file [{file}] is error : " + e.ToString());
                         } finally {
                             File.Delete(tempFile);
                         }
