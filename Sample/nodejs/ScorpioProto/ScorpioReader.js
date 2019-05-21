@@ -12,8 +12,18 @@ class ScorpioReader {
         this.offset += 1
         return ret
     }
+    ReadUInt8() {
+        let ret = this.buffer.readUInt8(this.offset);
+        this.offset += 1
+        return ret
+    }
     ReadInt16() {
         let ret = this.buffer.readInt16LE(this.offset);
+        this.offset += 2
+        return ret
+    }
+    ReadUInt16() {
+        let ret = this.buffer.readUInt16LE(this.offset);
         this.offset += 2
         return ret
     }
@@ -22,7 +32,17 @@ class ScorpioReader {
         this.offset += 4
         return ret
     }
+    ReadUInt32() {
+        let ret = this.buffer.readUInt32LE(this.offset);
+        this.offset += 4
+        return ret
+    }
     ReadInt64() {
+        let low = this.ReadInt32()
+        let high = this.ReadInt32()
+        return Long.fromBits(low, high, false)
+    }
+    ReadUInt64() {
         let low = this.ReadInt32()
         let high = this.ReadInt32()
         return Long.fromBits(low, high, false)
@@ -38,7 +58,7 @@ class ScorpioReader {
         return ret
     }
     ReadString() {
-        let length = this.ReadInt32();
+        let length = this.ReadUInt16();
         let start = this.offset
         let end = start + length
         let ret = this.buffer.toString("utf8", start, end)

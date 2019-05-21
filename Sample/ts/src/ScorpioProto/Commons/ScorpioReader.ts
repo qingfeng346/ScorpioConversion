@@ -16,8 +16,18 @@ export class ScorpioReader implements IScorpioReader {
         this.offset += 1
         return ret
     }
+    ReadUInt8():number {
+        let ret = this.buffer.readUInt8(this.offset);
+        this.offset += 1
+        return ret
+    }
     ReadInt16():number {
         let ret = this.buffer.readInt16LE(this.offset);
+        this.offset += 2
+        return ret
+    }
+    ReadUInt16():number {
+        let ret = this.buffer.readUInt16LE(this.offset);
         this.offset += 2
         return ret
     }
@@ -26,7 +36,17 @@ export class ScorpioReader implements IScorpioReader {
         this.offset += 4
         return ret
     }
+    ReadUInt32():number {
+        let ret = this.buffer.readUInt32LE(this.offset);
+        this.offset += 4
+        return ret
+    }
     ReadInt64():any {
+        let low = this.ReadInt32()
+        let high = this.ReadInt32()
+        return Long.fromBits(low, high, false)
+    }
+    ReadUInt64() {
         let low = this.ReadInt32()
         let high = this.ReadInt32()
         return Long.fromBits(low, high, false)
@@ -42,7 +62,7 @@ export class ScorpioReader implements IScorpioReader {
         return ret
     }
     ReadString():string {
-        let length = this.ReadInt32();
+        let length = this.ReadUInt16();
         let start = this.offset
         let end = start + length
         let ret = this.buffer.toString("utf8", start, end)
