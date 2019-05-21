@@ -1,0 +1,1 @@
+scov -paths ./Excel -config ./Config -lcs ./CSharp/Code
