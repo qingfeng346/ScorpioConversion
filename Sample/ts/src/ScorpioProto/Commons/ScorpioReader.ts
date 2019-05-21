@@ -49,7 +49,7 @@ export class ScorpioReader implements IScorpioReader {
     ReadUInt64() {
         let low = this.ReadInt32()
         let high = this.ReadInt32()
-        return Long.fromBits(low, high, false)
+        return Long.fromBits(low, high, true)
     }
     ReadFloat():number {
         let ret = this.buffer.readFloatLE(this.offset);

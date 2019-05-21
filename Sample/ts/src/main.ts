@@ -1,7 +1,7 @@
-import { TableTest } from './sco/TableTest';
+import { TableTest } from './Code/TableTest';
 import { ScorpioReader } from './ScorpioProto/Commons/ScorpioReader';
 import fs from 'fs';
-import { DataTest } from './sco/DataTest';
+import { DataTest } from './Code/DataTest';
 // ArrayBuffer 
 // let map:{[key:string]:any} = {}
 // map["111"] = "2222"
@@ -23,10 +23,10 @@ import { DataTest } from './sco/DataTest';
 // console.log("hellow3333ww1111w")
 
 // console.log(__dirname)
-// let table = new TableTest()
-// table.Initialize("feaw", new ScorpioReader(fs.readFileSync(__dirname + "/../../Test.data")))
-// let data = table.GetValue(1000000) as DataTest
-// console.log(data.getTestDate())
+let table = new TableTest()
+table.Initialize("feaw", new ScorpioReader(fs.readFileSync(__dirname + "/../../Test.data")))
+let data = table.GetValue(1000000) as DataTest
+console.log(data.getTestDate())
 function e() {
 
 }
