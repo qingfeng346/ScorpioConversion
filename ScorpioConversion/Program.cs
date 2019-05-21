@@ -39,18 +39,18 @@ namespace ScorpioConversion
                 Logger.info("build date : " + ScorpioConversion.Version.date);
                 var command = CommandLine.Parse(args);
                 var type = command.GetValue("-type");           //操作类型 默认转换excel install 自动拷贝 ScorpioProto库
-                var package = command.GetValue("-package");     //默认 命名空间
+                var packageName = command.GetValue("-package"); //默认 命名空间
                 var files = command.GetValue("-files");         //需要转换的文件 多文件[,]隔开
                 var paths = command.GetValue("-paths");         //需要转换的文件目录 多路径[,]隔开
                 var data = command.GetValue("-data");           //data文件输出目录 多目录[,]隔开
                 var suffix = command.GetValue("-suffix");       //data文件后缀 默认 .data
                 var name = command.GetValue("-name");           //名字使用文件名或者sheet名字
                 var config = command.GetValue("-config");       //配置文件路径 多路径[,]隔开
-                var spawn = command.GetValue("-spawn");         //派生文件列表 多个Key[,]隔开
-
+                var spawns = command.GetValue("-spawns");       //派生文件列表 多个Key[,]隔开
 
                 var languageDirectory = new Dictionary<Language, string>();     //各语言文件生成目录
                 var fileList = new List<string>();                              //所有要生成的excel文件
+                var spawnList = new Dictionary<string, string>();               //派生文件列表
                 foreach (Language language in Enum.GetValues(typeof(Language))) {
                     //各语言文件输出目录 多目录[,]隔开
                     var dir = command.GetValue("-l" + language.GetInfo().extension.ToLower());
@@ -75,17 +75,17 @@ namespace ScorpioConversion
                         throw new Exception("至少选择一种语言");
                     }
                     var parser = new PackageParser();
-                    if (config != null) {
+                    if (!config.IsEmptyString()) {
                         foreach (var dir in config.Split(",")) {
                             parser.Parse(dir);
                         }
                     }
-                    if (!string.IsNullOrEmpty(files)) {
+                    if (!files.IsEmptyString()) {
                         foreach (var file in files.Split(",")) {
                             fileList.Add(Path.GetFullPath(Path.Combine(Environment.CurrentDirectory, file)));
                         }
                     }
-                    if (!string.IsNullOrEmpty(paths)) {
+                    if (!paths.IsEmptyString()) {
                         foreach (var path in paths.Split(",")) {
                             foreach (var file in Directory.GetFiles(Path.GetFullPath(Path.Combine(Environment.CurrentDirectory, path)), "*", SearchOption.AllDirectories)) {
                                 if (!file.Contains("~$") && (file.EndsWith(".xls") || file.EndsWith(".xlsx"))) {
@@ -96,7 +96,14 @@ namespace ScorpioConversion
                     }
                     if (fileList.Count == 0)
                         throw new Exception("至少选择一个excel文件");
-
+                    if (!spawns.IsEmptyString()) {
+                        foreach (var spawn in spawns.Split(",")) {
+                            spawnList[spawn] = "";
+                        }
+                    }
+                    suffix = suffix.IsEmptyString() ? "data" : suffix;      //数据文件后缀
+                    packageName = packageName.IsEmptyString() ? "scov" : packageName;   //packageName
+                    var isFileName = name.IsEmptyString() || name.ToLower() == "file" ? true : false;
                     foreach (var file in fileList) {
                         var fileName = Path.GetFileNameWithoutExtension(file).Trim();
                         var extension = Path.GetExtension(file);
@@ -116,11 +123,12 @@ namespace ScorpioConversion
                                 for (var i = 0; i < workbook.NumberOfSheets; ++i) {
                                     var sheet = workbook.GetSheetAt(i);
                                     if (sheet.SheetName.IsInvalid()) { continue; }
-                                    new TableBuilder().SetSuffix(suffix.IsEmptyString() ? "data" : suffix)
-                                        .SetPackageName(package)
-                                        .SetName(name.IsEmptyString() || name.ToLower() == "file" ? fileName : sheet.SheetName.Trim())
-                                        .SetSpawn(spawn)
-                                        .Parse(sheet, data, languageDirectory, parser);
+                                    var builder = new TableBuilder();
+                                    builder.SetPackageName(packageName);
+                                    builder.SetName(isFileName ? fileName : sheet.SheetName.Trim());
+                                    builder.SetSuffix(suffix);
+                                    builder.SetSpawn(spawnList);
+                                    builder.Parse(sheet, data, languageDirectory, parser);
                                 }
                             }
                         } catch (Exception e) {

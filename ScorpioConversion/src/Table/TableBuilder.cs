@@ -19,10 +19,10 @@ public class TableBuilder {
     private const string KEYWORD_BEGIN = "/Begin";                      //数据开始
     private const string KEYWORD_END = "/End";                          //数据结束
 
-    private string mPackageName = "scov";                               //命名空间
+    private string mPackageName = "";                                   //命名空间
     private string mName = "";                                          //导出data文件名字
     private string mSuffix = "";                                        //data文件后缀
-    private List<string> mSpawns = new List<string>();                  //派生类
+    private Dictionary<string, string> mSpawns = new Dictionary<string, string>();            //派生类列表
 
     private PackageParser mParser = null;                               //自定义类
     private List<FieldClass> mFields = new List<FieldClass>();          //Excel结构
@@ -33,12 +33,12 @@ public class TableBuilder {
     private Dictionary<Language, string> mLanguageDirectory;            //所有语言输出目录
 
     public bool IsSpawn { get; set; }
-    public string DataClassName { get; set; }
-    public string TableClassName { get; set; }
-    public TableBuilder SetSuffix(string value) { mSuffix = value; return this; }
-    public TableBuilder SetName(string value) { mName = value; return this; }
+    public string DataClassName { get; private set; }
+    public string TableClassName { get; private set; }
     public TableBuilder SetPackageName(string value) { mPackageName = value; return this; }
-    public TableBuilder SetSpawn(string value) { if (!value.IsEmptyString()) { mSpawns.AddRange(value.Split(",")); } return this; }
+    public TableBuilder SetName(string value) { mName = value; return this; }
+    public TableBuilder SetSuffix(string value) { mSuffix = value; return this; }
+    public TableBuilder SetSpawn(Dictionary<string, string> value) { mSpawns = value; return this; }
     public void Parse(ISheet sheet, string dataDirectory, Dictionary<Language, string> languageDirectory, PackageParser parser) {
         mParser = parser;
         mDataDirectory = dataDirectory;
@@ -151,15 +151,22 @@ public class TableBuilder {
         mFields.RemoveAll((_) => { return !_.Valid; });
         if (mPackageName.IsEmptyString() || mName.IsEmptyString())
             throw new Exception($"PackageName 或 Name 不能为空  PackageName : {mPackageName}  Name : {mName}");
-        var spawn = mSpawns.Find((str) => mName.StartsWith($"{str}_") );
-        if (spawn.IsEmptyString()) {
-            DataClassName = $"Data{mName}";
-            TableClassName = $"Table{mName}";
-        } else {
-            IsSpawn = true;
-            DataClassName = $"Data{spawn}";
-            TableClassName = $"Table{spawn}";
+        foreach (var pair in mSpawns) {
+            if (mName.StartsWith($"{pair.Key}_")) {
+                if (pair.Value.IsEmptyString()) {
+                    mSpawns[pair.Key] = GetClassMD5Code();
+                } else if (pair.Value != GetClassMD5Code()) {
+                    throw new Exception($"派生类结构不同 ${mName}");
+                }
+                IsSpawn = true;
+                DataClassName = $"Data{pair.Key}";
+                TableClassName = $"Table{pair.Key}";
+                return;
+            }
         }
+        IsSpawn = false;
+        DataClassName = $"Data{mName}";
+        TableClassName = $"Table{mName}";
     }
     //生成data文件
     void CreateDataFile() {
@@ -196,7 +203,7 @@ public class TableBuilder {
                     }
                 }
             }
-            FileUtil.CreateFile(mName + "." + mSuffix, writer.ToArray(), mDataDirectory.Split(","));
+            FileUtil.CreateFile($"{mName}.{mSuffix}", writer.ToArray(), mDataDirectory.Split(","));
         }
     }
     void WriteField(TableWriter writer, IValue value, FieldClass field) {
