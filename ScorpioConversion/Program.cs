@@ -9,8 +9,7 @@ using Scorpio.Commons;
 using NPOI.SS.UserModel;
 using NPOI.HSSF.UserModel;
 using NPOI.XSSF.UserModel;
-namespace ScorpioConversion
-{
+namespace ScorpioConversion {
     public class LogHelper : ILogger {
         public void info(string value) {
             Console.WriteLine(value);
@@ -27,16 +26,14 @@ namespace ScorpioConversion
             Debugger.Log(0, null, value + "\n");
         }
     }
-    class Program
-    {
+    class Program {
         const int READ_LENGTH = 8192;
-        static void Main(string[] args)
-        {
+        static void Main(string[] args) {
             try {
                 Logger.SetLogger(new LogHelper());
-                Util.PrintSystemInfo();
-                Logger.info("scov version : " + ScorpioConversion.Version.version);
-                Logger.info("build date : " + ScorpioConversion.Version.date);
+                Scorpio.Commons.Util.PrintSystemInfo();
+                Logger.info("scov version : " + Version.version);
+                Logger.info("build date : " + Version.date);
                 var command = CommandLine.Parse(args);
                 var type = command.GetValue("-type");                   //操作类型 默认转换excel install 自动拷贝 ScorpioProto库
                 var packageName = command.GetValue("-package", "scov"); //默认 命名空间
@@ -75,6 +72,7 @@ namespace ScorpioConversion
                         throw new Exception("至少选择一种语言");
                     }
                     var parser = new PackageParser();
+                    var script = parser.Script;
                     if (!config.IsEmptyString()) {
                         foreach (var dir in config.Split(",")) {
                             parser.Parse(dir);
@@ -101,8 +99,8 @@ namespace ScorpioConversion
                             spawnList[spawn] = "";
                         }
                     }
-                    suffix = suffix.IsEmptyString() ? "data" : suffix;      //数据文件后缀
-                    packageName = packageName.IsEmptyString() ? "scov" : packageName;   //packageName
+                    var successTables = new List<string>();
+                    var successSpawns = new Dictionary<string, List<string>>();
                     var isFileName = name.ToLower() == "file";
                     foreach (var file in fileList) {
                         var fileName = Path.GetFileNameWithoutExtension(file).Trim();
@@ -131,6 +129,15 @@ namespace ScorpioConversion
                                         builder.SetSpawn(spawnList);
                                         builder.Parse(sheet, data, languageDirectory, parser);
                                         Logger.info($"文件:{file} Sheet:{sheet.SheetName} 解析完成");
+                                        if (builder.IsSpawn) {
+                                            if (successSpawns.ContainsKey(builder.Spawn)) {
+                                                successSpawns[builder.Spawn].Add(builder.Name);
+                                            } else {
+                                                successSpawns[builder.Spawn] = new List<string>() { builder.Name };
+                                            }
+                                        } else {
+                                            successTables.Add(builder.Name);
+                                        }
                                     } catch (Exception e) {
                                         Logger.error($" 文件:{file} Sheet:{sheet.SheetName} 解析出错 : " + e.ToString());
                                     }
@@ -141,6 +148,18 @@ namespace ScorpioConversion
                         } finally {
                             File.Delete(tempFile);
                         }
+                    }
+                    foreach (var pair in languageDirectory) {
+                        var language = pair.Key;
+                        foreach (var table in parser.Tables) {
+                            ScorpioConversion.Util.CreateDataClass(language, packageName, table.Key, table.Value.Fields, pair.Value);
+                        }
+                        foreach (var @enum in parser.Enums) {
+                            ScorpioConversion.Util.CreateEnumClass(language, packageName, @enum.Value, pair.Value);
+                        }
+                    }
+                    if (script.HasValue("BuildOver")) {
+                        script.Call("BuildOver", successTables, successSpawns, command, parser);
                     }
                 }
             } catch (Exception e) {
@@ -183,7 +202,7 @@ namespace ScorpioConversion
             }
         }
         static void Register() {
-            Util.RegisterApplication(Util.BaseDirectory + "/scov");
+            Scorpio.Commons.Util.RegisterApplication(Scorpio.Commons.Util.BaseDirectory + "/scov");
         }
     }
 }

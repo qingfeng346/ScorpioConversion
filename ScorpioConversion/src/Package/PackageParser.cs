@@ -19,7 +19,7 @@ public class PackageParser {
     public Dictionary<string, PackageClass> Messages { get; set; } = new Dictionary<string, PackageClass>();
     public Dictionary<string, PackageClass> Tables { get; set; } = new Dictionary<string, PackageClass>();
     public Dictionary<string, PackageClass> Classes { get; set; } = new Dictionary<string, PackageClass>();
-    public Script Script { get; private set; }
+    public Script Script { get; private set; } = new Script();
     void ParseEnum(string name, ScriptTable table) {
         var enums = new PackageEnum();
         var itor = table.GetIterator();
@@ -122,7 +122,8 @@ public class PackageParser {
             Tables.Clear();
             Classes.Clear();
         }
-        Script = new Script();
+        Script.PushAssembly(typeof(Scorpio.Commons.FileUtil).Assembly);
+        Script.PushAssembly(GetType().Assembly);
         Script.LoadLibrary();
         var GlobalBasic = new List<ScriptObject>();
         {

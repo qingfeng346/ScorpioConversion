@@ -32,9 +32,12 @@ public class TableBuilder {
     private string mDataDirectory;                                      //data文件输出目录
     private Dictionary<Language, string> mLanguageDirectory;            //所有语言输出目录
 
-    public bool IsSpawn { get; set; }
+    public bool IsSpawn { get { return !string.IsNullOrEmpty(Spawn); } }
+    public string Spawn { get; private set; }
+    public string Name { get { return mName; } }
     public string DataClassName { get; private set; }
     public string TableClassName { get; private set; }
+    public string LayoutMD5 { get; private set; }           //文件结构MD5
     public TableBuilder SetPackageName(string value) { mPackageName = value; return this; }
     public TableBuilder SetName(string value) { mName = value; return this; }
     public TableBuilder SetSuffix(string value) { mSuffix = value; return this; }
@@ -65,6 +68,12 @@ public class TableBuilder {
                 ParseHead(keyCell, row);
             }
         }
+        var builder = new StringBuilder();
+        for (int i = 0; i < mFields.Count; ++i) {
+            builder.Append(mFields[i].Type).Append(":");
+            builder.Append(mFields[i].Array ? "1" : "0").Append(":");
+        }
+        LayoutMD5 = Scorpio.Commons.Util.GetMD5FromString(builder.ToString());
     }
     FieldClass GetField(int index) {
         for (var i = mFields.Count; i <= index; ++i) {
@@ -138,14 +147,6 @@ public class TableBuilder {
         }
         mDatas.Add(data);
     }
-    string GetClassMD5Code() {
-        var builder = new StringBuilder();
-        for (int i = 0; i < mFields.Count; ++i) {
-            builder.Append(mFields[i].Type).Append(":");
-            builder.Append(mFields[i].Array ? "1" : "0").Append(":");
-        }
-        return Scorpio.Commons.Util.GetMD5FromString(builder.ToString());
-    }
     ValueList ReadValue(string value) {
         return new ValueParser($"[{value}]").GetObject() as ValueList;
     }
@@ -159,17 +160,17 @@ public class TableBuilder {
         foreach (var pair in mSpawns) {
             if (mName.StartsWith($"{pair.Key}_")) {
                 if (pair.Value.IsEmptyString()) {
-                    mSpawns[pair.Key] = GetClassMD5Code();
-                } else if (pair.Value != GetClassMD5Code()) {
+                    mSpawns[pair.Key] = LayoutMD5;
+                } else if (pair.Value != LayoutMD5) {
                     throw new Exception($"派生类结构不同 ${mName}");
                 }
-                IsSpawn = true;
+                Spawn = pair.Key;
                 DataClassName = $"Data{pair.Key}";
                 TableClassName = $"Table{pair.Key}";
                 return;
             }
         }
-        IsSpawn = false;
+        Spawn = null;
         DataClassName = $"Data{mName}";
         TableClassName = $"Table{mName}";
     }
@@ -179,7 +180,7 @@ public class TableBuilder {
             return;
         using (var writer = new TableWriter()) {
             writer.WriteInt32(mDatas.Count);            //数据数量
-            writer.WriteString(GetClassMD5Code());      //文件结构MD5
+            writer.WriteString(LayoutMD5);              //文件结构MD5
             writer.WriteInt32(mFields.Count);           //字段数量
             foreach (var field in mFields) {
                 if (field.IsBasic) {
@@ -269,60 +270,8 @@ public class TableBuilder {
     }
     void CreateLanguageFile() {
         foreach (var pair in mLanguageDirectory) {
-            CreateDataClass(pair.Key, DataClassName, mFields, pair.Value);
-            if (mParser != null) {
-                foreach (var tab in mParser.Tables) {
-                    CreateDataClass(pair.Key, tab.Key, tab.Value.Fields, pair.Value);
-                }
-                foreach (var en in mParser.Enums) {
-                    CreateEnumClass(pair.Key, en.Value, pair.Value);
-                }
-            }
-            {
-                var extension = pair.Key.GetInfo().extension;
-                var generate = Activator.CreateInstance(Type.GetType("GenerateTable" + pair.Key)) as IGenerate;
-                generate.PackageName = mPackageName;
-                generate.ClassName = TableClassName;
-                generate.Language = pair.Key;
-                generate.Package = new PackageClass() { Fields = mFields };
-                var str = generate.Generate();
-                str = str.Replace("__KeyType", mFields[0].GetLanguageType(pair.Key));
-                str = str.Replace("__KeyName", mFields[0].Name);
-                str = str.Replace("__TableName", TableClassName);
-                str = str.Replace("__DataName", DataClassName);
-                str = str.Replace("__MD5", GetClassMD5Code());
-                var fileName = $"{TableClassName}.{extension}";
-                if (pair.Key == Language.Java) {
-                    fileName = string.Join("/", mPackageName.Split(".")) + "/" + fileName;
-                }
-                FileUtil.CreateFile(fileName, str, pair.Value.Split(","));
-            }
+            ScorpioConversion.Util.CreateDataClass(pair.Key, mPackageName, DataClassName, mFields, pair.Value);
+            ScorpioConversion.Util.CreateTableClass(pair.Key, mPackageName, TableClassName, DataClassName, LayoutMD5, mFields, pair.Value);
         }
-    }
-    void CreateDataClass(Language language, string className, List<FieldClass> fields, string path) {
-        var generate = Activator.CreateInstance(Type.GetType($"GenerateData{language}")) as IGenerate;
-        generate.PackageName = mPackageName;
-        generate.ClassName = className;
-        generate.Language = language;
-        generate.Package = new PackageClass() { Fields = fields };
-        generate.Parameter = true;
-        var fileName = $"{className}.{language.GetInfo().extension}";
-        if (language == Language.Java) {
-            fileName = string.Join("/", mPackageName.Split(".")) + "/" + fileName;
-        }
-        FileUtil.CreateFile(fileName, generate.Generate(), path.Split(","));
-    }
-    void CreateEnumClass(Language language, PackageEnum enums, string path) {
-        var generate = Activator.CreateInstance(Type.GetType($"GenerateEnum{language}")) as IGenerate;
-        generate.PackageName = mPackageName;
-        generate.Language = language;
-        generate.ClassName = enums.Name;
-        generate.Package = enums;
-        generate.Parameter = true;
-        var fileName = $"{enums.Name}.{language.GetInfo().extension}";
-        if (language == Language.Java) {
-            fileName = string.Join("/", mPackageName.Split(".")) + "/" + fileName;
-        }
-        FileUtil.CreateFile(fileName, generate.Generate(), path.Split(","));
     }
 }
