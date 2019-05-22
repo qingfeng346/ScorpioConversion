@@ -83,6 +83,9 @@ public class TableBuilder {
                     field.Valid = false;
                 }
             } else if (key == KEYWORD_TYPE) {
+                if (value.IsInvalid()) {
+                    field.Valid = false;
+                }
                 if (value.IsArrayType()) {
                     field.Array = true;
                     field.Type = value.GetFinalType();

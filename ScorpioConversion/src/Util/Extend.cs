@@ -36,7 +36,7 @@ public static class Extend {
         return value == null || value.values.Count == 0;
     }
     public static bool IsInvalid(this string str) {
-        return str.Trim().StartsWith("!");
+        return string.IsNullOrWhiteSpace(str) || str.Trim().StartsWith("!");
     }
     public static bool IsArrayType(this string str) {
         return str.StartsWith(ArrayString);
