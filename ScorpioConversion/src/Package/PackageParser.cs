@@ -130,8 +130,9 @@ public class PackageParser {
             while (itor.MoveNext())
                 GlobalBasic.Add(itor.Current.Value);
         }
-        string[] files = Directory.Exists(dir) ? Directory.GetFiles(dir, "*.sco", SearchOption.AllDirectories) : new string[0];
-        foreach (var file in files) { Script.LoadFile(file); } {
+        var files = Directory.Exists(dir) ? Directory.GetFiles(dir, "*.sco", SearchOption.AllDirectories) : (File.Exists(dir) ? new string[] { dir } : new string[0]);
+        foreach (var file in files) { Script.LoadFile(file); }
+        {
             var itor = Script.GetGlobalTable().GetIterator();
             while (itor.MoveNext()) {
                 if (GlobalBasic.Contains(itor.Current.Value))
