@@ -27,6 +27,9 @@ class __TableName {
     Datas() {
         return this.m_dataArray
     }
+}
+__TableName[""()""] = function(ID) {
+    return this.m_dataArray[ID]
 }";
 }
 
