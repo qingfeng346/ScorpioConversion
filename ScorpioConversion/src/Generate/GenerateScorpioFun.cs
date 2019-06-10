@@ -1,7 +1,7 @@
 ﻿using System.Text;
-public class TemplateScorpio2 {
+
+public class TemplateScorpioFun {
     public const string Table = @"
-ScorpioSerializer = import_type(""ScorpioProto.Commons.ScorpioSerializer"")
 class __TableName {
     constructor() {
         this.m_count = 0
@@ -24,17 +24,17 @@ class __TableName {
     Datas() {
         return this.m_dataArray
     }
-    ""()""(ID) {
-        return this.m_dataArray[ID]
-    }
+}
+__TableName[""()""] = function(ID) {
+    return this.m_dataArray[ID]
 }";
 }
 
-public class GenerateDataScorpio2 : IGenerate {
+public class GenerateDataScorpioFun : IGenerate {
     protected override string Generate_impl() {
         var builder = new StringBuilder();
         builder.Append($@"//本文件为自动生成，请不要手动修改
-{ClassName} = [");
+$G[""{ClassName}""] = [");
         foreach (var field in Fields) {
             var languageType = field.GetLanguageType(Language);
             languageType = field.IsEnum ? BasicUtil.GetType(BasicEnum.INT32).Name : languageType;
@@ -48,10 +48,10 @@ public class GenerateDataScorpio2 : IGenerate {
         return builder.ToString();
     }
 }
-public class GenerateTableScorpio2 : IGenerate {
+public class GenerateTableScorpioFun : IGenerate {
     protected override string Generate_impl() {
-        return TemplateScorpio2.Table;
+        return TemplateScorpioFun.Table;
     }
 }
-public class GenerateEnumScorpio2 : GenerateEnumScorpio {
+public class GenerateEnumScorpioFun : GenerateEnumScorpio {
 }

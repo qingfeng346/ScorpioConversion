@@ -17,6 +17,8 @@ public enum Language {
     Scorpio,
     [LanguageInfo("sco")]
     Scorpio2,
+    [LanguageInfo("sco")]
+    ScorpioFun,
     [LanguageInfo("cs")]
     CSharp,
     [LanguageInfo("java")]
