@@ -8,7 +8,7 @@ class __TableName {
         this.m_dataArray = {}
     }
     Initialize(fileName, reader) {
-        this.m_dataArray = TableSerializer.ReadDatas(fileName, reader, this.m_dataArray, ""__DataName"", ""__KeyName"", ""__MD5"")
+        this.m_dataArray = ScorpioSerializer.ReadDatas(fileName, reader, this.m_dataArray, ""__DataName"", ""__KeyName"", ""__MD5"")
         this.m_count = this.m_dataArray.length()
         return this
     }
