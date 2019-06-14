@@ -6,6 +6,7 @@ using System.Diagnostics;
 using System.Collections.Generic;
 using Scorpio;
 using Scorpio.Commons;
+using System.Text;
 
 using NPOI.SS.UserModel;
 using NPOI.HSSF.UserModel;
@@ -29,6 +30,37 @@ namespace ScorpioConversion {
     }
     class Program {
         const int READ_LENGTH = 8192;
+        private const string HelpRegister = @"
+注册运行程序到环境变量";
+        private static string HelpInstall = $@"
+载入对应语言的库文件
+{HelpLanguages}";
+        private static string HelpExecute = $@"
+命令列表
+    register        注册运行程序到环境变量
+    install         载入对应语言的库文件
+    [other]         转换excel文件
+        -package        命名空间,默认 sco
+        -files          需要转换的excel文件,多文件,隔开
+        -paths          需要转换的excel文件目录 多路径[,]隔开
+        -data           数据文件输出目录 多目录[,]隔开
+        -suffix         数据文件后缀 默认 .data
+        -name           输出文件使用文件名或者sheet名字,默认file, 选项 [file,sheet]
+        -config         配置文件路径 多路径[,]隔开
+        -spawns         派生文件列表 多个Key[,]隔开
+{HelpLanguages}
+";
+        static string HelpLanguages {
+            get {
+                var builder = new StringBuilder(@"
+    支持语言列表");
+                foreach (Language language in Enum.GetValues(typeof(Language))) {
+                    builder.Append($@"
+        -l{language.GetInfo().extension.ToLower()} | -{language.ToString().ToLower()}           {language.ToString()} 语言输出目录,多目录[,]隔开");
+                }
+                return builder.ToString();
+            }
+        }
         static void Main(string[] args) {
             try {
                 Logger.SetLogger(new LogHelper());
