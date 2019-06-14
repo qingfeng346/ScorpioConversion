@@ -72,7 +72,8 @@ namespace ScorpioConversion {
             var fileName = Path.GetFullPath($"{Environment.CurrentDirectory}/{System.Guid.NewGuid().ToString("N")}");
             try {
                 if (!Download(version, $"{fileName}.zip")) {
-                    if (!Download("master", $"{fileName}.zip")) {
+                    version = "master";
+                    if (!Download(version, $"{fileName}.zip")) {
                         throw new Exception("库文件下载失败");
                     }
                 }
