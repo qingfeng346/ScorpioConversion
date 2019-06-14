@@ -104,9 +104,7 @@ namespace ScorpioConversion {
             }
         }
         static void Convert(Dictionary<Language, string> languageDirectory, CommandLine command) {
-            if (languageDirectory.Count == 0) {
-                throw new Exception("至少选择一种语言");
-            }
+            if (languageDirectory.Count == 0) { throw new Exception("至少选择一种语言"); }
             var packageName = command.GetValue("-package", "scov"); //默认 命名空间
             var files = command.GetValue("-files");                 //需要转换的文件 多文件[,]隔开
             var paths = command.GetValue("-paths");                 //需要转换的文件目录 多路径[,]隔开
