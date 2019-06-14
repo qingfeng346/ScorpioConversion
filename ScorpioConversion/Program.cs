@@ -69,27 +69,18 @@ namespace ScorpioConversion {
 #else
             var version = $"v{Version.version}";
 #endif
-            var request = (HttpWebRequest)HttpWebRequest.Create($"https://github.com/qingfeng346/ScorpioConversion/archive/{version}.zip");
             var fileName = Path.GetFullPath($"{Environment.CurrentDirectory}/{System.Guid.NewGuid().ToString("N")}");
             try {
-                Logger.info("开始下载库文件...");
-                using (var response = request.GetResponse()) {
-                    using (var stream = response.GetResponseStream()) {
-                        var bytes = new byte[READ_LENGTH];
-                        using (var fileStream = new FileStream($"{fileName}.zip", FileMode.CreateNew)) {
-                            while (true) {
-                                var readSize = stream.Read(bytes, 0, READ_LENGTH);
-                                if (readSize <= 0) { break; }
-                                fileStream.Write(bytes, 0, readSize);
-                            }
-                        }
+                if (!Download(version, $"{fileName}.zip")) {
+                    if (!Download("master", $"{fileName}.zip")) {
+                        throw new Exception("库文件下载失败");
                     }
                 }
                 Logger.info("开始解压文件...");
                 ZipFile.ExtractToDirectory($"{fileName}.zip", fileName, true);
                 foreach (var language in languageDirectory) {
                     var pathName = language.Key == Language.Go ? "scorpioproto" : "ScorpioProto";
-                    var sourceDir = $"{fileName}/ScorpioProto-{version}/ScorpioProto/{language.Key}/src/{pathName}/";
+                    var sourceDir = $"{fileName}/ScorpioConversion-{version}/ScorpioProto/{language.Key}/src/{pathName}/";
                     var targets = language.Value.Split(",");
                     foreach (var target in targets) {
                         var targetDir = Path.GetFullPath($"{Environment.CurrentDirectory}/{target}/{pathName}");
@@ -102,6 +93,28 @@ namespace ScorpioConversion {
                 FileUtil.DeleteFile($"{fileName}.zip");
                 FileUtil.DeleteFiles(fileName, "*", true);
             }
+        }
+        static bool Download(string version, string fileName) {
+            var request = (HttpWebRequest)HttpWebRequest.Create($"https://github.com/qingfeng346/ScorpioConversion/archive/{version}.zip");
+            Logger.info($"开始下载库文件... : {version}");
+            try {
+                using (var response = request.GetResponse()) {
+                    using (var stream = response.GetResponseStream()) {
+                        var bytes = new byte[READ_LENGTH];
+                        using (var fileStream = new FileStream(fileName, FileMode.CreateNew)) {
+                            while (true) {
+                                var readSize = stream.Read(bytes, 0, READ_LENGTH);
+                                if (readSize <= 0) { break; }
+                                fileStream.Write(bytes, 0, readSize);
+                            }
+                            return true;
+                        }
+                    }
+                }
+            } catch (System.Exception e) {
+                Logger.error("下载库文件失败 : {0}", e.Message);
+            }
+            return false;
         }
         static void Convert(Dictionary<Language, string> languageDirectory, CommandLine command) {
             if (languageDirectory.Count == 0) { throw new Exception("至少选择一种语言"); }
