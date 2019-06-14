@@ -119,14 +119,14 @@ namespace ScorpioConversion {
         }
         static void Convert(Dictionary<Language, string> languageDirectory, CommandLine command) {
             if (languageDirectory.Count == 0) { throw new Exception("至少选择一种语言"); }
-            var packageName = command.GetValue("-package", "scov"); //默认 命名空间
-            var files = command.GetValue("-files");                 //需要转换的文件 多文件[,]隔开
-            var paths = command.GetValue("-paths");                 //需要转换的文件目录 多路径[,]隔开
-            var data = command.GetValue("-data");                   //数据文件输出目录 多目录[,]隔开
-            var suffix = command.GetValue("-suffix", "data");       //数据文件后缀 默认 .data
-            var name = command.GetValue("-name", "file");           //名字使用文件名或者sheet名字
-            var config = command.GetValue("-config");               //配置文件路径 多路径[,]隔开
-            var spawns = command.GetValue("-spawns");               //派生文件列表 多个Key[,]隔开
+            var packageName = command.GetValueDefault("-package", "scov");  //默认 命名空间
+            var files = command.GetValue("-files");                         //需要转换的文件 多文件[,]隔开
+            var paths = command.GetValue("-paths");                         //需要转换的文件目录 多路径[,]隔开
+            var data = command.GetValue("-data");                           //数据文件输出目录 多目录[,]隔开
+            var suffix = command.GetValueDefault("-suffix", "data");        //数据文件后缀 默认 .data
+            var name = command.GetValueDefault("-name", "file");            //名字使用文件名或者sheet名字
+            var config = command.GetValue("-config");                       //配置文件路径 多路径[,]隔开
+            var spawns = command.GetValue("-spawns");                       //派生文件列表 多个Key[,]隔开
             var fileList = new List<string>();                              //所有要生成的excel文件
             var spawnList = new Dictionary<string, string>();               //派生文件列表
             var parser = new PackageParser();
