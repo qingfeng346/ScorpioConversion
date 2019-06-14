@@ -4,6 +4,7 @@ using System.Net;
 using System.IO.Compression;
 using System.Diagnostics;
 using System.Collections.Generic;
+using Scorpio;
 using Scorpio.Commons;
 
 using NPOI.SS.UserModel;
@@ -203,9 +204,9 @@ namespace ScorpioConversion {
                     ScorpioConversion.Util.CreateEnumClass(language, packageName, @enum.Value, pair.Value);
                 }
             }
-            //if (script.HasValue("BuildOver")) {
-            //    script.Call("BuildOver", successTables, successSpawns, command, parser);
-            //}
+            if (script.HasGlobal("BuildOver")) {
+                script.GetGlobal("BuildOver").call(ScriptValue.Null, successTables, successSpawns, command, parser);
+            }
         }
     }
 }
