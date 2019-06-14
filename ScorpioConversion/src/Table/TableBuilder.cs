@@ -107,10 +107,10 @@ public class TableBuilder {
             } else if (key == KEYWORD_DEFAULT) {
                 field.Default = value;
             } else if (key == KEYWORD_ATTRIBUTE) {
-                Script script = new Script();
-                script.LoadLibrary();
-                script.LoadString(value);
-                field.Attribute = script.GetGlobalTable();
+                //Script script = new Script();
+                //script.LoadLibrary();
+                //script.LoadString(value);
+                //field.Attribute = script.GetGlobalTable();
             } else {
                 throw new Exception($"不能识别的Key : {key}");
             }

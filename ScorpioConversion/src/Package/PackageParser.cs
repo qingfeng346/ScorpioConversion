@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 using System.IO;
 using Scorpio;
-using Scorpio.Variable;
+using Scorpio.Userdata;
 
 public interface IPackage {
 
@@ -20,16 +19,14 @@ public class PackageParser {
     public Dictionary<string, PackageClass> Tables { get; set; } = new Dictionary<string, PackageClass>();
     public Dictionary<string, PackageClass> Classes { get; set; } = new Dictionary<string, PackageClass>();
     public Script Script { get; private set; } = new Script();
-    void ParseEnum(string name, ScriptTable table) {
+    void ParseEnum(string name, ScriptMap table) {
         var enums = new PackageEnum();
-        var itor = table.GetIterator();
-        while (itor.MoveNext()) {
-            var fieldName = itor.Current.Key as string;
-            var val = itor.Current.Value as ScriptNumber;
-            if (string.IsNullOrEmpty(fieldName) || val == null) throw new Exception($"Enum:{name} Field:{fieldName} 参数出错");
+        foreach (var pair in table) {
+            var fieldName = pair.Key as string;
+            if (string.IsNullOrEmpty(fieldName)) throw new Exception($"Enum:{name} Field:{fieldName} 参数出错");
             enums.Fields.Add(new FieldEnum() {
-                Index = Convert.ToInt32(val.ObjectValue),
                 Name = fieldName,
+                Index = pair.Value.ToInt32(),
             });
         }
         enums.Fields.Sort((m1, m2) => { return m1.Index.CompareTo(m2.Index); });
@@ -37,39 +34,41 @@ public class PackageParser {
         enums.Name = name;
         Enums[name] = enums;
     }
-    void ParseConst(string name, ScriptTable table) {
+    void ParseConst(string name, ScriptMap table) {
         var consts = new PackageConst();
-        var itor = table.GetIterator();
-        while (itor.MoveNext()) {
-            var fieldName = itor.Current.Key as string;
+        foreach (var pair in table) {
+            var fieldName = pair.Key as string;
             if (string.IsNullOrEmpty(fieldName)) throw new Exception($"Const:{name} Field:{fieldName} 参数出错");
-            var pack = new FieldConst() { Name = fieldName };
-            ScriptObject value = itor.Current.Value;
-            if (value is ScriptNumberDouble) {
-                pack.Type = BasicEnum.INT32;
-                pack.Value = ((ScriptNumberDouble)value).ToInt32().ToString();
-            } else if (value is ScriptNumberLong) {
-                pack.Type = BasicEnum.INT64;
-                pack.Value = ((ScriptNumberLong)value).ToLong().ToString() + "L";
-            } else if (value is ScriptString) {
-                pack.Type = BasicEnum.STRING;
-                pack.Value = "\"" + value.ToString() + "\"";
-            } else {
-                throw new Exception("不支持此常量类型 " + value.Type);
+            var value = pair.Value;
+            var field = new FieldConst() { Name = fieldName };
+            switch (value.valueType) {
+                case ScriptValue.longValueType:
+                    field.Type = BasicEnum.INT64;
+                    field.Value = value.longValue.ToString() + "L";
+                    break;
+                case ScriptValue.stringValueType:
+                    field.Type = BasicEnum.STRING;
+                    field.Value = "\"" + value.stringValue + "\"";
+                    break;
+                case ScriptValue.doubleValueType:
+                case ScriptValue.objectValueType:
+                    field.Type = BasicEnum.INT32;
+                    field.Value = value.ToString();
+                    break;
+                default: throw new Exception("不支持此常量类型 " + value.ValueTypeName);
             }
-            consts.Fields.Add(pack);
+            consts.Fields.Add(field);
         }
         Consts[name.Substring(CONST_KEYWORD.Length)] = consts;
     }
-    void ParseClass(string name, ScriptTable table) {
+    void ParseClass(string name, ScriptMap table) {
         var classes = new PackageClass();
-        var itor = table.GetIterator();
-        while (itor.MoveNext()) {
-            var fieldName = itor.Current.Key as string;
-            var val = itor.Current.Value as ScriptString;
-            if (string.IsNullOrEmpty(fieldName) || val == null) throw new Exception($"Class:{name} Field:{fieldName} 参数出错 参数模版 \"索引,类型,是否数组=false,注释\"");
-            var infos = val.Value.Split(',');
-            if (infos.Length < 2) throw new Exception($"Class:{name} Field:{fieldName} 参数出错 参数模版 \"索引,类型,是否数组=false,注释\"");
+        foreach (var pair in table) {
+            var fieldName = pair.Key as string;
+            var val = pair.Value.ToString();
+            if (string.IsNullOrEmpty(fieldName)) throw new Exception($"Class:{name} Field:{fieldName} 参数出错 参数模版 \"[索引],[类型],[是否数组=false],[注释]\"");
+            var infos = val.Split(',');
+            if (infos.Length < 2) throw new Exception($"Class:{name} Field:{fieldName} 参数出错 参数模版 \"[索引],[类型],[是否数组=false],[注释]\"");
             var packageField = new FieldClass(this) {
                 Name = fieldName,
                 Index = infos[0].ToInt32(),
@@ -78,10 +77,10 @@ public class PackageParser {
                 Comment = infos.Length > 3 ? infos[3] : "",
             };
             if (!packageField.IsBasic) {
-                if (!Script.HasValue(packageField.Type) &&                             //判断网络协议自定义类
-                    !Script.HasValue(ENUM_KEYWORD + packageField.Type) &&              //判断是否是枚举
-                    !Script.HasValue(MESSAGE_KEYWORD + packageField.Type) &&           //判断网络协议自定义类
-                    !Script.HasValue(TABLE_KEYWORD + packageField.Type)                //判断Table内嵌类
+                if (!Script.HasGlobal(packageField.Type) &&                             //判断网络协议自定义类
+                    !Script.HasGlobal(ENUM_KEYWORD + packageField.Type) &&              //判断是否是枚举
+                    !Script.HasGlobal(MESSAGE_KEYWORD + packageField.Type) &&           //判断网络协议自定义类
+                    !Script.HasGlobal(TABLE_KEYWORD + packageField.Type)                //判断Table内嵌类
                            ) {
                     throw new Exception($"Class:{name} Field:{fieldName} 未知类型:{packageField.Type}");
                 }
@@ -122,32 +121,24 @@ public class PackageParser {
             Tables.Clear();
             Classes.Clear();
         }
-        Script.PushAssembly(typeof(Scorpio.Commons.FileUtil).Assembly);
-        Script.PushAssembly(GetType().Assembly);
-        Script.LoadLibrary();
-        var GlobalBasic = new List<ScriptObject>();
-        {
-            var itor = Script.GetGlobalTable().GetIterator();
-            while (itor.MoveNext())
-                GlobalBasic.Add(itor.Current.Value);
-        }
+        TypeManager.PushAssembly(typeof(Scorpio.Commons.FileUtil).Assembly);
+        TypeManager.PushAssembly(GetType().Assembly);
+        Script.LoadLibraryV1();
+        var global = Script.Global;
+        var globalKeys = global.GetKeys();
         var files = Directory.Exists(dir) ? Directory.GetFiles(dir, "*.sco", SearchOption.AllDirectories) : (File.Exists(dir) ? new string[] { dir } : new string[0]);
         foreach (var file in files) { Script.LoadFile(file); }
-        {
-            var itor = Script.GetGlobalTable().GetIterator();
-            while (itor.MoveNext()) {
-                if (GlobalBasic.Contains(itor.Current.Value))
-                    continue;
-                var name = itor.Current.Key as string;
-                var table = itor.Current.Value as ScriptTable;
-                if (name == null || table == null) continue;
-                if (name.StartsWith(ENUM_KEYWORD)) {                //枚举类型
-                    ParseEnum(name, table);
-                } else if (name.StartsWith(CONST_KEYWORD)) {        //常量类型
-                    ParseConst(name, table);
-                } else {
-                    ParseClass(name, table);
-                }
+        var keys = global.GetKeys();
+        foreach (var name in keys) {
+            if (globalKeys.Contains(name)) { continue; }
+            var table = global.GetValue(name).Get<ScriptMap>();
+            if (table == null) { continue; }
+            if (name.StartsWith(ENUM_KEYWORD)) {                //枚举类型
+                ParseEnum(name, table);
+            } else if (name.StartsWith(CONST_KEYWORD)) {        //常量类型
+                ParseConst(name, table);
+            } else {
+                ParseClass(name, table);
             }
         }
     }

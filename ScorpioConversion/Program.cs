@@ -32,22 +32,13 @@ namespace ScorpioConversion {
             try {
                 Logger.SetLogger(new LogHelper());
                 Scorpio.Commons.Util.PrintSystemInfo();
-                Logger.info("scov version : " + Version.version);
-                Logger.info("build date : " + Version.date);
+                Logger.info("Scov Version : " + Version.version);
+                Logger.info("Build Date : " + Version.date);
                 var command = CommandLine.Parse(args);
-                var type = command.GetValue("-type");                   //操作类型 默认转换excel install 自动拷贝 ScorpioProto库
-                var packageName = command.GetValue("-package", "scov"); //默认 命名空间
-                var files = command.GetValue("-files");                 //需要转换的文件 多文件[,]隔开
-                var paths = command.GetValue("-paths");                 //需要转换的文件目录 多路径[,]隔开
-                var data = command.GetValue("-data");                   //数据文件输出目录 多目录[,]隔开
-                var suffix = command.GetValue("-suffix", "data");       //数据文件后缀 默认 .data
-                var name = command.GetValue("-name", "file");           //名字使用文件名或者sheet名字
-                var config = command.GetValue("-config");               //配置文件路径 多路径[,]隔开
-                var spawns = command.GetValue("-spawns");               //派生文件列表 多个Key[,]隔开
-
+                var type = command.GetValue("-type","-t");              //操作类型 默认转换excel install 自动拷贝 ScorpioProto库
+                if (type == null || type.Length == 0) { type = command.Type; }
+                if (type == null) { type = ""; }
                 var languageDirectory = new Dictionary<Language, string>();     //各语言文件生成目录
-                var fileList = new List<string>();                              //所有要生成的excel文件
-                var spawnList = new Dictionary<string, string>();               //派生文件列表
                 foreach (Language language in Enum.GetValues(typeof(Language))) {
                     //各语言文件输出目录 多目录[,]隔开
                     var dir = command.GetValue("-l" + language.GetInfo().extension.ToLower());
@@ -58,116 +49,26 @@ namespace ScorpioConversion {
                         languageDirectory.Add(language, dir);
                     }
                 }
-                if ("install".Equals(type)) {
-                    if (languageDirectory.Count == 0) {
-                        throw new Exception("请至少选择一种语言");
-                    }
-                    //复制各语言需要的库文件
-                    Install(languageDirectory);
-                } else if ("register".Equals(type)) {
-                    //注册命令行
-                    Register();
-                } else {
-                    if (languageDirectory.Count == 0) {
-                        throw new Exception("至少选择一种语言");
-                    }
-                    var parser = new PackageParser();
-                    var script = parser.Script;
-                    if (!config.IsEmptyString()) {
-                        foreach (var dir in config.Split(",")) {
-                            parser.Parse(dir);
-                        }
-                    }
-                    if (!files.IsEmptyString()) {
-                        foreach (var file in files.Split(",")) {
-                            fileList.Add(Path.GetFullPath(Path.Combine(Environment.CurrentDirectory, file)));
-                        }
-                    }
-                    if (!paths.IsEmptyString()) {
-                        foreach (var path in paths.Split(",")) {
-                            foreach (var file in Directory.GetFiles(Path.GetFullPath(Path.Combine(Environment.CurrentDirectory, path)), "*", SearchOption.AllDirectories)) {
-                                if (!file.Contains("~$") && (file.EndsWith(".xls") || file.EndsWith(".xlsx"))) {
-                                    fileList.Add(file);
-                                }
-                            }
-                        }
-                    }
-                    if (fileList.Count == 0)
-                        throw new Exception("至少选择一个excel文件");
-                    if (!spawns.IsEmptyString()) {
-                        foreach (var spawn in spawns.Split(",")) {
-                            spawnList[spawn] = "";
-                        }
-                    }
-                    var successTables = new List<string>();
-                    var successSpawns = new Dictionary<string, List<string>>();
-                    var isFileName = name.ToLower() == "file";
-                    foreach (var file in fileList) {
-                        var fileName = Path.GetFileNameWithoutExtension(file).Trim();
-                        var extension = Path.GetExtension(file);
-                        var tempFile = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, System.Guid.NewGuid().ToString("N") + extension);
-                        try {
-                            File.Copy(file, tempFile, true);
-                            using (var fileStream = new FileStream(tempFile, FileMode.Open, FileAccess.Read)) {
-                                IWorkbook workbook = null;
-                                if (extension.EndsWith(".xls")) {
-                                    workbook = new HSSFWorkbook(fileStream);
-                                } else if (extension.EndsWith(".xlsx")) {
-                                    workbook = new XSSFWorkbook(fileStream);
-                                }
-                                if (workbook == null) {
-                                    throw new Exception("不支持的文件后缀 : " + extension);
-                                }
-                                for (var i = 0; i < workbook.NumberOfSheets; ++i) {
-                                    var sheet = workbook.GetSheetAt(i);
-                                    if (sheet.SheetName.IsInvalid()) { continue; }
-                                    try {
-                                        var builder = new TableBuilder();
-                                        builder.SetPackageName(packageName);
-                                        builder.SetName(isFileName ? fileName : sheet.SheetName.Trim());
-                                        builder.SetSuffix(suffix);
-                                        builder.SetSpawn(spawnList);
-                                        builder.Parse(sheet, data, languageDirectory, parser);
-                                        Logger.info($"文件:{file} Sheet:{sheet.SheetName} 解析完成");
-                                        if (builder.IsSpawn) {
-                                            if (successSpawns.ContainsKey(builder.Spawn)) {
-                                                successSpawns[builder.Spawn].Add(builder.Name);
-                                            } else {
-                                                successSpawns[builder.Spawn] = new List<string>() { builder.Name };
-                                            }
-                                        } else {
-                                            successTables.Add(builder.Name);
-                                        }
-                                    } catch (Exception e) {
-                                        Logger.error($" 文件:{file} Sheet:{sheet.SheetName} 解析出错 : " + e.ToString());
-                                    }
-                                }
-                            }
-                        } catch (Exception e) {
-                            Logger.error($" 文件 [{file}] 执行出错 : " + e.ToString());
-                        } finally {
-                            File.Delete(tempFile);
-                        }
-                    }
-                    foreach (var pair in languageDirectory) {
-                        var language = pair.Key;
-                        foreach (var table in parser.Tables) {
-                            ScorpioConversion.Util.CreateDataClass(language, packageName, table.Key, table.Value.Fields, pair.Value);
-                        }
-                        foreach (var @enum in parser.Enums) {
-                            ScorpioConversion.Util.CreateEnumClass(language, packageName, @enum.Value, pair.Value);
-                        }
-                    }
-                    if (script.HasValue("BuildOver")) {
-                        script.Call("BuildOver", successTables, successSpawns, command, parser);
-                    }
+                switch (type) {
+                    case "register": Register(); return;                        //注册命令行
+                    case "install": Install(languageDirectory); return;         //引入各语言需要的库文件
+                    default: Convert(languageDirectory, command); return;       //转换文件
                 }
             } catch (Exception e) {
                 Logger.error($"exec is error : " + e.ToString());
             }
         }
-        static void Install(Dictionary<Language, string> languages) {
-            var request = (HttpWebRequest)HttpWebRequest.Create("https://github.com/qingfeng346/ScorpioProto/archive/master.zip");
+        static void Register() {
+            Scorpio.Commons.Util.RegisterApplication(Scorpio.Commons.Util.BaseDirectory + "/" + AppDomain.CurrentDomain.FriendlyName);
+        }
+        static void Install(Dictionary<Language, string> languageDirectory) {
+            if (languageDirectory.Count == 0) { throw new Exception("请至少选择一种语言"); }
+#if DEBUG
+            var version = "master";
+#else
+            var version = $"v{Version.version}";
+#endif
+            var request = (HttpWebRequest)HttpWebRequest.Create($"https://github.com/qingfeng346/ScorpioConversion/archive/{version}.zip");
             var fileName = Path.GetFullPath($"{Environment.CurrentDirectory}/{System.Guid.NewGuid().ToString("N")}");
             try {
                 Logger.info("开始下载库文件...");
@@ -185,9 +86,9 @@ namespace ScorpioConversion {
                 }
                 Logger.info("开始解压文件...");
                 ZipFile.ExtractToDirectory($"{fileName}.zip", fileName, true);
-                foreach (var language in languages) {
+                foreach (var language in languageDirectory) {
                     var pathName = language.Key == Language.Go ? "scorpioproto" : "ScorpioProto";
-                    var sourceDir = $"{fileName}/ScorpioProto-master/{language.Key}/src/{pathName}/";
+                    var sourceDir = $"{fileName}/ScorpioProto-{version}/ScorpioProto/{language.Key}/src/{pathName}/";
                     var targets = language.Value.Split(",");
                     foreach (var target in targets) {
                         var targetDir = Path.GetFullPath($"{Environment.CurrentDirectory}/{target}/{pathName}");
@@ -201,8 +102,110 @@ namespace ScorpioConversion {
                 FileUtil.DeleteFiles(fileName, "*", true);
             }
         }
-        static void Register() {
-            Scorpio.Commons.Util.RegisterApplication(Scorpio.Commons.Util.BaseDirectory + "/scov");
+        static void Convert(Dictionary<Language, string> languageDirectory, CommandLine command) {
+            if (languageDirectory.Count == 0) {
+                throw new Exception("至少选择一种语言");
+            }
+            var packageName = command.GetValue("-package", "scov"); //默认 命名空间
+            var files = command.GetValue("-files");                 //需要转换的文件 多文件[,]隔开
+            var paths = command.GetValue("-paths");                 //需要转换的文件目录 多路径[,]隔开
+            var data = command.GetValue("-data");                   //数据文件输出目录 多目录[,]隔开
+            var suffix = command.GetValue("-suffix", "data");       //数据文件后缀 默认 .data
+            var name = command.GetValue("-name", "file");           //名字使用文件名或者sheet名字
+            var config = command.GetValue("-config");               //配置文件路径 多路径[,]隔开
+            var spawns = command.GetValue("-spawns");               //派生文件列表 多个Key[,]隔开
+            var fileList = new List<string>();                              //所有要生成的excel文件
+            var spawnList = new Dictionary<string, string>();               //派生文件列表
+            var parser = new PackageParser();
+            var script = parser.Script;
+            if (!config.IsEmptyString()) {
+                foreach (var dir in config.Split(",")) {
+                    parser.Parse(dir);
+                }
+            }
+            if (!files.IsEmptyString()) {
+                foreach (var file in files.Split(",")) {
+                    fileList.Add(Path.GetFullPath(Path.Combine(Environment.CurrentDirectory, file)));
+                }
+            }
+            if (!paths.IsEmptyString()) {
+                foreach (var path in paths.Split(",")) {
+                    foreach (var file in Directory.GetFiles(Path.GetFullPath(Path.Combine(Environment.CurrentDirectory, path)), "*", SearchOption.AllDirectories)) {
+                        if (!file.Contains("~$") && (file.EndsWith(".xls") || file.EndsWith(".xlsx"))) {
+                            fileList.Add(file);
+                        }
+                    }
+                }
+            }
+            if (fileList.Count == 0)
+                throw new Exception("至少选择一个excel文件");
+            if (!spawns.IsEmptyString()) {
+                foreach (var spawn in spawns.Split(",")) {
+                    spawnList[spawn] = "";
+                }
+            }
+            var successTables = new List<string>();
+            var successSpawns = new Dictionary<string, List<string>>();
+            var isFileName = name.ToLower() == "file";
+            foreach (var file in fileList) {
+                var fileName = Path.GetFileNameWithoutExtension(file).Trim();
+                var extension = Path.GetExtension(file);
+                var tempFile = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, System.Guid.NewGuid().ToString("N") + extension);
+                try {
+                    File.Copy(file, tempFile, true);
+                    using (var fileStream = new FileStream(tempFile, FileMode.Open, FileAccess.Read)) {
+                        IWorkbook workbook = null;
+                        if (extension.EndsWith(".xls")) {
+                            workbook = new HSSFWorkbook(fileStream);
+                        } else if (extension.EndsWith(".xlsx")) {
+                            workbook = new XSSFWorkbook(fileStream);
+                        }
+                        if (workbook == null) {
+                            throw new Exception("不支持的文件后缀 : " + extension);
+                        }
+                        for (var i = 0; i < workbook.NumberOfSheets; ++i) {
+                            var sheet = workbook.GetSheetAt(i);
+                            if (sheet.SheetName.IsInvalid()) { continue; }
+                            try {
+                                var builder = new TableBuilder();
+                                builder.SetPackageName(packageName);
+                                builder.SetName(isFileName ? fileName : sheet.SheetName.Trim());
+                                builder.SetSuffix(suffix);
+                                builder.SetSpawn(spawnList);
+                                builder.Parse(sheet, data, languageDirectory, parser);
+                                Logger.info($"文件:{file} Sheet:{sheet.SheetName} 解析完成");
+                                if (builder.IsSpawn) {
+                                    if (successSpawns.ContainsKey(builder.Spawn)) {
+                                        successSpawns[builder.Spawn].Add(builder.Name);
+                                    } else {
+                                        successSpawns[builder.Spawn] = new List<string>() { builder.Name };
+                                    }
+                                } else {
+                                    successTables.Add(builder.Name);
+                                }
+                            } catch (Exception e) {
+                                Logger.error($" 文件:{file} Sheet:{sheet.SheetName} 解析出错 : " + e.ToString());
+                            }
+                        }
+                    }
+                } catch (Exception e) {
+                    Logger.error($" 文件 [{file}] 执行出错 : " + e.ToString());
+                } finally {
+                    File.Delete(tempFile);
+                }
+            }
+            foreach (var pair in languageDirectory) {
+                var language = pair.Key;
+                foreach (var table in parser.Tables) {
+                    ScorpioConversion.Util.CreateDataClass(language, packageName, table.Key, table.Value.Fields, pair.Value);
+                }
+                foreach (var @enum in parser.Enums) {
+                    ScorpioConversion.Util.CreateEnumClass(language, packageName, @enum.Value, pair.Value);
+                }
+            }
+            //if (script.HasValue("BuildOver")) {
+            //    script.Call("BuildOver", successTables, successSpawns, command, parser);
+            //}
         }
     }
 }

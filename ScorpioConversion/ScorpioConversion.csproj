@@ -4,13 +4,17 @@
     <OutputType>Exe</OutputType>
     <TargetFramework>netcoreapp2.0</TargetFramework>
     <AssemblyName>scov</AssemblyName>
-    <Configurations>Debug;Release;DebugMy</Configurations>
+    <Configurations>Debug;Release</Configurations>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <DefineConstants>TRACE</DefineConstants>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="NPOI" Version="2.4.1" />
-    <PackageReference Include="Scorpio-CSharp" Version="1.0.10" />
-    <PackageReference Include="ScorpioCommons" Version="1.0.5" />
+    <PackageReference Include="Scorpio-CSharp" Version="2.0.0-preview4" />
+    <PackageReference Include="ScorpioCommons" Version="1.0.7" />
   </ItemGroup>
 
 </Project>

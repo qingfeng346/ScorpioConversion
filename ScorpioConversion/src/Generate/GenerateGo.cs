@@ -169,7 +169,7 @@ func (data *{ClassName}) Read(fileName string, reader scorpioproto.IScorpioReade
         foreach (var field in Fields) {
             var languageType = field.GetLanguageType(Language);
             var fieldRead = "";
-            if (field.Attribute != null && field.Attribute.GetValue("Language").LogicOperation()) {
+            if (field.Attribute != null && field.Attribute.GetValue("Language").IsTrue) {
                 fieldRead = $@"TableUtil.Readl10n(l10n, fileName + ""_{field.Name}_"" + ret.ID(), reader)";
             } else if (field.IsBasic) {
                 fieldRead = $"reader.Read{field.BasicType.Name}()";
