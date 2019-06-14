@@ -83,7 +83,7 @@ namespace ScorpioConversion {
                     var sourceDir = $"{fileName}/ScorpioConversion-{version}/ScorpioProto/{language.Key}/src/{pathName}/";
                     var targets = language.Value.Split(",");
                     foreach (var target in targets) {
-                        var targetDir = Path.GetFullPath($"{Environment.CurrentDirectory}/{target}/{pathName}");
+                        var targetDir = Path.GetFullPath(Path.Combine(Environment.CurrentDirectory, $"{target}/{pathName}"));
                         Logger.info($"拷贝目录 {sourceDir} -> {targetDir}");
                         FileUtil.DeleteFiles(targetDir, "*", true);
                         FileUtil.CopyFolder(sourceDir, targetDir, "*");

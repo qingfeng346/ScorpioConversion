@@ -6,7 +6,7 @@
     },
     "Install": {
       "commandName": "Project",
-      "commandLineArgs": "-type install                                          -lcs C:\\Users\\qingf\\Desktop\\test\\output\\dotnet                    -lgo C:\\Users\\qingf\\Desktop\\test\\output\\go\\src         "
+      "commandLineArgs": "install -lcs C:\\Users\\qingf\\Desktop\\test"
     }
   }
 }
