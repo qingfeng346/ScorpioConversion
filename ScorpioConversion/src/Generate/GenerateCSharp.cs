@@ -19,17 +19,21 @@ using ScorpioProto.Table;
         var iRow = TableUtil.ReadHead(reader, fileName, FILE_MD5_CODE);
         for (var i = 0; i < iRow; ++i) {
             var pData = __DataName.Read(fileName, reader);
-            if (m_dataArray.ContainsKey(pData.ID())) {
-                m_dataArray[pData.ID()].Set(pData);
+            __DataName value;
+            if (m_dataArray.TryGetValue(pData.ID(), out value)) {
+                value.Set(pData);
             } else {
-                m_dataArray.Add(pData.ID(), pData);
+                m_dataArray[pData.ID()] = pData;
             }
         }
         m_count = m_dataArray.Count;
         return this;
     }
     public __DataName GetValue(__KeyType ID) {
-        if (m_dataArray.ContainsKey(ID)) return m_dataArray[ID];
+        __DataName value;
+        if (m_dataArray.TryGetValue(ID, out value)) {
+            return value;
+        }
         TableUtil.Warning(""__DataName key is not exist "" + ID);
         return null;
     }
@@ -61,13 +65,11 @@ public class GenerateDataCSharp : IGenerate {
         return $@"{TemplateCSharp.Head}
 namespace {PackageName} {{
 public partial class {ClassName} : IData {{
-    private bool m_IsInvalid;
     {AllFields()}
     {FuncGetData()}
-    {FuncIsInvalid()}
-    {FuncRead()}
     {FuncSet()}
     {FucToString()}
+    {FuncRead()}
 }}
 }}";
     }
@@ -102,20 +104,6 @@ public partial class {ClassName} : IData {{
     }");
         return builder.ToString();
     }
-    string FuncIsInvalid() {
-        var builder = new StringBuilder();
-        builder.Append(@"
-    public bool IsInvalid() { return m_IsInvalid; }
-    private bool CheckInvalid() {");
-        foreach (var field in Fields) {
-            builder.Append($@"
-        if (!TableUtil.IsInvalid(this._{field.Name})) return false;");
-        }
-        builder.Append(@"
-        return true;
-    }");
-        return builder.ToString();
-    }
     string FuncRead() {
         var builder = new StringBuilder();
         builder.Append($@"
@@ -126,7 +114,7 @@ public partial class {ClassName} : IData {{
             var fieldRead = "";
             if (field.Attribute != null && field.Attribute.GetValue("Language").IsTrue) {
                 fieldRead = $@"TableUtil.Readl10n(l10n, fileName + ""_{field.Name}_"" + ret.ID(), reader)";
-            } else if (field.IsBasic){
+            } else if (field.IsBasic) {
                 fieldRead = $"reader.Read{field.BasicType.Name}()";
             } else if (field.IsEnum) {
                 fieldRead = $"({languageType})reader.ReadInt32()";
@@ -136,8 +124,8 @@ public partial class {ClassName} : IData {{
             if (field.Array) {
                 builder.Append($@"
         {{
-            List<{languageType}> list = new List<{languageType}>();
-            int number = reader.ReadInt32();
+            var list = new List<{languageType}>();
+            var number = reader.ReadInt32();
             for (int i = 0; i < number; ++i) {{ list.Add({fieldRead}); }}
             ret._{field.Name} = list.AsReadOnly();
         }}");
@@ -147,7 +135,6 @@ public partial class {ClassName} : IData {{
             }
         }
         builder.Append(@"
-        ret.m_IsInvalid = ret.CheckInvalid();
         return ret;
     }");
         return builder.ToString();
@@ -168,20 +155,21 @@ public partial class {ClassName} : IData {{
         var builder = new StringBuilder();
         builder.Append(@"
     public override string ToString() {
-        return ""{ """);
+        return string.Format(");
+        var format = "";
+        var args = "";
         var count = Fields.Count;
         for (int i = 0; i < count; ++i) {
             var field = Fields[i];
-            var toString = field.Array ? $"ScorpioUtil.ToString(_{field.Name})" : $"_{field.Name}";
-            builder.Append($@" + 
-            ""{field.Name} : "" +  {toString}");
-            if (i != count - 1) {
-                builder.Append(" + \",\"");
+            if (i != 0) {
+                format += ", ";
+                args += ", ";
             }
+            format += $"{field.Name} : {{{i}}}";
+            args += $"_{field.Name}";
         }
-        builder.Append(@" + 
-            "" }"";
-    }");
+        builder.Append($@"""{format}"", {args});
+    }}");
         return builder.ToString();
     }
 }
