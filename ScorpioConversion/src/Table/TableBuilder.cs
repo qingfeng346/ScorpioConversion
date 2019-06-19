@@ -22,6 +22,7 @@ public class TableBuilder {
     private string mPackageName = "";                                   //命名空间
     private string mName = "";                                          //导出data文件名字
     private string mSuffix = "";                                        //data文件后缀
+    private string mFileSuffix = "";                                    //程序文件后缀名
     private Dictionary<string, string> mSpawns = new Dictionary<string, string>();            //派生类列表
 
     private PackageParser mParser = null;                               //自定义类
@@ -41,6 +42,7 @@ public class TableBuilder {
     public TableBuilder SetPackageName(string value) { mPackageName = value; return this; }
     public TableBuilder SetName(string value) { mName = value; return this; }
     public TableBuilder SetSuffix(string value) { mSuffix = value; return this; }
+    public TableBuilder SetFileSuffix(string value) { mFileSuffix = value; return this; }
     public TableBuilder SetSpawn(Dictionary<string, string> value) { mSpawns = value; return this; }
     public void Parse(ISheet sheet, string dataDirectory, Dictionary<Language, string> languageDirectory, PackageParser parser) {
         mParser = parser;
@@ -209,7 +211,7 @@ public class TableBuilder {
                     }
                 }
             }
-            FileUtil.CreateFile($"{mName}.{mSuffix}", writer.ToArray(), mDataDirectory.Split(","));
+            FileUtil.CreateFile($"{mName}.{mSuffix}", writer.ToArray(), mDataDirectory.Split(ScorpioConversion.Util.Separator));
         }
     }
     void WriteField(TableWriter writer, IValue value, FieldClass field) {
@@ -270,8 +272,8 @@ public class TableBuilder {
     }
     void CreateLanguageFile() {
         foreach (var pair in mLanguageDirectory) {
-            ScorpioConversion.Util.CreateDataClass(pair.Key, mPackageName, DataClassName, mFields, pair.Value);
-            ScorpioConversion.Util.CreateTableClass(pair.Key, mPackageName, TableClassName, DataClassName, LayoutMD5, mFields, pair.Value);
+            ScorpioConversion.Util.CreateDataClass(pair.Key, mPackageName, DataClassName, mFields, pair.Value, mFileSuffix);
+            ScorpioConversion.Util.CreateTableClass(pair.Key, mPackageName, TableClassName, DataClassName, LayoutMD5, mFields, pair.Value, mFileSuffix);
         }
     }
 }

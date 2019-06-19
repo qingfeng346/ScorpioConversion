@@ -54,4 +54,16 @@ public class GenerateTableScorpioFun : IGenerate {
     }
 }
 public class GenerateEnumScorpioFun : GenerateEnumScorpio {
+    protected override string Generate_impl() {
+        var builder = new StringBuilder();
+        builder.Append($@"//本文件为自动生成，请不要手动修改
+$G[""{ClassName}""] = {{");
+        foreach (var info in Enums.Fields) {
+            builder.Append($@"
+    {info.Name} : {info.Index},");
+        }
+        builder.Append(@"
+}");
+        return builder.ToString();
+    }
 }

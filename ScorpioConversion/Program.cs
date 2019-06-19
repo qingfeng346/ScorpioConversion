@@ -41,13 +41,14 @@ namespace ScorpioConversion {
     install         载入对应语言的库文件
     [other]         转换excel文件
         -package        命名空间,默认 sco
-        -files          需要转换的excel文件,多文件,隔开
-        -paths          需要转换的excel文件目录 多路径[,]隔开
-        -data           数据文件输出目录 多目录[,]隔开
-        -suffix         数据文件后缀 默认 .data
+        -files          需要转换的excel文件,多文件[{Util.Separator}]隔开
+        -paths          需要转换的excel文件目录 多路径[{Util.Separator}]隔开
+        -data           数据文件输出目录 多目录[{Util.Separator}]隔开
+        -suffix         数据文件后缀 默认[.data]
+        -fileSuffix     程序文件后缀 默认各语言默认后缀
         -name           输出文件使用文件名或者sheet名字,默认file, 选项 [file,sheet]
-        -config         配置文件路径 多路径[,]隔开
-        -spawns         派生文件列表 多个Key[,]隔开
+        -config         配置文件路径 多路径[{Util.Separator}]隔开
+        -spawns         派生文件列表 多个Key[{Util.Separator}]隔开
 {HelpLanguages}
 ";
         static string HelpLanguages {
@@ -56,7 +57,7 @@ namespace ScorpioConversion {
     支持语言列表");
                 foreach (Language language in Enum.GetValues(typeof(Language))) {
                     builder.Append($@"
-        -l{language.GetInfo().extension.ToLower()} | -{language.ToString().ToLower()}           {language.ToString()} 语言输出目录,多目录[,]隔开");
+        -l{language.GetInfo().extension.ToLower()} | -{language.ToString().ToLower()}           {language.ToString()} 语言输出目录,多目录[{Util.Separator}]隔开");
                 }
                 return builder.ToString();
             }
@@ -68,9 +69,9 @@ namespace ScorpioConversion {
                 Logger.info("Scov Version : " + Version.version);
                 Logger.info("Build Date : " + Version.date);
                 var command = CommandLine.Parse(args);
-                var type = command.GetValue("-type","-t");              //操作类型 默认转换excel install 自动拷贝 ScorpioProto库
-                if (type == null || type.Length == 0) { type = command.Type; }
-                if (type == null) { type = ""; }
+                var type = command.GetValue("-type", "-t");              //操作类型 默认转换excel install 自动拷贝 ScorpioProto库
+                var hasHelp = command.HadValue("-help", "--help", "-h");
+                if (type.isNullOrWhiteSpace()) { type = command.Type; }
                 var languageDirectory = new Dictionary<Language, string>();     //各语言文件生成目录
                 foreach (Language language in Enum.GetValues(typeof(Language))) {
                     //各语言文件输出目录 多目录[,]隔开
@@ -82,11 +83,20 @@ namespace ScorpioConversion {
                         languageDirectory.Add(language, dir);
                     }
                 }
-                switch (type) {
-                    case "register": Register(); return;                        //注册命令行
-                    case "install": Install(languageDirectory); return;         //引入各语言需要的库文件
-                    default: Convert(languageDirectory, command); return;       //转换文件
+                if (hasHelp) {
+                    switch (type) {
+                        case "register": Logger.info(HelpRegister); return;     //注册命令行
+                        case "install": Logger.info(HelpRegister); return;      //引入各语言需要的库文件
+                        default: Logger.info(HelpExecute); return;              //转换文件
+                    }
+                } else {
+                    switch (type) {
+                        case "register": Register(); return;                        //注册命令行
+                        case "install": Install(languageDirectory); return;         //引入各语言需要的库文件
+                        default: Convert(languageDirectory, command); return;       //转换文件
+                    }
                 }
+
             } catch (Exception e) {
                 Logger.error($"exec is error : " + e.ToString());
             }
@@ -114,7 +124,7 @@ namespace ScorpioConversion {
                 foreach (var language in languageDirectory) {
                     var pathName = language.Key == Language.Go ? "scorpioproto" : "ScorpioProto";
                     var sourceDir = $"{fileName}/ScorpioConversion-{version}/ScorpioProto/{language.Key}/src/{pathName}/";
-                    var targets = language.Value.Split(",");
+                    var targets = language.Value.Split(Util.Separator);
                     foreach (var target in targets) {
                         var targetDir = Path.GetFullPath(Path.Combine(Environment.CurrentDirectory, $"{target}/{pathName}"));
                         Logger.info($"拷贝目录 {sourceDir} -> {targetDir}");
@@ -152,29 +162,30 @@ namespace ScorpioConversion {
         static void Convert(Dictionary<Language, string> languageDirectory, CommandLine command) {
             if (languageDirectory.Count == 0) { throw new Exception("至少选择一种语言"); }
             var packageName = command.GetValueDefault("-package", "scov");  //默认 命名空间
-            var files = command.GetValue("-files");                         //需要转换的文件 多文件[,]隔开
-            var paths = command.GetValue("-paths");                         //需要转换的文件目录 多路径[,]隔开
-            var data = command.GetValue("-data");                           //数据文件输出目录 多目录[,]隔开
-            var suffix = command.GetValueDefault("-suffix", "data");        //数据文件后缀 默认 .data
+            var files = command.GetValue("-files");                         //需要转换的文件 多文件[{Util.Separator}]隔开
+            var paths = command.GetValue("-paths");                         //需要转换的文件目录 多路径[{Util.Separator}]隔开
+            var data = command.GetValue("-data");                           //数据文件输出目录 多目录[{Util.Separator}]隔开
+            var suffix = command.GetValueDefault("-suffix", "data");        //数据文件后缀 默认.data
             var name = command.GetValueDefault("-name", "file");            //名字使用文件名或者sheet名字
-            var config = command.GetValue("-config");                       //配置文件路径 多路径[,]隔开
-            var spawns = command.GetValue("-spawns");                       //派生文件列表 多个Key[,]隔开
+            var fileSuffix = command.GetValueDefault("-fileSuffix", "");    //生成的程序文件后缀名
+            var config = command.GetValue("-config");                       //配置文件路径 多路径[{Util.Separator}]隔开
+            var spawns = command.GetValue("-spawns");                       //派生文件列表 多个Key[{Util.Separator}]隔开
             var fileList = new List<string>();                              //所有要生成的excel文件
             var spawnList = new Dictionary<string, string>();               //派生文件列表
             var parser = new PackageParser();
             var script = parser.Script;
             if (!config.IsEmptyString()) {
-                foreach (var dir in config.Split(",")) {
+                foreach (var dir in config.Split(Util.Separator)) {
                     parser.Parse(dir);
                 }
             }
             if (!files.IsEmptyString()) {
-                foreach (var file in files.Split(",")) {
+                foreach (var file in files.Split(Util.Separator)) {
                     fileList.Add(Path.GetFullPath(Path.Combine(Environment.CurrentDirectory, file)));
                 }
             }
             if (!paths.IsEmptyString()) {
-                foreach (var path in paths.Split(",")) {
+                foreach (var path in paths.Split(Util.Separator)) {
                     foreach (var file in Directory.GetFiles(Path.GetFullPath(Path.Combine(Environment.CurrentDirectory, path)), "*", SearchOption.AllDirectories)) {
                         if (!file.Contains("~$") && (file.EndsWith(".xls") || file.EndsWith(".xlsx"))) {
                             fileList.Add(file);
@@ -185,7 +196,7 @@ namespace ScorpioConversion {
             if (fileList.Count == 0)
                 throw new Exception("至少选择一个excel文件");
             if (!spawns.IsEmptyString()) {
-                foreach (var spawn in spawns.Split(",")) {
+                foreach (var spawn in spawns.Split(Util.Separator)) {
                     spawnList[spawn] = "";
                 }
             }
@@ -216,6 +227,7 @@ namespace ScorpioConversion {
                                 builder.SetPackageName(packageName);
                                 builder.SetName(isFileName ? fileName : sheet.SheetName.Trim());
                                 builder.SetSuffix(suffix);
+                                builder.SetFileSuffix(fileSuffix);
                                 builder.SetSpawn(spawnList);
                                 builder.Parse(sheet, data, languageDirectory, parser);
                                 Logger.info($"文件:{file} Sheet:{sheet.SheetName} 解析完成");
@@ -242,10 +254,10 @@ namespace ScorpioConversion {
             foreach (var pair in languageDirectory) {
                 var language = pair.Key;
                 foreach (var table in parser.Tables) {
-                    ScorpioConversion.Util.CreateDataClass(language, packageName, table.Key, table.Value.Fields, pair.Value);
+                    ScorpioConversion.Util.CreateDataClass(language, packageName, table.Key, table.Value.Fields, pair.Value, fileSuffix);
                 }
                 foreach (var @enum in parser.Enums) {
-                    ScorpioConversion.Util.CreateEnumClass(language, packageName, @enum.Value, pair.Value);
+                    ScorpioConversion.Util.CreateEnumClass(language, packageName, @enum.Value, pair.Value, fileSuffix);
                 }
             }
             if (script.HasGlobal("BuildOver")) {

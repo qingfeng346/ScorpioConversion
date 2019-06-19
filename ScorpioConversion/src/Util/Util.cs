@@ -1,23 +1,24 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace ScorpioConversion {
     public static class Util {
-        public static void CreateDataClass(Language language, string packageName, string className, List<FieldClass> fields, string path) {
+        public const string Separator = ";";
+        public static void CreateDataClass(Language language, string packageName, string className, List<FieldClass> fields, string path, string fileSuffix) {
             var generate = Activator.CreateInstance(Type.GetType($"GenerateData{language}")) as IGenerate;
             generate.PackageName = packageName;
             generate.ClassName = className;
             generate.Language = language;
             generate.Package = new PackageClass() { Fields = fields };
             generate.Parameter = true;
-            var fileName = $"{className}.{language.GetInfo().extension}";
+            var suffix = fileSuffix.IsEmptyString() ? language.GetInfo().extension : fileSuffix;
+            var fileName = $"{className}.{suffix}";
             if (language == Language.Java) {
                 fileName = string.Join("/", packageName.Split(".")) + "/" + fileName;
             }
-            Scorpio.Commons.FileUtil.CreateFile(fileName, generate.Generate(), path.Split(","));
+            Scorpio.Commons.FileUtil.CreateFile(fileName, generate.Generate(), path.Split(Separator));
         }
-        public static void CreateTableClass(Language language, string packageName, string tableClassName, string dataClassName, string md5, List<FieldClass> fields, string path) {
+        public static void CreateTableClass(Language language, string packageName, string tableClassName, string dataClassName, string md5, List<FieldClass> fields, string path, string fileSuffix) {
             var generate = Activator.CreateInstance(Type.GetType($"GenerateTable{language}")) as IGenerate;
             generate.PackageName = packageName;
             generate.ClassName = tableClassName;
@@ -29,24 +30,26 @@ namespace ScorpioConversion {
             str = str.Replace("__TableName", tableClassName);
             str = str.Replace("__DataName", dataClassName);
             str = str.Replace("__MD5", md5);
-            var fileName = $"{tableClassName}.{language.GetInfo().extension}";
+            var suffix = fileSuffix.IsEmptyString() ? language.GetInfo().extension : fileSuffix;
+            var fileName = $"{tableClassName}.{suffix}";
             if (language == Language.Java) {
                 fileName = string.Join("/", packageName.Split(".")) + "/" + fileName;
             }
-            Scorpio.Commons.FileUtil.CreateFile(fileName, str, path.Split(","));
+            Scorpio.Commons.FileUtil.CreateFile(fileName, str, path.Split(Separator));
         }
-        public static void CreateEnumClass(Language language, string packageName, PackageEnum enums, string path) {
+        public static void CreateEnumClass(Language language, string packageName, PackageEnum enums, string path, string fileSuffix) {
             var generate = Activator.CreateInstance(Type.GetType($"GenerateEnum{language}")) as IGenerate;
             generate.PackageName = packageName;
             generate.Language = language;
             generate.ClassName = enums.Name;
             generate.Package = enums;
             generate.Parameter = true;
-            var fileName = $"{enums.Name}.{language.GetInfo().extension}";
+            var suffix = fileSuffix.IsEmptyString() ? language.GetInfo().extension : fileSuffix;
+            var fileName = $"{enums.Name}.{suffix}";
             if (language == Language.Java) {
                 fileName = string.Join("/", packageName.Split(".")) + "/" + fileName;
             }
-            Scorpio.Commons.FileUtil.CreateFile(fileName, generate.Generate(), path.Split(","));
+            Scorpio.Commons.FileUtil.CreateFile(fileName, generate.Generate(), path.Split(Separator));
         }
     }
 }
