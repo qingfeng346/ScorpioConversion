@@ -12,26 +12,13 @@ using NPOI.SS.UserModel;
 using NPOI.HSSF.UserModel;
 using NPOI.XSSF.UserModel;
 namespace ScorpioConversion {
-    public class LogHelper : ILogger {
-        public void info(string value) {
-            Console.WriteLine(value);
-            //Debugger.Log(0, null, value + "\n");
-        }
-        public void warn(string value) {
-            Console.WriteLine(value);
-            //Debugger.Log(0, null, value + "\n");
-        }
-        public void error(string value) {
-            Console.WriteLine(value);
-            //Debugger.Log(0, null, value + "\n");
-        }
-    }
     class Program {
         const int READ_LENGTH = 8192;
         private const string HelpRegister = @"
 注册运行程序到环境变量";
         private static string HelpInstall = $@"
 载入对应语言的库文件
+    -version|-v     版本号，默认为当前程序版本
 {HelpLanguages}";
         private static string HelpExecute = $@"
 命令列表
@@ -61,57 +48,38 @@ namespace ScorpioConversion {
             }
         }
         static void Main(string[] args) {
-            try {
-                Logger.SetLogger(new LogHelper());
-                Scorpio.Commons.Util.PrintSystemInfo();
-                Logger.info("Scov Version : " + Version.version);
-                Logger.info("Build Date : " + Version.date);
-                var command = CommandLine.Parse(args);
-                var type = command.GetValue("-type", "-t");              //操作类型 默认转换excel install 自动拷贝 ScorpioProto库
-                var hasHelp = command.HadValue("-help", "--help", "-h");
-                if (type.isNullOrWhiteSpace()) { type = command.Type; }
-                var languageDirectory = new Dictionary<Language, string>();     //各语言文件生成目录
-                foreach (Language language in Enum.GetValues(typeof(Language))) {
-                    //各语言文件输出目录 多目录[,]隔开
-                    var dir = command.GetValue("-l" + language.GetInfo().extension.ToLower());
-                    if (string.IsNullOrWhiteSpace(dir)) {
-                        dir = command.GetValue("-" + language.ToString().ToLower());
-                    }
-                    if (!string.IsNullOrWhiteSpace(dir)) {
-                        languageDirectory.Add(language, dir);
-                    }
+            Launch.AddExecute("register", HelpRegister, Register);
+            Launch.AddExecute("install", HelpInstall, Install);
+            Launch.AddExecute("", HelpExecute, Execute);
+            Launch.Start(args, null, null);
+        }
+        static Dictionary<Language, string> GetLanguages(CommandLine command) {
+            var languageDirectory = new Dictionary<Language, string>();     //各语言文件生成目录
+            foreach (Language language in Enum.GetValues(typeof(Language))) {
+                //各语言文件输出目录 多目录[,]隔开
+                var dir = command.GetValue("-l" + language.GetInfo().extension.ToLower());
+                if (string.IsNullOrWhiteSpace(dir)) {
+                    dir = command.GetValue("-" + language.ToString().ToLower());
                 }
-                if (hasHelp) {
-                    switch (type) {
-                        case "register": Logger.info(HelpRegister); return;     //注册命令行
-                        case "install": Logger.info(HelpRegister); return;      //引入各语言需要的库文件
-                        default: Logger.info(HelpExecute); return;              //转换文件
-                    }
-                } else {
-                    switch (type) {
-                        case "register": Register(); return;                        //注册命令行
-                        case "install": Install(languageDirectory); return;         //引入各语言需要的库文件
-                        default: Convert(languageDirectory, command); return;       //转换文件
-                    }
+                if (!string.IsNullOrWhiteSpace(dir)) {
+                    languageDirectory.Add(language, dir);
                 }
-
-            } catch (Exception e) {
-                Logger.error($"exec is error : " + e.ToString());
             }
+            return languageDirectory;
         }
-        static void Register() {
-            Scorpio.Commons.Util.RegisterApplication(Scorpio.Commons.Util.BaseDirectory + "/" + AppDomain.CurrentDomain.FriendlyName);
+        static void Register(CommandLine command, string[] args) {
+            Scorpio.Commons.Util.RegisterApplication($"{Scorpio.Commons.Util.BaseDirectory}/{AppDomain.CurrentDomain.FriendlyName}");
         }
-        static void Install(Dictionary<Language, string> languageDirectory) {
-            if (languageDirectory.Count == 0) { throw new Exception("请至少选择一种语言"); }
-#if DEBUG
-            var version = "master";
-#else
-            var version = $"v{Version.version}";
-#endif
+        static void Install(CommandLine command, string[] args) {
+            var languageDirectory = GetLanguages(command);
+            var version = command.GetValueDefault(new string[] { "-version", "-v" }, "");
+            if (string.IsNullOrWhiteSpace(version)) {
+                version = $"v{Version.version}";
+            }
             var fileName = Path.GetFullPath($"{Environment.CurrentDirectory}/{System.Guid.NewGuid().ToString("N")}");
             try {
                 if (!Download(version, $"{fileName}.zip")) {
+                    Logger.error($"版本[{version}]库文件下载失败,开始下载master分支");
                     version = "master";
                     if (!Download(version, $"{fileName}.zip")) {
                         throw new Exception("库文件下载失败");
@@ -152,13 +120,15 @@ namespace ScorpioConversion {
                         }
                     }
                 }
-            } catch (System.Exception e) {
-                Logger.error("下载库文件失败 : {0}", e.Message);
-            }
+            } catch (Exception) { }
             return false;
         }
-        static void Convert(Dictionary<Language, string> languageDirectory, CommandLine command) {
+        static void Execute(CommandLine command, string[] args) {
+            var languageDirectory = GetLanguages(command);
             if (languageDirectory.Count == 0) { throw new Exception("至少选择一种语言"); }
+            Scorpio.Commons.Util.PrintSystemInfo();
+            Logger.info("Scov Version : " + Scorpio.Version.version);
+            Logger.info("Build Date : " + Scorpio.Version.date);
             var packageName = command.GetValueDefault("-package", "scov");  //默认 命名空间
             var files = command.GetValue("-files");                         //需要转换的文件 多文件[{Util.Separator}]隔开
             var paths = command.GetValue("-paths");                         //需要转换的文件目录 多路径[{Util.Separator}]隔开
