@@ -28,7 +28,6 @@ public class TableBuilder {
     private PackageParser mParser = null;                               //自定义类
     private List<FieldClass> mFields = new List<FieldClass>();          //Excel结构
     private List<RowData> mDatas = new List<RowData>();                 //Excel内容
-    private List<string> mUsedCustoms = new List<string>();             //正在转换的表已使用的自定义类
 
     private string mDataDirectory;                                      //data文件输出目录
     private Dictionary<Language, string> mLanguageDirectory;            //所有语言输出目录
@@ -203,11 +202,16 @@ public class TableBuilder {
                 keys.Add(data.Key);
                 for (var i = 0; i < mFields.Count; ++i) {
                     var field = mFields[i];
-                    var value = data.Values[i].value;
-                    if (!field.Array && (field.IsBasic || field.IsEnum)) {
-                        WriteField(writer, new ValueString(value), field);
-                    } else {
-                        WriteField(writer, ReadValue(value), field);
+                    try {
+                        
+                        var value = data.Values[i].value;
+                        if (!field.Array && (field.IsBasic || field.IsEnum)) {
+                            WriteField(writer, new ValueString(value), field);
+                        } else {
+                            WriteField(writer, ReadValue(value), field);
+                        }
+                    } catch (Exception e) {
+                        throw new Exception($"行:{data.RowNumber} 列:{field.Name}  {e.Message}");
                     }
                 }
             }
@@ -264,7 +268,7 @@ public class TableBuilder {
             } else {
                 var count = list.Count;
                 if (count != classes.Fields.Count)
-                    throw new Exception($"填写字段数量与数据机构字段数量不一致 需要数量 {classes.Fields.Count}  填写数量{count}");
+                    throw new Exception($"字段数量与{classes.Name}需求数量不一致 需要:{classes.Fields.Count} 填写数量:{count} ");
                 for (var i = 0; i < count; ++i)
                     WriteField(writer, list[i], classes.Fields[i]);
             }

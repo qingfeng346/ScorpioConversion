@@ -6,5 +6,6 @@ public class FieldConst {
     public string Value;    //常量值
 }
 public class PackageConst : IPackage {
+    public string Name;
     public List<FieldConst> Fields = new List<FieldConst>();
 }

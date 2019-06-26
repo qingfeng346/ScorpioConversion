@@ -114,7 +114,7 @@ public partial class {ClassName} : IData {{
             var fieldRead = "";
             if (field.Attribute != null && field.Attribute.GetValue("Language").IsTrue) {
                 fieldRead = $@"TableUtil.Readl10n(l10n, fileName + ""_{field.Name}_"" + ret.ID(), reader)";
-            } else if (field.IsBasic) {
+            } else if (field.IsBasic){
                 fieldRead = $"reader.Read{field.BasicType.Name}()";
             } else if (field.IsEnum) {
                 fieldRead = $"({languageType})reader.ReadInt32()";

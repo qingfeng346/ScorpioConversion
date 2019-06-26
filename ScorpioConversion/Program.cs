@@ -15,17 +15,15 @@ namespace ScorpioConversion {
     public class LogHelper : ILogger {
         public void info(string value) {
             Console.WriteLine(value);
-            Debugger.Log(0, null, value + "\n");
+            //Debugger.Log(0, null, value + "\n");
         }
         public void warn(string value) {
-            value = "[warn]" + value;
             Console.WriteLine(value);
-            Debugger.Log(0, null, value + "\n");
+            //Debugger.Log(0, null, value + "\n");
         }
         public void error(string value) {
-            value = "[error]" + value;
             Console.WriteLine(value);
-            Debugger.Log(0, null, value + "\n");
+            //Debugger.Log(0, null, value + "\n");
         }
     }
     class Program {
@@ -230,7 +228,7 @@ namespace ScorpioConversion {
                                 builder.SetFileSuffix(fileSuffix);
                                 builder.SetSpawn(spawnList);
                                 builder.Parse(sheet, data, languageDirectory, parser);
-                                Logger.info($"文件:{file} Sheet:{sheet.SheetName} 解析完成");
+                                Logger.info($"文件:[{file}] Sheet:[{sheet.SheetName}] 解析完成");
                                 if (builder.IsSpawn) {
                                     if (successSpawns.ContainsKey(builder.Spawn)) {
                                         successSpawns[builder.Spawn].Add(builder.Name);
@@ -241,12 +239,12 @@ namespace ScorpioConversion {
                                     successTables.Add(builder.Name);
                                 }
                             } catch (Exception e) {
-                                Logger.error($" 文件:{file} Sheet:{sheet.SheetName} 解析出错 : " + e.ToString());
+                                Logger.error($"文件:[{file}] Sheet:[{sheet.SheetName}] 解析出错 : " + e.ToString());
                             }
                         }
                     }
                 } catch (Exception e) {
-                    Logger.error($" 文件 [{file}] 执行出错 : " + e.ToString());
+                    Logger.error($"文件 [{file}] 执行出错 : " + e.ToString());
                 } finally {
                     File.Delete(tempFile);
                 }

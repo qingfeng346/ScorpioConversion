@@ -59,7 +59,9 @@ public class PackageParser {
             }
             consts.Fields.Add(field);
         }
-        Consts[name.Substring(CONST_KEYWORD.Length)] = consts;
+        name = name.Substring(CONST_KEYWORD.Length);
+        consts.Name = name;
+        Consts[name] = consts;
     }
     void ParseClass(string name, ScriptMap table) {
         var classes = new PackageClass();
@@ -89,12 +91,15 @@ public class PackageParser {
         }
         classes.Fields.Sort((m1, m2) => { return m1.Index.CompareTo(m2.Index); });
         if (name.StartsWith(MESSAGE_KEYWORD)) {         //协议结构
-            Messages[name.Substring(MESSAGE_KEYWORD.Length)] = classes;
+            name = name.Substring(MESSAGE_KEYWORD.Length);
+            Messages[name] = classes;
         } else if (name.StartsWith(TABLE_KEYWORD)) {    //table结构
-            Tables[name.Substring(TABLE_KEYWORD.Length)] = classes;
+            name = name.Substring(TABLE_KEYWORD.Length);
+            Tables[name] = classes;
         } else {
             Classes[name] = classes;
         }
+        classes.Name = name;
     }
     public int GetEnumValue(string name, string value) {
         var enums = Enums[name];

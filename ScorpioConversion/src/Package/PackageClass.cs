@@ -45,5 +45,6 @@ public class FieldClass {
 
 }
 public class PackageClass : IPackage {
+    public string Name;
     public List<FieldClass> Fields = new List<FieldClass>();
 }
