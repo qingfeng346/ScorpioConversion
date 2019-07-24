@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Text;
 using Scorpio;
 using Scorpio.Userdata;
 
@@ -67,15 +68,15 @@ public class PackageParser {
         var classes = new PackageClass();
         foreach (var pair in table) {
             var fieldName = pair.Key as string;
-            var val = pair.Value.ToString();
             if (string.IsNullOrEmpty(fieldName)) throw new Exception($"Class:{name} Field:{fieldName} 参数出错 参数模版 \"[索引],[类型],[是否数组=false],[注释]\"");
-            var infos = val.Split(',');
+            var value = pair.Value.ToString();
+            var infos = value.Split(',');
             if (infos.Length < 2) throw new Exception($"Class:{name} Field:{fieldName} 参数出错 参数模版 \"[索引],[类型],[是否数组=false],[注释]\"");
             var packageField = new FieldClass(this) {
                 Name = fieldName,
                 Index = infos[0].ToInt32(),
                 Type = infos[1],
-                Array = infos.Length > 2 && infos[2].ToBoolean(),
+                IsArray = infos.Length > 2 && infos[2].ToBoolean(),
                 Comment = infos.Length > 3 ? infos[3] : "",
             };
             if (!packageField.IsBasic) {
@@ -102,12 +103,19 @@ public class PackageParser {
         classes.Name = name;
     }
     public int GetEnumValue(string name, string value) {
-        var enums = Enums[name];
-        foreach (var pair in enums.Fields) {
-            if (pair.Name == value)
-                return pair.Index;
-        }
-        throw new Exception($"枚举:{name} 找不到枚举值:{value}");
+        var ret = Enums[name].Fields.Find((field) => field.Name == value );
+        if (ret == null) throw new Exception($"枚举:{name} 找不到枚举值:{value}");
+        return ret.Index;
+    }
+    public string[] GetEnumList(string name) {
+        var ret = new List<string>();
+        Enums[name].Fields.ForEach((field) => { ret.Add(field.Name); });
+        return ret.ToArray();
+    }
+    public string GetEnumComment(string enumName) {
+        var builder = new StringBuilder();
+        Enums[enumName].Fields.ForEach((field) => { builder.Append($"{field.Name} = {field.Index}\n"); });
+        return builder.ToString();
     }
     public PackageClass GetClasses(string name) {
         if (Messages.ContainsKey(name))

@@ -124,7 +124,7 @@ exports.{ClassName} = {ClassName};
         var count = Fields.Count;
         for (int i = 0; i < count; ++i) {
             var field = Fields[i];
-            var toString = field.Array ? $"ScorpioUtil.ToString(_{field.Name})" : $"_{field.Name}";
+            var toString = field.IsArray ? $"ScorpioUtil.ToString(_{field.Name})" : $"_{field.Name}";
             builder.Append($@"
             {field.Name} : ${{{toString}}}");
             if (i != count - 1) {
@@ -153,7 +153,7 @@ exports.{ClassName} = {ClassName};
             } else {
                 fieldRead = $"{languageType}.Read(fileName, reader)";
             }
-            if (field.Array) {
+            if (field.IsArray) {
                 builder.Append($@"
         {{
             let list = new Array();

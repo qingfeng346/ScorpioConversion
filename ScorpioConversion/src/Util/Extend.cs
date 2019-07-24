@@ -105,9 +105,6 @@ public static class Extend {
     public static string GetCellString(this IRow row, int index, string def) {
         return row.GetCell(index, MissingCellPolicy.CREATE_NULL_AS_BLANK).GetCellString(def);
     }
-    public static string GetCellString(this ICell cell) {
-        return GetCellString(cell, "");
-    }
     public static string GetCellString(this ICell cell, string def) {
         if (cell == null) return def;
         if (cell.CellType == CellType.Numeric) {

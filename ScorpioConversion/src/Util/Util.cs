@@ -51,5 +51,9 @@ namespace ScorpioConversion {
             }
             Scorpio.Commons.FileUtil.CreateFile(fileName, generate.Generate(), path.Split(Separator));
         }
+        public static void Split(string str, Action<string> action) {
+            if (str.IsEmptyString()) { return; }
+            Array.ForEach(str.Split(Separator), action);
+        }
     }
 }

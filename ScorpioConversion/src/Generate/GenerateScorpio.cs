@@ -36,7 +36,7 @@ public class GenerateDataScorpio : IGenerate {
             languageType = field.IsEnum ? BasicUtil.GetType(BasicEnum.INT32).Name : languageType;
             builder.Append($@"
     /* {field.Comment}  默认值({field.Default}) */
-    {{ Index : {field.Index}, Name : ""{field.Name}"", Type : ""{languageType}"", Array : {field.Array.ToString().ToLower()}, Attribute : {field.AttributeString} }},
+    {{ Index : {field.Index}, Name : ""{field.Name}"", Type : ""{languageType}"", Array : {field.IsArray.ToString().ToLower()}, Attribute : {field.AttributeString} }},
 ");
         }
         builder.Append(@"

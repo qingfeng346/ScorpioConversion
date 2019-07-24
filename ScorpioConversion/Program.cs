@@ -2,7 +2,6 @@
 using System.IO;
 using System.Net;
 using System.IO.Compression;
-using System.Diagnostics;
 using System.Collections.Generic;
 using Scorpio;
 using Scorpio.Commons;
@@ -14,16 +13,23 @@ using NPOI.XSSF.UserModel;
 namespace ScorpioConversion {
     class Program {
         const int READ_LENGTH = 8192;
-        private const string HelpRegister = @"
+        private static string HelpRegister = @"
 注册运行程序到环境变量";
         private static string HelpInstall = $@"
 载入对应语言的库文件
     -version|-v     版本号，默认为当前程序版本
 {HelpLanguages}";
+        private static string HelpReset = $@"
+刷新表注释
+    -files          需要转换的excel文件,多文件[{Util.Separator}]隔开
+    -paths          需要转换的excel文件目录 多路径[{Util.Separator}]隔开
+    -config         配置文件路径 多路径[{Util.Separator}]隔开
+";
         private static string HelpExecute = $@"
 命令列表
     register        注册运行程序到环境变量
     install         载入对应语言的库文件
+    reset           刷新表注释
     [other]         转换excel文件
         -package        命名空间,默认 sco
         -files          需要转换的excel文件,多文件[{Util.Separator}]隔开
@@ -50,6 +56,7 @@ namespace ScorpioConversion {
         static void Main(string[] args) {
             Launch.AddExecute("register", HelpRegister, Register);
             Launch.AddExecute("install", HelpInstall, Install);
+            Launch.AddExecute("reset", HelpReset, Reset);
             Launch.AddExecute("", HelpExecute, Execute);
             Launch.Start(args, null, null);
         }
@@ -101,6 +108,54 @@ namespace ScorpioConversion {
             } finally {
                 FileUtil.DeleteFile($"{fileName}.zip");
                 FileUtil.DeleteFiles(fileName, "*", true);
+            }
+        }
+        static void Reset(CommandLine command, string[] args) {
+            var files = command.GetValue("-files");                         //需要转换的文件 多文件[{Util.Separator}]隔开
+            var paths = command.GetValue("-paths");                         //需要转换的文件目录 多路径[{Util.Separator}]隔开
+            var config = command.GetValue("-config");                       //配置文件路径 多路径[{Util.Separator}]隔开
+            var parser = new PackageParser();
+            var fileList = new List<string>();                              //所有要生成的excel文件
+            Util.Split(config, (file) => { parser.Parse(file); });
+            Util.Split(files, (file) => { fileList.Add(Path.GetFullPath(Path.Combine(Environment.CurrentDirectory, file))); });
+            Util.Split(paths, (path) => {
+                foreach (var file in Directory.GetFiles(Path.GetFullPath(Path.Combine(Environment.CurrentDirectory, path)), "*", SearchOption.AllDirectories)) {
+                    // $ 开头的 excel文件是 打开 excel 临时文件
+                    if (!file.Contains("~$") && (file.EndsWith(".xls") || file.EndsWith(".xlsx"))) {
+                        fileList.Add(file);
+                    }
+                }
+            });
+            foreach (var file in fileList) {
+                var fileName = Path.GetFileNameWithoutExtension(file).Trim();
+                var extension = Path.GetExtension(file);
+                try {
+                    IWorkbook workbook = null;
+                    using (var fileStream = new FileStream(file, FileMode.Open, FileAccess.Read)) {
+                        if (extension.EndsWith(".xls")) {
+                            workbook = new HSSFWorkbook(fileStream);
+                        } else if (extension.EndsWith(".xlsx")) {
+                            workbook = new XSSFWorkbook(fileStream);
+                        }
+                        if (workbook == null) {
+                            throw new Exception("不支持的文件后缀 : " + extension);
+                        }
+                    }
+                    for (var i = 0; i < workbook.NumberOfSheets; ++i) {
+                        var sheet = workbook.GetSheetAt(i);
+                        if (sheet.SheetName.IsInvalid()) { continue; }
+                        try {
+                            new TableBuilder().Reset(workbook, sheet, parser);
+                        } catch (Exception e) {
+                            Logger.error($"文件:[{file}] Sheet:[{sheet.SheetName}] 解析出错 : " + e.ToString());
+                        }
+                    }
+                    using (var fileStream = new FileStream(file, FileMode.Create, FileAccess.ReadWrite)) {
+                        workbook.Write(fileStream);
+                    }
+                } catch (Exception e) {
+                    Logger.error($"文件 [{file}] 执行出错 : " + e.ToString());
+                }
             }
         }
         static bool Download(string version, string fileName) {
@@ -155,6 +210,7 @@ namespace ScorpioConversion {
             if (!paths.IsEmptyString()) {
                 foreach (var path in paths.Split(Util.Separator)) {
                     foreach (var file in Directory.GetFiles(Path.GetFullPath(Path.Combine(Environment.CurrentDirectory, path)), "*", SearchOption.AllDirectories)) {
+                        // $ 开头的 excel文件是 打开 excel 临时文件
                         if (!file.Contains("~$") && (file.EndsWith(".xls") || file.EndsWith(".xlsx"))) {
                             fileList.Add(file);
                         }

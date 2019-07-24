@@ -79,7 +79,7 @@ export class {ClassName} implements IData {{
         var first = true;
         foreach (var field in Fields) {
             var languageType = field.GetLanguageType(Language);
-            if (field.Array) { languageType = $"Array<{languageType}>"; }
+            if (field.IsArray) { languageType = $"Array<{languageType}>"; }
             builder.Append($@"
     private _{field.Name}:any = null;
     /* {field.Comment}  默认值({field.Default}) */
@@ -132,7 +132,7 @@ export class {ClassName} implements IData {{
         var count = Fields.Count;
         for (int i = 0; i < count; ++i) {
             var field = Fields[i];
-            var toString = field.Array ? $"ScorpioUtil.ToString(this._{field.Name})" : $"this._{field.Name}";
+            var toString = field.IsArray ? $"ScorpioUtil.ToString(this._{field.Name})" : $"this._{field.Name}";
             builder.Append($@"
             {field.Name} : ${{{toString}}}");
             if (i != count - 1) {
@@ -161,7 +161,7 @@ export class {ClassName} implements IData {{
             } else {
                 fieldRead = $"{languageType}.Read(fileName, reader)";
             }
-            if (field.Array) {
+            if (field.IsArray) {
                 builder.Append($@"
         {{
             let list = new Array<{languageType}>();

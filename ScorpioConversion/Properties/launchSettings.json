@@ -2,11 +2,13 @@
   "profiles": {
     "ScorpioConversion": {
       "commandName": "Project",
-      "commandLineArgs": "-paths C:\\Users\\qingf\\Desktop\\test\\ -package testPackage -lcs C:\\Users\\qingf\\Desktop\\test\\output\\dotnet -config C:\\Users\\qingf\\Desktop\\test\\config"
+      "commandLineArgs": "-package Datas -config ./Config -paths ./ -suffix bytes -name sheet -data ../Client/Assets/AssetBundles/Tables/  -scorpiofun ../Client/Assets/ScriptScorpio/Tables/ -lcs ../Client/Assets/Scripts/Editor/Tables/",
+      "workingDirectory": "D:\\Adventure\\Tables"
     },
-    "Install": {
+    "reset": {
       "commandName": "Project",
-      "commandLineArgs": "install -lcs C:\\Users\\qingf\\Desktop\\test"
+      "commandLineArgs": "reset -config ./Config -paths ./",
+      "workingDirectory": "D:\\Adventure\\Tables"
     }
   }
 }

@@ -78,7 +78,7 @@ public partial class {ClassName} : IData {{
         var first = true;
         foreach (var field in Fields) {
             var languageType = field.GetLanguageType(Language);
-            if (field.Array) { languageType = $"ReadOnlyCollection<{languageType}>"; }
+            if (field.IsArray) { languageType = $"ReadOnlyCollection<{languageType}>"; }
             builder.Append($@"
     private {languageType} _{field.Name};
     /* <summary> {field.Comment}  默认值({field.Default}) </summary> */
@@ -121,7 +121,7 @@ public partial class {ClassName} : IData {{
             } else {
                 fieldRead = $"{languageType}.Read(fileName, reader)";
             }
-            if (field.Array) {
+            if (field.IsArray) {
                 builder.Append($@"
         {{
             var list = new List<{languageType}>();

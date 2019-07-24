@@ -83,7 +83,7 @@ func {ClassName}Read(fileName string, reader scorpioproto.IScorpioReader) *{Clas
         string head = @"import (
     ""scorpioproto""";
         foreach (var field in Fields) {
-            if (field.Array) {
+            if (field.IsArray) {
                 head += @"
     ""container/list""";
             }
@@ -102,7 +102,7 @@ func {ClassName}Read(fileName string, reader scorpioproto.IScorpioReader) *{Clas
         var builder = new StringBuilder();
         foreach (var field in Fields) {
             var languageType = field.GetLanguageType(Language);
-            if (field.Array) { languageType = $"*list.List"; }
+            if (field.IsArray) { languageType = $"*list.List"; }
             builder.Append($@"
     _{field.Name} {languageType}");
         }
@@ -121,7 +121,7 @@ func (data *{ClassName}) ID() {languageType} {{ return data._{field.Name}; }}");
 
         foreach (var field in Fields) {
             var languageType = field.GetLanguageType(Language);
-            if (field.Array) { languageType = $"*list.List"; }
+            if (field.IsArray) { languageType = $"*list.List"; }
             builder.Append($@"
 
 // Get{field.Name} {field.Comment}  默认值({field.Default})
@@ -179,7 +179,7 @@ func (data *{ClassName}) Read(fileName string, reader scorpioproto.IScorpioReade
                 //languageType.Substring(1) 去除 类型签名的 *
                 fieldRead = $"{languageType.Substring(1)}Read(fileName, reader)";
             }
-            if (field.Array) {
+            if (field.IsArray) {
                 builder.Append($@"
     {{
         data._{field.Name} = list.New();
