@@ -62,6 +62,20 @@ public class TableWriter :IDisposable {
             writer.Write(bytes);
         }
     }
+    public void WriteBytes(string value) {
+        if (value.IsEmptyString()) {
+            writer.Write((int)0);
+        } else {
+            byte[] bytes = null;
+            if (value.StartsWith("file://")) {
+                bytes = File.ReadAllBytes(value.Substring(7));
+            } else {
+                bytes = System.Convert.FromBase64String(value);
+            }
+            writer.Write(bytes.Length);
+            writer.Write(bytes);
+        }
+    }
     public void WriteDateTime(string value) {
         double span;
         if (double.TryParse(value, out span)) {
@@ -73,7 +87,7 @@ public class TableWriter :IDisposable {
             writer.Write(BasicUtil.GetTimeSpan(datetime));   
             return;
         }
-        throw new Exception("不能识别日志字符串 : " + value);
+        throw new Exception("不能识别日期字符串 : " + value);
     }
     public byte[] ToArray() {
         stream.Position = 0;
