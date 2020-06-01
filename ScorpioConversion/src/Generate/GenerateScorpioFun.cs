@@ -34,13 +34,13 @@ public class GenerateDataScorpioFun : IGenerate {
     protected override string Generate_impl() {
         var builder = new StringBuilder();
         builder.Append($@"//本文件为自动生成，请不要手动修改
-$G[""{ClassName}""] = [");
+{ClassName} = [");
         foreach (var field in Fields) {
             var languageType = field.GetLanguageType(Language);
             languageType = field.IsEnum ? BasicUtil.GetType(BasicEnum.INT32).Name : languageType;
             builder.Append($@"
     /* {field.Comment}  默认值({field.Default}) */
-    {{ Index : {field.Index}, Name : ""{field.Name}"", Type : ""{languageType}"", Array : {field.IsArray.ToString().ToLower()}, Attribute : {field.AttributeString} }},
+    {{ Index : {field.Index}, Name : ""{field.Name}"", Type : ""{languageType}"", Array : {field.IsArray.ToString().ToLower()}, L10N : {field.IsL10N.ToString().ToLower()}, Attribute : {field.AttributeString} }},
 ");
         }
         builder.Append(@"
@@ -56,14 +56,21 @@ public class GenerateTableScorpioFun : IGenerate {
 public class GenerateEnumScorpioFun : GenerateEnumScorpio {
     protected override string Generate_impl() {
         var builder = new StringBuilder();
+        var stringBuilder = new StringBuilder();
         builder.Append($@"//本文件为自动生成，请不要手动修改
-$G[""{ClassName}""] = {{");
+{ClassName} = {{");
         foreach (var info in Enums.Fields) {
             builder.Append($@"
     {info.Name} : {info.Index},");
+            stringBuilder.Append($@"
+            case {info.Index}: return '{info.Name}'; ");
         }
-        builder.Append(@"
-}");
+        builder.Append($@"
+    GetString : function(id) {{
+        switch (id) {{{stringBuilder.ToString()}
+        }}
+    }}
+}}");
         return builder.ToString();
     }
 }

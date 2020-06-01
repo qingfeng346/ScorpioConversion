@@ -6,23 +6,35 @@ using Scorpio;
 public class FieldClass {
     private PackageParser mParser;
     public FieldClass(PackageParser parser) { mParser = parser; }
+
     public int Index;                   //字段索引
     public string Name;                 //字段名字
-    public string Comment;              //字段注释
+    public bool IsL10N = false;         //需要翻译的字段 
+    public bool IsNoOut = false;        //是否有%
+    public string Comment = "";         //字段注释
     public ScriptMap Attribute;         //字段属性,字段配置
     public string Default = "";         //字段默认值
     public string Type;                 //字段类型
-
+    
+    public string MaxValue { get; set; } // 最大值（用于校验数据）
+    public string MinValue { get; set; } // 最小值（用于校验数据）
+    
     //是否是数组
     public bool IsArray { get; set; } = false;
+    //是否是无效字段
+    public bool IsInvalid { get; set; } = false;
     //字段是否有效
-    public bool IsValid { get; set; } = true;
+    public bool IsValid => !IsInvalid && !Name.IsEmptyString() && !Type.IsEmptyString();
     //是否是基本数据
     public bool IsBasic { get { return BasicUtil.HasType(Type); } }
     //基本数据类型
     public BasicType BasicType { get { return BasicUtil.GetType(Type); } }
     //是否是时间
     public bool IsDateTime { get { return IsBasic && BasicType.Index == BasicEnum.DATETIME; } }
+    //是否是string类型
+    public bool IsString => IsBasic && BasicType.Index == BasicEnum.STRING;
+    //是否是bool类型
+    public bool IsBool => IsBasic && BasicType.Index == BasicEnum.BOOL;
     //是否是枚举
     public bool IsEnum { get { return mParser != null && mParser.Enums.ContainsKey(Type); } }
     public string AttributeString { get { return Attribute != null ? Attribute.ToJson(false) : "{}"; } }
@@ -32,6 +44,14 @@ public class FieldClass {
             throw new Exception($"Parser 为空 EnumType : {Type}  Value : {value}");
         return mParser.GetEnumValue(Type, value);
     }
+
+    public PackageEnum CustomEnum {
+        get {
+            if (mParser == null)
+                throw new Exception($"Parser 为空 CustomEnum : {Type}");
+            return mParser.GetEnum(Type);
+        }
+    }
     public PackageClass CustomType {
         get {
             if (mParser == null)
@@ -39,6 +59,7 @@ public class FieldClass {
             return mParser.GetClasses(Type);
         }
     }
+
     public string GetLanguageType(Language language) {
         if (IsBasic) {
             return BasicType.GetLanguageType(language);
@@ -94,7 +115,17 @@ public class FieldClass {
             } else {
                 writer.WriteInt32(list.Count);
                 for (var i = 0; i < list.Count; ++i) {
-                    WriteCustom(writer, list[i] as ValueList, false);
+                    if (list[i] is ValueList) {
+                        WriteCustom(writer, list[i] as ValueList, false);
+                    } else {
+                        var valueString = list[i] as ValueString;
+                        //数据为空
+                        if (valueString.value.IsEmptyString()) {
+                            WriteCustom(writer, null, false);
+                        } else {
+                            throw new Exception($"数据填写错误,{valueString.value}");
+                        }
+                    }
                 }
             }
         } else {
@@ -109,6 +140,9 @@ public class FieldClass {
                     type.Fields[i].Write(writer, list[i]);
             }
         }
+    }
+    public override string ToString() {
+        return (IsArray ? "Array" : "") + Name;
     }
 }
 public class PackageClass : IPackage {

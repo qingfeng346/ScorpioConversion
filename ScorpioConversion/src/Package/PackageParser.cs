@@ -14,11 +14,11 @@ public class PackageParser {
     private const string MESSAGE_KEYWORD = "message_";      //消息格式关键字
     private const string TABLE_KEYWORD = "table_";          //Table格式关键字
 
-    public Dictionary<string, PackageEnum> Enums { get; set; } = new Dictionary<string, PackageEnum>();
-    public Dictionary<string, PackageConst> Consts { get; set; } = new Dictionary<string, PackageConst>();
-    public Dictionary<string, PackageClass> Messages { get; set; } = new Dictionary<string, PackageClass>();
-    public Dictionary<string, PackageClass> Tables { get; set; } = new Dictionary<string, PackageClass>();
-    public Dictionary<string, PackageClass> Classes { get; set; } = new Dictionary<string, PackageClass>();
+    public SortedDictionary<string, PackageEnum> Enums { get; set; } = new SortedDictionary<string, PackageEnum>();
+    public SortedDictionary<string, PackageConst> Consts { get; set; } = new SortedDictionary<string, PackageConst>();
+    public SortedDictionary<string, PackageClass> Messages { get; set; } = new SortedDictionary<string, PackageClass>();
+    public SortedDictionary<string, PackageClass> Tables { get; set; } = new SortedDictionary<string, PackageClass>();
+    public SortedDictionary<string, PackageClass> Classes { get; set; } = new SortedDictionary<string, PackageClass>();
     public Script Script { get; private set; } = new Script();
     void ParseEnum(string name, ScriptMap table) {
         var enums = new PackageEnum();
@@ -117,6 +117,11 @@ public class PackageParser {
         Enums[enumName].Fields.ForEach((field) => { builder.Append($"{field.Name} = {field.Index}\n"); });
         return builder.ToString();
     }
+    public PackageEnum GetEnum(string name) {
+        if (Enums.ContainsKey(name))
+            return Enums[name];
+        throw new Exception($"找不到枚举 : {name}");
+    }
     public PackageClass GetClasses(string name) {
         if (Messages.ContainsKey(name))
             return Messages[name];
@@ -143,7 +148,7 @@ public class PackageParser {
         foreach (var file in files) { Script.LoadFile(file); }
         var keys = global.GetKeys();
         foreach (var name in keys) {
-            if (globalKeys.Contains(name)) { continue; }
+            if (Array.IndexOf(globalKeys, name) >= 0) { continue; }
             var table = global.GetValue(name).Get<ScriptMap>();
             if (table == null) { continue; }
             if (name.StartsWith(ENUM_KEYWORD)) {                //枚举类型

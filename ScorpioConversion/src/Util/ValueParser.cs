@@ -1,8 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
+using System.IO;
+using System.Linq;
 using Scorpio;
-using Scorpio.Compiler;
 using System.Text;
+
 public interface IValue {
     string Value { get; } 
 }
@@ -60,7 +63,7 @@ public class ValueParser {
             return ret;
         } else if (start == (char)0 || start == ']') {
             return null;
-        } else if (start == ';' || start == ',' || start == ' ' || start == '\n' || start == '\r') {
+        } else if (start == ';' || start == ',' || start == '|' || start == ' ' || start == '\n' || start == '\r') {
             return GetObject();
         } else {
             var builder = new StringBuilder().Append(start);
@@ -76,7 +79,7 @@ public class ValueParser {
                 } else if (ch == ']') {
                     UndoChar();
                     break;
-                } else if (ch == ';' || ch == ',') {
+                } else if (ch == ';' || ch == ',' || ch == '|') {
                     break;
                 } else {
                     builder.Append(ch);

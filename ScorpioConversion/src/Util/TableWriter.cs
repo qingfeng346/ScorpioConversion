@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Text;
+using System.Collections.Generic;
 public class TableWriter :IDisposable {
     MemoryStream stream;
     BinaryWriter writer;
@@ -10,6 +11,27 @@ public class TableWriter :IDisposable {
     }
     public void Seek(int offset) {
         writer.Seek(offset, SeekOrigin.Begin);
+    }
+    public void WriteEnum(List<FieldEnum> fields) {
+        WriteInt32(fields.Count);
+        foreach (var field in fields) {
+            WriteString(field.Name);
+            WriteInt32(field.Index);
+        }
+    }
+    public void WriteClass(List<FieldClass> fields) {
+        WriteInt32(fields.Count);               //字段数量
+        foreach (var field in fields) {
+            if (field.IsBasic) {
+                WriteInt8(0);
+                WriteInt8((sbyte)field.BasicType.Index);
+            } else {
+                WriteInt8(field.IsEnum ? (sbyte)1 : (sbyte)2);
+                WriteString(field.Type);
+            }
+            WriteBool(field.IsArray);
+            WriteString((field.IsL10N ? "$" : "") + field.Name);
+        }
     }
     public void WriteBool(bool value) {
         writer.Write(value ? (sbyte)1 : (sbyte)0);
@@ -62,20 +84,6 @@ public class TableWriter :IDisposable {
             writer.Write(bytes);
         }
     }
-    public void WriteBytes(string value) {
-        if (value.IsEmptyString()) {
-            writer.Write((int)0);
-        } else {
-            byte[] bytes = null;
-            if (value.StartsWith("file://")) {
-                bytes = File.ReadAllBytes(value.Substring(7));
-            } else {
-                bytes = System.Convert.FromBase64String(value);
-            }
-            writer.Write(bytes.Length);
-            writer.Write(bytes);
-        }
-    }
     public void WriteDateTime(string value) {
         double span;
         if (double.TryParse(value, out span)) {
@@ -87,7 +95,7 @@ public class TableWriter :IDisposable {
             writer.Write(BasicUtil.GetTimeSpan(datetime));   
             return;
         }
-        throw new Exception("不能识别日期字符串 : " + value);
+        throw new Exception("不能识别日志字符串 : " + value);
     }
     public byte[] ToArray() {
         stream.Position = 0;

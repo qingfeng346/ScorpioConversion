@@ -1,27 +1,11 @@
 ﻿using System;
-using System.Text;
 using System.Data;
-using System.Collections.Generic;
 using NPOI.SS.UserModel;
-using NPOI.HSSF.UserModel;
-using Scorpio;
-using Scorpio.Commons;
 
 public static class Extend {
     private readonly static DateTime BaseTime = new DateTime(1970, 1, 1, 0, 0, 0, 0);
-    private const string EmptyString = "####";
     private const string ArrayString = "array";
     public const bool INVALID_BOOL = false;
-    //public const sbyte INVALID_INT8 = SByte.MaxValue;
-    //public const byte INVALID_UINT8 = Byte.MaxValue;
-    //public const short INVALID_INT16 = Int16.MaxValue;
-    //public const ushort INVALID_UINT16 = UInt16.MaxValue;
-    //public const int INVALID_INT32 = Int32.MaxValue;
-    //public const uint INVALID_UINT32 = UInt32.MaxValue;
-    //public const long INVALID_INT64 = Int64.MaxValue;
-    //public const ulong INVALID_UINT64 = UInt64.MaxValue;
-    //public const float INVALID_FLOAT = -1.0f;
-    //public const double INVALID_DOUBLE = -1.0;
     public const sbyte INVALID_INT8 = 0;
     public const byte INVALID_UINT8 = 0;
     public const short INVALID_INT16 = 0;
@@ -33,20 +17,53 @@ public static class Extend {
     public const float INVALID_FLOAT = 0;
     public const double INVALID_DOUBLE = 0;
     public const string INVALID_STRING = "";
-    public static string GetMemory(this long by) {
-        return Scorpio.Commons.Util.GetMemory(by);
+    public static string GetMemory(this long by) => Scorpio.Commons.Util.GetMemory(by);
+    public static string GetLineName(this int line) => Scorpio.Commons.Util.GetExcelColumn(line);
+    public static bool IsEmptyString(this string str) => string.IsNullOrWhiteSpace(str);
+    public static bool IsEmptyValue(this ValueList value) => value == null || value.values.Count == 0;
+    public static bool IsInvalid(this string str) => string.IsNullOrWhiteSpace(str) || str.Trim().StartsWith("!");
+    public static bool IsExcel(this string file) => !file.Contains("~$") && (file.EndsWith(".xls") || file.EndsWith(".xlsx"));
+    public static bool IsL10N(this string str) => !str.IsEmptyString() && str.Trim().StartsWith('$');
+    public static string ParseFlag(this string str, out bool invalid, out bool l10n, out bool noOut) {
+        invalid = false;
+        noOut = false;
+        l10n = false;
+        if (string.IsNullOrWhiteSpace(str)) {
+            return "";
+        }
+        var s = str;
+        while (s.Length > 0) {
+            var c = s[0];
+            switch (c) {
+                case '!': invalid = true; break;
+                case '$': l10n = true; break;
+                case '%': noOut = true; break;
+                default:
+                    if (char.IsLetter(c)) {
+                        return s;
+                    } else {
+                        throw new Exception("不能解析的Name : " + str);
+                    }
+            }
+            s = s.Substring(1);
+        }
+        throw new Exception("不能解析的Name : " + str);
     }
-    public static string GetLineName(this int line) {
-        return Scorpio.Commons.Util.GetExcelColumn(line);
+    public static string Breviary(this string str, int length) {
+        if (length <= 3 || str.Length <= 3 || str.Length <= length) { return str; }
+        return str.Substring(0, length - 3) + "...";
     }
-    public static bool IsEmptyString(this string str) {
-        return string.IsNullOrWhiteSpace(str) || str == EmptyString;
-    }
-    public static bool IsEmptyValue(this ValueList value) {
-        return value == null || value.values.Count == 0;
-    }
-    public static bool IsInvalid(this string str) {
-        return string.IsNullOrWhiteSpace(str) || str.Trim().StartsWith("!");
+
+    public static bool StringArrayEqual(this string[] array1, string[] array2) {
+        if (array1 == null && array2 == null) { return true; }
+        if (array1 == null || array2 == null) { return false; }
+        if (array1.Length != array2.Length) { return false; }
+        for (var i = 0; i < array1.Length; ++i) {
+            if (array1[i] != array2[i]) {
+                return false;
+            }
+        }
+        return true;
     }
     public static bool IsArrayType(this string str) {
         return str.StartsWith(ArrayString);
@@ -120,10 +137,44 @@ public static class Extend {
         cell.SetCellType(CellType.String);
         cell.SetCellValue(value != null ? value.Trim() : value);
     }
+    public static string GetDataString(this object cell, string def = "") {
+        if (cell == null || cell == DBNull.Value) { return def; }
+        return cell.ToString();
+    }
+    public static DataTable AsDataSet(this ISheet sheet) {
+        int maxColumn = 0;
+        for (var i = sheet.FirstRowNum; i <= sheet.LastRowNum; ++i) {
+            var row = sheet.GetRow(i);
+            if (row == null) { continue; }
+            maxColumn = Math.Max(maxColumn, (int)row.LastCellNum);
+        }
+        var dataTable = new DataTable(sheet.SheetName);
+        for (var i = 0; i <= sheet.LastRowNum; ++i) {
+            dataTable.Rows.Add(dataTable.NewRow());
+        }
+        for (var i = 0; i <= maxColumn; ++i) {
+            dataTable.Columns.Add();
+        }
+        for (var i = sheet.FirstRowNum; i <= sheet.LastRowNum; ++i) {
+            var row = sheet.GetRow(i);
+            if (row == null) { continue; }
+            var dataRow = dataTable.Rows[i];
+            for (var j = row.FirstCellNum; j < row.LastCellNum; ++j) {
+                dataRow[j] = row.GetCell(j).GetCellString("");
+            }
+        }
+        return dataTable;
+    }
     public static long GetTimeSpan(this DateTime time) {
         return Convert.ToInt64((time - BaseTime).TotalMilliseconds);
     }
     public static LanguageInfo GetInfo(this Language language) {
         return Attribute.GetCustomAttribute(language.GetType().GetMember(language.ToString())[0], typeof(LanguageInfo)) as LanguageInfo;
+    }
+    public static void RemoveSheet(this IWorkbook workbook, string name) {
+        var index = workbook.GetSheetIndex(name);
+        if (index >= 0) {
+            workbook.RemoveSheetAt(index);
+        }
     }
 }

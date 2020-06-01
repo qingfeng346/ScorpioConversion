@@ -12,9 +12,12 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="NPOI" Version="2.4.1" />
-    <PackageReference Include="Scorpio-CSharp" Version="2.0.0-preview6" />
-    <PackageReference Include="ScorpioCommons" Version="1.0.11" />
+    <PackageReference Include="ExcelDataReader" Version="3.6.0" />
+    <PackageReference Include="ExcelDataReader.DataSet" Version="3.6.0" />
+    <PackageReference Include="NPOI" Version="2.5.1" />
+    <PackageReference Include="Scorpio-CSharp" Version="2.0.7" />
+    <PackageReference Include="ScorpioCommons" Version="1.0.14" />
+    <PackageReference Include="System.Text.Encoding.CodePages" Version="4.7.1" />
   </ItemGroup>
 
 </Project>

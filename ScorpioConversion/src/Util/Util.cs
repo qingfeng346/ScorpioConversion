@@ -55,5 +55,9 @@ namespace ScorpioConversion {
             if (str.IsEmptyString()) { return; }
             Array.ForEach(str.Split(Separator), action);
         }
+        public static string[] Split(string str) {
+            if (str.IsEmptyString()) { return new string[0]; }
+            return str.Split(Separator);
+        }
     }
 }
