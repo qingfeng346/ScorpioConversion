@@ -57,18 +57,19 @@ namespace ScorpioConversion {
         }
         static void Main(string[] args) {
             Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
-            Launch.AddExecute("register", HelpRegister, Register);
-            Launch.AddExecute("install", HelpInstall, Install);
-            Launch.AddExecute("reset", HelpReset, Reset);
-            Launch.AddExecute("format", HelpReset, Format);
-            Launch.AddExecute("decompile", HelpReset, Decompile);
-            Launch.AddExecute("", HelpExecute, Execute);
-            Launch.Start(args, null, null);
+            var perform = new Perform();
+            perform.AddExecute("register", HelpRegister, Register);
+            perform.AddExecute("install", HelpInstall, Install);
+            perform.AddExecute("reset", HelpReset, Reset);
+            perform.AddExecute("format", HelpReset, Format);
+            perform.AddExecute("decompile", HelpReset, Decompile);
+            perform.AddExecute("", HelpExecute, Execute);
+            perform.Start(args, null, null);
         }
-        static void Register(CommandLine command, string[] args) {
+        static void Register(Perform perform, CommandLine command, string[] args) {
             Scorpio.Commons.Util.RegisterApplication($"{Scorpio.Commons.Util.BaseDirectory}/{AppDomain.CurrentDomain.FriendlyName}");
         }
-        static void Install(CommandLine command, string[] args) {
+        static void Install(Perform perform, CommandLine command, string[] args) {
             Config.Initialize(command);
             if (Config.LanguageDirectory.Count == 0) { throw new Exception("至少选择一种语言"); }
             var version = command.GetValueDefault(new string[] { "-version", "-v" }, "");
@@ -101,26 +102,9 @@ namespace ScorpioConversion {
             }
         }
         static bool Download(string version, string fileName) {
-            var request = (HttpWebRequest)HttpWebRequest.Create($"https://github.com/qingfeng346/ScorpioConversion/archive/{version}.zip");
-            Logger.info($"开始下载库文件... : {version}");
-            try {
-                using (var response = request.GetResponse()) {
-                    using (var stream = response.GetResponseStream()) {
-                        var bytes = new byte[READ_LENGTH];
-                        using (var fileStream = new FileStream(fileName, FileMode.CreateNew)) {
-                            while (true) {
-                                var readSize = stream.Read(bytes, 0, READ_LENGTH);
-                                if (readSize <= 0) { break; }
-                                fileStream.Write(bytes, 0, readSize);
-                            }
-                            return true;
-                        }
-                    }
-                }
-            } catch (Exception) { }
-            return false;
+            return Scorpio.Commons.Util.Download($"https://github.com/qingfeng346/ScorpioConversion/archive/{version}.zip", fileName);
         }
-        static void Reset(CommandLine command, string[] args) {
+        static void Reset(Perform perform, CommandLine command, string[] args) {
             Config.Initialize(command);
             var fileList = Config.FileList; //所有要生成的excel文件
             if (fileList.Count == 0) throw new Exception("至少选择一个excel文件");
@@ -153,7 +137,7 @@ namespace ScorpioConversion {
                 }
             }
         }
-        static void Format(CommandLine command, string[] args) {
+        static void Format(Perform perform, CommandLine command, string[] args) {
             Config.Initialize(command);
             var fileList = Config.FileList; //所有要生成的excel文件
             if (fileList.Count == 0) throw new Exception("至少选择一个excel文件");
@@ -181,9 +165,9 @@ namespace ScorpioConversion {
                 }
             }
         }
-        static void Decompile(CommandLine command, string[] args) {
+        static void Decompile(Perform perform, CommandLine command, string[] args) {
             var suffix = command.GetValueDefault("-suffix", "data");        //数据文件后缀 默认.data
-            var output = Launch.GetPath("-output");                         //输出目录
+            var output = perform.GetPath("-output");                         //输出目录
             var files = new List<string>();
             //需要转换的文件 多文件[{Util.Separator}]隔开
             Util.Split(command.GetValue("-files"), (file) => files.Add(Path.GetFullPath($"{Environment.CurrentDirectory}/{file}")));
@@ -205,7 +189,7 @@ namespace ScorpioConversion {
                 }
             }
         }
-        static void Execute(CommandLine command, string[] args) {
+        static void Execute(Perform perform, CommandLine command, string[] args) {
             Config.Initialize(command);
             if (Config.LanguageDirectory.Count == 0) { throw new Exception("至少选择一种语言"); }
             var fileList = Config.FileList; //所有要生成的excel文件
