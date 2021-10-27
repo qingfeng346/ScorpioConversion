@@ -266,7 +266,7 @@ public partial class TableBuilder {
                     writer.WriteClass((customType as PackageClass).Fields);
                 }
             }
-            var keys = new List<string>();
+            var keys = new HashSet<string>();
             foreach (var data in mDatas) {
                 if (keys.Contains(data.Key)) {
                     throw new Exception($"ID有重复项[{data.Key}], 行:[{data.RowNumber}]");

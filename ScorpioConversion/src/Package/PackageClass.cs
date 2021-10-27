@@ -37,7 +37,14 @@ public class FieldClass {
     public bool IsBool => IsBasic && BasicType.Index == BasicEnum.BOOL;
     //是否是枚举
     public bool IsEnum { get { return mParser != null && mParser.Enums.ContainsKey(Type); } }
-    public string AttributeString { get { return Attribute != null ? Attribute.ToJson(false) : "{}"; } }
+    public string AttributeString { 
+        get {
+            if (Attribute == null) {
+                return "{}";
+            }
+            return Attribute.ToString();
+        } 
+    }
     
     public int GetEnumValue(string value) {
         if (mParser == null)

@@ -91,13 +91,13 @@ namespace ScorpioConversion {
                     foreach (var target in targets) {
                         var targetDir = Path.GetFullPath(Path.Combine(Environment.CurrentDirectory, $"{target}/{pathName}"));
                         Logger.info($"拷贝目录 {sourceDir} -> {targetDir}");
-                        FileUtil.DeleteFiles(targetDir, "*", true);
-                        FileUtil.CopyFolder(sourceDir, targetDir, "*");
+                        FileUtil.DeleteFolder(targetDir, null, true);
+                        FileUtil.CopyFolder(sourceDir, targetDir, null, true);
                     }
                 }
             } finally {
                 FileUtil.DeleteFile($"{fileName}.zip");
-                FileUtil.DeleteFiles(fileName, "*", true);
+                FileUtil.DeleteFolder(fileName, null, true);
             }
         }
         static bool Download(string version, string fileName) {

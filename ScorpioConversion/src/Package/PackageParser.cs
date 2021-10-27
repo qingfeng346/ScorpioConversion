@@ -143,12 +143,12 @@ public class PackageParser {
         TypeManager.PushAssembly(GetType().Assembly);
         Script.LoadLibraryV1();
         var global = Script.Global;
-        var globalKeys = global.GetKeys();
+        var globalKeys = new HashSet<string>(global.GetKeys());
         var files = Directory.Exists(dir) ? Directory.GetFiles(dir, "*.sco", SearchOption.AllDirectories) : (File.Exists(dir) ? new string[] { dir } : new string[0]);
         foreach (var file in files) { Script.LoadFile(file); }
         var keys = global.GetKeys();
         foreach (var name in keys) {
-            if (Array.IndexOf(globalKeys, name) >= 0) { continue; }
+            if (globalKeys.Contains(name)) { continue; }
             var table = global.GetValue(name).Get<ScriptMap>();
             if (table == null) { continue; }
             if (name.StartsWith(ENUM_KEYWORD)) {                //枚举类型
