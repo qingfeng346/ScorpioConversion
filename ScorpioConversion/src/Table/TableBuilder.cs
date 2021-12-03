@@ -35,6 +35,8 @@ public partial class TableBuilder {
 
     public bool IsSpawn => !string.IsNullOrEmpty(Spawn);
 
+    public string FileName { get; private set; }                                    //FileName
+    public string SheetName { get; private set; }                                   //SheetName
     public string PackageName { get; private set; }                                 //命名空间
     public string DataClassName { get; private set; }                               //DataClass名字
     public string TableClassName { get; private set; }                              //TableClass名字
@@ -49,26 +51,26 @@ public partial class TableBuilder {
     public List<FieldClass> Fields { get; } = new List<FieldClass>();               //表结构
     public HashSet<IPackage> CustomTypes { get; } = new HashSet<IPackage>();        //自定义类,枚举列表
 
-    public TableBuilder SetPackageName(string value) {
-        PackageName = value;
-        return this;
-    }
+    public TableBuilder SetFileName(string value) { FileName = value; return this; }
+    public TableBuilder SetSheetName(string value) { SheetName = value; return this; }
+    public TableBuilder SetPackageName(string value) { PackageName = value; return this; }
+    public TableBuilder SetDataFileName(string value) { DataFileName = value; return this; }
 
-    public TableBuilder SetName(string value) {
-        DataFileName = value;
-        return this;
-    }
-
-    public bool Parse(DataTable dataTable, IList<L10NData> l10nDatas) {
+    public bool Parse(DataTable dataTable, IList<L10NData> l10nDatas, bool parseData) {
         mParser = Config.Parser;
         mDataDirectory = Config.DataDirectory;
         mLanguageDirectory = Config.LanguageDirectory;
         LoadLayout(dataTable);
         if (!CheckTags()) { return false; }
-        LoadData(dataTable);
-        CheckData();
-        CreateDataFile(l10nDatas);
-        CreateLanguageFile();
+
+        if (parseData)
+        {
+            LoadData(dataTable);
+            CheckData();
+            CreateDataFile(l10nDatas);
+            CreateLanguageFile();
+        }
+        
         return true;
     }
 
@@ -88,7 +90,15 @@ public partial class TableBuilder {
                 case KEYWORD_SPAWN:         Spawn = valueCell; break;
                 case KEYWORD_GROUP:         Group = valueCell; break;
                 case KEYWORD_GROUP_SORT:    GroupSort = valueCell; break;
-                case KEYWORD_TAGS:          Tags = new List<string>(valueCell.Split(ScorpioConversion.Util.Separator)); break;
+                case KEYWORD_TAGS: {
+                    Tags.Clear();
+                    foreach (var v in valueCell.Split(ScorpioConversion.Util.Separator)) {
+                        if (!string.IsNullOrWhiteSpace(v)) {
+                            Tags.Add(v);
+                        }
+                    }
+                    break;
+                }
                 default:                    ParseHead(keyCell, row); break;
             }
         }
@@ -296,78 +306,26 @@ public partial class TableBuilder {
                             field.Write(writer, data.Values[i]);
                         }
                     } catch (Exception e) {
-                        throw new Exception($"行:{data.RowNumber} 列:{field.Name}  {e.ToString()}");
+                        var rowStr = "";
+                        for (var m = 0; m < data.Values.Count; m ++)
+                        {
+                            rowStr += "," + data.Values[m].value;
+                        }
+                        throw new Exception($"行:{data.RowNumber}({rowStr}) 列:{field.Name}  {e}");
                     }
                 }
             }
-
-            FileUtil.CreateFile($"{DataFileName}.{Config.Suffix}", writer.ToArray(),
-                mDataDirectory.Split(ScorpioConversion.Util.Separator));
+            FileUtil.CreateFile($"{DataFileName}.{Config.Suffix}", writer.ToArray(), mDataDirectory.Split(ScorpioConversion.Util.Separator));
         }
     }
-
-    //void WriteField(TableWriter writer, IValue value, FieldClass field) {
-    //    if (field.IsBasic) {
-    //        if (field.IsArray) {
-    //            var list = value as ValueList;
-    //            if (list.IsEmptyValue()) {
-    //                writer.WriteInt32(0);
-    //            } else {
-    //                writer.WriteInt32(list.Count);
-    //                for (var i = 0; i < list.Count; ++i) {
-    //                    field.BasicType.WriteValue(writer, list[i].Value);
-    //                }
-    //            }
-    //        } else {
-    //            field.BasicType.WriteValue(writer, value.Value);
-    //        }
-    //    } else if (field.IsEnum) {
-    //        if (field.IsArray) {
-    //            var list = value as ValueList;
-    //            if (list.IsEmptyValue()) {
-    //                writer.WriteInt32(0);
-    //            } else {
-    //                writer.WriteInt32(list.Count);
-    //                for (var i = 0; i < list.Count; ++i) {
-    //                    writer.WriteInt32(field.GetEnumValue(list[i].Value));
-    //                }
-    //            }
-    //        } else {
-    //            writer.WriteInt32(field.GetEnumValue(value.Value));
-    //        }
-    //    } else {
-    //        WriteCustom(writer, value as ValueList, field.CustomType, field.IsArray);
-    //    }
-    //}
-    //void WriteCustom(TableWriter writer, ValueList list, PackageClass classes, bool array) {
-    //    if (array) {
-    //        if (list.IsEmptyValue()) {
-    //            writer.WriteInt32(0);
-    //        } else {
-    //            writer.WriteInt32(list.Count);
-    //            for (var i = 0; i < list.Count; ++i) {
-    //                WriteCustom(writer, list[i] as ValueList, classes, false);
-    //            }
-    //        }
-    //    } else {
-    //        if (list.IsEmptyValue()) {
-    //            for (var i = 0; i < classes.Fields.Count; ++i)
-    //                WriteField(writer, new ValueString(""), classes.Fields[i]);
-    //        } else {
-    //            var count = list.Count;
-    //            if (count != classes.Fields.Count)
-    //                throw new Exception($"字段数量与{classes.Name}需求数量不一致 需要:{classes.Fields.Count} 填写数量:{count} ");
-    //            for (var i = 0; i < count; ++i)
-    //                WriteField(writer, list[i], classes.Fields[i]);
-    //        }
-    //    }
-    //}
+    
+    //生成各个语言文件
     void CreateLanguageFile() {
         foreach (var pair in mLanguageDirectory) {
+            ScorpioConversion.Util.CreateTableClass(pair.Key, FileName, SheetName, PackageName, TableClassName, DataClassName, LayoutMD5,
+                Fields, pair.Value, Config.FileSuffix);
             ScorpioConversion.Util.CreateDataClass(pair.Key, PackageName, DataClassName, Fields, pair.Value,
                 Config.FileSuffix);
-            ScorpioConversion.Util.CreateTableClass(pair.Key, PackageName, TableClassName, DataClassName, LayoutMD5,
-                Fields, pair.Value, Config.FileSuffix);
         }
     }
 }

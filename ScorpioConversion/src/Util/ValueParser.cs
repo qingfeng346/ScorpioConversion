@@ -88,5 +88,83 @@ public class ValueParser {
             return new ValueString(builder.ToString());
         }
     }
+
+    public IValue GetObject_Backup()
+    {
+        var buf = buffer.AsSpan();
+
+        var i = 0;
+        
+        switch (buf[0])
+        {
+            case '#':
+                return ReadListObj(buf.Slice(1), ref i);
+            default:
+                return ReadStringObj(buf.Slice(0), ref i);
+        }
+    }
+
+    private static IValue ReadListObj(ReadOnlySpan<char> buf, ref int i)
+    {
+        if(i<0) throw new ArgumentOutOfRangeException(nameof(i));
+
+        var start = i;
+        var result = new ValueList();
+        
+        for (; i < buf.Length;)
+        {
+            switch (buf[i])
+            {
+                case '#':
+                {
+                    var subStart = 0;
+                    result.values.Add(ReadStringObj(buf.Slice(start, i-start), ref subStart));
+                    i++;
+                    return result;
+                }
+                case '|':
+                {
+                    var subStart = 0;
+                    result.values.Add(ReadStringObj(buf.Slice(start, i-start), ref subStart));
+                    i++;
+                    start = i;
+                }
+                    break;
+                default:
+                    i++;
+                    break;
+            }
+        }
+        
+        throw new InvalidDataException("Can not find # for end");
+    }
+
+    private static IValue ReadStringObj(ReadOnlySpan<char> buf, ref int i)
+    {
+        if (i < 0) throw new ArgumentOutOfRangeException(nameof(i));
+        
+        var start = i;
+        
+        for (; i < buf.Length; i++)
+        {
+            if (buf[i] != '|' && buf[i] != '#') continue;
+
+            var value = new string(buf.Slice(start, i));
+
+            if (!value.Contains(';')) return new ValueString(value);
+                
+            var result = new ValueList();
+            result.values.AddRange(value.Split(';').Select(_=> new ValueString(_)));
+            return result;
+        }
+
+        var r = new string(buf);
+        if (!r.Contains(';')) return new ValueString(r);
+        {
+            var result = new ValueList();
+            result.values.AddRange(r.Split(';').Select(_=> new ValueString(_)));
+            return result;
+        }
+    }
 }
 

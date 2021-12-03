@@ -68,16 +68,17 @@ public class PackageParser {
         var classes = new PackageClass();
         foreach (var pair in table) {
             var fieldName = pair.Key as string;
-            if (string.IsNullOrEmpty(fieldName)) throw new Exception($"Class:{name} Field:{fieldName} 参数出错 参数模版 \"[索引],[类型],[是否数组=false],[注释]\"");
+            if (string.IsNullOrEmpty(fieldName)) throw new Exception($"Class:{name} Field:{fieldName} 参数出错 参数模版 \"[索引],[类型],[是否数组=false],[默认值],[注释]\"");
             var value = pair.Value.ToString();
             var infos = value.Split(',');
-            if (infos.Length < 2) throw new Exception($"Class:{name} Field:{fieldName} 参数出错 参数模版 \"[索引],[类型],[是否数组=false],[注释]\"");
+            if (infos.Length < 2) throw new Exception($"Class:{name} Field:{fieldName} 参数出错 参数模版 \"[索引],[类型],[是否数组=false],[默认值],[注释]\"");
             var packageField = new FieldClass(this) {
                 Name = fieldName,
                 Index = infos[0].ToInt32(),
                 Type = infos[1],
                 IsArray = infos.Length > 2 && infos[2].ToBoolean(),
-                Comment = infos.Length > 3 ? infos[3] : "",
+                Default = infos.Length > 3 ? infos[3] : null,
+                Comment = infos.Length > 4 ? infos[4] : "",
             };
             if (!packageField.IsBasic) {
                 if (!Script.HasGlobal(packageField.Type) &&                             //判断网络协议自定义类

@@ -39,7 +39,7 @@ public class Config {
     public static List<string> Tags;                                        //标签列表
     public static List<ExcelFile> FileList;                                 //所有要生成的excel文件
     public static string PackageName;                                       //默认Package名字
-    public static Dictionary<Language, string> LanguageDirectory;           //所有语言的输出目录
+    public static Dictionary<string, string> LanguageDirectory;             //所有语言的输出目录
     public static string DataDirectory;                                     //数据文件输出目录
     public static bool WriteL10N;                                           //是否写入l10n字段的值
     public static bool IsFileName;                                          //默认名字是否使用文件名字
@@ -56,7 +56,15 @@ public class Config {
 
         var files = new List<string>();
         //需要转换的文件 多文件[{Util.Separator}]隔开
-        Util.Split(command.GetValue("-files"), (file) => files.Add($"{Environment.CurrentDirectory}/{file}"));
+        Util.Split(command.GetValue("-files"), (file) => {
+            if (File.Exists(file))
+            {
+                files.Add(file);
+            } else
+            {
+                files.Add($"{Environment.CurrentDirectory}/{file}");
+            }
+        });
         //需要转换的文件目录 多路径[{Util.Separator}]隔开
         Util.Split(command.GetValue("-paths"), (path) => files.AddRange(Directory.GetFiles($"{Environment.CurrentDirectory}/{path}", "*", SearchOption.TopDirectoryOnly)));
 
@@ -66,7 +74,7 @@ public class Config {
         var wl10n = command.GetValueDefault("-wl10n", "");
         WriteL10N = wl10n.IsEmptyString() ? false : Convert.ToBoolean(wl10n);
 
-        LanguageDirectory = new Dictionary<Language, string>();
+        LanguageDirectory = new Dictionary<string, string>();
         foreach (Language language in Enum.GetValues(typeof(Language))) {
             //各语言文件输出目录 多目录[,]隔开
             var dir = command.GetValue("-l" + language.GetInfo().extension.ToLower());

@@ -102,7 +102,8 @@ namespace ScorpioConversion {
             }
         }
         static bool Download(string version, string fileName) {
-            return Scorpio.Commons.Util.Download($"https://github.com/qingfeng346/ScorpioConversion/archive/{version}.zip", fileName);
+            //return Scorpio.Commons.Util.Download($"https://github.com/qingfeng346/ScorpioConversion/archive/{version}.zip", fileName);
+            return true;
         }
         static void Reset(Perform perform, CommandLine command, string[] args) {
             Config.Initialize(command);

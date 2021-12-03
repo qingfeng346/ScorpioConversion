@@ -7,45 +7,32 @@ public class FieldClass {
     private PackageParser mParser;
     public FieldClass(PackageParser parser) { mParser = parser; }
 
-    public int Index;                   //字段索引
-    public string Name;                 //字段名字
-    public bool IsL10N = false;         //需要翻译的字段 
-    public bool IsNoOut = false;        //是否有%
-    public string Comment = "";         //字段注释
-    public ScriptMap Attribute;         //字段属性,字段配置
-    public string Default = "";         //字段默认值
-    public string Type;                 //字段类型
-    
-    public string MaxValue { get; set; } // 最大值（用于校验数据）
-    public string MinValue { get; set; } // 最小值（用于校验数据）
-    
-    //是否是数组
-    public bool IsArray { get; set; } = false;
-    //是否是无效字段
-    public bool IsInvalid { get; set; } = false;
+    public int Index { get; set; }                   //字段索引
+    public string Name { get; set; }                 //字段名字
+    public string Type { get; set; }                 //字段类型
+    public string Default { get; set; }              //字段默认值
+    public string Comment { get; set; }              //字段注释
+    public bool IsL10N { get; set; } = false;        //需要翻译的字段 
+    public ScriptMap Attribute { get; set; }         //字段属性,字段配置
+    public string MaxValue { get; set; }             //最大值（用于校验数据）
+    public string MinValue { get; set; }             //最小值（用于校验数据）
+    public bool IsArray { get; set; } = false;       //是否是数组
+    public bool IsInvalid { get; set; } = false;     //是否是无效字段 !
     //字段是否有效
     public bool IsValid => !IsInvalid && !Name.IsEmptyString() && !Type.IsEmptyString();
-    //是否是基本数据
-    public bool IsBasic { get { return BasicUtil.HasType(Type); } }
     //基本数据类型
-    public BasicType BasicType { get { return BasicUtil.GetType(Type); } }
+    public BasicType BasicType => BasicUtil.GetType(Type);
+    //是否是基本数据
+    public bool IsBasic => BasicType != null;
     //是否是时间
-    public bool IsDateTime { get { return IsBasic && BasicType.Index == BasicEnum.DATETIME; } }
+    public bool IsDateTime => IsBasic && BasicType.Index == BasicEnum.DATETIME;
     //是否是string类型
     public bool IsString => IsBasic && BasicType.Index == BasicEnum.STRING;
     //是否是bool类型
     public bool IsBool => IsBasic && BasicType.Index == BasicEnum.BOOL;
     //是否是枚举
-    public bool IsEnum { get { return mParser != null && mParser.Enums.ContainsKey(Type); } }
-    public string AttributeString { 
-        get {
-            if (Attribute == null) {
-                return "{}";
-            }
-            return Attribute.ToString();
-        } 
-    }
-    
+    public bool IsEnum => mParser != null && mParser.Enums.ContainsKey(Type);
+
     public int GetEnumValue(string value) {
         if (mParser == null)
             throw new Exception($"Parser 为空 EnumType : {Type}  Value : {value}");
@@ -64,16 +51,6 @@ public class FieldClass {
             if (mParser == null)
                 throw new Exception($"Parser 为空 CustomType : {Type}");
             return mParser.GetClasses(Type);
-        }
-    }
-
-    public string GetLanguageType(Language language) {
-        if (IsBasic) {
-            return BasicType.GetLanguageType(language);
-        } else if (language == Language.Go) {
-            return IsEnum ? Type : $"*{Type}";
-        } else {
-            return Type;
         }
     }
 
@@ -141,10 +118,16 @@ public class FieldClass {
                     type.Fields[i].Write(writer, new ValueString(""));
             } else {
                 var count = list.Count;
-                if (count != type.Fields.Count)
-                    throw new Exception($"字段数量与{type.Name}需求数量不一致 需要:{type.Fields.Count} 填写数量:{count} ");
-                for (var i = 0; i < count; ++i)
-                    type.Fields[i].Write(writer, list[i]);
+                for (var i = 0; i < type.Fields.Count; ++i) {
+                    var field = type.Fields[i];
+                    if (i < count) {
+                        field.Write(writer, list[i]);
+                    } else if (field.Default == null) {
+                        throw new Exception($"字段数量与{type.Name}需求数量不一致 需要:{type.Fields.Count} 填写数量:{count} ");
+                    } else {
+                        field.Write(writer, new ValueString(field.Default));
+                    }
+                }
             }
         }
     }

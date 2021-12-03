@@ -1,7 +1,9 @@
 ﻿using System.Text;
 
 public class TemplateScorpioFun {
-    public const string Table = @"
+    public const string Table = @"/*
+From : __FileName - __SheetName
+*/
 class __TableName {
     constructor() {
         this.m_count = 0
@@ -13,7 +15,7 @@ class __TableName {
         return this
     }
     GetValue(ID) {
-        return this.m_dataArray[ID]
+        return this.m_dataArray[ID] ?? log.warn(""__FileName - __SheetName - __TableName not found ID : "" + ID)
     }
     Contains(ID) {
         return this.m_dataArray.containsKey(ID)
@@ -26,7 +28,7 @@ class __TableName {
     }
 }
 __TableName[""()""] = function(ID) {
-    return this.m_dataArray[ID]
+    return this.m_dataArray[ID] ?? log.warn(""__FileName - __SheetName - __TableName not found ID : "" + ID)
 }";
 }
 
@@ -68,6 +70,7 @@ public class GenerateEnumScorpioFun : GenerateEnumScorpio {
         builder.Append($@"
     GetString : function(id) {{
         switch (id) {{{stringBuilder.ToString()}
+            default: return toString(id)
         }}
     }}
 }}");
