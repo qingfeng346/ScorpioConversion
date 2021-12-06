@@ -1,8 +1,5 @@
-namespace ScorpioConversion.Table
+public class L10NData
 {
-    public class L10NData
-    {
-        public string Key { get; set; }
-        public string Hint { get; set; }
-    }
+    public string Key { get; set; }
+    public string Hint { get; set; }
 }

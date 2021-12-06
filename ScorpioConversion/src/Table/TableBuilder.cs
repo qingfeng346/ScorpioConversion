@@ -5,14 +5,13 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using Scorpio.Commons;
-using ScorpioConversion.Table;
 
 public partial class TableBuilder {
-    private const string KEYWORD_PACKAGE    = "/Package";       //命名空间,不填默认为空
-    private const string KEYWORD_FILENAME   = "/FileName";      //导出data文件名字,不填默认文件或者sheet名字
-    private const string KEYWORD_TAGS       = "/Tags";          //tags
+    private const string KEYWORD_FILENAME   = "/FileName";      //名字,不填默认文件或者sheet名字
+    private const string KEYWORD_TAGS       = "/Tags";          //标签,有标签时需要比较传入的标签是否导出
     private const string KEYWORD_AUTOINC    = "/AutoInc";       //ID自动递增生成
-    private const string KEYWORD_SPAWN      = "/Spawn";         //派生类
+    private const string KEYWORD_PACKAGE    = "/Package";       //命名空间,不填默认使用Language配置
+    private const string KEYWORD_SPAWN      = "/Spawn";         //是否是派生类
     private const string KEYWORD_GROUP      = "/Group";         //Group类型的表,值为Group的字段名
     private const string KEYWORD_GROUP_SORT = "/GroupSort";     //Group类型的排序字段
 
@@ -27,50 +26,33 @@ public partial class TableBuilder {
     private const string KEYWORD_BEGIN      = "/Begin";         //数据开始
     private const string KEYWORD_END        = "/End";           //数据结束
 
-    private PackageParser mParser = null; //自定义类
-    private List<RowData> mDatas = new List<RowData>(); //Excel内容
+    private PackageParser mParser = null;                       //自定义类
+    private List<RowData> mDatas = new List<RowData>();         //Excel内容
 
-    private string mDataDirectory; //data文件输出目录
-    private Dictionary<Language, string> mLanguageDirectory; //所有语言输出目录
+    public string Name { get; private set; }
 
-    public bool IsSpawn => !string.IsNullOrEmpty(Spawn);
-
-    public string FileName { get; private set; }                                    //FileName
-    public string SheetName { get; private set; }                                   //SheetName
+    public string FileName { get; private set; }                                    //文件名字
+    public List<string> Tags { get; private set; } = new List<string>();            //标签列表
+    public bool AutoInc { get; private set; } = false;                              //是否是自增长的表
     public string PackageName { get; private set; }                                 //命名空间
-    public string DataClassName { get; private set; }                               //DataClass名字
-    public string TableClassName { get; private set; }                              //TableClass名字
-    public string DataFileName { get; private set; }                                //数据文件名字
     public string Spawn { get; private set; }                                       //派生类名字
+    public bool IsSpawn => !string.IsNullOrEmpty(Spawn);
     public string Group { get; private set; }                                       //是否是Group类型表
     public string GroupSort { get; private set; }                                   //Group类型的排序字段
-    public List<string> Tags { get; private set; } = new List<string>();            //表标签列表
-    public bool AutoInc { get; private set; } = false;                              //是否是自增长的表
     public string LayoutMD5 { get; private set; }                                   //文件结构MD5
     public int DataCount => mDatas.Count;                                           //数据数量
-    public List<FieldClass> Fields { get; } = new List<FieldClass>();               //表结构
+    public List<ClassField> Fields { get; } = new List<ClassField>();               //表结构
     public HashSet<IPackage> CustomTypes { get; } = new HashSet<IPackage>();        //自定义类,枚举列表
 
-    public TableBuilder SetFileName(string value) { FileName = value; return this; }
-    public TableBuilder SetSheetName(string value) { SheetName = value; return this; }
-    public TableBuilder SetPackageName(string value) { PackageName = value; return this; }
-    public TableBuilder SetDataFileName(string value) { DataFileName = value; return this; }
+    public TableBuilder SetFileName(string name) { FileName = name; return this; }
 
-    public bool Parse(DataTable dataTable, IList<L10NData> l10nDatas, bool parseData) {
+    public bool Parse(DataTable dataTable) {
         mParser = Config.Parser;
-        mDataDirectory = Config.DataDirectory;
-        mLanguageDirectory = Config.LanguageDirectory;
         LoadLayout(dataTable);
         if (!CheckTags()) { return false; }
-
-        if (parseData)
-        {
-            LoadData(dataTable);
-            CheckData();
-            CreateDataFile(l10nDatas);
-            CreateLanguageFile();
-        }
-        
+        LoadData(dataTable);
+        CheckData();
+        Generate();
         return true;
     }
 
@@ -84,28 +66,20 @@ public partial class TableBuilder {
             if (keyCell.IsEmptyString() || keyCell == KEYWORD_BEGIN || keyCell == KEYWORD_END) { continue; }
             var valueCell = row[1].GetDataString().Trim();
             switch (keyCell) {
+                case KEYWORD_FILENAME:      FileName = valueCell; break;
                 case KEYWORD_AUTOINC:       AutoInc = true; break;
                 case KEYWORD_PACKAGE:       PackageName = valueCell; break;
-                case KEYWORD_FILENAME:      DataFileName = valueCell; break;
                 case KEYWORD_SPAWN:         Spawn = valueCell; break;
                 case KEYWORD_GROUP:         Group = valueCell; break;
                 case KEYWORD_GROUP_SORT:    GroupSort = valueCell; break;
-                case KEYWORD_TAGS: {
-                    Tags.Clear();
-                    foreach (var v in valueCell.Split(ScorpioConversion.Util.Separator)) {
-                        if (!string.IsNullOrWhiteSpace(v)) {
-                            Tags.Add(v);
-                        }
-                    }
-                    break;
-                }
+                case KEYWORD_TAGS:          Tags = new List<string>(Util.Split(valueCell)); break;
                 default:                    ParseHead(keyCell, row); break;
             }
         }
     }
-    FieldClass GetField(int index) {
+    ClassField GetField(int index) {
         for (var i = Fields.Count; i <= index; ++i) {
-            Fields.Add(new FieldClass(mParser));
+            Fields.Add(new ClassField(mParser));
         }
         return Fields[index];
     }
@@ -120,17 +94,15 @@ public partial class TableBuilder {
                 case KEYWORD_COMMENT: field.Comment = value; break;
                 case KEYWORD_DEFAULT: field.Default = value; break;
                 case KEYWORD_NAME: {
-                        field.Name = value.ParseFlag(out var invalid, out var l10n, out var noOut);
+                        field.Name = value.ParseFlag(out var invalid, out var l10n);
                         field.IsInvalid |= invalid;
                         field.IsL10N |= l10n;
-                        field.IsNoOut |= noOut;
                         break;
                     }
                 case KEYWORD_TYPE: {
-                        var type = value.ParseFlag(out var invalid, out var l10n, out var noOut);
+                        var type = value.ParseFlag(out var invalid, out var l10n);
                         field.IsInvalid |= invalid;
                         field.IsL10N |= l10n;
-                        field.IsNoOut |= noOut;
                         if (type.IsArrayType()) {
                             field.IsArray = true;
                             field.Type = type.GetFinalType();
@@ -154,7 +126,6 @@ public partial class TableBuilder {
             }
         }
     }
-
     //检测所有 Tags
     bool CheckTags() {
         return Config.ContainsTags(Tags);
@@ -188,7 +159,7 @@ public partial class TableBuilder {
             try {
                 data.Values.Add(row[i + 1].GetDataString());
             } catch (Exception e) {
-                throw new Exception($"列:{field.Name} 行:{rowNumber + 1} 解析出错 : {e.ToString()}");
+                throw new Exception($"列:{field.Name} 行:{rowNumber + 1} 解析出错 : {e}");
             }
         }
         mDatas.Add(data);
@@ -196,19 +167,20 @@ public partial class TableBuilder {
 
     //检测所有数据
     void CheckData() {
-        for (var i = 0; i < Fields.Count;++i) {
-            var field = Fields[i];
-            if (field.IsInvalid) { continue; }
-            if (!field.Name.IsEmptyString() && field.Type.IsEmptyString()) {
-                throw new Exception($"列:{field.Name} 类型为空");
-            } else if (field.Name.IsEmptyString() && !field.Type.IsEmptyString()) {
-                throw new Exception($"列:{(i + 1).GetLineName()} 名字为空,类型为{field.Type}");
-            }
-        }
         //删除无效字段
         Fields.RemoveAll(field => !field.IsValid);
+        for (var i = 0; i < Fields.Count;++i) {
+            var field = Fields[i];
+            if (!field.Name.IsEmptyString() && field.Type.IsEmptyString()) {
+                throw new Exception($"列:{(i + 1).GetLineName()}({field.Name}) 类型为空");
+            } else if (field.Name.IsEmptyString() && !field.Type.IsEmptyString()) {
+                throw new Exception($"列:{(i + 1).GetLineName()}名字为空,类型为{field.Type}");
+            } else if (field.IsL10N && (!field.IsString || field.IsArray)) {
+                throw new Exception($"列:{(i + 1).GetLineName()}({field.Name}) L10N字段只支持string类型");
+            }
+        }
         if (AutoInc) {
-            Fields.Insert(0, new FieldClass(mParser) { Name = "AutoID", Type = "int", Comment = "AutoID" });
+            Fields.Insert(0, new ClassField(mParser) { Name = "AutoID", Type = "int", Comment = "AutoID" });
             var autoID = 0;
             foreach (var data in mDatas) {
                 data.Key = (autoID++).ToString();
@@ -222,27 +194,16 @@ public partial class TableBuilder {
             builder.Append(Fields[i].Type).Append(":");
             builder.Append(Fields[i].IsArray ? "1" : "0").Append(":");
         }
-        LayoutMD5 = Util.GetMD5FromString(builder.ToString());
-
-        var errorL10N = Fields.FirstOrDefault(_ => _.IsL10N && !_.IsString && !_.IsArray);
-        if (errorL10N != null) throw new InvalidDataException($"{errorL10N.Name}: L10N 字段只能为string类型");
-
-        if (PackageName.IsEmptyString() || DataFileName.IsEmptyString())
-            throw new Exception($"PackageName 或 Name 不能为空  PackageName : {PackageName}  Name : {DataFileName}");
-        if (Fields.Count == 0)
-            throw new Exception($"有效字段为0");
-
+        LayoutMD5 = ScorpioUtil.GetMD5FromString(builder.ToString());
+        if (Fields.Count == 0) throw new Exception($"有效字段数量为0");
         if (Spawn.IsEmptyString()) {
-            DataClassName = $"Data{DataFileName}";
-            TableClassName = $"Table{DataFileName}";
+            Name = FileName;
         } else {
             if (Config.SpawnsList.TryGetValue(Spawn, out var spawnMD5) && spawnMD5 != LayoutMD5) {
-                throw new Exception($"派生类结构不同 ${DataFileName}");
+                throw new Exception("派生类结构不同");
             }
             Config.SpawnsList[Spawn] = LayoutMD5;
-            DataFileName = $"{Spawn}_{DataFileName}";
-            DataClassName = $"Data{Spawn}";
-            TableClassName = $"Table{Spawn}";
+            Name = Spawn;
         }
         CustomTypes.Clear();
         Fields.ForEach((field) => {
@@ -255,11 +216,8 @@ public partial class TableBuilder {
             }
         });
     }
-
-    //生成data文件
-    void CreateDataFile(ICollection<L10NData> l10NDatas) {
-        if (mDataDirectory.IsEmptyString())
-            return;
+    void Generate() {
+        var l10nDatas = Config.L10NDatas;
         using (var writer = new TableWriter()) {
             writer.WriteInt32(mDatas.Count);        //数据数量
             writer.WriteString(LayoutMD5);          //文件结构MD5
@@ -285,19 +243,16 @@ public partial class TableBuilder {
                 for (var i = 0; i < Fields.Count; ++i) {
                     var field = Fields[i];
                     if (field.IsL10N) {
-                        l10NDatas.Add(new L10NData {
-                            Key = $"{this.DataFileName}.{data.Key}.{field.Name}", // skip the signature of '$'
+                        l10nDatas.Add(new L10NData {
+                            Key = $"{this.Name}.{data.Key}.{field.Name}", // skip the signature of '$'
                             Hint = data.Values[i]
                         });
                     }
                     try {
-                        if (!field.MaxValue.IsEmptyString() &&
-                            Convert.ToDouble(field.MaxValue) < Convert.ToDouble(data.Values[i])) {
+                        if (!field.MaxValue.IsEmptyString() && Convert.ToDouble(field.MaxValue) < Convert.ToDouble(data.Values[i])) {
                             throw new DataException($"行:{data.RowNumber} {field.Name} 值超过限定最大值");
                         }
-
-                        if (!field.MinValue.IsEmptyString() &&
-                            Convert.ToDouble(field.MinValue) > Convert.ToDouble(data.Values[i])) {
+                        if (!field.MinValue.IsEmptyString() && Convert.ToDouble(field.MinValue) > Convert.ToDouble(data.Values[i])) {
                             throw new DataException($"行:{data.RowNumber} {field.Name} 值低于限定最小值");
                         }
                         if (field.IsL10N && !Config.WriteL10N) {
@@ -307,25 +262,14 @@ public partial class TableBuilder {
                         }
                     } catch (Exception e) {
                         var rowStr = "";
-                        for (var m = 0; m < data.Values.Count; m ++)
-                        {
+                        for (var m = 0; m < data.Values.Count; m ++) {
                             rowStr += "," + data.Values[m].value;
                         }
                         throw new Exception($"行:{data.RowNumber}({rowStr}) 列:{field.Name}  {e}");
                     }
                 }
             }
-            FileUtil.CreateFile($"{DataFileName}.{Config.Suffix}", writer.ToArray(), mDataDirectory.Split(ScorpioConversion.Util.Separator));
-        }
-    }
-    
-    //生成各个语言文件
-    void CreateLanguageFile() {
-        foreach (var pair in mLanguageDirectory) {
-            ScorpioConversion.Util.CreateTableClass(pair.Key, FileName, SheetName, PackageName, TableClassName, DataClassName, LayoutMD5,
-                Fields, pair.Value, Config.FileSuffix);
-            ScorpioConversion.Util.CreateDataClass(pair.Key, PackageName, DataClassName, Fields, pair.Value,
-                Config.FileSuffix);
+            Config.LanguageConfig.Generate(this, writer.ToArray());
         }
     }
 }

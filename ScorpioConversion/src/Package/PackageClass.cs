@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Text;
 using Scorpio;
 
-public class FieldClass {
+public class ClassField {
     private PackageParser mParser;
-    public FieldClass(PackageParser parser) { mParser = parser; }
+    public ClassField(PackageParser parser) { mParser = parser; }
 
     public int Index { get; set; }                   //字段索引
     public string Name { get; set; }                 //字段名字
@@ -18,20 +18,14 @@ public class FieldClass {
     public string MinValue { get; set; }             //最小值（用于校验数据）
     public bool IsArray { get; set; } = false;       //是否是数组
     public bool IsInvalid { get; set; } = false;     //是否是无效字段 !
-    //字段是否有效
-    public bool IsValid => !IsInvalid && !Name.IsEmptyString() && !Type.IsEmptyString();
-    //基本数据类型
-    public BasicType BasicType => BasicUtil.GetType(Type);
-    //是否是基本数据
-    public bool IsBasic => BasicType != null;
-    //是否是时间
-    public bool IsDateTime => IsBasic && BasicType.Index == BasicEnum.DATETIME;
-    //是否是string类型
-    public bool IsString => IsBasic && BasicType.Index == BasicEnum.STRING;
-    //是否是bool类型
-    public bool IsBool => IsBasic && BasicType.Index == BasicEnum.BOOL;
-    //是否是枚举
-    public bool IsEnum => mParser != null && mParser.Enums.ContainsKey(Type);
+    public bool IsValid => !IsInvalid && !Name.IsEmptyString() && !Type.IsEmptyString();            //字段是否有效
+    public BasicType BasicType => BasicUtil.GetType(Type);      //基本数据类型
+    public bool IsBasic => BasicType != null;                   //是否是基本数据
+    
+    public bool IsDateTime => IsBasic && BasicType.Index == BasicEnum.DATETIME;     //是否是时间
+    public bool IsString => IsBasic && BasicType.Index == BasicEnum.STRING;         //是否是string类型
+    public bool IsBool => IsBasic && BasicType.Index == BasicEnum.BOOL;             //是否是bool类型
+    public bool IsEnum => mParser != null && mParser.Enums.ContainsKey(Type);       //是否是枚举
 
     public int GetEnumValue(string value) {
         if (mParser == null)
@@ -137,5 +131,5 @@ public class FieldClass {
 }
 public class PackageClass : IPackage {
     public string Name;
-    public List<FieldClass> Fields = new List<FieldClass>();
+    public List<ClassField> Fields = new List<ClassField>();
 }

@@ -27,12 +27,19 @@ public class BasicType {
     public BasicEnum Index { get; private set; }                            //类型索引
     private MethodInfo WriteMethod;     //Write函数
     private MethodInfo ReadMethod;      //Read函数
+    private BasicType(BasicType basicType, string key) {
+        this.Key = key;
+        this.Name = basicType.Name;
+        this.Index = basicType.Index;
+        this.WriteMethod = basicType.WriteMethod;
+        this.ReadMethod = basicType.ReadMethod;
+    }
     public BasicType(string name, BasicEnum index) {
         this.Key = name;
         this.Name = name;
         this.Index = index;
-        this.WriteMethod = typeof(TableWriter).GetMethod("Write" + Util.ToOneUpper(name), new Type[] { typeof(string) });
-        this.ReadMethod = typeof(TableReader).GetMethod("Read" + Util.ToOneUpper(name));
+        this.WriteMethod = typeof(TableWriter).GetMethod("Write" + ScorpioUtil.ToOneUpper(name), new Type[] { typeof(string) });
+        this.ReadMethod = typeof(TableReader).GetMethod("Read" + ScorpioUtil.ToOneUpper(name));
     }
     public BasicType SetKey(string key) {
         this.Key = key;
@@ -47,6 +54,9 @@ public class BasicType {
     }
     public object ReadValue(TableReader reader) {
         return ReadMethod.Invoke(reader, null);
+    }
+    public BasicType Clone(string key) {
+        return new BasicType(this, key);
     }
 }
 class BasicUtil {
@@ -69,23 +79,23 @@ class BasicUtil {
         new BasicType("Bytes", BasicEnum.BYTES),
     };
     static BasicUtil() {
-        BasicTypes.Add(GetType(BasicEnum.BOOL).SetKey("bool"));
-        BasicTypes.Add(GetType(BasicEnum.BOOL).SetKey("boolean"));
+        BasicTypes.Add(GetType(BasicEnum.BOOL).Clone("bool"));
+        BasicTypes.Add(GetType(BasicEnum.BOOL).Clone("boolean"));
         
-        BasicTypes.Add(GetType(BasicEnum.INT8).SetKey("sbyte"));
-        BasicTypes.Add(GetType(BasicEnum.INT16).SetKey("short"));
-        BasicTypes.Add(GetType(BasicEnum.INT32).SetKey("int"));
-        BasicTypes.Add(GetType(BasicEnum.INT64).SetKey("long"));
+        BasicTypes.Add(GetType(BasicEnum.INT8).Clone("sbyte"));
+        BasicTypes.Add(GetType(BasicEnum.INT16).Clone("short"));
+        BasicTypes.Add(GetType(BasicEnum.INT32).Clone("int"));
+        BasicTypes.Add(GetType(BasicEnum.INT64).Clone("long"));
 
-        BasicTypes.Add(GetType(BasicEnum.UINT8).SetKey("byte"));
-        BasicTypes.Add(GetType(BasicEnum.UINT16).SetKey("ushort"));
-        BasicTypes.Add(GetType(BasicEnum.UINT32).SetKey("uint"));
-        BasicTypes.Add(GetType(BasicEnum.UINT64).SetKey("ulong"));
+        BasicTypes.Add(GetType(BasicEnum.UINT8).Clone("byte"));
+        BasicTypes.Add(GetType(BasicEnum.UINT16).Clone("ushort"));
+        BasicTypes.Add(GetType(BasicEnum.UINT32).Clone("uint"));
+        BasicTypes.Add(GetType(BasicEnum.UINT64).Clone("ulong"));
 
-        BasicTypes.Add(GetType(BasicEnum.FLOAT).SetKey("float32"));
-        BasicTypes.Add(GetType(BasicEnum.DOUBLE).SetKey("float64"));
+        BasicTypes.Add(GetType(BasicEnum.FLOAT).Clone("float32"));
+        BasicTypes.Add(GetType(BasicEnum.DOUBLE).Clone("float64"));
 
-        BasicTypes.Add(GetType(BasicEnum.BYTES).SetKey("byte[]"));
+        BasicTypes.Add(GetType(BasicEnum.BYTES).Clone("bytes"));
     }
     public static BasicType GetType(string key) {
         return BasicTypes.Find(_ => _.Key.ToLower() == key.ToLower());

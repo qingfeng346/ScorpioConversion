@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Data;
 using NPOI.SS.UserModel;
+using Scorpio.Commons;
 
 public static class Extend {
     private readonly static DateTime BaseTime = new DateTime(1970, 1, 1, 0, 0, 0, 0);
@@ -17,16 +18,16 @@ public static class Extend {
     public const float INVALID_FLOAT = 0;
     public const double INVALID_DOUBLE = 0;
     public const string INVALID_STRING = "";
-    public static string GetMemory(this long by) => Scorpio.Commons.Util.GetMemory(by);
-    public static string GetLineName(this int line) => Scorpio.Commons.Util.GetExcelColumn(line);
+    public readonly static byte[] INVALID_BYTES = new byte[0];
+    public static string GetMemory(this long by) => ScorpioUtil.GetMemory(by);
+    public static string GetLineName(this int line) => ScorpioUtil.GetExcelColumn(line);
     public static bool IsEmptyString(this string str) => string.IsNullOrWhiteSpace(str);
     public static bool IsEmptyValue(this ValueList value) => value == null || value.values.Count == 0;
     public static bool IsInvalid(this string str) => string.IsNullOrWhiteSpace(str) || str.Trim().StartsWith("!");
     public static bool IsExcel(this string file) => !file.Contains("~$") && (file.EndsWith(".xls") || file.EndsWith(".xlsx"));
     public static bool IsL10N(this string str) => !str.IsEmptyString() && str.Trim().StartsWith('$');
-    public static string ParseFlag(this string str, out bool invalid, out bool l10n, out bool noOut) {
+    public static string ParseFlag(this string str, out bool invalid, out bool l10n) {
         invalid = false;
-        noOut = false;
         l10n = false;
         if (string.IsNullOrWhiteSpace(str)) {
             return "";
@@ -37,7 +38,6 @@ public static class Extend {
             switch (c) {
                 case '!': invalid = true; break;
                 case '$': l10n = true; break;
-                case '%': noOut = true; break;
                 default:
                     if (char.IsLetter(c)) {
                         return s;
@@ -167,9 +167,6 @@ public static class Extend {
     }
     public static long GetTimeSpan(this DateTime time) {
         return Convert.ToInt64((time - BaseTime).TotalMilliseconds);
-    }
-    public static LanguageInfo GetInfo(this Language language) {
-        return Attribute.GetCustomAttribute(language.GetType().GetMember(language.ToString())[0], typeof(LanguageInfo)) as LanguageInfo;
     }
     public static void RemoveSheet(this IWorkbook workbook, string name) {
         var index = workbook.GetSheetIndex(name);

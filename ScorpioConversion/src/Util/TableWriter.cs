@@ -12,14 +12,14 @@ public class TableWriter :IDisposable {
     public void Seek(int offset) {
         writer.Seek(offset, SeekOrigin.Begin);
     }
-    public void WriteEnum(List<FieldEnum> fields) {
+    public void WriteEnum(List<EnumField> fields) {
         WriteInt32(fields.Count);
         foreach (var field in fields) {
             WriteString(field.Name);
             WriteInt32(field.Index);
         }
     }
-    public void WriteClass(List<FieldClass> fields) {
+    public void WriteClass(List<ClassField> fields) {
         WriteInt32(fields.Count);               //字段数量
         foreach (var field in fields) {
             if (field.IsBasic) {

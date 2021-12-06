@@ -25,7 +25,7 @@ public class PackageParser {
         foreach (var pair in table) {
             var fieldName = pair.Key as string;
             if (string.IsNullOrEmpty(fieldName)) throw new Exception($"Enum:{name} Field:{fieldName} 参数出错");
-            enums.Fields.Add(new FieldEnum() {
+            enums.Fields.Add(new EnumField() {
                 Name = fieldName,
                 Index = pair.Value.ToInt32(),
             });
@@ -41,7 +41,7 @@ public class PackageParser {
             var fieldName = pair.Key as string;
             if (string.IsNullOrEmpty(fieldName)) throw new Exception($"Const:{name} Field:{fieldName} 参数出错");
             var value = pair.Value;
-            var field = new FieldConst() { Name = fieldName };
+            var field = new ConstField() { Name = fieldName };
             switch (value.valueType) {
                 case ScriptValue.longValueType:
                     field.Type = BasicEnum.INT64;
@@ -72,7 +72,7 @@ public class PackageParser {
             var value = pair.Value.ToString();
             var infos = value.Split(',');
             if (infos.Length < 2) throw new Exception($"Class:{name} Field:{fieldName} 参数出错 参数模版 \"[索引],[类型],[是否数组=false],[默认值],[注释]\"");
-            var packageField = new FieldClass(this) {
+            var packageField = new ClassField(this) {
                 Name = fieldName,
                 Index = infos[0].ToInt32(),
                 Type = infos[1],
