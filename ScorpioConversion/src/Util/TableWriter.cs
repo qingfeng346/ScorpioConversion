@@ -97,6 +97,13 @@ public class TableWriter :IDisposable {
         }
         throw new Exception("不能识别日志字符串 : " + value);
     }
+    public void WriteBytes(string value) {
+        var bytes = value.ToBytes();
+        writer.Write(bytes.Length);
+        if (bytes.Length > 0) {
+            writer.Write(bytes);
+        }
+    }
     public byte[] ToArray() {
         stream.Position = 0;
         return stream.ToArray();

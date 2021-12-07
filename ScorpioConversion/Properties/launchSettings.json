@@ -1,14 +1,14 @@
 {
   "profiles": {
-    "ScorpioConversion": {
-      "commandName": "Project",
-      "commandLineArgs": "-package Datas -config ./Config -paths ./ -suffix bytes -name sheet -data ../Client/Assets/AssetBundles/Tables/  -scorpiofun ../Client/Assets/ScriptScorpio/Tables/ -lcs ../Client/Assets/Scripts/Editor/Tables/",
-      "workingDirectory": "D:\\Adventure\\Tables"
-    },
     "reset": {
       "commandName": "Project",
       "commandLineArgs": "reset -config ./Config -paths ./",
-      "workingDirectory": "D:\\Adventure\\Tables"
+      "workingDirectory": "../Sample"
+    },
+    "build": {
+      "commandName": "Project",
+      "commandLineArgs": "-package Datas -config ./Config -paths ./Excel  -lang language.json",
+      "workingDirectory": "../Sample"
     }
   }
 }

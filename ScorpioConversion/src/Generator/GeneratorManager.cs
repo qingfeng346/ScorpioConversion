@@ -1,15 +1,25 @@
-﻿using System.Reflection;
+﻿using System;
+using System.Reflection;
 using System.Collections.Generic;
+using Scorpio.Commons;
 public class GeneratorManager {
     public static GeneratorManager Instance { get; } = new GeneratorManager();
+    private readonly Type TypeIGenerator = typeof(IGenerator);
+    private readonly Type TypeScriptGenerator = typeof(ScriptGenerator);
+    private readonly BindingFlags BindingFlags = BindingFlags.Public | BindingFlags.Instance;
     private Dictionary<string, IGenerator> generators = new Dictionary<string, IGenerator> ();
     public void Add(IGenerator generator) {
+        Logger.info($"添加生成器 {generator.Language} - {generator.GetType()}");
         generators[generator.Language] = generator;
     }
     public void Add(Assembly assembly) {
         foreach (var type in assembly.GetTypes()) {
-            if (type.IsAssignableFrom(typeof(IGenerator))) {
-                Add(System.Activator.CreateInstance(type) as IGenerator);
+            if (TypeIGenerator.IsAssignableFrom(type) && type != TypeIGenerator) {
+                foreach (var method in type.GetConstructors(BindingFlags)) {
+                    if (method.GetParameters().Length == 0) {
+                        Add(method.Invoke(null) as IGenerator);
+                    }
+                }
             }
         }
     }

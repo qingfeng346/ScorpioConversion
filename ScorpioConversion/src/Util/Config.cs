@@ -32,16 +32,15 @@ public class Config {
     public static List<L10NData> L10NDatas { get; private set; }                //所有的翻译字段
     public static PackageParser Parser { get; private set; }                    //配置文件解析
     public static void Initialize(CommandLine command) {
-        SpawnsList = new Dictionary<string, string>();                                              //派生文件列表 多个Key[{Util.Separator}]隔开
+        SpawnsList = new Dictionary<string, string>();                                    //派生文件列表 多个Key[{Util.Separator}]隔开
         L10NDatas = new List<L10NData>();
-        Tags = new HashSet<string>(command.GetValueDefault("-tags", "").Split(Util.Separator));     //需要过滤的文件tags 多tag[{Util.Separator}]隔开
-        Tags.Remove("");
+        Tags = new HashSet<string>(Util.Split(command.GetValueDefault("-tags", "")));     //需要过滤的文件tags 多tag[{Util.Separator}]隔开
         Parser = new PackageParser();
         Util.Split(command.GetValue("-config"), (file) => Parser.Parse(file));
         var files = new List<string>(Util.Split(command.GetValue("-files")));
         files = files.ConvertAll(file => Path.Combine(ScorpioUtil.CurrentDirectory, file));
         //需要转换的文件目录 多路径[{Util.Separator}]隔开
-        Util.Split(command.GetValue("-paths"), (path) => {
+        Util.Split(command.GetValueDefault("-paths", ""), (path) => {
             files.AddRange(Directory.GetFiles(Path.Combine(ScorpioUtil.CurrentDirectory, path), "*", SearchOption.AllDirectories));
         });
         FileList = new List<ExcelFile>();

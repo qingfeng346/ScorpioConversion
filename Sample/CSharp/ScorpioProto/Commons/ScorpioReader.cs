@@ -54,7 +54,7 @@ namespace ScorpioProto.Commons {
             return startTime.AddMilliseconds(reader.ReadInt64());
         }
         public byte[] ReadBytes() {
-            var length = reader.ReadUInt16();
+            var length = reader.ReadInt32();
             return reader.ReadBytes(length);
         }
         public void Dispose() {

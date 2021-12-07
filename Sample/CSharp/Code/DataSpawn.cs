@@ -1,3 +1,4 @@
+//本文件为自动生成，请不要手动修改
 using System;
 using System.IO;
 using System.Collections;
@@ -6,9 +7,8 @@ using System.Collections.ObjectModel;
 using ScorpioProto.Commons;
 using ScorpioProto.Table;
 
-namespace scov {
+namespace Datas {
 public partial class DataSpawn : IData {
-    private bool m_IsInvalid;
     
     private int _ID;
     /* <summary> 测试ID 此值必须唯一 而且必须为int型  默认值() </summary> */
@@ -44,18 +44,6 @@ public partial class DataSpawn : IData {
         return null;
     }
     
-    public bool IsInvalid() { return m_IsInvalid; }
-    private bool CheckInvalid() {
-        if (!TableUtil.IsInvalid(this._ID)) return false;
-        if (!TableUtil.IsInvalid(this._TestInt)) return false;
-        if (!TableUtil.IsInvalid(this._TestString)) return false;
-        if (!TableUtil.IsInvalid(this._TestLanguage)) return false;
-        if (!TableUtil.IsInvalid(this._TestBool)) return false;
-        if (!TableUtil.IsInvalid(this._TestInt2)) return false;
-        if (!TableUtil.IsInvalid(this._TestEnumName)) return false;
-        return true;
-    }
-    
     public static DataSpawn Read(string fileName, IScorpioReader reader) {
         var ret = new DataSpawn();
         ret._ID = reader.ReadInt32();
@@ -65,7 +53,6 @@ public partial class DataSpawn : IData {
         ret._TestBool = reader.ReadBool();
         ret._TestInt2 = Int2.Read(fileName, reader);
         ret._TestEnumName = (TestEnum)reader.ReadInt32();
-        ret.m_IsInvalid = ret.CheckInvalid();
         return ret;
     }
     
@@ -80,15 +67,7 @@ public partial class DataSpawn : IData {
     }
     
     public override string ToString() {
-        return "{ " + 
-            "ID : " +  _ID + "," + 
-            "TestInt : " +  _TestInt + "," + 
-            "TestString : " +  _TestString + "," + 
-            "TestLanguage : " +  _TestLanguage + "," + 
-            "TestBool : " +  _TestBool + "," + 
-            "TestInt2 : " +  _TestInt2 + "," + 
-            "TestEnumName : " +  _TestEnumName + 
-            " }";
+        return $"ID:{_ID}, TestInt:{_TestInt}, TestString:{_TestString}, TestLanguage:{_TestLanguage}, TestBool:{_TestBool}, TestInt2:{_TestInt2}, TestEnumName:{_TestEnumName}, ";
     }
 }
 }

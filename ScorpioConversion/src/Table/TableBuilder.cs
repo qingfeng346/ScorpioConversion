@@ -40,11 +40,13 @@ public partial class TableBuilder {
     public string Group { get; private set; }                                       //是否是Group类型表
     public string GroupSort { get; private set; }                                   //Group类型的排序字段
     public string LayoutMD5 { get; private set; }                                   //文件结构MD5
+    public string Source { get; private set; }                                      //来源
     public int DataCount => mDatas.Count;                                           //数据数量
-    public List<ClassField> Fields { get; } = new List<ClassField>();               //表结构
+    public PackageClass PackageClass { get; private set; }                          //表结构
     public HashSet<IPackage> CustomTypes { get; } = new HashSet<IPackage>();        //自定义类,枚举列表
 
     public TableBuilder SetFileName(string name) { FileName = name; return this; }
+    public TableBuilder SetSource(string source) { Source = source; return this; }
 
     public bool Parse(DataTable dataTable) {
         mParser = Config.Parser;
@@ -58,7 +60,7 @@ public partial class TableBuilder {
 
     //解析文件结构
     void LoadLayout(DataTable dataTable) {
-        Fields.Clear();
+        PackageClass = new PackageClass();
         var rows = dataTable.Rows;
         for (var i = 0; i < rows.Count; ++i) {
             var row = rows[i];
@@ -78,10 +80,10 @@ public partial class TableBuilder {
         }
     }
     ClassField GetField(int index) {
-        for (var i = Fields.Count; i <= index; ++i) {
-            Fields.Add(new ClassField(mParser));
+        for (var i = PackageClass.Fields.Count; i <= index; ++i) {
+            PackageClass.Fields.Add(new ClassField(mParser));
         }
-        return Fields[index];
+        return PackageClass.Fields[index];
     }
     //解析文件头
     void ParseHead(string key, DataRow row) {
@@ -153,8 +155,8 @@ public partial class TableBuilder {
         if (firstValue.IsEmptyString()) { return; }
         var data = new RowData() { RowNumber = rowNumber + 1 };
         if (!AutoInc) { data.Key = firstValue; }
-        for (var i = 0; i < Fields.Count; ++i) {
-            var field = Fields[i];
+        for (var i = 0; i < PackageClass.Fields.Count; ++i) {
+            var field = PackageClass.Fields[i];
             if (!field.IsValid) { continue; }
             try {
                 data.Values.Add(row[i + 1].GetDataString());
@@ -168,9 +170,10 @@ public partial class TableBuilder {
     //检测所有数据
     void CheckData() {
         //删除无效字段
-        Fields.RemoveAll(field => !field.IsValid);
-        for (var i = 0; i < Fields.Count;++i) {
-            var field = Fields[i];
+        PackageClass.Name = FileName;
+        PackageClass.Fields.RemoveAll(field => !field.IsValid);
+        for (var i = 0; i < PackageClass.Fields.Count;++i) {
+            var field = PackageClass.Fields[i];
             if (!field.Name.IsEmptyString() && field.Type.IsEmptyString()) {
                 throw new Exception($"列:{(i + 1).GetLineName()}({field.Name}) 类型为空");
             } else if (field.Name.IsEmptyString() && !field.Type.IsEmptyString()) {
@@ -180,7 +183,7 @@ public partial class TableBuilder {
             }
         }
         if (AutoInc) {
-            Fields.Insert(0, new ClassField(mParser) { Name = "AutoID", Type = "int", Comment = "AutoID" });
+            PackageClass.Fields.Insert(0, new ClassField(mParser) { Name = "AutoID", Type = "int", Comment = "AutoID" });
             var autoID = 0;
             foreach (var data in mDatas) {
                 data.Key = (autoID++).ToString();
@@ -189,13 +192,13 @@ public partial class TableBuilder {
         }
         //计算文件结构MD5
         var builder = new StringBuilder();
-        for (var i = 0; i < Fields.Count; ++i) {
-            Fields[i].Index = i;
-            builder.Append(Fields[i].Type).Append(":");
-            builder.Append(Fields[i].IsArray ? "1" : "0").Append(":");
+        for (var i = 0; i < PackageClass.Fields.Count; ++i) {
+            PackageClass.Fields[i].Index = i;
+            builder.Append(PackageClass.Fields[i].Type).Append(":");
+            builder.Append(PackageClass.Fields[i].IsArray ? "1" : "0").Append(":");
         }
         LayoutMD5 = ScorpioUtil.GetMD5FromString(builder.ToString());
-        if (Fields.Count == 0) throw new Exception($"有效字段数量为0");
+        if (PackageClass.Fields.Count == 0) throw new Exception($"有效字段数量为0");
         if (Spawn.IsEmptyString()) {
             Name = FileName;
         } else {
@@ -206,7 +209,7 @@ public partial class TableBuilder {
             Name = Spawn;
         }
         CustomTypes.Clear();
-        Fields.ForEach((field) => {
+        PackageClass.Fields.ForEach((field) => {
             if (!field.IsBasic) {
                 if (field.IsEnum) {
                     CustomTypes.Add(field.CustomEnum);
@@ -215,13 +218,16 @@ public partial class TableBuilder {
                 }
             }
         });
+        if (string.IsNullOrEmpty(FileName)) {
+            throw new Exception($"FileName 为空");
+        }
     }
     void Generate() {
         var l10nDatas = Config.L10NDatas;
         using (var writer = new TableWriter()) {
             writer.WriteInt32(mDatas.Count);        //数据数量
             writer.WriteString(LayoutMD5);          //文件结构MD5
-            writer.WriteClass(Fields);              //表结构
+            writer.WriteClass(PackageClass.Fields);              //表结构
             writer.WriteInt32(CustomTypes.Count);   //自定义类数量
             foreach (var customType in CustomTypes) {
                 if (customType is PackageEnum) {
@@ -240,8 +246,8 @@ public partial class TableBuilder {
                     throw new Exception($"ID有重复项[{data.Key}], 行:[{data.RowNumber}]");
                 }
                 keys.Add(data.Key);
-                for (var i = 0; i < Fields.Count; ++i) {
-                    var field = Fields[i];
+                for (var i = 0; i < PackageClass.Fields.Count; ++i) {
+                    var field = PackageClass.Fields[i];
                     if (field.IsL10N) {
                         l10nDatas.Add(new L10NData {
                             Key = $"{this.Name}.{data.Key}.{field.Name}", // skip the signature of '$'
@@ -261,11 +267,11 @@ public partial class TableBuilder {
                             field.Write(writer, data.Values[i]);
                         }
                     } catch (Exception e) {
-                        var rowStr = "";
+                        var builder = new StringBuilder();
                         for (var m = 0; m < data.Values.Count; m ++) {
-                            rowStr += "," + data.Values[m].value;
+                            builder.Append(data.Values[m].value + ",");
                         }
-                        throw new Exception($"行:{data.RowNumber}({rowStr}) 列:{field.Name}  {e}");
+                        throw new Exception($"列:{field.Name} 行:{data.RowNumber}({builder}) : {e}");
                     }
                 }
             }

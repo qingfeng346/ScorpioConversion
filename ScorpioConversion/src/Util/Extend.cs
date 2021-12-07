@@ -19,6 +19,10 @@ public static class Extend {
     public const double INVALID_DOUBLE = 0;
     public const string INVALID_STRING = "";
     public readonly static byte[] INVALID_BYTES = new byte[0];
+    public const string BYTES_PROTO_BASE64 = "base64://";
+    public const string BYTES_PROTO_FILE = "file://";
+    public const string BYTES_PROTO_HTTP = "http://";
+    public const string BYTES_PROTO_HTTPS = "https://";
     public static string GetMemory(this long by) => ScorpioUtil.GetMemory(by);
     public static string GetLineName(this int line) => ScorpioUtil.GetExcelColumn(line);
     public static bool IsEmptyString(this string str) => string.IsNullOrWhiteSpace(str);
@@ -115,6 +119,20 @@ public static class Extend {
     }
     public static double ToDouble(this string value) {
         return value.IsEmptyString() ? INVALID_DOUBLE : Convert.ToDouble(value);
+    }
+    public static byte[] ToBytes(this string value) {
+        if (value.IsEmptyString()) {
+            return INVALID_BYTES;
+        } else if (value.StartsWith(BYTES_PROTO_BASE64)) {
+            return Convert.FromBase64String(value.Substring(BYTES_PROTO_BASE64.Length));
+        } else if (value.StartsWith(BYTES_PROTO_FILE)) {
+            var bytes = FileUtil.GetFileBuffer(value.Substring(BYTES_PROTO_FILE.Length));
+            if (bytes == null) {
+                throw new Exception($"二进制数据文件不存在 : {value}");
+            }
+            return bytes;
+        }
+        throw new Exception($"未知的二进制数据 : {value}");
     }
     public static string GetCellString(this IRow row, int index) {
         return GetCellString(row, index, "");

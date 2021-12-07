@@ -212,11 +212,12 @@ namespace ScorpioConversion {
                                     var stopwatch = Stopwatch.StartNew();
                                     var builder = new TableBuilder();
                                     builder.SetFileName(Config.IsFileName ? file.fileNameWithoutExtension : sheetName.Trim());
+                                    builder.SetSource($"{file.file} - {sheetName}");
                                     if (!builder.Parse(dataTable)) {
                                         continue;
                                     }
                                     var elapsedMilliseconds = stopwatch.ElapsedMilliseconds;
-                                    Logger.info(string.Format("File:{0,-20} Sheet:{1,-20} 解析完成  有效列:{2,-5}  有效行:{3,-5}  耗时:{4,-5}", file.fileName.Breviary(18), sheetName.Breviary(18), builder.Fields.Count, builder.DataCount, elapsedMilliseconds > 10000 ? $"{elapsedMilliseconds / 1000}秒" : $"{elapsedMilliseconds}毫秒"));
+                                    Logger.info(string.Format("File:{0,-20} Sheet:{1,-20} 解析完成  有效列:{2,-5}  有效行:{3,-5}  耗时:{4,-5}", file.fileName.Breviary(18), sheetName.Breviary(18), builder.PackageClass.Fields.Count, builder.DataCount, elapsedMilliseconds > 10000 ? $"{elapsedMilliseconds / 1000}秒" : $"{elapsedMilliseconds}毫秒"));
                                     if (builder.IsSpawn) {
                                         if (successSpawns.TryGetValue(builder.Spawn, out var array)) {
                                             array.Add(builder);
@@ -238,6 +239,7 @@ namespace ScorpioConversion {
                     File.Delete(tempFile);
                 }
             }
+            Config.LanguageConfig.GenerateCustom(Config.Parser);
             //if (!l10nOutput.IsEmptyString()) {
             //    File.WriteAllText(Path.Combine(Environment.CurrentDirectory, l10nOutput, "./l10n.json"),
             //        Newtonsoft.Json.JsonConvert.SerializeObject(l10nData), new UTF8Encoding(false));

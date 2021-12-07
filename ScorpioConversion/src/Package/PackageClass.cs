@@ -84,7 +84,6 @@ public class ClassField {
             throw new Exception($"当前类型不是基础类型 : {Type}");
         }
     }
-
     void WriteCustom(TableWriter writer, ValueList list, bool array) {
         var type = CustomType;
         if (array) {
@@ -130,6 +129,9 @@ public class ClassField {
     }
 }
 public class PackageClass : IPackage {
-    public string Name;
+    public string Name { get; set; }
     public List<ClassField> Fields = new List<ClassField>();
+    public override string ToString() {
+        return Name;
+    }
 }

@@ -16,11 +16,13 @@ public class ScriptGenerator : IGenerator {
         }
         return ScriptValue.Null;
     }
-    public override string GenerateDataClass(string packageName, string tableClassName, string dataClassName, string suffix, string fileMD5, PackageClass packageClass) {
-        return __Call("GenerateDataClass", packageClass, tableClassName, dataClassName, suffix, fileMD5, packageClass).ToString();
+    public override string GenerateTableClass(string packageName, string tableClassName, string dataClassName, string fileMD5, PackageClass packageClass) {
+        return __Call("GenerateTableClass", packageName, tableClassName, dataClassName, fileMD5, packageClass).ToString();
     }
-
-    public override string GenerateTableClass(string packageName, string tableClassName, string dataClassName, string suffix, string fileMD5, PackageClass packageClass) {
-        return __Call("GenerateTableClass", packageClass, tableClassName, dataClassName, suffix, fileMD5, packageClass).ToString();
+    public override string GenerateDataClass(string packageName, string className, PackageClass packageClass, bool createID = false) {
+        return __Call("GenerateDataClass", packageName, className, packageClass, createID).ToString();
+    }
+    public override string GenerateEnumClass(string packageName, string className, PackageEnum packageEnum) {
+        return __Call("GenerateEnumClass", packageName, className, packageEnum).ToString();
     }
 }
