@@ -1,0 +1,12 @@
+{
+    "dataOutput": "./",
+    "dataSuffix": "data",
+    "package": "Datas",
+    "languages": [
+        {
+            "language": "c#",
+            "codeOutput": "./CSharp/Code",
+            "codeSuffix": "cs"
+        }
+    ]
+}
