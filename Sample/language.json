@@ -5,7 +5,7 @@
     "languages": [
         {
             "language": "c#",
-            "codeOutput": "./CSharp/Code",
+            "codeOutput": "../ScorpioProto/CSharp/Example/src",
             "codeSuffix": "cs"
         }
     ]

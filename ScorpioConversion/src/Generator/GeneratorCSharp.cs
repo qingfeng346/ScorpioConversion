@@ -44,7 +44,7 @@ namespace {packageName} {{
         private int m_count = 0;
         private Dictionary<{keyType}, {dataClassName}> m_dataArray = new Dictionary<{keyType}, {dataClassName}>();
         public {tableClassName} Initialize(string fileName, IScorpioReader reader) {{
-            var iRow = TableUtil.ReadHead(reader, fileName, FILE_MD5_CODE);
+            var iRow = reader.ReadHead(fileName, FILE_MD5_CODE);
             for (var i = 0; i < iRow; ++i) {{
                 var pData = {dataClassName}.Read(fileName, reader);
                 if (m_dataArray.TryGetValue(pData.ID(), out var value))
@@ -58,8 +58,7 @@ namespace {packageName} {{
         public {dataClassName} GetValue({keyType} ID) {{
             if (m_dataArray.TryGetValue(ID, out var value))
                 return value;
-            TableUtil.Warning(""{tableClassName} key is not exist "" + ID);
-            return null;
+            throw new Exception($""{tableClassName} not found data : {{ID}}"");
         }}
         public bool Contains({keyType} ID) {{
             return m_dataArray.ContainsKey(ID);

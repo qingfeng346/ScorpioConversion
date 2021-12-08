@@ -2,6 +2,7 @@
 using System.Reflection;
 using System.Collections.Generic;
 using Scorpio.Commons;
+using Scorpio;
 public class GeneratorManager {
     public static GeneratorManager Instance { get; } = new GeneratorManager();
     private readonly Type TypeIGenerator = typeof(IGenerator);
@@ -23,10 +24,13 @@ public class GeneratorManager {
             }
         }
     }
+    public void Add(string language, ScriptValue scriptValue) {
+        Add(new ScriptGenerator(language, scriptValue));
+    }
     public IGenerator Get(string language) {
         if (generators.TryGetValue(language, out IGenerator generator)) {
             return generator;
         }
-        throw new System.Exception($"找不到language:{language} 生成器");
+        throw new Exception($"找不到language:{language} 生成器");
     }
 }

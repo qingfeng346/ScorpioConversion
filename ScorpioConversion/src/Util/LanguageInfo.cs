@@ -14,7 +14,7 @@ public class LanguageConfig {
     public string codeOutput = "";          //默认代码导出目录
     public string dataSuffix = "data";      //默认数据文件后缀名
     public string dataOutput = "";          //默认数据文件导出目录
-    public string package = "";             //默认命名空间
+    public string package = "scov";         //默认命名空间
     public List<LanguageInfo> languages = new List<LanguageInfo>();
     private LanguageInfo GetLanguageInfo(LanguageInfo languageInfo) {
         if (string.IsNullOrWhiteSpace(languageInfo.codeOutput)) {

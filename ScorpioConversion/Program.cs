@@ -45,6 +45,24 @@ namespace ScorpioConversion {
         -l10n           输出L10N配置文件
 {HelpLanguages}
 ";
+        private static string HelpBuild = $@"
+转换excel文件
+    register        注册运行程序到环境变量
+    install         载入对应语言的库文件
+    reset           刷新表注释
+    [other]         转换excel文件
+        -package        命名空间,默认 sco
+        -files          需要转换的excel文件,多文件[{Util.Separator}]隔开
+        -paths          需要转换的excel文件目录 多路径[{Util.Separator}]隔开
+        -tags           需要过滤的文件tags 多tag[{Util.Separator}]隔开
+        -data           数据文件输出目录 多目录[{Util.Separator}]隔开
+        -suffix         数据文件后缀 默认[.data]
+        -fileSuffix     程序文件后缀 默认各语言默认后缀
+        -name           输出文件使用文件名或者sheet名字,默认file, 选项 [file,sheet]
+        -config         配置文件路径 多路径[{Util.Separator}]隔开
+        -l10n           输出L10N配置文件
+{HelpLanguages}
+";
         static string HelpLanguages {
             get {
                 return "";
@@ -57,6 +75,12 @@ namespace ScorpioConversion {
     //            return builder.ToString();
             }
         }
+        private readonly static string[] ParameterConfig = new[] { "--config", "-config" };     //
+        private readonly static string[] ParameterFiles = new[] { "--files", "-files" };        //
+        private readonly static string[] ParameterPaths = new[] { "--paths", "-paths" };        //
+        private readonly static string[] ParameterTags = new[] { "--tags", "-tags" };           //需要过滤的文件tags 多tag[{Util.Separator}]隔开
+        private readonly static string[] ParameterName = new[] { "--name", "-name" };           //
+        private readonly static string[] ParameterLang = new[] { "--lang", "-lang" };           //
         static void Main(string[] args) {
             Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
             var perform = new Perform();
@@ -64,8 +88,8 @@ namespace ScorpioConversion {
             //perform.AddExecute("install", HelpInstall, Install);
             //perform.AddExecute("reset", HelpReset, Reset);
             //perform.AddExecute("format", HelpReset, Format);
-            //perform.AddExecute("decompile", HelpReset, Decompile);
-            perform.AddExecute("build", HelpExecute, Execute);
+            perform.AddExecute("decompile", HelpReset, Decompile);
+            perform.AddExecute("build", HelpExecute, Build);
             perform.Start(args, null, null);
         }
         //static void Register(Perform perform, CommandLine command, string[] args) {
@@ -168,31 +192,31 @@ namespace ScorpioConversion {
         //        }
         //    }
         //}
-        //static void Decompile(Perform perform, CommandLine command, string[] args) {
-        //    var suffix = command.GetValueDefault("-suffix", "data");        //数据文件后缀 默认.data
-        //    var output = perform.GetPath("-output");                         //输出目录
-        //    var files = new List<string>();
-        //    //需要转换的文件 多文件[{Util.Separator}]隔开
-        //    Util.Split(command.GetValue("-files"), (file) => files.Add(Path.GetFullPath($"{Environment.CurrentDirectory}/{file}")));
-        //    //需要转换的文件目录 多路径[{Util.Separator}]隔开
-        //    Util.Split(command.GetValue("-paths"), (path) => files.AddRange(Directory.GetFiles(Path.GetFullPath($"{Environment.CurrentDirectory}/{path}"))));
-        //    Logger.info($"输出目录 {output}");
-        //    if (!Directory.Exists(output)) { Directory.CreateDirectory(output); }
-        //    foreach (var file in files) {
-        //        if (!file.EndsWith(suffix)) { continue; }
-        //        var tempFile = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, Guid.NewGuid().ToString("N"));
-        //        try {
-        //            File.Copy(file, tempFile, true);
-        //            new TableDecompile().Decompile(tempFile, Path.GetFileNameWithoutExtension(file), output);
-        //            Logger.info($"反编译 {file} 完成");
-        //        } catch (Exception e) {
-        //            Logger.error($"文件 [{file}] 反编译出错 : " + e.ToString());
-        //        } finally {
-        //            File.Delete(tempFile);
-        //        }
-        //    }
-        //}
-        static void Execute(Perform perform, CommandLine command, string[] args) {
+        static void Decompile(Perform perform, CommandLine command, string[] args) {
+            var suffix = command.GetValueDefault("-suffix", "data");         //数据文件后缀 默认.data
+            var output = perform.GetPath("-output");                         //输出目录
+            var files = new List<string>();
+            //需要转换的文件 多文件[{Util.Separator}]隔开
+            Util.Split(command.GetValue("-files"), (file) => files.Add(Path.GetFullPath($"{Environment.CurrentDirectory}/{file}")));
+            //需要转换的文件目录 多路径[{Util.Separator}]隔开
+            Util.Split(command.GetValue("-paths"), (path) => files.AddRange(Directory.GetFiles(Path.GetFullPath($"{Environment.CurrentDirectory}/{path}"))));
+            Logger.info($"输出目录 {output}");
+            if (!Directory.Exists(output)) { Directory.CreateDirectory(output); }
+            foreach (var file in files) {
+                if (!file.EndsWith(suffix)) { continue; }
+                var tempFile = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, Guid.NewGuid().ToString("N"));
+                try {
+                    File.Copy(file, tempFile, true);
+                    new TableDecompile().Decompile(tempFile, Path.GetFileNameWithoutExtension(file), output);
+                    Logger.info($"反编译 {file} 完成");
+                } catch (Exception e) {
+                    Logger.error($"文件 [{file}] 反编译出错 : " + e.ToString());
+                } finally {
+                    File.Delete(tempFile);
+                }
+            }
+        }
+        static void Build(Perform perform, CommandLine command, string[] args) {
             Config.Initialize(command);
             GeneratorManager.Instance.Add(typeof(Program).Assembly);
             var fileList = Config.FileList; //所有要生成的excel文件
@@ -240,28 +264,15 @@ namespace ScorpioConversion {
                 }
             }
             Config.LanguageConfig.GenerateCustom(Config.Parser);
-            //if (!l10nOutput.IsEmptyString()) {
-            //    File.WriteAllText(Path.Combine(Environment.CurrentDirectory, l10nOutput, "./l10n.json"),
-            //        Newtonsoft.Json.JsonConvert.SerializeObject(l10nData), new UTF8Encoding(false));
-            //}
-            //successTables.Sort((a, b) => { return a.DataFileName.CompareTo(b.DataFileName); });
-            //foreach (var pair in successSpawns) {
-            //    pair.Value.Sort((a, b) => { return a.DataFileName.CompareTo(b.DataFileName); });
-            //}
-            //var parser = Config.Parser;
-            //var script = parser.Script;
-            //foreach (var pair in Config.LanguageDirectory) {
-            //    var language = pair.Key;
-            //    //foreach (var table in parser.Tables) {
-            //    //    Util.CreateDataClass(language, Config.PackageName, table.Key, table.Value.Fields, pair.Value, Config.FileSuffix);
-            //    //}
-            //    //foreach (var @enum in parser.Enums) {
-            //    //    Util.CreateEnumClass(language, Config.PackageName, @enum.Value, pair.Value, Config.FileSuffix);
-            //    //}
-            //}
-            //if (script.HasGlobal("BuildOver")) {
-            //    script.GetGlobal("BuildOver").call(ScriptValue.Null, successTables, successSpawns, command, parser);
-            //}
+            successTables.Sort((a, b) => { return a.Name.CompareTo(b.Name); });
+            foreach (var pair in successSpawns) {
+                pair.Value.Sort((a, b) => { return a.FileName.CompareTo(b.FileName); });
+            }
+            var parser = Config.Parser;
+            var script = parser.Script;
+            if (script.HasGlobal("BuildOver")) {
+                script.GetGlobal("BuildOver").call(ScriptValue.Null, successTables, successSpawns, command, parser);
+            }
         }
     }
 }
