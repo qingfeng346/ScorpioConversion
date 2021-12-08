@@ -65,7 +65,7 @@ namespace ScorpioConversion {
             //perform.AddExecute("reset", HelpReset, Reset);
             //perform.AddExecute("format", HelpReset, Format);
             //perform.AddExecute("decompile", HelpReset, Decompile);
-            perform.AddExecute("", HelpExecute, Execute);
+            perform.AddExecute("build", HelpExecute, Execute);
             perform.Start(args, null, null);
         }
         //static void Register(Perform perform, CommandLine command, string[] args) {
