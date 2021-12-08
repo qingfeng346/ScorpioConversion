@@ -217,7 +217,12 @@ namespace ScorpioConversion {
             }
         }
         static void Build(Perform perform, CommandLine command, string[] args) {
-            Config.Initialize(command.GetValues(ParameterConfig), command.GetValues(ParameterFiles), command.GetValues(ParameterPaths), command.GetValues(ParameterTags), command.GetValueDefault(ParameterName, "file"));
+            Config.Initialize(command.GetValues(ParameterConfig), 
+                              command.GetValues(ParameterFiles), 
+                              command.GetValues(ParameterPaths), 
+                              command.GetValues(ParameterTags), 
+                              command.GetValue(ParameterLang),
+                              command.GetValueDefault(ParameterName, "file"));
             GeneratorManager.Instance.Add(typeof(Program).Assembly);
             var fileList = Config.FileList; //所有要生成的excel文件
             if (fileList.Count == 0) throw new Exception("至少选择一个excel文件");

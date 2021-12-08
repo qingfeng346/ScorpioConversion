@@ -31,7 +31,7 @@ public class Config {
     public static Dictionary<string, string> SpawnsList { get; private set; }   //派生类MD5列表
     public static List<L10NData> L10NDatas { get; private set; }                //所有的翻译字段
     public static PackageParser Parser { get; private set; }                    //配置文件解析
-    public static void Initialize(string[] configs, string[] files, string[] paths, string[] tags, string name) {
+    public static void Initialize(string[] configs, string[] files, string[] paths, string[] tags, string lang, string name) {
         SpawnsList = new Dictionary<string, string>();                                    //派生文件列表 多个Key[{Util.Separator}]隔开
         L10NDatas = new List<L10NData>();
         Tags = new HashSet<string>(tags);                               //需要过滤的文件tags 多tag[{Util.Separator}]隔开
@@ -40,21 +40,21 @@ public class Config {
             Parser.Parse(config);
         }
         FileList = new List<ExcelFile>();
-
-        files.ForEach((file) => {
-            if (file.IsExcel())
+        foreach (var file in files) {
+            if (file.IsExcel()) {
                 FileList.Add(new ExcelFile(file));
-        });
-        var files = new List<string>(Util.Split(command.GetValue("-files")));
-        files = files.ConvertAll(file => Path.Combine(ScorpioUtil.CurrentDirectory, file));
-        //需要转换的文件目录 多路径[{Util.Separator}]隔开
-        Util.Split(command.GetValueDefault("-paths", ""), (path) => {
-            files.AddRange(Directory.GetFiles(Path.Combine(ScorpioUtil.CurrentDirectory, path), "*", SearchOption.AllDirectories));
-        });
-        
-        LanguageConfig = JsonConvert.DeserializeObject<LanguageConfig>(FileUtil.GetFileString(Path.Combine(ScorpioUtil.CurrentDirectory, command.GetValue("-lang"))));
-        WriteL10N = command.GetValueDefault("-wl10n", "").ToBoolean();
-        IsFileName = command.GetValueDefault("-name", "file").ToLower() == "file";      //名字使用文件名或者sheet名字
+            }
+        }
+        foreach (var path in paths) {
+            foreach (var file in Directory.GetFiles(path, "*", SearchOption.AllDirectories)) {
+                if (file.IsExcel()) {
+                    FileList.Add(new ExcelFile(file));
+                }
+            }
+        }
+        LanguageConfig = JsonConvert.DeserializeObject<LanguageConfig>(FileUtil.GetFileString(lang));
+        // WriteL10N = command.GetValueDefault("-wl10n", "").ToBoolean();
+        IsFileName = name.ToLower() == "file";      //名字使用文件名或者sheet名字
     }
     public static bool ContainsTags(List<string> tags) {
         if (Tags.Count == 0 || tags.Count == 0) { return true; }

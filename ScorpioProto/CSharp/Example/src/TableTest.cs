@@ -27,7 +27,7 @@ namespace Datas {
         public DataTest GetValue(int ID) {
             if (m_dataArray.TryGetValue(ID, out var value))
                 return value;
-            throw new Exception($"TableTest not found : {ID}");
+            throw new Exception($"TableTest not found data : {ID}");
         }
         public bool Contains(int ID) {
             return m_dataArray.ContainsKey(ID);

@@ -27,7 +27,7 @@ namespace Datas {
         public DataSpawn GetValue(int ID) {
             if (m_dataArray.TryGetValue(ID, out var value))
                 return value;
-            throw new Exception($"TableSpawn not found : {ID}");
+            throw new Exception($"TableSpawn not found data : {ID}");
         }
         public bool Contains(int ID) {
             return m_dataArray.ContainsKey(ID);
