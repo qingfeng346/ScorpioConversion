@@ -1,6 +1,7 @@
 using System;
 namespace ScorpioProto.Commons {
     public interface IScorpioReader : IDisposable {
+        int ReadHead(string fileName, string MD5);
         bool ReadBool();
         sbyte ReadInt8();
         byte ReadUInt8();
