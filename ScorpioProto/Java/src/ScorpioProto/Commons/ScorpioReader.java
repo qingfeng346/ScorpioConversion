@@ -7,6 +7,38 @@ public class ScorpioReader implements IScorpioReader {
 	public ScorpioReader(byte[] buffer) {
 		reader = ByteBuffer.wrap(buffer).order(ByteOrder.LITTLE_ENDIAN);
 	}
+	public int ReadHead(String fileName, String MD5) throws Exception {
+		int iRow = ReadInt32();          //行数
+		if (ReadString() != MD5)         //验证文件MD5(检测结构是否改变)
+			throw new Exception("文件[" + fileName + "]版本验证失败");
+		{
+			var number = ReadInt32();        //字段数量
+			for (var i = 0; i < number; ++i) {
+				if (ReadInt8() == 0) {   //基础类型
+					ReadInt8();          //基础类型索引
+				} else {                        //自定义类
+					ReadString();        //自定义类名称
+				}
+				ReadBool();          //是否是数组
+			}
+		}
+		{
+			var customNumber = ReadInt32();  //自定义类数量
+			for (var i = 0; i < customNumber; ++i) {
+				ReadString();                //读取自定义类名字
+				var number = ReadInt32();        //字段数量
+				for (var j = 0; j < number; ++j) {
+					if (ReadInt8() == 0) {   //基础类型
+						ReadInt8();          //基础类型索引
+					} else {                        //自定义类
+						ReadString();        //自定义类名称
+					}
+					ReadBool();          //是否是数组
+				}
+			}
+		}
+		return iRow;
+	}
 	public boolean ReadBool() {
 		return ReadInt8() == (byte) 1;
 	}

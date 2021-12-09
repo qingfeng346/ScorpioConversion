@@ -3,6 +3,7 @@ package ScorpioProto.Commons;
 import java.util.Calendar;
 
 public interface IScorpioReader {
+	int ReadHead(String fileName, String MD5) throws Exception;
 	boolean ReadBool();
 	byte ReadInt8();
 	byte ReadUInt8();
