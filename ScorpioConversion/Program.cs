@@ -73,7 +73,6 @@ namespace ScorpioConversion {
         private readonly static string[] ParameterName = new[] { "--name", "-name" };           //
         private readonly static string[] ParameterLang = new[] { "--lang", "-lang" };           //
         static void Main(string[] args) {
-            //ResourceReader 
             Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
             var perform = new Perform();
             //perform.AddExecute("register", HelpRegister, Register);
