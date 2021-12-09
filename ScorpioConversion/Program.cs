@@ -11,6 +11,7 @@ using Scorpio.Commons;
 using ExcelDataReader;
 using System.Data;
 using System.Diagnostics;
+using System.Resources;
 
 namespace ScorpioConversion {
     class Program {
@@ -47,21 +48,11 @@ namespace ScorpioConversion {
 ";
         private static string HelpBuild = $@"
 转换excel文件
-    register        注册运行程序到环境变量
-    install         载入对应语言的库文件
-    reset           刷新表注释
-    [other]         转换excel文件
-        -package        命名空间,默认 sco
-        -files          需要转换的excel文件,多文件[{Util.Separator}]隔开
-        -paths          需要转换的excel文件目录 多路径[{Util.Separator}]隔开
-        -tags           需要过滤的文件tags 多tag[{Util.Separator}]隔开
-        -data           数据文件输出目录 多目录[{Util.Separator}]隔开
-        -suffix         数据文件后缀 默认[.data]
-        -fileSuffix     程序文件后缀 默认各语言默认后缀
-        -name           输出文件使用文件名或者sheet名字,默认file, 选项 [file,sheet]
-        -config         配置文件路径 多路径[{Util.Separator}]隔开
-        -l10n           输出L10N配置文件
-{HelpLanguages}
+    --config|-confg     sco(https://github.com/qingfeng346/Scorpio-CSharp)配置文件
+    --files|-files      Excel文件路径(仅支持 xls|xlsx 文件)
+    --paths|-paths      Excel文件夹(仅扫描 xls|xlsx 文件)
+    --tags|-tags        需要过滤的tags
+    --lang|-lang        Language配置文件
 ";
         static string HelpLanguages {
             get {
@@ -75,13 +66,14 @@ namespace ScorpioConversion {
     //            return builder.ToString();
             }
         }
-        private readonly static string[] ParameterConfig = new[] { "--config", "-config" };     //
-        private readonly static string[] ParameterFiles = new[] { "--files", "-files" };        //
-        private readonly static string[] ParameterPaths = new[] { "--paths", "-paths" };        //
+        private readonly static string[] ParameterConfig = new[] { "--config", "-config" };     //配置文件
+        private readonly static string[] ParameterFiles = new[] { "--files", "-files" };        //所有的excel文件
+        private readonly static string[] ParameterPaths = new[] { "--paths", "-paths" };        //所有的excel文件目录,会
         private readonly static string[] ParameterTags = new[] { "--tags", "-tags" };           //需要过滤的文件tags 多tag[{Util.Separator}]隔开
         private readonly static string[] ParameterName = new[] { "--name", "-name" };           //
         private readonly static string[] ParameterLang = new[] { "--lang", "-lang" };           //
         static void Main(string[] args) {
+            //ResourceReader 
             Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
             var perform = new Perform();
             //perform.AddExecute("register", HelpRegister, Register);
@@ -89,7 +81,7 @@ namespace ScorpioConversion {
             //perform.AddExecute("reset", HelpReset, Reset);
             //perform.AddExecute("format", HelpReset, Format);
             perform.AddExecute("decompile", HelpReset, Decompile);
-            perform.AddExecute("build", HelpExecute, Build);
+            perform.AddExecute("build", HelpBuild, Build);
             perform.Start(args, null, null);
         }
         //static void Register(Perform perform, CommandLine command, string[] args) {
@@ -276,7 +268,7 @@ namespace ScorpioConversion {
             var parser = Config.Parser;
             var script = parser.Script;
             if (script.HasGlobal("BuildOver")) {
-                script.GetGlobal("BuildOver").call(ScriptValue.Null, successTables, successSpawns, command, parser);
+                script.GetGlobal("BuildOver").call(ScriptValue.Null, successTables, successSpawns, command);
             }
         }
     }
