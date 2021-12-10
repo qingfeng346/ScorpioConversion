@@ -213,6 +213,16 @@ public enum {className} {{");
             default: return null;
         }}
     }}
+    public static {className} stringOf(String value) {{
+        switch (value) {{");
+        foreach (var info in packageEnum.Fields) {
+            builder.Append($@"
+            case ""{info.Index}"": return {info.Name};");
+        }
+        builder.Append($@"
+            default: return null;
+        }}
+    }}
 }}");
         return builder.ToString();
     }
