@@ -1,10 +1,6 @@
 ﻿using Scorpio.Commons;
 using System.IO;
 public abstract class IGenerator {
-    public string Language { get; private set; }        //语言名字
-    public IGenerator(string language) {
-        Language = language;
-    }
     public virtual string GetDataPath(LanguageInfo languageInfo, string name) {
         return Path.Combine(ScorpioUtil.CurrentDirectory, languageInfo.dataOutput, $"{name}.{languageInfo.dataSuffix}");
     }

@@ -24,4 +24,14 @@ public enum TestEnum {
             default: return null;
         }
     }
+    public static TestEnum stringOf(String value) {
+        switch (value) {
+            case "1": return Test1;
+            case "2": return Test2;
+            case "3": return Test3;
+            case "4": return value1;
+            case "5": return value2;
+            default: return null;
+        }
+    }
 }

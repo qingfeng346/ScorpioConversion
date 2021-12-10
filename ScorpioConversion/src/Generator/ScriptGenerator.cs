@@ -1,8 +1,10 @@
 ﻿using System;
 using Scorpio;
 public class ScriptGenerator : IGenerator {
+    private string name;
     public ScriptValue Value { get; private set; }
-    public ScriptGenerator(string language, ScriptValue value) : base(language) {
+    public ScriptGenerator(string name, ScriptValue value) {
+        this.name = name;
         this.Value = value;
     }
     public bool __Call(string functionName, out ScriptValue ret, params object[] args) {

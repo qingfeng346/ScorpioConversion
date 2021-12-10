@@ -214,7 +214,10 @@ namespace ScorpioConversion {
                               command.GetValues(ParameterTags), 
                               command.GetValue(ParameterLang),
                               command.GetValueDefault(ParameterName, "file"));
-            GeneratorManager.Instance.Add(typeof(Program).Assembly);
+            var assembly = typeof(Program).Assembly;
+            GeneratorManager.Instance.Add(assembly);
+            ReaderManager.Instance.Add(assembly);
+            WriterManager.Instance.Add(assembly);
             var fileList = Config.FileList; //所有要生成的excel文件
             if (fileList.Count == 0) throw new Exception("至少选择一个excel文件");
             var successTables = new List<TableBuilder>();

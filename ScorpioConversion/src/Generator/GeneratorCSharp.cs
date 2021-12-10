@@ -1,5 +1,4 @@
 ﻿using System;
-using System.IO;
 using System.Text;
 public class GenerateDataCSharp : IGenerator {
     public const string Head = @"//本文件为自动生成，请不要手动修改
@@ -11,7 +10,7 @@ using System.Collections.ObjectModel;
 using ScorpioProto.Commons;
 using ScorpioProto.Table;
 ";
-    public GenerateDataCSharp() : base("c#") { }
+    public static string Name => "c#";
     string GetLanguageType(ClassField field) {
         if (field.IsBasic) {
             switch (field.BasicType.Index) {

@@ -8,7 +8,7 @@ import java.util.*;
 import ScorpioProto.Commons.*;
 import ScorpioProto.Table.*;
 ";
-    public GenerateDataJava() : base("java") { }
+    public static string Name => "java";
     string GetLanguageType(ClassField field) {
         if (field.IsBasic) {
             switch (field.BasicType.Index) {
