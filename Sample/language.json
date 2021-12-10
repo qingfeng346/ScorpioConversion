@@ -11,7 +11,7 @@
         {
             "language": "java",
             "codeOutput": "../ScorpioProto/Java/src",
-            "codeSuffix": "cs"
+            "codeSuffix": "java"
         }
     ]
 }
