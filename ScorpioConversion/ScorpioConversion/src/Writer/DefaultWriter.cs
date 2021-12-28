@@ -9,7 +9,7 @@ public class DefaultWriter : IWriter, IDisposable {
         stream = new MemoryStream();
         writer = new BinaryWriter(stream);
     }
-    public void WriteHead(TableBuilder builder) {
+    public void WriteHead(object builder) {
         throw new NotImplementedException();
     }
     public void WriteBool(bool value) {

@@ -14,7 +14,7 @@ public class DefaultReader : IReader, IDisposable {
         stream = new MemoryStream(buffer);
         reader = new BinaryReader(stream);
     }
-    public void ReadHead(string fileName) {
+    public T ReadHead<T>(string fileName) {
         {
             var number = ReadInt32();        //字段数量
             for (var i = 0; i < number; ++i) {
@@ -41,6 +41,7 @@ public class DefaultReader : IReader, IDisposable {
                 }
             }
         }
+        return default(T);
     }
     public bool ReadBool() {
         return ReadInt8() == 1;

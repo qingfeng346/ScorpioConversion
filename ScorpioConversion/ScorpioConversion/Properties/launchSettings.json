@@ -3,12 +3,12 @@
     "reset": {
       "commandName": "Project",
       "commandLineArgs": "reset -config ./Config -paths ./",
-      "workingDirectory": "../Sample"
+      "workingDirectory": "../../Sample"
     },
     "build": {
       "commandName": "Project",
       "commandLineArgs": "build -package Datas -config ./Config -paths ./Excel  -lang language.json",
-      "workingDirectory": "../Sample"
+      "workingDirectory": "../../Sample"
     }
   }
 }
