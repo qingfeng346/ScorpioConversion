@@ -26,7 +26,6 @@ public class Config {
     public static HashSet<string> Tags { get; private set; }                    //标签列表
     public static List<ExcelFile> FileList { get; private set; }                //所有要生成的excel文件
     public static LanguageConfig LanguageConfig { get; private set; }           //所有语言配置
-    public static bool WriteL10N { get; private set; }                          //是否写入l10n字段的值
     public static bool IsFileName { get; private set; }                         //默认名字是否使用文件名字
     public static Dictionary<string, string> SpawnsList { get; private set; }   //派生类MD5列表
     public static List<L10NData> L10NDatas { get; private set; }                //所有的翻译字段
@@ -53,7 +52,6 @@ public class Config {
             }
         }
         LanguageConfig = JsonConvert.DeserializeObject<LanguageConfig>(FileUtil.GetFileString(lang));
-        // WriteL10N = command.GetValueDefault("-wl10n", "").ToBoolean();
         IsFileName = name.ToLower() == "file";      //名字使用文件名或者sheet名字
     }
     public static bool ContainsTags(List<string> tags) {

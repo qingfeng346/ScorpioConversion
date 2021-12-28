@@ -1,16 +1,14 @@
 ﻿using System;
 using System.IO;
 using System.Text;
+
+[AutoWriter("default")]
 public class DefaultWriter : IWriter, IDisposable {
-    public string Name => "default";
     MemoryStream stream;
     BinaryWriter writer;
     public DefaultWriter() {
         stream = new MemoryStream();
         writer = new BinaryWriter(stream);
-    }
-    public void WriteHead(object builder) {
-        throw new NotImplementedException();
     }
     public void WriteBool(bool value) {
         writer.Write(value ? (sbyte)1 : (sbyte)0);

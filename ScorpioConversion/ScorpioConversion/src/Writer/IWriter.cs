@@ -1,6 +1,5 @@
 ﻿using System;
 public interface IWriter {
-    void WriteHead(object builder);
     void WriteBool(bool value);
     void WriteInt8(sbyte value);
     void WriteUInt8(byte value);

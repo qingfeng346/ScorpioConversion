@@ -2,13 +2,14 @@
 using System.IO;
 using System.Text;
 using Scorpio.Commons;
+
+[AutoGenerator("java")]
 public class GenerateDataJava : IGenerator {
     public const string Head = @"//本文件为自动生成，请不要手动修改
 import java.util.*;
 import ScorpioProto.Commons.*;
 import ScorpioProto.Table.*;
 ";
-    public static string Name => "java";
     string GetLanguageType(ClassField field) {
         if (field.IsBasic) {
             switch (field.BasicType.Index) {

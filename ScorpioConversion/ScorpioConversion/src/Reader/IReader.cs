@@ -1,7 +1,6 @@
 ﻿using System;
 
 public interface IReader {
-    T ReadHead<T>(string fileName);
     bool ReadBool();
     sbyte ReadInt8();
     byte ReadUInt8();
@@ -14,6 +13,7 @@ public interface IReader {
     float ReadFloat();
     double ReadDouble();
     string ReadString();
+    string ReadL10N();
     DateTime ReadDateTime();
     byte[] ReadBytes();
 }

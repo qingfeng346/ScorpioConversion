@@ -261,7 +261,7 @@ public partial class TableBuilder {
                         if (!field.MinValue.IsEmptyString() && Convert.ToDouble(field.MinValue) > Convert.ToDouble(data.Values[i])) {
                             throw new DataException($"行:{data.RowNumber} {field.Name} 值低于限定最小值");
                         }
-                        if (field.IsL10N && !Config.WriteL10N) {
+                        if (field.IsL10N) {
                             field.Write(writer, new RowValue() { value = "" });
                         } else {
                             field.Write(writer, data.Values[i]);
