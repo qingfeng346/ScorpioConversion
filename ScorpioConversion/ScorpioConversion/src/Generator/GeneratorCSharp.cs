@@ -9,8 +9,7 @@ using System.IO;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using ScorpioProto.Commons;
-using ScorpioProto.Table;
+using Scorpio.Conversion;
 ";
     string GetLanguageType(ClassField field) {
         if (field.IsBasic) {
@@ -43,9 +42,13 @@ namespace {packageName} {{
         const string FILE_MD5_CODE = ""{fileMD5}"";
         private int m_count = 0;
         private Dictionary<{keyType}, {dataClassName}> m_dataArray = new Dictionary<{keyType}, {dataClassName}>();
-        public {tableClassName} Initialize(string fileName, IScorpioReader reader) {{
-            var iRow = reader.ReadHead(fileName, FILE_MD5_CODE);
-            for (var i = 0; i < iRow; ++i) {{
+        public {tableClassName} Initialize(string fileName, IReader reader) {{
+            var row = reader.ReadInt32();
+            var layoutMD5 = reader.ReadString();
+            if (layoutMD5 != FILE_MD5_CODE) {
+            }
+            ConversionUtil.ReadHead(reader);
+            for (var i = 0; i < row; ++i) {{
                 var pData = {dataClassName}.Read(fileName, reader);
                 if (m_dataArray.TryGetValue(pData.ID(), out var value))
                     value.Set(pData);

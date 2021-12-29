@@ -1,12 +1,12 @@
 ﻿using System;
 using System.IO;
 using System.Text;
-namespace ScorpioProto.Commons {
-    public class ScorpioReader : IScorpioReader {
+namespace Scorpio.Conversion {
+    public class DefaultReader : IReader {
         private readonly static DateTime BaseTime = new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc);
         MemoryStream stream;
         BinaryReader reader;
-        public ScorpioReader(byte[] buffer) {
+        public DefaultReader(byte[] buffer) {
             stream = new MemoryStream(buffer);
             reader = new BinaryReader(stream);
         }
