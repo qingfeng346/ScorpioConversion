@@ -28,12 +28,11 @@ public class Config {
     public static LanguageConfig LanguageConfig { get; private set; }           //所有语言配置
     public static bool IsFileName { get; private set; }                         //默认名字是否使用文件名字
     public static Dictionary<string, string> SpawnsList { get; private set; }   //派生类MD5列表
-    public static List<L10NData> L10NDatas { get; private set; }                //所有的翻译字段
+    public static List<L10NData> L10NDatas { get; set; }                        //所有的翻译字段
     public static PackageParser Parser { get; private set; }                    //配置文件解析
     public static void Initialize(string[] configs, string[] files, string[] paths, string[] tags, string lang, string name) {
-        SpawnsList = new Dictionary<string, string>();                                    //派生文件列表 多个Key[{Util.Separator}]隔开
-        L10NDatas = new List<L10NData>();
-        Tags = new HashSet<string>(tags);                               //需要过滤的文件tags 多tag[{Util.Separator}]隔开
+        SpawnsList = new Dictionary<string, string>();                          //派生文件Layout缓存
+        Tags = new HashSet<string>(tags);                                       //需要过滤的文件tags 多tag[{Util.Separator}]隔开
         Parser = new PackageParser();
         foreach (var config in configs) {
             Parser.Parse(config);

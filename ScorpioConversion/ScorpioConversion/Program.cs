@@ -198,7 +198,7 @@ namespace ScorpioConversion {
                 var tempFile = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, Guid.NewGuid().ToString("N"));
                 try {
                     File.Copy(file, tempFile, true);
-                    new TableDecompile().Decompile(tempFile, Path.GetFileNameWithoutExtension(file), output);
+                    //new TableDecompile().Decompile(tempFile, Path.GetFileNameWithoutExtension(file), output);
                     Logger.info($"反编译 {file} 完成");
                 } catch (Exception e) {
                     Logger.error($"文件 [{file}] 反编译出错 : " + e.ToString());

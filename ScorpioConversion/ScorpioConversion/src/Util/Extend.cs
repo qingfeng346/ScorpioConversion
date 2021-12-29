@@ -2,7 +2,7 @@
 using System.Data;
 using NPOI.SS.UserModel;
 using Scorpio.Commons;
-
+using System.Collections.Generic;
 public static class Extend {
     private readonly static DateTime BaseTime = new DateTime(1970, 1, 1, 0, 0, 0, 0);
     private const string ArrayString = "array";
@@ -23,6 +23,45 @@ public static class Extend {
     public const string BYTES_PROTO_FILE = "file://";
     public const string BYTES_PROTO_HTTP = "http://";
     public const string BYTES_PROTO_HTTPS = "https://";
+
+    //枚举
+    public class TableEnum {
+        //枚举元素
+        public class Element {
+            public string name;
+            public int value;
+        }
+        public List<Element> Elements = new List<Element>();
+    }
+    //Class
+    public class TableClass {
+        public enum FieldType {
+            BOOL,           //bool类型
+            INT8,           //int8类型
+            UINT8,          //uint8类型
+            INT16,          //int16类型
+            UINT16,         //uint16类型
+            INT32,          //int32类型
+            UINT32,         //uint32类型
+            INT64,          //int64类型
+            UINT64,         //uint64类型
+            FLOAT,          //float类型
+            DOUBLE,         //double类型
+            STRING,         //string类型
+            DATETIME,       //datetime日期时间
+            BYTES,          //byte[]类型
+            ENUM = 100,     //enum
+            CLASS = 200,    //class
+        }
+        //变量
+        public class Field {
+            public bool array;
+            public string name;
+            public FieldType fieldType;
+            public string type;
+        }
+        public List<Field> Fields = new List<Field>();
+    }
     public static string GetMemory(this long by) => ScorpioUtil.GetMemory(by);
     public static string GetLineName(this int line) => ScorpioUtil.GetExcelColumn(line);
     public static bool IsEmptyString(this string str) => string.IsNullOrWhiteSpace(str);
@@ -120,6 +159,15 @@ public static class Extend {
     public static double ToDouble(this string value) {
         return value.IsEmptyString() ? INVALID_DOUBLE : Convert.ToDouble(value);
     }
+    public static DateTime ToDateTime(this string value) {
+        if (double.TryParse(value, out var span)) {
+            return DateTime.FromOADate(span);
+        }
+        if (DateTime.TryParse(value, out var datetime)) {
+            return datetime;
+        }
+        throw new Exception($"不能识别时间字符串 : {value}");
+    }
     public static byte[] ToBytes(this string value) {
         if (value.IsEmptyString()) {
             return INVALID_BYTES;
@@ -132,7 +180,7 @@ public static class Extend {
             }
             return bytes;
         }
-        throw new Exception($"未知的二进制数据 : {value}");
+        throw new Exception($"未知的二进制数据类型 : {value}");
     }
     public static string GetCellString(this IRow row, int index) {
         return GetCellString(row, index, "");
@@ -191,5 +239,90 @@ public static class Extend {
         if (index >= 0) {
             workbook.RemoveSheetAt(index);
         }
+    }
+    public static void WriteHead(this IWriter writer, PackageClass packageClass, HashSet<IPackage> customTypes) {
+        writer.WriteClass(packageClass.Fields);     //表结构
+        writer.WriteInt32(customTypes.Count);       //自定义类数量
+        foreach (var customType in customTypes) {
+            if (customType is PackageEnum) {
+                writer.WriteString((customType as PackageEnum).Name);
+                writer.WriteInt8(1);
+                writer.WriteEnum((customType as PackageEnum).Fields);
+            } else {
+                writer.WriteString((customType as PackageClass).Name);
+                writer.WriteInt8(2);
+                writer.WriteClass((customType as PackageClass).Fields);
+            }
+        }
+    }
+    static void WriteClass(this IWriter writer, List<ClassField> fields) {
+        writer.WriteInt32(fields.Count);               //字段数量
+        foreach (var field in fields) {
+            if (field.IsBasic) {
+                writer.WriteInt8(0);
+                writer.WriteInt8((sbyte)field.BasicType.Index);
+            } else {
+                writer.WriteInt8(field.IsEnum ? (sbyte)1 : (sbyte)2);
+                writer.WriteString(field.Type);
+            }
+            writer.WriteBool(field.IsArray);
+            writer.WriteString((field.IsL10N ? "$" : "") + field.Name);
+        }
+    }
+    static void WriteEnum(this IWriter writer, List<EnumField> fields) {
+        writer.WriteInt32(fields.Count);
+        foreach (var field in fields) {
+            writer.WriteString(field.Name);
+            writer.WriteInt32(field.Index);
+        }
+    }
+    public static void ReadHead(this IReader reader, out TableClass tableClass, out Dictionary<string, TableEnum> customEnums, out Dictionary<string, TableClass> customClasses) {
+        tableClass = ReadClass(reader);
+        customEnums = new Dictionary<string, TableEnum>();
+        customClasses = new Dictionary<string, TableClass>();
+        var customNumber = reader.ReadInt32();
+        for (var i = 0; i < customNumber; ++i) {
+            var typeName = reader.ReadString();
+            if (reader.ReadInt8() == 1) {
+                customEnums[typeName] = ReadEnum(reader);
+            } else {
+                customClasses[typeName] = ReadClass(reader);
+            }
+        }
+    }
+    static TableClass ReadClass(this IReader reader) {
+        var tableClass = new TableClass();
+        var number = reader.ReadInt32();
+        for (var i = 0; i < number; ++i) {
+            var field = new TableClass.Field();
+            switch (reader.ReadInt8()) {
+                case 0: 
+                    field.fieldType = (TableClass.FieldType)reader.ReadInt8(); 
+                    break;
+                case 1:
+                    field.fieldType = TableClass.FieldType.ENUM;
+                    field.type = reader.ReadString();
+                    break;
+                case 2:
+                    field.fieldType = TableClass.FieldType.CLASS;
+                    field.type = reader.ReadString();
+                    break;
+            }
+            field.array = reader.ReadBool();
+            field.name = reader.ReadString();
+            tableClass.Fields.Add(field);
+        }
+        return tableClass;
+    }
+    static TableEnum ReadEnum(this IReader reader) {
+        var tableEnum = new TableEnum();
+        var number = reader.ReadInt32();
+        for (var i = 0; i < number; ++i) {
+            tableEnum.Elements.Add(new TableEnum.Element() { 
+                name = reader.ReadString(), 
+                value = reader.ReadInt32() 
+            });
+        }
+        return tableEnum;
     }
 }

@@ -222,24 +222,12 @@ public partial class TableBuilder {
             throw new Exception($"FileName 为空");
         }
     }
-    void Generate() {
-        var l10nDatas = Config.L10NDatas;
-        using (var writer = new TableWriter()) {
+    public byte[] CreateBytes(string writerType) {
+        var l10nDatas = new List<L10NData>();
+        using (var writer = new TableWriter(WriterManager.Instance.Get(writerType))) {
             writer.WriteInt32(mDatas.Count);        //数据数量
             writer.WriteString(LayoutMD5);          //文件结构MD5
-            writer.WriteClass(PackageClass.Fields);              //表结构
-            writer.WriteInt32(CustomTypes.Count);   //自定义类数量
-            foreach (var customType in CustomTypes) {
-                if (customType is PackageEnum) {
-                    writer.WriteString((customType as PackageEnum).Name);
-                    writer.WriteInt8(1);
-                    writer.WriteEnum((customType as PackageEnum).Fields);
-                } else {
-                    writer.WriteString((customType as PackageClass).Name);
-                    writer.WriteInt8(2);
-                    writer.WriteClass((customType as PackageClass).Fields);
-                }
-            }
+            writer.WriteHead(PackageClass, CustomTypes);
             var keys = new HashSet<string>();
             foreach (var data in mDatas) {
                 if (keys.Contains(data.Key)) {
@@ -268,14 +256,18 @@ public partial class TableBuilder {
                         }
                     } catch (Exception e) {
                         var builder = new StringBuilder();
-                        for (var m = 0; m < data.Values.Count; m ++) {
+                        for (var m = 0; m < data.Values.Count; m++) {
                             builder.Append(data.Values[m].value + ",");
                         }
                         throw new Exception($"列:{field.Name} 行:{data.RowNumber}({builder}) : {e}");
                     }
                 }
             }
-            Config.LanguageConfig.Generate(this, writer.ToArray());
+            Config.L10NDatas = l10nDatas;
+            return writer.ToArray();
         }
+    }
+    void Generate() {
+        Config.LanguageConfig.Generate(this);
     }
 }

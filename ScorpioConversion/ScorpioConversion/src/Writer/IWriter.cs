@@ -1,5 +1,5 @@
 ﻿using System;
-public interface IWriter {
+public interface IWriter : IDisposable {
     void WriteBool(bool value);
     void WriteInt8(sbyte value);
     void WriteUInt8(byte value);
