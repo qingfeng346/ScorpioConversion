@@ -8,6 +8,8 @@ public class Program {
         using (var file = File.OpenRead("Test.data")) {
             table.Initialize("Test", new DefaultReader(file));
         }
-        int a = 0;
+        foreach (var pair in table.Datas()) {
+            Console.WriteLine(pair.Value.ToString());
+        }
     }
 }
