@@ -4,8 +4,7 @@ using System.IO;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using ScorpioProto.Commons;
-using ScorpioProto.Table;
+using Scorpio.Conversion;
 
 namespace Datas {
 public partial class Int3 : IData {
@@ -23,7 +22,7 @@ public partial class Int3 : IData {
         return null;
     }
     
-    public static Int3 Read(string fileName, IScorpioReader reader) {
+    public static Int3 Read(string fileName, IReader reader) {
         var ret = new Int3();
         {
             var list = new List<Int2>();

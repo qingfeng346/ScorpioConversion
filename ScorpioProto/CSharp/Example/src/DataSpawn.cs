@@ -4,8 +4,7 @@ using System.IO;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using ScorpioProto.Commons;
-using ScorpioProto.Table;
+using Scorpio.Conversion;
 
 namespace Datas {
 public partial class DataSpawn : IData {
@@ -44,7 +43,7 @@ public partial class DataSpawn : IData {
         return null;
     }
     
-    public static DataSpawn Read(string fileName, IScorpioReader reader) {
+    public static DataSpawn Read(string fileName, IReader reader) {
         var ret = new DataSpawn();
         ret._ID = reader.ReadInt32();
         ret._TestInt = reader.ReadInt32();

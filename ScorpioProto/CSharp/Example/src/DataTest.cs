@@ -4,8 +4,7 @@ using System.IO;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using ScorpioProto.Commons;
-using ScorpioProto.Table;
+using Scorpio.Conversion;
 
 namespace Datas {
 public partial class DataTest : IData {
@@ -36,7 +35,7 @@ public partial class DataTest : IData {
         return null;
     }
     
-    public static DataTest Read(string fileName, IScorpioReader reader) {
+    public static DataTest Read(string fileName, IReader reader) {
         var ret = new DataTest();
         ret._TestID = reader.ReadInt32();
         ret._testEnum = (TestEnum)reader.ReadInt32();

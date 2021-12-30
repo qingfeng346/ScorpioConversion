@@ -4,17 +4,21 @@ using System.IO;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using ScorpioProto.Commons;
-using ScorpioProto.Table;
+using Scorpio.Conversion;
 
 namespace Datas {
     public partial class TableSpawn : ITable {
         const string FILE_MD5_CODE = "484cdae7d179982f1c7868078204d81d";
         private int m_count = 0;
         private Dictionary<int, DataSpawn> m_dataArray = new Dictionary<int, DataSpawn>();
-        public TableSpawn Initialize(string fileName, IScorpioReader reader) {
-            var iRow = reader.ReadHead(fileName, FILE_MD5_CODE);
-            for (var i = 0; i < iRow; ++i) {
+        public TableSpawn Initialize(string fileName, IReader reader) {
+            var row = reader.ReadInt32();
+            var layoutMD5 = reader.ReadString();
+            if (layoutMD5 != FILE_MD5_CODE) {
+                throw new Exception("File schemas do not match : TableSpawn");
+            }
+            ConversionUtil.ReadHead(reader);
+            for (var i = 0; i < row; ++i) {
                 var pData = DataSpawn.Read(fileName, reader);
                 if (m_dataArray.TryGetValue(pData.ID(), out var value))
                     value.Set(pData);
