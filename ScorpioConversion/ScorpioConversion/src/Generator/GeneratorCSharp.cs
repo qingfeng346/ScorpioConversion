@@ -45,8 +45,9 @@ namespace {packageName} {{
         public {tableClassName} Initialize(string fileName, IReader reader) {{
             var row = reader.ReadInt32();
             var layoutMD5 = reader.ReadString();
-            if (layoutMD5 != FILE_MD5_CODE) {
-            }
+            if (layoutMD5 != FILE_MD5_CODE) {{
+                throw new Exception(""File schemas do not match : {tableClassName}"");
+            }}
             ConversionUtil.ReadHead(reader);
             for (var i = 0; i < row; ++i) {{
                 var pData = {dataClassName}.Read(fileName, reader);
@@ -131,7 +132,7 @@ public partial class {className} : IData {{
     string FunctionRead(PackageClass packageClass, string dataClassName) {
         var builder = new StringBuilder();
         builder.Append($@"
-    public static {dataClassName} Read(string fileName, IScorpioReader reader) {{
+    public static {dataClassName} Read(string fileName, IReader reader) {{
         var ret = new {dataClassName}();");
         foreach (var field in packageClass.Fields) {
             var languageType = GetLanguageType(field);
