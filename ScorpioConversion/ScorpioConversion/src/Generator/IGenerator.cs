@@ -1,6 +1,7 @@
 ﻿using Scorpio.Commons;
 using System.IO;
-public abstract class IGenerator {
+using System;
+public abstract class IGenerator : IDisposable {
     public virtual string GetDataPath(LanguageInfo languageInfo, string name) {
         return Path.Combine(ScorpioUtil.CurrentDirectory, languageInfo.dataOutput, $"{name}.{languageInfo.dataSuffix}");
     }
@@ -10,4 +11,5 @@ public abstract class IGenerator {
     public abstract string GenerateTableClass(string packageName, string tableClassName, string dataClassName, string fileMD5, PackageClass packageClass);
     public abstract string GenerateDataClass(string packageName, string className, PackageClass packageClass, bool createID = false);
     public abstract string GenerateEnumClass(string packageName, string className, PackageEnum packageEnum);
+    public void Dispose() { }
 }

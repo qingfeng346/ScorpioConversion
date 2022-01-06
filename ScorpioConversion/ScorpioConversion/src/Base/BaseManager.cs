@@ -2,7 +2,7 @@
 using System.Reflection;
 using System.Collections.Generic;
 using Scorpio.Commons;
-public abstract class BaseManager<T> {
+public abstract class BaseManager<T> where T : IDisposable {
     public class BaseType {
         public Type type;       //类型
         public object[] args;   //构造函数默认参数

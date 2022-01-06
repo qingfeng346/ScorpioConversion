@@ -1,6 +1,6 @@
 ﻿using System;
 
-public interface IReader {
+public interface IReader : IDisposable {
     bool ReadBool();
     sbyte ReadInt8();
     byte ReadUInt8();
