@@ -7,8 +7,7 @@ using Scorpio.Commons;
 public class GenerateDataJava : IGenerator {
     public const string Head = @"//本文件为自动生成，请不要手动修改
 import java.util.*;
-import ScorpioProto.Commons.*;
-import ScorpioProto.Table.*;
+import Scorpio.Conversion.*;
 ";
     string GetLanguageType(ClassField field) {
         if (field.IsBasic) {
@@ -25,7 +24,7 @@ import ScorpioProto.Table.*;
                 case BasicEnum.FLOAT: return "Float";
                 case BasicEnum.DOUBLE: return "Double";
                 case BasicEnum.STRING: return "String";
-                case BasicEnum.DATETIME: return "Calendar";
+                case BasicEnum.DATETIME: return "Date";
                 case BasicEnum.BYTES: return "byte[]";
                 default: throw new Exception("未知的基础类型");
             }
@@ -40,13 +39,17 @@ import ScorpioProto.Table.*;
         var keyType = GetLanguageType(packageClass.Fields[0]);
         return $@"package {packageName};
 {Head}
-public class {tableClassName} implements ITable<{keyType}, {dataClassName}> {{
+public class {tableClassName} implements ITable {{
     final String FILE_MD5_CODE = ""{fileMD5}"";
     private int m_count = 0;
     private HashMap<{keyType}, {dataClassName}> m_dataArray = new HashMap<{keyType}, {dataClassName}>();
-    public {tableClassName} Initialize(String fileName, IScorpioReader reader) throws Exception {{
-        int iRow = reader.ReadHead(fileName, FILE_MD5_CODE);
-        for (int i = 0; i < iRow; ++i) {{
+    public {tableClassName} Initialize(String fileName, IReader reader) throws Exception {{
+        int row = reader.ReadInt32();
+        if (!FILE_MD5_CODE.equals(reader.ReadString())) {{
+            throw new Exception(""File schemas do not match [{tableClassName}] : "" + fileName);
+        }}
+        ConversionUtil.ReadHead(reader);
+        for (int i = 0; i < row; ++i) {{
             {dataClassName} pData = {dataClassName}.Read(fileName, reader);
             if (m_dataArray.containsKey(pData.ID()))
                 m_dataArray.get(pData.ID()).Set(pData);
@@ -124,7 +127,7 @@ public class {className} implements IData {{
     string FunctionRead(PackageClass packageClass, string dataClassName) {
         var builder = new StringBuilder();
         builder.Append($@"
-    public static {dataClassName} Read(String fileName, IScorpioReader reader) {{
+    public static {dataClassName} Read(String fileName, IReader reader) throws Exception {{
         {dataClassName} ret = new {dataClassName}();");
         foreach (var field in packageClass.Fields) {
             var languageType = GetLanguageType(field);
