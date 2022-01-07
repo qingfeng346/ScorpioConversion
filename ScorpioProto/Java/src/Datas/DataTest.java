@@ -1,8 +1,7 @@
 package Datas;
 //本文件为自动生成，请不要手动修改
 import java.util.*;
-import ScorpioProto.Commons.*;
-import ScorpioProto.Table.*;
+import Scorpio.Conversion.*;
 
 public class DataTest implements IData {
     
@@ -16,9 +15,9 @@ public class DataTest implements IData {
     private List<Int3> _TestDate;
     /**   默认值() */
     public List<Int3> getTestDate() { return _TestDate; }
-    private Calendar _TestDateTime;
+    private Date _TestDateTime;
     /**   默认值() */
-    public Calendar getTestDateTime() { return _TestDateTime; }
+    public Date getTestDateTime() { return _TestDateTime; }
     private Integer _TestInt;
     /**   默认值(999) */
     public Integer getTestInt() { return _TestInt; }
@@ -32,7 +31,7 @@ public class DataTest implements IData {
         return null;
     }
     
-    public static DataTest Read(String fileName, IScorpioReader reader) {
+    public static DataTest Read(String fileName, IReader reader) throws Exception {
         DataTest ret = new DataTest();
         ret._TestID = reader.ReadInt32();
         ret._testEnum = TestEnum.valueOf(reader.ReadInt32());

@@ -42,8 +42,8 @@ namespace Scorpio.Conversion {
             return reader.ReadDouble();
         }
         public string ReadString() {
-            var length = reader.ReadUInt16();
-            if (length <= 0) return "";
+            var length = ReadUInt16();
+            if (length == 0) return "";
             return Encoding.UTF8.GetString(reader.ReadBytes(length));
         }
         public DateTime ReadDateTime() {
@@ -51,7 +51,7 @@ namespace Scorpio.Conversion {
             return startTime.AddMilliseconds(reader.ReadInt64());
         }
         public byte[] ReadBytes() {
-            var length = reader.ReadInt32();
+            var length = ReadInt32();
             return reader.ReadBytes(length);
         }
         public void Dispose() {

@@ -15,7 +15,7 @@ namespace Datas {
             var row = reader.ReadInt32();
             var layoutMD5 = reader.ReadString();
             if (layoutMD5 != FILE_MD5_CODE) {
-                throw new Exception("File schemas do not match : TableSpawn");
+                throw new Exception("File schemas do not match [TableSpawn] : " + fileName);
             }
             ConversionUtil.ReadHead(reader);
             for (var i = 0; i < row; ++i) {

@@ -1,8 +1,7 @@
 package Datas;
 //本文件为自动生成，请不要手动修改
 import java.util.*;
-import ScorpioProto.Commons.*;
-import ScorpioProto.Table.*;
+import Scorpio.Conversion.*;
 
 public class DataSpawn implements IData {
     
@@ -40,7 +39,7 @@ public class DataSpawn implements IData {
         return null;
     }
     
-    public static DataSpawn Read(String fileName, IScorpioReader reader) {
+    public static DataSpawn Read(String fileName, IReader reader) throws Exception {
         DataSpawn ret = new DataSpawn();
         ret._ID = reader.ReadInt32();
         ret._TestInt = reader.ReadInt32();

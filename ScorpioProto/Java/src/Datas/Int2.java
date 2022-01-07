@@ -1,8 +1,7 @@
 package Datas;
 //本文件为自动生成，请不要手动修改
 import java.util.*;
-import ScorpioProto.Commons.*;
-import ScorpioProto.Table.*;
+import Scorpio.Conversion.*;
 
 public class Int2 implements IData {
     
@@ -19,7 +18,7 @@ public class Int2 implements IData {
         return null;
     }
     
-    public static Int2 Read(String fileName, IScorpioReader reader) {
+    public static Int2 Read(String fileName, IReader reader) throws Exception {
         Int2 ret = new Int2();
         ret._Value1 = reader.ReadInt32();
         ret._Value2 = reader.ReadInt32();

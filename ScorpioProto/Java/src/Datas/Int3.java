@@ -1,8 +1,7 @@
 package Datas;
 //本文件为自动生成，请不要手动修改
 import java.util.*;
-import ScorpioProto.Commons.*;
-import ScorpioProto.Table.*;
+import Scorpio.Conversion.*;
 
 public class Int3 implements IData {
     
@@ -19,7 +18,7 @@ public class Int3 implements IData {
         return null;
     }
     
-    public static Int3 Read(String fileName, IScorpioReader reader) {
+    public static Int3 Read(String fileName, IReader reader) throws Exception {
         Int3 ret = new Int3();
         {
             List<Int2> list = new ArrayList<Int2>();

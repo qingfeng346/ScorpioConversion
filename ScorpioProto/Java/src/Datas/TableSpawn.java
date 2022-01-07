@@ -1,16 +1,19 @@
 package Datas;
 //本文件为自动生成，请不要手动修改
 import java.util.*;
-import ScorpioProto.Commons.*;
-import ScorpioProto.Table.*;
+import Scorpio.Conversion.*;
 
-public class TableSpawn implements ITable<Integer, DataSpawn> {
+public class TableSpawn implements ITable {
     final String FILE_MD5_CODE = "484cdae7d179982f1c7868078204d81d";
     private int m_count = 0;
     private HashMap<Integer, DataSpawn> m_dataArray = new HashMap<Integer, DataSpawn>();
-    public TableSpawn Initialize(String fileName, IScorpioReader reader) throws Exception {
-        int iRow = reader.ReadHead(fileName, FILE_MD5_CODE);
-        for (int i = 0; i < iRow; ++i) {
+    public TableSpawn Initialize(String fileName, IReader reader) throws Exception {
+        int row = reader.ReadInt32();
+        if (!FILE_MD5_CODE.equals(reader.ReadString())) {
+            throw new Exception("File schemas do not match [TableSpawn] : " + fileName);
+        }
+        ConversionUtil.ReadHead(reader);
+        for (int i = 0; i < row; ++i) {
             DataSpawn pData = DataSpawn.Read(fileName, reader);
             if (m_dataArray.containsKey(pData.ID()))
                 m_dataArray.get(pData.ID()).Set(pData);
