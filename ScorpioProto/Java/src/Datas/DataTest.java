@@ -22,6 +22,19 @@ public class DataTest implements IData {
     /**   默认值(999) */
     public Integer getTestInt() { return _TestInt; }
     
+    public DataTest(String fileName, IReader reader) throws Exception {
+        this._TestID = reader.ReadInt32();
+        this._testEnum = TestEnum.valueOf(reader.ReadInt32());
+        {
+            List<Int3> list = new ArrayList<Int3>();
+            int number = reader.ReadInt32();
+            for (int i = 0; i < number; ++i) { list.add(new Int3(fileName, reader)); }
+            this._TestDate = Collections.unmodifiableList(list);
+        }
+        this._TestDateTime = reader.ReadDateTime();
+        this._TestInt = reader.ReadInt32();
+    }
+    
     public Object GetData(String key) {
         if ("TestID".equals(key)) return _TestID;
         if ("testEnum".equals(key)) return _testEnum;
@@ -29,21 +42,6 @@ public class DataTest implements IData {
         if ("TestDateTime".equals(key)) return _TestDateTime;
         if ("TestInt".equals(key)) return _TestInt;
         return null;
-    }
-    
-    public static DataTest Read(String fileName, IReader reader) throws Exception {
-        DataTest ret = new DataTest();
-        ret._TestID = reader.ReadInt32();
-        ret._testEnum = TestEnum.valueOf(reader.ReadInt32());
-        {
-            List<Int3> list = new ArrayList<Int3>();
-            int number = reader.ReadInt32();
-            for (int i = 0; i < number; ++i) { list.add(Int3.Read(fileName, reader)); }
-            ret._TestDate = Collections.unmodifiableList(list);
-        }
-        ret._TestDateTime = reader.ReadDateTime();
-        ret._TestInt = reader.ReadInt32();
-        return ret;
     }
     
     public void Set(DataTest value) {

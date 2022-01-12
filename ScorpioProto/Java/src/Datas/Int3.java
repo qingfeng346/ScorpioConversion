@@ -12,22 +12,20 @@ public class Int3 implements IData {
     /**   默认值() */
     public Integer getValue2() { return _Value2; }
     
+    public Int3(String fileName, IReader reader) throws Exception {
+        {
+            List<Int2> list = new ArrayList<Int2>();
+            int number = reader.ReadInt32();
+            for (int i = 0; i < number; ++i) { list.add(new Int2(fileName, reader)); }
+            this._Value1 = Collections.unmodifiableList(list);
+        }
+        this._Value2 = reader.ReadInt32();
+    }
+    
     public Object GetData(String key) {
         if ("Value1".equals(key)) return _Value1;
         if ("Value2".equals(key)) return _Value2;
         return null;
-    }
-    
-    public static Int3 Read(String fileName, IReader reader) throws Exception {
-        Int3 ret = new Int3();
-        {
-            List<Int2> list = new ArrayList<Int2>();
-            int number = reader.ReadInt32();
-            for (int i = 0; i < number; ++i) { list.add(Int2.Read(fileName, reader)); }
-            ret._Value1 = Collections.unmodifiableList(list);
-        }
-        ret._Value2 = reader.ReadInt32();
-        return ret;
     }
     
     public void Set(Int3 value) {

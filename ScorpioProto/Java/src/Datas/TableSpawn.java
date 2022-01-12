@@ -14,7 +14,7 @@ public class TableSpawn implements ITable {
         }
         ConversionUtil.ReadHead(reader);
         for (int i = 0; i < row; ++i) {
-            DataSpawn pData = DataSpawn.Read(fileName, reader);
+            DataSpawn pData = new DataSpawn(fileName, reader);
             if (m_dataArray.containsKey(pData.ID()))
                 m_dataArray.get(pData.ID()).Set(pData);
             else

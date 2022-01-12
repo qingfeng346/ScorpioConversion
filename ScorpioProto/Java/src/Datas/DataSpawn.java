@@ -28,6 +28,16 @@ public class DataSpawn implements IData {
     /** 自定义枚举  默认值() */
     public TestEnum getTestEnumName() { return _TestEnumName; }
     
+    public DataSpawn(String fileName, IReader reader) throws Exception {
+        this._ID = reader.ReadInt32();
+        this._TestInt = reader.ReadInt32();
+        this._TestString = reader.ReadString();
+        this._TestLanguage = reader.ReadString();
+        this._TestBool = reader.ReadBool();
+        this._TestInt2 = new Int2(fileName, reader);
+        this._TestEnumName = TestEnum.valueOf(reader.ReadInt32());
+    }
+    
     public Object GetData(String key) {
         if ("ID".equals(key)) return _ID;
         if ("TestInt".equals(key)) return _TestInt;
@@ -37,18 +47,6 @@ public class DataSpawn implements IData {
         if ("TestInt2".equals(key)) return _TestInt2;
         if ("TestEnumName".equals(key)) return _TestEnumName;
         return null;
-    }
-    
-    public static DataSpawn Read(String fileName, IReader reader) throws Exception {
-        DataSpawn ret = new DataSpawn();
-        ret._ID = reader.ReadInt32();
-        ret._TestInt = reader.ReadInt32();
-        ret._TestString = reader.ReadString();
-        ret._TestLanguage = reader.ReadString();
-        ret._TestBool = reader.ReadBool();
-        ret._TestInt2 = Int2.Read(fileName, reader);
-        ret._TestEnumName = TestEnum.valueOf(reader.ReadInt32());
-        return ret;
     }
     
     public void Set(DataSpawn value) {

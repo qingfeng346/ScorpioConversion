@@ -4,7 +4,7 @@ using System.IO;
 
 [AutoReader("default")]
 public class DefaultReader : IReader, IDisposable {
-    private readonly static DateTime BaseTime = new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc);
+    private readonly static DateTime BaseTime = new(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc);
     MemoryStream stream;
     BinaryReader reader;
     public void Initialize(byte[] buffer) {

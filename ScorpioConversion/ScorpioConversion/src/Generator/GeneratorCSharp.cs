@@ -11,25 +11,26 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using Scorpio.Conversion;
 ";
-    string GetLanguageType(ClassField field) {
+
+    static string GetLanguageType(ClassField field) {
         if (field.IsBasic) {
-            switch (field.BasicType.Index) {
-                case BasicEnum.BOOL: return "bool";
-                case BasicEnum.INT8: return "sbyte";
-                case BasicEnum.UINT8: return "byte";
-                case BasicEnum.INT16: return "short";
-                case BasicEnum.UINT16: return "ushort";
-                case BasicEnum.INT32: return "int";
-                case BasicEnum.UINT32: return "uint";
-                case BasicEnum.INT64: return "long";
-                case BasicEnum.UINT64: return "ulong";
-                case BasicEnum.FLOAT: return "float";
-                case BasicEnum.DOUBLE: return "double";
-                case BasicEnum.STRING: return "string";
-                case BasicEnum.DATETIME: return "DateTime";
-                case BasicEnum.BYTES: return "byte[]";
-                default: throw new Exception("未知的基础类型");
-            }
+            return field.BasicType.Index switch {
+                BasicEnum.BOOL => "bool",
+                BasicEnum.INT8 => "sbyte",
+                BasicEnum.UINT8 => "byte",
+                BasicEnum.INT16 => "short",
+                BasicEnum.UINT16 => "ushort",
+                BasicEnum.INT32 => "int",
+                BasicEnum.UINT32 => "uint",
+                BasicEnum.INT64 => "long",
+                BasicEnum.UINT64 => "ulong",
+                BasicEnum.FLOAT => "float",
+                BasicEnum.DOUBLE => "double",
+                BasicEnum.STRING => "string",
+                BasicEnum.DATETIME => "DateTime",
+                BasicEnum.BYTES => "byte[]",
+                _ => throw new Exception("未知的基础类型"),
+            };
         } else {
             return field.Type;
         }
@@ -50,11 +51,11 @@ namespace {packageName} {{
             }}
             ConversionUtil.ReadHead(reader);
             for (var i = 0; i < row; ++i) {{
-                var pData = {dataClassName}.Read(fileName, reader);
-                if (m_dataArray.TryGetValue(pData.ID(), out var value))
+                var pData = new {dataClassName}(fileName, reader);
+                if (m_dataArray.TryGetValue(pData.ID, out var value))
                     value.Set(pData);
                 else
-                    m_dataArray[pData.ID()] = pData;
+                    m_dataArray[pData.ID] = pData;
             }}
             m_count = m_dataArray.Count;
             return this;
@@ -90,8 +91,8 @@ namespace {packageName} {{
 namespace {packageName} {{
 public partial class {className} : IData {{
     {AllFields(packageClass, createID)}
+    {FunctionConstructor(packageClass, className)}
     {FunctionGetData(packageClass)}
-    {FunctionRead(packageClass, className)}
     {FunctionSet(packageClass, className)}
     {FunctionToString(packageClass)}
 }}
@@ -104,16 +105,51 @@ public partial class {className} : IData {{
         foreach (var field in packageClass.Fields) {
             var languageType = GetLanguageType(field);
             if (field.IsArray) { languageType = $"ReadOnlyCollection<{languageType}>"; }
-            builder.Append($@"
-    private {languageType} _{field.Name};
-    /* <summary> {field.Comment}  默认值({field.Default}) </summary> */
-    public {languageType} get{field.Name}() {{ return _{field.Name}; }}");
-            if (first && createID) {
+            if (first) {
                 first = false;
+                if (createID && field.Name != "ID") {
+                    builder.Append($@"
+    public {languageType} ID => {field.Name};");
+                }
+            }
+            builder.Append($@"
+    /* <summary> {field.Comment}  默认值({field.Default}) </summary> */
+    public {languageType} {field.Name} {{ get; private set; }}");
+            
+        }
+        return builder.ToString();
+    }
+    string FunctionConstructor(PackageClass packageClass, string dataClassName) {
+        var builder = new StringBuilder();
+        builder.Append($@"
+    public {dataClassName}(string fileName, IReader reader) {{");
+        foreach (var field in packageClass.Fields) {
+            var languageType = GetLanguageType(field);
+            string fieldRead;
+            if (field.Attribute != null && field.Attribute.GetValue("Language").IsTrue) {
+                fieldRead = $@"reader.ReadL10N(fileName + "".{field.Name}."" + this.ID)";
+            } else if (field.IsBasic) {
+                fieldRead = $"reader.Read{field.BasicType.Name}()";
+            } else if (field.IsEnum) {
+                fieldRead = $"({languageType})reader.ReadInt32()";
+            } else {
+                fieldRead = $"new {languageType}(fileName, reader)";
+            }
+            if (field.IsArray) {
                 builder.Append($@"
-    public {languageType} ID() {{ return _{field.Name}; }}");
+        {{
+            var list = new List<{languageType}>();
+            var number = reader.ReadInt32();
+            for (int i = 0; i < number; ++i) {{ list.Add({fieldRead}); }}
+            this.{field.Name} = list.AsReadOnly();
+        }}");
+            } else {
+                builder.Append($@"
+        this.{field.Name} = {fieldRead};");
             }
         }
+        builder.Append(@"
+    }");
         return builder.ToString();
     }
     string FunctionGetData(PackageClass packageClass) {
@@ -122,45 +158,10 @@ public partial class {className} : IData {{
     public object GetData(string key) {");
         foreach (var field in packageClass.Fields) {
             builder.Append($@"
-        if (""{field.Name}"".Equals(key)) return _{field.Name};");
+        if (""{field.Name}"".Equals(key)) return {field.Name};");
         }
         builder.Append(@"
         return null;
-    }");
-        return builder.ToString();
-    }
-    string FunctionRead(PackageClass packageClass, string dataClassName) {
-        var builder = new StringBuilder();
-        builder.Append($@"
-    public static {dataClassName} Read(string fileName, IReader reader) {{
-        var ret = new {dataClassName}();");
-        foreach (var field in packageClass.Fields) {
-            var languageType = GetLanguageType(field);
-            string fieldRead;
-            if (field.Attribute != null && field.Attribute.GetValue("Language").IsTrue) {
-                fieldRead = $@"TableUtil.Readl10n(l10n, fileName + ""_{field.Name}_"" + ret.ID(), reader)";
-            } else if (field.IsBasic) {
-                fieldRead = $"reader.Read{field.BasicType.Name}()";
-            } else if (field.IsEnum) {
-                fieldRead = $"({languageType})reader.ReadInt32()";
-            } else {
-                fieldRead = $"{languageType}.Read(fileName, reader)";
-            }
-            if (field.IsArray) {
-                builder.Append($@"
-        {{
-            var list = new List<{languageType}>();
-            var number = reader.ReadInt32();
-            for (int i = 0; i < number; ++i) {{ list.Add({fieldRead}); }}
-            ret._{field.Name} = list.AsReadOnly();
-        }}");
-            } else {
-                builder.Append($@"
-        ret._{field.Name} = {fieldRead};");
-            }
-        }
-        builder.Append(@"
-        return ret;
     }");
         return builder.ToString();
     }
@@ -170,7 +171,7 @@ public partial class {className} : IData {{
     public void Set({dataClassName} value) {{");
         foreach (var field in packageClass.Fields) {
             builder.Append($@"
-        this._{field.Name} = value._{field.Name};");
+        this.{field.Name} = value.{field.Name};");
         }
         builder.Append(@"
     }");
@@ -182,7 +183,7 @@ public partial class {className} : IData {{
     public override string ToString() {
         return $""");
         foreach (var field in packageClass.Fields) {
-            builder.AppendFormat("{0}:{1}, ", field.Name, $"{{_{field.Name}}}");
+            builder.AppendFormat("{0}:{1}, ", field.Name, $"{{{field.Name}}}");
         }
         builder.Append(@""";
     }");

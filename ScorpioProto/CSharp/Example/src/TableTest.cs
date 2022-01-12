@@ -19,11 +19,11 @@ namespace Datas {
             }
             ConversionUtil.ReadHead(reader);
             for (var i = 0; i < row; ++i) {
-                var pData = DataTest.Read(fileName, reader);
-                if (m_dataArray.TryGetValue(pData.ID(), out var value))
+                var pData = new DataTest(fileName, reader);
+                if (m_dataArray.TryGetValue(pData.ID, out var value))
                     value.Set(pData);
                 else
-                    m_dataArray[pData.ID()] = pData;
+                    m_dataArray[pData.ID] = pData;
             }
             m_count = m_dataArray.Count;
             return this;

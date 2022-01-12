@@ -11,23 +11,23 @@ import Scorpio.Conversion.*;
 ";
     string GetLanguageType(ClassField field) {
         if (field.IsBasic) {
-            switch (field.BasicType.Index) {
-                case BasicEnum.BOOL: return "Boolean";
-                case BasicEnum.INT8: return "Byte";
-                case BasicEnum.UINT8: return "Byte";
-                case BasicEnum.INT16: return "Short";
-                case BasicEnum.UINT16: return "Short";
-                case BasicEnum.INT32: return "Integer";
-                case BasicEnum.UINT32: return "Integer";
-                case BasicEnum.INT64: return "Long";
-                case BasicEnum.UINT64: return "Long";
-                case BasicEnum.FLOAT: return "Float";
-                case BasicEnum.DOUBLE: return "Double";
-                case BasicEnum.STRING: return "String";
-                case BasicEnum.DATETIME: return "Date";
-                case BasicEnum.BYTES: return "byte[]";
-                default: throw new Exception("未知的基础类型");
-            }
+            return field.BasicType.Index switch {
+                BasicEnum.BOOL => "Boolean",
+                BasicEnum.INT8 => "Byte",
+                BasicEnum.UINT8 => "Byte",
+                BasicEnum.INT16 => "Short",
+                BasicEnum.UINT16 => "Short",
+                BasicEnum.INT32 => "Integer",
+                BasicEnum.UINT32 => "Integer",
+                BasicEnum.INT64 => "Long",
+                BasicEnum.UINT64 => "Long",
+                BasicEnum.FLOAT => "Float",
+                BasicEnum.DOUBLE => "Double",
+                BasicEnum.STRING => "String",
+                BasicEnum.DATETIME => "Date",
+                BasicEnum.BYTES => "byte[]",
+                _ => throw new Exception("未知的基础类型"),
+            };
         } else {
             return field.Type;
         }
@@ -50,7 +50,7 @@ public class {tableClassName} implements ITable {{
         }}
         ConversionUtil.ReadHead(reader);
         for (int i = 0; i < row; ++i) {{
-            {dataClassName} pData = {dataClassName}.Read(fileName, reader);
+            {dataClassName} pData = new {dataClassName}(fileName, reader);
             if (m_dataArray.containsKey(pData.ID()))
                 m_dataArray.get(pData.ID()).Set(pData);
             else
@@ -86,8 +86,8 @@ public class {tableClassName} implements ITable {{
 {Head}
 public class {className} implements IData {{
     {AllFields(packageClass, createID)}
+    {FunctionConstructor(packageClass, className)}
     {FunctionGetData(packageClass)}
-    {FunctionRead(packageClass, className)}
     {FunctionSet(packageClass, className)}
     {FunctionToString(packageClass)}
 }}
@@ -111,6 +111,39 @@ public class {className} implements IData {{
         }
         return builder.ToString();
     }
+    string FunctionConstructor(PackageClass packageClass, string dataClassName) {
+        var builder = new StringBuilder();
+        builder.Append($@"
+    public {dataClassName}(String fileName, IReader reader) throws Exception {{");
+        foreach (var field in packageClass.Fields) {
+            var languageType = GetLanguageType(field);
+            string fieldRead;
+            if (field.Attribute != null && field.Attribute.GetValue("Language").IsTrue) {
+                fieldRead = $@"reader.ReadL10n(fileName + "".{field.Name}."" + this.ID())";
+            } else if (field.IsBasic) {
+                fieldRead = $"reader.Read{field.BasicType.Name}()";
+            } else if (field.IsEnum) {
+                fieldRead = $"{languageType}.valueOf(reader.ReadInt32())";
+            } else {
+                fieldRead = $"new {languageType}(fileName, reader)";
+            }
+            if (field.IsArray) {
+                builder.Append($@"
+        {{
+            List<{languageType}> list = new ArrayList<{languageType}>();
+            int number = reader.ReadInt32();
+            for (int i = 0; i < number; ++i) {{ list.add({fieldRead}); }}
+            this._{field.Name} = Collections.unmodifiableList(list);
+        }}");
+            } else {
+                builder.Append($@"
+        this._{field.Name} = {fieldRead};");
+            }
+        }
+        builder.Append(@"
+    }");
+        return builder.ToString();
+    }
     string FunctionGetData(PackageClass packageClass) {
         var builder = new StringBuilder();
         builder.Append(@"
@@ -121,41 +154,6 @@ public class {className} implements IData {{
         }
         builder.Append(@"
         return null;
-    }");
-        return builder.ToString();
-    }
-    string FunctionRead(PackageClass packageClass, string dataClassName) {
-        var builder = new StringBuilder();
-        builder.Append($@"
-    public static {dataClassName} Read(String fileName, IReader reader) throws Exception {{
-        {dataClassName} ret = new {dataClassName}();");
-        foreach (var field in packageClass.Fields) {
-            var languageType = GetLanguageType(field);
-            string fieldRead;
-            if (field.Attribute != null && field.Attribute.GetValue("Language").IsTrue) {
-                fieldRead = $@"reader.ReadL10n(fileName + ""_{field.Name}_"" + ret.ID())";
-            } else if (field.IsBasic) {
-                fieldRead = $"reader.Read{field.BasicType.Name}()";
-            } else if (field.IsEnum) {
-                fieldRead = $"{languageType}.valueOf(reader.ReadInt32())";
-            } else {
-                fieldRead = $"{languageType}.Read(fileName, reader)";
-            }
-            if (field.IsArray) {
-                builder.Append($@"
-        {{
-            List<{languageType}> list = new ArrayList<{languageType}>();
-            int number = reader.ReadInt32();
-            for (int i = 0; i < number; ++i) {{ list.add({fieldRead}); }}
-            ret._{field.Name} = Collections.unmodifiableList(list);
-        }}");
-            } else {
-                builder.Append($@"
-        ret._{field.Name} = {fieldRead};");
-            }
-        }
-        builder.Append(@"
-        return ret;
     }");
         return builder.ToString();
     }

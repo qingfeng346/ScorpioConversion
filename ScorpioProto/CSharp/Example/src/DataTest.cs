@@ -9,57 +9,50 @@ using Scorpio.Conversion;
 namespace Datas {
 public partial class DataTest : IData {
     
-    private int _TestID;
+    public int ID => TestID;
     /* <summary> 注释  默认值() </summary> */
-    public int getTestID() { return _TestID; }
-    public int ID() { return _TestID; }
-    private TestEnum _testEnum;
+    public int TestID { get; private set; }
     /* <summary>   默认值() </summary> */
-    public TestEnum gettestEnum() { return _testEnum; }
-    private ReadOnlyCollection<Int3> _TestDate;
+    public TestEnum testEnum { get; private set; }
     /* <summary>   默认值() </summary> */
-    public ReadOnlyCollection<Int3> getTestDate() { return _TestDate; }
-    private DateTime _TestDateTime;
+    public ReadOnlyCollection<Int3> TestDate { get; private set; }
     /* <summary>   默认值() </summary> */
-    public DateTime getTestDateTime() { return _TestDateTime; }
-    private int _TestInt;
+    public DateTime TestDateTime { get; private set; }
     /* <summary>   默认值(999) </summary> */
-    public int getTestInt() { return _TestInt; }
+    public int TestInt { get; private set; }
     
-    public object GetData(string key) {
-        if ("TestID".Equals(key)) return _TestID;
-        if ("testEnum".Equals(key)) return _testEnum;
-        if ("TestDate".Equals(key)) return _TestDate;
-        if ("TestDateTime".Equals(key)) return _TestDateTime;
-        if ("TestInt".Equals(key)) return _TestInt;
-        return null;
-    }
-    
-    public static DataTest Read(string fileName, IReader reader) {
-        var ret = new DataTest();
-        ret._TestID = reader.ReadInt32();
-        ret._testEnum = (TestEnum)reader.ReadInt32();
+    public DataTest(string fileName, IReader reader) {
+        this.TestID = reader.ReadInt32();
+        this.testEnum = (TestEnum)reader.ReadInt32();
         {
             var list = new List<Int3>();
             var number = reader.ReadInt32();
-            for (int i = 0; i < number; ++i) { list.Add(Int3.Read(fileName, reader)); }
-            ret._TestDate = list.AsReadOnly();
+            for (int i = 0; i < number; ++i) { list.Add(new Int3(fileName, reader)); }
+            this.TestDate = list.AsReadOnly();
         }
-        ret._TestDateTime = reader.ReadDateTime();
-        ret._TestInt = reader.ReadInt32();
-        return ret;
+        this.TestDateTime = reader.ReadDateTime();
+        this.TestInt = reader.ReadInt32();
+    }
+    
+    public object GetData(string key) {
+        if ("TestID".Equals(key)) return TestID;
+        if ("testEnum".Equals(key)) return testEnum;
+        if ("TestDate".Equals(key)) return TestDate;
+        if ("TestDateTime".Equals(key)) return TestDateTime;
+        if ("TestInt".Equals(key)) return TestInt;
+        return null;
     }
     
     public void Set(DataTest value) {
-        this._TestID = value._TestID;
-        this._testEnum = value._testEnum;
-        this._TestDate = value._TestDate;
-        this._TestDateTime = value._TestDateTime;
-        this._TestInt = value._TestInt;
+        this.TestID = value.TestID;
+        this.testEnum = value.testEnum;
+        this.TestDate = value.TestDate;
+        this.TestDateTime = value.TestDateTime;
+        this.TestInt = value.TestInt;
     }
     
     public override string ToString() {
-        return $"TestID:{_TestID}, testEnum:{_testEnum}, TestDate:{_TestDate}, TestDateTime:{_TestDateTime}, TestInt:{_TestInt}, ";
+        return $"TestID:{TestID}, testEnum:{testEnum}, TestDate:{TestDate}, TestDateTime:{TestDateTime}, TestInt:{TestInt}, ";
     }
 }
 }

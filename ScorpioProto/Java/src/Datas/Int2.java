@@ -12,17 +12,15 @@ public class Int2 implements IData {
     /**   默认值() */
     public Integer getValue2() { return _Value2; }
     
+    public Int2(String fileName, IReader reader) throws Exception {
+        this._Value1 = reader.ReadInt32();
+        this._Value2 = reader.ReadInt32();
+    }
+    
     public Object GetData(String key) {
         if ("Value1".equals(key)) return _Value1;
         if ("Value2".equals(key)) return _Value2;
         return null;
-    }
-    
-    public static Int2 Read(String fileName, IReader reader) throws Exception {
-        Int2 ret = new Int2();
-        ret._Value1 = reader.ReadInt32();
-        ret._Value2 = reader.ReadInt32();
-        return ret;
     }
     
     public void Set(Int2 value) {

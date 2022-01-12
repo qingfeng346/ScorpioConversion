@@ -14,7 +14,7 @@ public class TableTest implements ITable {
         }
         ConversionUtil.ReadHead(reader);
         for (int i = 0; i < row; ++i) {
-            DataTest pData = DataTest.Read(fileName, reader);
+            DataTest pData = new DataTest(fileName, reader);
             if (m_dataArray.containsKey(pData.ID()))
                 m_dataArray.get(pData.ID()).Set(pData);
             else
