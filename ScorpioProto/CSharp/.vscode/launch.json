@@ -11,7 +11,7 @@
             "preLaunchTask": "build",
             "program": "${workspaceFolder}/Example/bin/Debug/net6.0/Example.dll",
             "args": [],
-            "cwd": "${workspaceFolder}/../../Sample",
+            "cwd": "${workspaceFolder}/Example",
             "console": "internalConsole",
             "stopAtEntry": false
         },

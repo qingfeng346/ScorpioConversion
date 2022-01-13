@@ -2,7 +2,7 @@
   "profiles": {
     "Example": {
       "commandName": "Project",
-      "workingDirectory": "../../../Sample"
+      "workingDirectory": "./"
     }
   }
 }

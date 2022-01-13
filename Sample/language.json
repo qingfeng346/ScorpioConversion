@@ -9,6 +9,11 @@
             "codeSuffix": "cs"
         },
         {
+            "language": "sco",
+            "codeOutput": "../ScorpioProto/CSharp/Example/sco",
+            "codeSuffix": "sco"
+        },
+        {
             "language": "java",
             "codeOutput": "../ScorpioProto/Java/src",
             "codeSuffix": "java"

@@ -6,6 +6,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Scorpio-CSharp" Version="2.3.5" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\Scorpio.Conversion\Scorpio.Conversion.csproj" />
   </ItemGroup>
 
