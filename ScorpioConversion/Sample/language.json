@@ -1,5 +1,5 @@
 {
-    "dataOutput": "./",
+    "dataOutput": "../../ScorpioProto",
     "dataSuffix": "data",
     "package": "Datas",
     "languages": [
