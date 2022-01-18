@@ -4,7 +4,7 @@ using System.Text;
 using Scorpio.Commons;
 
 [AutoGenerator("java")]
-public class GenerateDataJava : IGenerator {
+public class GeneratorJava : IGenerator {
     public const string Head = @"//本文件为自动生成，请不要手动修改
 import java.util.*;
 import Scorpio.Conversion.*;

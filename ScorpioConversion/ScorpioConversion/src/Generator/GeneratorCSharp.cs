@@ -2,7 +2,7 @@
 using System.Text;
 
 [AutoGenerator("c#")]
-public class GenerateDataCSharp : IGenerator {
+public class GeneratorCSharp : IGenerator {
     public const string Head = @"//本文件为自动生成，请不要手动修改
 using System;
 using System.IO;

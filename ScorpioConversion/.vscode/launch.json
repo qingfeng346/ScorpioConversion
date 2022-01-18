@@ -11,7 +11,7 @@
             "preLaunchTask": "build",
             "program": "${workspaceFolder}/ScorpioConversion/bin/Debug/net6.0/scov.dll",
             "args": ["build", "-package", "Datas", "-config", "./Config", "-paths", "./Excel", "-lang", "language.json"],
-            "cwd": "${workspaceFolder}/../Sample",
+            "cwd": "${workspaceFolder}/Sample",
             "console": "internalConsole",
             "stopAtEntry": false
         },

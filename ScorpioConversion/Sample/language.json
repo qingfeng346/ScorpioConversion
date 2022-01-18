@@ -1,0 +1,27 @@
+{
+    "dataOutput": "./",
+    "dataSuffix": "data",
+    "package": "Datas",
+    "languages": [
+        {
+            "language": "c#",
+            "codeOutput": "../../ScorpioProto/CSharp/Example/src",
+            "codeSuffix": "cs"
+        },
+        {
+            "language": "sco",
+            "codeOutput": "../../ScorpioProto/CSharp/Example/sco",
+            "codeSuffix": "sco"
+        },
+        {
+            "language": "java",
+            "codeOutput": "../../ScorpioProto/Java/src",
+            "codeSuffix": "java"
+        },
+        {
+            "language": "javascript",
+            "codeOutput": "../../ScorpioProto/Nodejs/src",
+            "codeSuffix": "js"
+        }
+    ]
+}
