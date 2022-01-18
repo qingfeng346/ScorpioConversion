@@ -53,6 +53,7 @@ module.exports = {tableClassName};";
     }
     public override string GenerateDataClass(string packageName, string className, PackageClass packageClass, bool createID = false) {
         return $@"{Head}
+{AllImports(packageClass)}
 class {className} {{
     {FunctionConstructor(packageClass, className, createID)}
     {FunctionGetData(packageClass)}
@@ -62,6 +63,15 @@ class {className} {{
 module.exports = {className};
 ";
     }
+    string AllImports(PackageClass packageClass) {
+       var builder = new StringBuilder();
+       foreach (var field in packageClass.Fields) {
+           if (!field.IsBasic && !field.IsEnum) {
+               builder.AppendLine($"const {field.Type} = require('./{field.Type}')");
+           }
+       }
+       return builder.ToString();
+   }
     string FunctionConstructor(PackageClass packageClass, string dataClassName, bool createID) {
         var first = true;
         var builder = new StringBuilder();
@@ -80,12 +90,14 @@ module.exports = {className};
             }
             if (field.IsArray) {
                 builder.Append($@"
-        var list = []
-        var number = reader.ReadInt32()
-        for (var i = 0; i < number; i++) {{ 
-            list.add({fieldRead})
-        }}
-        this.{field.Name} = list");
+        {{
+            let list = []
+            let number = reader.ReadInt32()
+            for (let i = 0; i < number; i++) {{ 
+                list.push({fieldRead})
+            }}
+            this.{field.Name} = list
+        }}");
             } else {
                 builder.Append($@"
         this.{field.Name} = {fieldRead}");
