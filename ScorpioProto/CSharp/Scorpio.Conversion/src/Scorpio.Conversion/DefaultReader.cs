@@ -5,8 +5,12 @@ namespace Scorpio.Conversion {
     public class DefaultReader : IReader {
         private readonly static DateTime BaseTime = new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc);
         BinaryReader reader;
-        public DefaultReader(Stream stream) {
-            reader = new BinaryReader(stream);
+        Stream stream;
+        bool closeStream;
+        public DefaultReader(Stream stream, bool closeStream = false) {
+            this.stream = stream;
+            this.reader = new BinaryReader(stream);
+            this.closeStream = closeStream;
         }
         public bool ReadBool() {
             return ReadInt8() == 1;
@@ -55,7 +59,10 @@ namespace Scorpio.Conversion {
             return reader.ReadBytes(length);
         }
         public void Dispose() {
-            reader.Close();
+            reader.Dispose();
+            if (closeStream) {
+                stream.Dispose();
+            }
         }
     }
 }

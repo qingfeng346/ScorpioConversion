@@ -16,8 +16,10 @@ namespace {languageInfo.package} {{
                 builder.Append($@"
         private Table{table.Name} _table{table.Name} = null;
         public Table{table.Name} get{table.Name}() {{
-            if (this._table{table.Name} == null)
-                this._table{table.Name} = new Table{table.Name}().Initialize(""{table.Name}"", GetReader(""{table.Name}""));
+            if (this._table{table.Name} == null) {{
+                using var reader = GetReader(""{table.Name}"");
+                this._table{table.Name} = new Table{table.Name}().Initialize(""{table.Name}"", reader);
+            }}
             return this._table{table.Name};
         }}");
             });

@@ -7,12 +7,15 @@ namespace Scorpio.Conversion {
     public class DefaultReader : IReader, IDisposable {
         private readonly static DateTime BaseTime = new(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc);
         BinaryReader reader;
-        MemoryStream memoryStream;
+        Stream stream;
+        bool closeStream;
         public void Initialize(byte[] buffer) {
-            Initialize(memoryStream = new MemoryStream(buffer));
+            Initialize(new MemoryStream(buffer), true);
         }
-        public void Initialize(Stream stream) {
-            reader = new BinaryReader(stream);
+        public void Initialize(Stream stream, bool closeStream = false) {
+            this.stream = stream;
+            this.reader = new BinaryReader(stream);
+            this.closeStream = closeStream;
         }
         public bool ReadBool() {
             return ReadInt8() == 1;
@@ -64,9 +67,12 @@ namespace Scorpio.Conversion {
             return reader.ReadBytes(length);
         }
         public void Dispose() {
-            reader.Close();
-            if (memoryStream != null) {
-                memoryStream.Dispose();
+            if (reader != null) {
+                reader.Close();
+                reader = null;
+            }
+            if (closeStream) {
+                stream.Dispose();
             }
         }
     }

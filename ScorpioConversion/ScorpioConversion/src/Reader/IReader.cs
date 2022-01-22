@@ -3,7 +3,7 @@ using System.IO;
 namespace Scorpio.Conversion {
     public interface IReader : IDisposable {
         void Initialize(byte[] buffer);
-        void Initialize(Stream stream);
+        void Initialize(Stream stream, bool closeStream = false);
         bool ReadBool();
         sbyte ReadInt8();
         byte ReadUInt8();
