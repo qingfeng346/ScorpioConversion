@@ -32,7 +32,7 @@ namespace Scorpio.Conversion {
         public static PackageParser Parser { get; private set; }                    //配置文件解析
         public static void Initialize(string[] configs, string[] files, string[] paths, string[] tags, string lang) {
             SpawnsList = new Dictionary<string, string>();                          //派生文件Layout缓存
-            Tags = new HashSet<string>(tags);                                       //需要过滤的文件tags 多tag[{Util.Separator}]隔开
+            Tags = new HashSet<string>(tags);                                       //需要过滤的文件tags
             Parser = new PackageParser();
             foreach (var config in configs) {
                 Parser.Parse(config);

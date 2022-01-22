@@ -15,62 +15,64 @@ using System.Resources;
 
 namespace Scorpio.Conversion {
     class Program {
-        const int READ_LENGTH = 8192;
-        private static string HelpRegister = @"
-注册运行程序到环境变量";
-        private static string HelpInstall = $@"
-载入对应语言的库文件
-    -version|-v     版本号，默认为当前程序版本
-{HelpLanguages}";
-        private static string HelpReset = $@"
-刷新表注释
-    -files          需要转换的excel文件,多文件[{Extend.Separator}]隔开
-    -paths          需要转换的excel文件目录 多路径[{Extend.Separator}]隔开
-    -config         配置文件路径 多路径[{Extend.Separator}]隔开
-";
-        private static string HelpExecute = $@"
-命令列表
-    register        注册运行程序到环境变量
-    install         载入对应语言的库文件
-    reset           刷新表注释
-    [other]         转换excel文件
-        -package        命名空间,默认 sco
-        -files          需要转换的excel文件,多文件[{Extend.Separator}]隔开
-        -paths          需要转换的excel文件目录 多路径[{Extend.Separator}]隔开
-        -tags           需要过滤的文件tags 多tag[{Extend.Separator}]隔开
-        -data           数据文件输出目录 多目录[{Extend.Separator}]隔开
-        -suffix         数据文件后缀 默认[.data]
-        -fileSuffix     程序文件后缀 默认各语言默认后缀
-        -name           输出文件使用文件名或者sheet名字,默认file, 选项 [file,sheet]
-        -config         配置文件路径 多路径[{Extend.Separator}]隔开
-        -l10n           输出L10N配置文件
-{HelpLanguages}
-";
+//        const int READ_LENGTH = 8192;
+//        private static string HelpRegister = @"
+//注册运行程序到环境变量";
+//        private static string HelpInstall = $@"
+//载入对应语言的库文件
+//    -version|-v     版本号，默认为当前程序版本
+//{HelpLanguages}";
+//        private static string HelpReset = $@"
+//刷新表注释
+//    -files          需要转换的excel文件,多文件[{Extend.Separator}]隔开
+//    -paths          需要转换的excel文件目录 多路径[{Extend.Separator}]隔开
+//    -config         配置文件路径 多路径[{Extend.Separator}]隔开
+//";
+//        private static string HelpExecute = $@"
+//命令列表
+//    register        注册运行程序到环境变量
+//    install         载入对应语言的库文件
+//    reset           刷新表注释
+//    [other]         转换excel文件
+//        -package        命名空间,默认 sco
+//        -files          需要转换的excel文件,多文件[{Extend.Separator}]隔开
+//        -paths          需要转换的excel文件目录 多路径[{Extend.Separator}]隔开
+//        -tags           需要过滤的文件tags 多tag[{Extend.Separator}]隔开
+//        -data           数据文件输出目录 多目录[{Extend.Separator}]隔开
+//        -suffix         数据文件后缀 默认[.data]
+//        -fileSuffix     程序文件后缀 默认各语言默认后缀
+//        -name           输出文件使用文件名或者sheet名字,默认file, 选项 [file,sheet]
+//        -config         配置文件路径 多路径[{Extend.Separator}]隔开
+//        -l10n           输出L10N配置文件
+//{HelpLanguages}
+//";
         private static string HelpBuild = $@"
 转换excel文件
     --config|-confg     sco(https://github.com/qingfeng346/Scorpio-CSharp)配置文件
-    --files|-files      Excel文件路径,多文件[{Extend.Separator}]隔开
-    --paths|-paths      Excel文件夹(仅扫描 xls|xlsx|xlsb|csv 文件),多路径[{Extend.Separator}]隔开
+    --files|-files      Excel文件路径,多文件空格隔开
+    --paths|-paths      Excel文件夹(仅扫描 xls|xlsx|xlsb|csv 文件),多路径空格隔开
     --name|-name        输出文件使用文件名或者sheet名字,默认file, 选项 [file,sheet]
-    --tags|-tags        需要过滤的tags
+    --tags|-tags        需要过滤的tags,多tag空格隔开
     --info|-info        Build信息
 ";
-        static string HelpLanguages {
-            get {
-                return "";
-    //            var builder = new StringBuilder(@"
-    //支持语言列表");
-    //            foreach (Language language in Enum.GetValues(typeof(Language))) {
-    //                builder.Append($@"
-    //    -l{language.GetInfo().extension.ToLower()} | -{language.ToString().ToLower()}           {language.ToString()} 语言输出目录,多目录[{Util.Separator}]隔开");
-    //            }
-    //            return builder.ToString();
-            }
-        }
+        private static string HelpDecompile = $@"
+";
+    //    static string HelpLanguages {
+    //        get {
+    //            return "";
+    ////            var builder = new StringBuilder(@"
+    ////支持语言列表");
+    ////            foreach (Language language in Enum.GetValues(typeof(Language))) {
+    ////                builder.Append($@"
+    ////    -l{language.GetInfo().extension.ToLower()} | -{language.ToString().ToLower()}           {language.ToString()} 语言输出目录,多目录[{Util.Separator}]隔开");
+    ////            }
+    ////            return builder.ToString();
+    //        }
+    //    }
         private readonly static string[] ParameterConfig = new[] { "--config", "-config" };     //配置文件
         private readonly static string[] ParameterFiles = new[] { "--files", "-files" };        //所有的excel文件
         private readonly static string[] ParameterPaths = new[] { "--paths", "-paths" };        //所有的excel文件目录,会
-        private readonly static string[] ParameterTags = new[] { "--tags", "-tags" };           //需要过滤的文件tags 多tag[{Util.Separator}]隔开
+        private readonly static string[] ParameterTags = new[] { "--tags", "-tags" };           //需要过滤的文件tags
         private readonly static string[] ParameterName = new[] { "--name", "-name" };           //导出名字使用文件名还是sheet名
         private readonly static string[] ParameterInfo = new[] { "--info", "-info" };           //Build信息
         static void Main(string[] args) {
@@ -81,7 +83,7 @@ namespace Scorpio.Conversion {
             //perform.AddExecute("reset", HelpReset, Reset);
             //perform.AddExecute("format", HelpReset, Format);
             perform.AddExecute("build", HelpBuild, Build);
-            perform.AddExecute("export", HelpReset, Decompile);
+            perform.AddExecute("decompile", HelpDecompile, Decompile);
             perform.Start(args, null, null);
         }
         //static void Register(Perform perform, CommandLine command, string[] args) {
@@ -220,11 +222,10 @@ namespace Scorpio.Conversion {
             GeneratorManager.Instance.Add(assembly);
             ReaderManager.Instance.Add(assembly);
             WriterManager.Instance.Add(assembly);
-            var fileList = Config.Files; //所有要生成的excel文件
-            if (fileList.Count == 0) throw new System.Exception("至少选择一个excel文件");
+            if (Config.Files.Count == 0) throw new System.Exception("至少选择一个excel文件");
             var successTables = new List<TableBuilder>();
             var successSpawns = new SortedDictionary<string, List<TableBuilder>>();
-            foreach (var file in fileList) {
+            foreach (var file in Config.Files) {
                 var tempFile = Path.GetTempFileName();
                 try {
                     File.Copy(file, tempFile, true);
@@ -264,16 +265,12 @@ namespace Scorpio.Conversion {
                     File.Delete(tempFile);
                 }
             }
-            Config.BuildInfo.GenerateCustom(Config.Parser);
             successTables.Sort((a, b) => { return a.Name.CompareTo(b.Name); });
             foreach (var pair in successSpawns) {
                 pair.Value.Sort((a, b) => { return a.FileName.CompareTo(b.FileName); });
             }
-            var parser = Config.Parser;
-            var script = parser.Script;
-            if (script.HasGlobal("BuildOver")) {
-                script.GetGlobal("BuildOver").call(ScriptValue.Null, successTables, successSpawns, command);
-            }
+            Config.BuildInfo.GenerateCustom(Config.Parser);
+            Config.BuildInfo.Handle(successTables, successSpawns, command);
         }
     }
 }

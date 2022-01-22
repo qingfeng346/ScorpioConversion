@@ -9,6 +9,7 @@ namespace Scorpio.Conversion {
         public string dataSuffix;       //数据文件后缀名
         public string package;          //命名空间
         public string writer;           //写入流
+        public string[] handler;        //后续处理
     }
     public class BuildInfo {
         public string codeSuffix = "code";      //默认代码文件后缀名
@@ -60,6 +61,15 @@ namespace Scorpio.Conversion {
                 }
                 foreach (var pair in parser.Enums) {
                     FileUtil.CreateFile(generator.GetCodePath(languageInfo, pair.Value.Name), generator.GenerateEnumClass(languageInfo.package, pair.Value.Name, pair.Value));
+                }
+            }
+        }
+        public void Handle(List<TableBuilder> successTables, SortedDictionary<string, List<TableBuilder>> successSpawns, CommandLine command) {
+            foreach (var language in languages) {
+                var languageInfo = GetLanguageInfo(language);
+                if (languageInfo.handler == null) { continue; }
+                foreach (var handler in languageInfo.handler) {
+                    HandlerManager.Instance.Get(handler).Handle(successTables, successSpawns, Config.L10NDatas, command);
                 }
             }
         }

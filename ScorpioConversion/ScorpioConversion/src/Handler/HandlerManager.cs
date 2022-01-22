@@ -2,16 +2,16 @@
 using System.Reflection;
 
 namespace Scorpio.Conversion {
-    public class HandlerManager : BaseManager<IReader> {
+    public class HandlerManager : BaseManager<IHandler> {
         public static HandlerManager Instance { get; } = new HandlerManager();
-        private static readonly Type TypeBase = typeof(IReader);
-        protected override string Name => "Reader";
+        private static readonly Type TypeBase = typeof(IHandler);
+        protected override string Name => "Handler";
         public void Add(Assembly assembly) {
             foreach (var type in assembly.GetTypes()) {
                 if (type.IsInterface || type.IsAbstract || !TypeBase.IsAssignableFrom(type)) { continue; }
-                var auto = type.GetCustomAttribute<AutoReader>();
+                var auto = type.GetCustomAttribute<AutoHandler>();
                 if (auto == null) { continue; }
-                Add(auto.Name, type, auto.Args);
+                Add(auto.Name, type);
             }
         }
     }
