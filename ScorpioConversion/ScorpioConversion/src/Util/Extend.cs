@@ -69,7 +69,7 @@ namespace Scorpio.Conversion {
         public static bool IsEmptyString(this string str) => string.IsNullOrWhiteSpace(str);
         public static bool IsEmptyValue(this ValueList value) => value == null || value.values.Count == 0;
         public static bool IsInvalid(this string str) => string.IsNullOrWhiteSpace(str) || str.Trim().StartsWith("!");
-        public static bool IsExcel(this string file) => !file.Contains("~$") && (file.EndsWith(".xls") || file.EndsWith(".xlsx"));
+        public static bool IsExcel(this string file) => !file.Contains("~$") && (file.EndsWith(".xls") || file.EndsWith(".xlsx") || file.EndsWith(".xlsb") || file.EndsWith(".csv"));
         public static bool IsL10N(this string str) => !str.IsEmptyString() && str.Trim().StartsWith('$');
         public static string ParseFlag(this string str, out bool invalid, out bool l10n) {
             invalid = false;

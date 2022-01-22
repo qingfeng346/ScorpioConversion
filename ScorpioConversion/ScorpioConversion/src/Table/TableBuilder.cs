@@ -6,24 +6,24 @@ using Scorpio.Commons;
 
 namespace Scorpio.Conversion {
     public partial class TableBuilder {
-        private const string KEYWORD_FILENAME = "/FileName";      //名字,不填默认文件或者sheet名字
-        private const string KEYWORD_TAGS = "/Tags";          //标签,有标签时需要比较传入的标签是否导出
-        private const string KEYWORD_AUTOINC = "/AutoInc";       //ID自动递增生成
-        private const string KEYWORD_PACKAGE = "/Package";       //命名空间,不填默认使用Language配置
-        private const string KEYWORD_SPAWN = "/Spawn";         //是否是派生类
-        private const string KEYWORD_GROUP = "/Group";         //Group类型的表,值为Group的字段名
+        private const string KEYWORD_FILENAME = "/FileName";        //名字,不填默认文件或者sheet名字
+        private const string KEYWORD_TAGS = "/Tags";                //标签,有标签时需要比较传入的标签是否导出
+        private const string KEYWORD_AUTOINC = "/AutoInc";          //ID自动递增生成
+        private const string KEYWORD_PACKAGE = "/Package";          //命名空间,不填默认使用Language配置
+        private const string KEYWORD_SPAWN = "/Spawn";              //是否是派生类
+        private const string KEYWORD_GROUP = "/Group";              //Group类型的表,值为Group的字段名
         private const string KEYWORD_GROUP_SORT = "/GroupSort";     //Group类型的排序字段
 
-        private const string KEYWORD_COMMENT = "/Comment";       //注释
-        private const string KEYWORD_NAME = "/Name";          //字段名
-        private const string KEYWORD_TYPE = "/Type";          //字段类型
-        private const string KEYWORD_ATTRIBUTE = "/Attribute";     //字段属性
-        private const string KEYWORD_DEFAULT = "/Default";       //字段默认值
-        private const string KEYWORD_MAX = "/Max";           //字段最大值
-        private const string KEYWORD_MIN = "/Min";           //字段最小值
+        private const string KEYWORD_COMMENT = "/Comment";          //注释
+        private const string KEYWORD_NAME = "/Name";                //字段名
+        private const string KEYWORD_TYPE = "/Type";                //字段类型
+        private const string KEYWORD_ATTRIBUTE = "/Attribute";      //字段属性
+        private const string KEYWORD_DEFAULT = "/Default";          //字段默认值
+        private const string KEYWORD_MAX = "/Max";                  //字段最大值
+        private const string KEYWORD_MIN = "/Min";                  //字段最小值
 
-        private const string KEYWORD_BEGIN = "/Begin";         //数据开始
-        private const string KEYWORD_END = "/End";           //数据结束
+        private const string KEYWORD_BEGIN = "/Begin";              //数据开始
+        private const string KEYWORD_END = "/End";                  //数据结束
 
         private PackageParser mParser = null;                       //自定义类
         private List<RowData> mDatas = new List<RowData>();         //Excel内容

@@ -1,10 +1,9 @@
-﻿using Scorpio.Conversion;
-using System.IO;
+﻿using System.IO;
 using System.Collections.Generic;
 using ExcelDataReader;
 using Scorpio.Commons;
 using Newtonsoft.Json;
-using Scorpio.Conversion;
+using System.Linq;
 namespace Scorpio.Conversion {
     public class ExcelFile {
         public string file;
@@ -26,8 +25,8 @@ namespace Scorpio.Conversion {
     }
     public class Config {
         public static HashSet<string> Tags { get; private set; }                    //标签列表
-        public static List<ExcelFile> FileList { get; private set; }                //所有要生成的excel文件
-        public static BuildInfo BuildInfo { get; private set; }                //Build信息
+        public static List<string> Files { get; private set; }                      //所有配置文件
+        public static BuildInfo BuildInfo { get; private set; }                     //Build信息
         public static Dictionary<string, string> SpawnsList { get; private set; }   //派生类MD5列表
         public static List<L10NData> L10NDatas { get; set; }                        //所有的翻译字段
         public static PackageParser Parser { get; private set; }                    //配置文件解析
@@ -38,18 +37,10 @@ namespace Scorpio.Conversion {
             foreach (var config in configs) {
                 Parser.Parse(config);
             }
-            FileList = new List<ExcelFile>();
-            foreach (var file in files) {
-                if (file.IsExcel()) {
-                    FileList.Add(new ExcelFile(file));
-                }
-            }
+            Files = new List<string>();
+            Files.AddRange(files);
             foreach (var path in paths) {
-                foreach (var file in Directory.GetFiles(path, "*", SearchOption.AllDirectories)) {
-                    if (file.IsExcel()) {
-                        FileList.Add(new ExcelFile(file));
-                    }
-                }
+                Files.AddRange(Directory.GetFiles(path, "*", SearchOption.AllDirectories).Where(_ => _.IsExcel()));
             }
             BuildInfo = JsonConvert.DeserializeObject<BuildInfo>(FileUtil.GetFileString(lang));
         }

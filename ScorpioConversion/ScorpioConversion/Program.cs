@@ -12,7 +12,6 @@ using ExcelDataReader;
 using System.Data;
 using System.Diagnostics;
 using System.Resources;
-using Scorpio.Conversion;
 
 namespace Scorpio.Conversion {
     class Program {
@@ -221,29 +220,29 @@ namespace Scorpio.Conversion {
             GeneratorManager.Instance.Add(assembly);
             ReaderManager.Instance.Add(assembly);
             WriterManager.Instance.Add(assembly);
-            var fileList = Config.FileList; //所有要生成的excel文件
+            var fileList = Config.Files; //所有要生成的excel文件
             if (fileList.Count == 0) throw new System.Exception("至少选择一个excel文件");
             var successTables = new List<TableBuilder>();
             var successSpawns = new SortedDictionary<string, List<TableBuilder>>();
             foreach (var file in fileList) {
                 var tempFile = Path.GetTempFileName();
                 try {
-                    File.Copy(file.file, tempFile, true);
+                    File.Copy(file, tempFile, true);
                     using (var fileStream = new FileStream(tempFile, FileMode.Open, FileAccess.Read)) {
-                        using (var excelReader = file.GetExcelReader(fileStream)) {
+                        using (var excelReader = ExcelReaderFactory.CreateReader(fileStream)) {
                             foreach (DataTable dataTable in excelReader.AsDataSet().Tables) {
                                 var sheetName = dataTable.TableName;
                                 if (sheetName.IsInvalid()) { continue; }
                                 try {
                                     var stopwatch = Stopwatch.StartNew();
                                     var builder = new TableBuilder();
-                                    builder.SetFileName(useFileName ? file.fileNameWithoutExtension : sheetName.Trim());
-                                    builder.SetSource($"{file.file} - {sheetName}");
+                                    builder.SetFileName(useFileName ? Path.GetFileNameWithoutExtension(file) : sheetName.Trim());
+                                    builder.SetSource($"{file} - {sheetName}");
                                     if (!builder.Parse(dataTable)) {
                                         continue;
                                     }
                                     var elapsedMilliseconds = stopwatch.ElapsedMilliseconds;
-                                    Logger.info(string.Format("File:{0,-20} Sheet:{1,-20} 解析完成  有效列:{2,-5}  有效行:{3,-5}  耗时:{4,-5}", file.fileName.Breviary(18), sheetName.Breviary(18), builder.PackageClass.Fields.Count, builder.DataCount, elapsedMilliseconds > 10000 ? $"{elapsedMilliseconds / 1000}秒" : $"{elapsedMilliseconds}毫秒"));
+                                    Logger.info(string.Format("File:{0,-20} Sheet:{1,-20} 解析完成  有效列:{2,-5}  有效行:{3,-5}  耗时:{4,-5}", Path.GetFileName(file).Breviary(18), sheetName.Breviary(18), builder.PackageClass.Fields.Count, builder.DataCount, elapsedMilliseconds > 10000 ? $"{elapsedMilliseconds / 1000}秒" : $"{elapsedMilliseconds}毫秒"));
                                     if (builder.IsSpawn) {
                                         if (successSpawns.TryGetValue(builder.Spawn, out var array)) {
                                             array.Add(builder);
@@ -254,13 +253,13 @@ namespace Scorpio.Conversion {
                                         successTables.Add(builder);
                                     }
                                 } catch (System.Exception e) {
-                                    Logger.error($"文件:[{file.fileName}] Sheet:[{sheetName}] 解析出错 : {e}");
+                                    Logger.error($"文件:[{Path.GetFileName(file)}] Sheet:[{sheetName}] 解析出错 : {e}");
                                 }
                             }
                         }
                     }
                 } catch (System.Exception e) {
-                    Logger.error($"文件 [{file.fileName}] 执行出错 : {e}");
+                    Logger.error($"文件 [{file}] 执行出错 : {e}");
                 } finally {
                     File.Delete(tempFile);
                 }
