@@ -1,5 +1,4 @@
 ﻿using Scorpio.Commons;
-using Scorpio.Conversion;
 using System.Collections.Generic;
 namespace Scorpio.Conversion {
     public class LanguageInfo {
