@@ -34,6 +34,9 @@ namespace Scorpio.Conversion {
                 public int value;
             }
             public List<Element> Elements = new List<Element>();
+            public string Get(int value) {
+                return Elements.Find(_ => _.value == value).name;
+            }
         }
         //Class
         public class TableClass {
@@ -300,7 +303,7 @@ namespace Scorpio.Conversion {
                 }
             }
         }
-        static TableClass ReadClass(this IReader reader) {
+        public static TableClass ReadClass(this IReader reader) {
             var tableClass = new TableClass();
             var number = reader.ReadInt32();
             for (var i = 0; i < number; ++i) {
@@ -324,7 +327,7 @@ namespace Scorpio.Conversion {
             }
             return tableClass;
         }
-        static TableEnum ReadEnum(this IReader reader) {
+        public static TableEnum ReadEnum(this IReader reader) {
             var tableEnum = new TableEnum();
             var number = reader.ReadInt32();
             for (var i = 0; i < number; ++i) {
@@ -334,6 +337,60 @@ namespace Scorpio.Conversion {
                 });
             }
             return tableEnum;
+        }
+        public static string ReadField(this IReader reader, TableClass.Field field, Dictionary<string, TableEnum> customEnums, Dictionary<string, TableClass> customClasses) {
+            if (field.array) {
+                var values = new List<string>();
+                var number = reader.ReadInt32();
+                for (var i = 0; i < number; ++i) {
+                    var value = reader.ReadOneField(field, customEnums, customClasses);
+                    if (field.fieldType == TableClass.FieldType.CLASS) {
+                        values.Add($"[{value}]");
+                    } else {
+                        values.Add(value);
+                    }
+                }
+                return string.Join(';', values);
+            } else {
+                return reader.ReadOneField(field, customEnums, customClasses);
+            }
+        }
+        public static string ReadOneField(this IReader reader, TableClass.Field field, Dictionary<string, TableEnum> customEnums, Dictionary<string, TableClass> customClasses) {
+            if (field.fieldType == TableClass.FieldType.ENUM) {
+                return customEnums[field.type].Get(reader.ReadInt32());
+            } else if (field.fieldType == TableClass.FieldType.CLASS) {
+                var values = new List<string>();
+                var customClass = customClasses[field.type];
+                foreach (var f in customClass.Fields) {
+                    var value = reader.ReadField(f, customEnums, customClasses);
+                    if (f.fieldType == TableClass.FieldType.CLASS) {
+                        values.Add($"[{value}]");
+                    } else {
+                        values.Add(value);
+                    }
+                }
+                return string.Join(';', values);
+            } else {
+                return BasicUtil.GetType((BasicEnum)field.fieldType).ReadValue(reader).ToString();
+            }
+            //if (field is TableFieldBasic) {
+            //    return (field as TableFieldBasic).basicType.ReadValue(reader).ToString();
+            //} else if (field is TableFieldEnum) {
+            //    return customEnums[field.type].Get(reader.ReadInt32());
+            //} else if (field is TableFieldClass) {
+            //    var values = new List<string>();
+            //    var customClass = customClasses[field.type];
+            //    foreach (var cField in customClass.Fields) {
+            //        var value = ReadField(reader, cField);
+            //        if (cField is TableFieldClass) {
+            //            values.Add($"[{value}]");
+            //        } else {
+            //            values.Add(value);
+            //        }
+            //    }
+            //    return string.Join(';', values);
+            //}
+            //throw new System.Exception("不支持的字段类型 : " + field);
         }
     }
 }

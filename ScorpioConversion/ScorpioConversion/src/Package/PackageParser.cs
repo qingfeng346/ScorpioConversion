@@ -143,7 +143,7 @@ namespace Scorpio.Conversion {
             Script.LoadLibraryV1();
             var global = Script.Global;
             var globalKeys = new HashSet<string>(global.GetKeys());
-            var files = Directory.Exists(dir) ? Directory.GetFiles(dir, "*.sco", SearchOption.AllDirectories) : (File.Exists(dir) ? new string[] { dir } : new string[0]);
+            var files = Directory.Exists(dir) ? Directory.GetFiles(dir, "*.sco", SearchOption.AllDirectories) : (File.Exists(dir) ? new string[] { dir } : System.Array.Empty<string>());
             foreach (var file in files) { Script.LoadFile(file); }
             var keys = global.GetKeys();
             foreach (var name in keys) {

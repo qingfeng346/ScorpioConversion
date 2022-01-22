@@ -7,7 +7,7 @@ namespace Scorpio.Conversion {
             public Type type;       //类型
             public object[] args;   //构造函数默认参数
         }
-        protected Dictionary<string, BaseType> values = new Dictionary<string, BaseType>();
+        protected Dictionary<string, BaseType> values = new();
         protected abstract string Name { get; }
         public void Add(string name, Type value, params object[] args) {
             Logger.info($"添加[{Name}] {name} - {value}");

@@ -127,7 +127,7 @@ namespace Scorpio.Conversion {
     }
     public class PackageClass : IPackage {
         public string Name { get; set; }
-        public List<ClassField> Fields = new List<ClassField>();
+        public List<ClassField> Fields = new();
         public override string ToString() {
             return Name;
         }

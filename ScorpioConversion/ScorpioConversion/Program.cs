@@ -46,7 +46,7 @@ namespace Scorpio.Conversion {
 //        -l10n           输出L10N配置文件
 //{HelpLanguages}
 //";
-        private static string HelpBuild = $@"
+        private static readonly string HelpBuild = $@"
 转换excel文件
     --config|-confg     sco(https://github.com/qingfeng346/Scorpio-CSharp)配置文件
     --files|-files      Excel文件路径,多文件空格隔开
@@ -55,7 +55,10 @@ namespace Scorpio.Conversion {
     --tags|-tags        需要过滤的tags,多tag空格隔开
     --info|-info        Build信息
 ";
-        private static string HelpDecompile = $@"
+        private static readonly string HelpDecompile = $@"
+反编译文件
+    --files|-files      需要反编译的文件,多文件空格隔开
+    --output|-output    导出目录
 ";
     //    static string HelpLanguages {
     //        get {
@@ -75,6 +78,7 @@ namespace Scorpio.Conversion {
         private readonly static string[] ParameterTags = new[] { "--tags", "-tags" };           //需要过滤的文件tags
         private readonly static string[] ParameterName = new[] { "--name", "-name" };           //导出名字使用文件名还是sheet名
         private readonly static string[] ParameterInfo = new[] { "--info", "-info" };           //Build信息
+        private readonly static string[] ParameterOutput = new[] { "--output", "-output" };     //输出目录
         static void Main(string[] args) {
             Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
             var perform = new Perform();
@@ -187,29 +191,31 @@ namespace Scorpio.Conversion {
         //    }
         //}
         static void Decompile(Perform perform, CommandLine command, string[] args) {
+            var files = new List<string>();
+            files.AddRange(command.GetValues(ParameterFiles));
+            var output = perform.GetPath(ParameterOutput);
             //var suffix = command.GetValueDefault("-suffix", "data");         //数据文件后缀 默认.data
-            //var output = perform.GetPath("-output");                         //输出目录
+            //
             //var files = new List<string>();
             ////需要转换的文件 多文件[{Util.Separator}]隔开
-            
+
             //Util.Split(command.GetValue("-files"), (file) => files.Add(Path.GetFullPath($"{Environment.CurrentDirectory}/{file}")));
             ////需要转换的文件目录 多路径[{Util.Separator}]隔开
             //Util.Split(command.GetValue("-paths"), (path) => files.AddRange(Directory.GetFiles(Path.GetFullPath($"{Environment.CurrentDirectory}/{path}"))));
             //Logger.info($"输出目录 {output}");
-            //if (!Directory.Exists(output)) { Directory.CreateDirectory(output); }
-            //foreach (var file in files) {
-            //    if (!file.EndsWith(suffix)) { continue; }
-            //    var tempFile = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, Guid.NewGuid().ToString("N"));
-            //    try {
-            //        File.Copy(file, tempFile, true);
-            //        //new TableDecompile().Decompile(tempFile, Path.GetFileNameWithoutExtension(file), output);
-            //        Logger.info($"反编译 {file} 完成");
-            //    } catch (System.Exception e) {
-            //        Logger.error($"文件 [{file}] 反编译出错 : " + e.ToString());
-            //    } finally {
-            //        File.Delete(tempFile);
-            //    }
-            //}
+            if (!Directory.Exists(output)) { Directory.CreateDirectory(output); }
+            foreach (var file in files) {
+                var tempFile = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, Guid.NewGuid().ToString("N"));
+                try {
+                    File.Copy(file, tempFile, true);
+                    new TableDecompile().Decompile(tempFile, Path.GetFileNameWithoutExtension(file), output);
+                    Logger.info($"反编译 {file} 完成");
+                } catch (System.Exception e) {
+                    Logger.error($"文件 [{file}] 反编译出错 : " + e.ToString());
+                } finally {
+                    File.Delete(tempFile);
+                }
+            }
         }
         static void Build(Perform perform, CommandLine command, string[] args) {
             Config.Initialize(command.GetValues(ParameterConfig), 
@@ -229,34 +235,32 @@ namespace Scorpio.Conversion {
                 var tempFile = Path.GetTempFileName();
                 try {
                     File.Copy(file, tempFile, true);
-                    using (var fileStream = new FileStream(tempFile, FileMode.Open, FileAccess.Read)) {
-                        using (var excelReader = ExcelReaderFactory.CreateReader(fileStream)) {
-                            foreach (DataTable dataTable in excelReader.AsDataSet().Tables) {
-                                var sheetName = dataTable.TableName;
-                                if (sheetName.IsInvalid()) { continue; }
-                                try {
-                                    var stopwatch = Stopwatch.StartNew();
-                                    var builder = new TableBuilder();
-                                    builder.SetFileName(useFileName ? Path.GetFileNameWithoutExtension(file) : sheetName.Trim());
-                                    builder.SetSource($"{file} - {sheetName}");
-                                    if (!builder.Parse(dataTable)) {
-                                        continue;
-                                    }
-                                    var elapsedMilliseconds = stopwatch.ElapsedMilliseconds;
-                                    Logger.info(string.Format("File:{0,-20} Sheet:{1,-20} 解析完成  有效列:{2,-5}  有效行:{3,-5}  耗时:{4,-5}", Path.GetFileName(file).Breviary(18), sheetName.Breviary(18), builder.PackageClass.Fields.Count, builder.DataCount, elapsedMilliseconds > 10000 ? $"{elapsedMilliseconds / 1000}秒" : $"{elapsedMilliseconds}毫秒"));
-                                    if (builder.IsSpawn) {
-                                        if (successSpawns.TryGetValue(builder.Spawn, out var array)) {
-                                            array.Add(builder);
-                                        } else {
-                                            successSpawns[builder.Spawn] = new List<TableBuilder>() { builder };
-                                        }
-                                    } else {
-                                        successTables.Add(builder);
-                                    }
-                                } catch (System.Exception e) {
-                                    Logger.error($"文件:[{Path.GetFileName(file)}] Sheet:[{sheetName}] 解析出错 : {e}");
-                                }
+                    using var fileStream = new FileStream(tempFile, FileMode.Open, FileAccess.Read);
+                    using var excelReader = ExcelReaderFactory.CreateReader(fileStream);
+                    foreach (DataTable dataTable in excelReader.AsDataSet().Tables) {
+                        var sheetName = dataTable.TableName;
+                        if (sheetName.IsInvalid()) { continue; }
+                        try {
+                            var stopwatch = Stopwatch.StartNew();
+                            var builder = new TableBuilder();
+                            builder.SetFileName(useFileName ? Path.GetFileNameWithoutExtension(file) : sheetName.Trim());
+                            builder.SetSource($"{file} - {sheetName}");
+                            if (!builder.Parse(dataTable)) {
+                                continue;
                             }
+                            var elapsedMilliseconds = stopwatch.ElapsedMilliseconds;
+                            Logger.info(string.Format("File:{0,-20} Sheet:{1,-20} 解析完成  有效列:{2,-5}  有效行:{3,-5}  耗时:{4,-5}", Path.GetFileName(file).Breviary(18), sheetName.Breviary(18), builder.PackageClass.Fields.Count, builder.DataCount, elapsedMilliseconds > 10000 ? $"{elapsedMilliseconds / 1000}秒" : $"{elapsedMilliseconds}毫秒"));
+                            if (builder.IsSpawn) {
+                                if (successSpawns.TryGetValue(builder.Spawn, out var array)) {
+                                    array.Add(builder);
+                                } else {
+                                    successSpawns[builder.Spawn] = new List<TableBuilder>() { builder };
+                                }
+                            } else {
+                                successTables.Add(builder);
+                            }
+                        } catch (System.Exception e) {
+                            Logger.error($"文件:[{Path.GetFileName(file)}] Sheet:[{sheetName}] 解析出错 : {e}");
                         }
                     }
                 } catch (System.Exception e) {

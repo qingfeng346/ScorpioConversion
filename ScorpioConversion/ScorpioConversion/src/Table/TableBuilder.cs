@@ -197,8 +197,8 @@ namespace Scorpio.Conversion {
             var builder = new StringBuilder();
             for (var i = 0; i < PackageClass.Fields.Count; ++i) {
                 PackageClass.Fields[i].Index = i;
-                builder.Append(PackageClass.Fields[i].Type).Append(":");
-                builder.Append(PackageClass.Fields[i].IsArray ? "1" : "0").Append(":");
+                builder.Append(PackageClass.Fields[i].Type).Append(':');
+                builder.Append(PackageClass.Fields[i].IsArray ? '1' : '0').Append(':');
             }
             LayoutMD5 = ScorpioUtil.GetMD5FromString(builder.ToString());
             if (PackageClass.Fields.Count == 0) throw new System.Exception($"有效字段数量为0");
@@ -227,48 +227,47 @@ namespace Scorpio.Conversion {
         }
         public byte[] CreateBytes(string writerType) {
             var l10nDatas = new List<L10NData>();
-            using (var writer = new TableWriter(WriterManager.Instance.Get(writerType))) {
-                writer.WriteInt32(mDatas.Count);        //数据数量
-                writer.WriteString(LayoutMD5);          //文件结构MD5
-                writer.WriteHead(PackageClass, CustomTypes);
-                var keys = new HashSet<string>();
-                foreach (var data in mDatas) {
-                    if (keys.Contains(data.Key)) {
-                        throw new System.Exception($"ID有重复项[{data.Key}], 行:[{data.RowNumber}]");
+            using var writer = new TableWriter(WriterManager.Instance.Get(writerType));
+            writer.WriteInt32(mDatas.Count);        //数据数量
+            writer.WriteString(LayoutMD5);          //文件结构MD5
+            writer.WriteHead(PackageClass, CustomTypes);
+            var keys = new HashSet<string>();
+            foreach (var data in mDatas) {
+                if (keys.Contains(data.Key)) {
+                    throw new System.Exception($"ID有重复项[{data.Key}], 行:[{data.RowNumber}]");
+                }
+                keys.Add(data.Key);
+                for (var i = 0; i < PackageClass.Fields.Count; ++i) {
+                    var field = PackageClass.Fields[i];
+                    if (field.IsL10N) {
+                        l10nDatas.Add(new L10NData {
+                            Key = $"{Name}.{data.Key}.{field.Name}", // skip the signature of '$'
+                            Hint = data.Values[i]
+                        });
                     }
-                    keys.Add(data.Key);
-                    for (var i = 0; i < PackageClass.Fields.Count; ++i) {
-                        var field = PackageClass.Fields[i];
+                    try {
+                        if (!field.MaxValue.IsEmptyString() && Convert.ToDouble(field.MaxValue) < Convert.ToDouble(data.Values[i])) {
+                            throw new DataException($"行:{data.RowNumber} {field.Name} 值超过限定最大值");
+                        }
+                        if (!field.MinValue.IsEmptyString() && Convert.ToDouble(field.MinValue) > Convert.ToDouble(data.Values[i])) {
+                            throw new DataException($"行:{data.RowNumber} {field.Name} 值低于限定最小值");
+                        }
                         if (field.IsL10N) {
-                            l10nDatas.Add(new L10NData {
-                                Key = $"{Name}.{data.Key}.{field.Name}", // skip the signature of '$'
-                                Hint = data.Values[i]
-                            });
+                            field.Write(writer, new RowValue() { value = "" });
+                        } else {
+                            field.Write(writer, data.Values[i]);
                         }
-                        try {
-                            if (!field.MaxValue.IsEmptyString() && Convert.ToDouble(field.MaxValue) < Convert.ToDouble(data.Values[i])) {
-                                throw new DataException($"行:{data.RowNumber} {field.Name} 值超过限定最大值");
-                            }
-                            if (!field.MinValue.IsEmptyString() && Convert.ToDouble(field.MinValue) > Convert.ToDouble(data.Values[i])) {
-                                throw new DataException($"行:{data.RowNumber} {field.Name} 值低于限定最小值");
-                            }
-                            if (field.IsL10N) {
-                                field.Write(writer, new RowValue() { value = "" });
-                            } else {
-                                field.Write(writer, data.Values[i]);
-                            }
-                        } catch (System.Exception e) {
-                            var builder = new StringBuilder();
-                            for (var m = 0; m < data.Values.Count; m++) {
-                                builder.Append(data.Values[m].value + ",");
-                            }
-                            throw new System.Exception($"列:{field.Name} 行:{data.RowNumber}({builder}) : {e}");
+                    } catch (System.Exception e) {
+                        var builder = new StringBuilder();
+                        for (var m = 0; m < data.Values.Count; m++) {
+                            builder.Append(data.Values[m].value + ",");
                         }
+                        throw new System.Exception($"列:{field.Name} 行:{data.RowNumber}({builder}) : {e}");
                     }
                 }
-                Config.L10NDatas = l10nDatas;
-                return writer.ToArray();
             }
+            Config.L10NDatas = l10nDatas;
+            return writer.ToArray();
         }
         void Generate() {
             Config.BuildInfo.Generate(this);

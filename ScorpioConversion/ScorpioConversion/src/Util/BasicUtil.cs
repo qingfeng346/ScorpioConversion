@@ -40,7 +40,7 @@ namespace Scorpio.Conversion {
             this.Name = name;
             this.Index = index;
             this.WriteMethod = typeof(TableWriter).GetMethod("Write" + ScorpioUtil.ToOneUpper(name), new Type[] { typeof(string) });
-            this.ReadMethod = typeof(TableReader).GetMethod("Read" + ScorpioUtil.ToOneUpper(name));
+            this.ReadMethod = typeof(IReader).GetMethod("Read" + ScorpioUtil.ToOneUpper(name));
         }
         public BasicType SetKey(string key) {
             this.Key = key;
@@ -53,7 +53,7 @@ namespace Scorpio.Conversion {
                 throw new System.Exception($"写入数据失败,Value:{value} : {e}");
             }
         }
-        public object ReadValue(TableReader reader) {
+        public object ReadValue(IReader reader) {
             return ReadMethod.Invoke(reader, null);
         }
         public BasicType Clone(string key) {
@@ -64,21 +64,21 @@ namespace Scorpio.Conversion {
         private readonly static DateTime BaseTime = new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc);
 
         private static List<BasicType> BasicTypes = new List<BasicType>() {
-        new BasicType("Bool", BasicEnum.BOOL),
-        new BasicType("Int8", BasicEnum.INT8),
-        new BasicType("UInt8", BasicEnum.UINT8),
-        new BasicType("Int16", BasicEnum.INT16),
-        new BasicType("UInt16", BasicEnum.UINT16),
-        new BasicType("Int32", BasicEnum.INT32),
-        new BasicType("UInt32", BasicEnum.UINT32),
-        new BasicType("Int64", BasicEnum.INT64),
-        new BasicType("UInt64", BasicEnum.UINT64),
-        new BasicType("Float", BasicEnum.FLOAT),
-        new BasicType("Double", BasicEnum.DOUBLE),
-        new BasicType("String", BasicEnum.STRING),
-        new BasicType("DateTime", BasicEnum.DATETIME),
-        new BasicType("Bytes", BasicEnum.BYTES),
-    };
+            new BasicType("Bool", BasicEnum.BOOL),
+            new BasicType("Int8", BasicEnum.INT8),
+            new BasicType("UInt8", BasicEnum.UINT8),
+            new BasicType("Int16", BasicEnum.INT16),
+            new BasicType("UInt16", BasicEnum.UINT16),
+            new BasicType("Int32", BasicEnum.INT32),
+            new BasicType("UInt32", BasicEnum.UINT32),
+            new BasicType("Int64", BasicEnum.INT64),
+            new BasicType("UInt64", BasicEnum.UINT64),
+            new BasicType("Float", BasicEnum.FLOAT),
+            new BasicType("Double", BasicEnum.DOUBLE),
+            new BasicType("String", BasicEnum.STRING),
+            new BasicType("DateTime", BasicEnum.DATETIME),
+            new BasicType("Bytes", BasicEnum.BYTES),
+        };
         static BasicUtil() {
             BasicTypes.Add(GetType(BasicEnum.BOOL).Clone("bool"));
             BasicTypes.Add(GetType(BasicEnum.BOOL).Clone("boolean"));

@@ -6,6 +6,6 @@ namespace Scorpio.Conversion {
     }
     public class PackageEnum : IPackage {
         public string Name;
-        public List<EnumField> Fields = new List<EnumField>();
+        public List<EnumField> Fields = new();
     }
 }

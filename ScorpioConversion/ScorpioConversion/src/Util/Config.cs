@@ -5,24 +5,6 @@ using Scorpio.Commons;
 using Newtonsoft.Json;
 using System.Linq;
 namespace Scorpio.Conversion {
-    public class ExcelFile {
-        public string file;
-        public string fileName;
-        public string fileNameWithoutExtension;
-        public string extension;
-        public ExcelFile(string file) {
-            this.file = file;
-            this.fileName = Path.GetFileName(file);
-            this.fileNameWithoutExtension = Path.GetFileNameWithoutExtension(file);
-            this.extension = Path.GetExtension(file);
-        }
-        public IExcelDataReader GetExcelReader(FileStream fileStream) {
-            return ExcelReaderFactory.CreateReader(fileStream);
-        }
-        public override string ToString() {
-            return fileName;
-        }
-    }
     public class Config {
         public static HashSet<string> Tags { get; private set; }                    //标签列表
         public static List<string> Files { get; private set; }                      //所有配置文件
