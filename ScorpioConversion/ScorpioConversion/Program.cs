@@ -81,6 +81,11 @@ namespace Scorpio.Conversion {
         private readonly static string[] ParameterOutput = new[] { "--output", "-output" };     //输出目录
         static void Main(string[] args) {
             Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
+            var assembly = typeof(Program).Assembly;
+            GeneratorManager.Instance.Add(assembly);
+            ReaderManager.Instance.Add(assembly);
+            WriterManager.Instance.Add(assembly);
+            HandlerManager.Instance.Add(assembly);
             var perform = new Perform();
             //perform.AddExecute("register", HelpRegister, Register);
             //perform.AddExecute("install", HelpInstall, Install);
@@ -194,15 +199,6 @@ namespace Scorpio.Conversion {
             var files = new List<string>();
             files.AddRange(command.GetValues(ParameterFiles));
             var output = perform.GetPath(ParameterOutput);
-            //var suffix = command.GetValueDefault("-suffix", "data");         //数据文件后缀 默认.data
-            //
-            //var files = new List<string>();
-            ////需要转换的文件 多文件[{Util.Separator}]隔开
-
-            //Util.Split(command.GetValue("-files"), (file) => files.Add(Path.GetFullPath($"{Environment.CurrentDirectory}/{file}")));
-            ////需要转换的文件目录 多路径[{Util.Separator}]隔开
-            //Util.Split(command.GetValue("-paths"), (path) => files.AddRange(Directory.GetFiles(Path.GetFullPath($"{Environment.CurrentDirectory}/{path}"))));
-            //Logger.info($"输出目录 {output}");
             if (!Directory.Exists(output)) { Directory.CreateDirectory(output); }
             foreach (var file in files) {
                 var tempFile = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, Guid.NewGuid().ToString("N"));
@@ -224,10 +220,6 @@ namespace Scorpio.Conversion {
                               command.GetValues(ParameterTags), 
                               command.GetValue(ParameterInfo));
             var useFileName = command.GetValueDefault(ParameterName, "sheet").ToLower() == "file";
-            var assembly = typeof(Program).Assembly;
-            GeneratorManager.Instance.Add(assembly);
-            ReaderManager.Instance.Add(assembly);
-            WriterManager.Instance.Add(assembly);
             if (Config.Files.Count == 0) throw new System.Exception("至少选择一个excel文件");
             var successTables = new List<TableBuilder>();
             var successSpawns = new SortedDictionary<string, List<TableBuilder>>();

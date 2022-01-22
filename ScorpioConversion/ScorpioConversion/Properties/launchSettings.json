@@ -1,14 +1,19 @@
 {
   "profiles": {
-    "reset": {
-      "commandName": "Project",
-      "commandLineArgs": "reset -config ./Config -paths ./",
-      "workingDirectory": "../Sample"
-    },
     "build": {
       "commandName": "Project",
       "commandLineArgs": "build -package Datas -name file -config ./Config -paths ./Excel -info info.json",
       "workingDirectory": "../Sample"
+    },
+    "WSL": {
+      "commandName": "WSL2",
+      "environmentVariables": {},
+      "distributionName": ""
+    },
+    "decompile": {
+      "commandName": "Project",
+      "commandLineArgs": "decompile -files Test.data",
+      "workingDirectory": "../../ScorpioProto"
     }
   }
 }

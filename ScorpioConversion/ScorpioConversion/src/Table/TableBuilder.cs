@@ -212,18 +212,21 @@ namespace Scorpio.Conversion {
                 Name = Spawn;
             }
             CustomTypes.Clear();
-            PackageClass.Fields.ForEach((field) => {
-                if (!field.IsBasic) {
-                    if (field.IsEnum) {
-                        CustomTypes.Add(field.CustomEnum);
-                    } else {
-                        CustomTypes.Add(field.CustomType);
-                    }
-                }
-            });
+            AddCustomType(PackageClass);
             if (string.IsNullOrEmpty(FileName)) {
                 throw new System.Exception($"FileName 为空");
             }
+        }
+        void AddCustomType(PackageClass packageClass) {
+            packageClass.Fields.ForEach((field) => {
+                if (field.IsBasic) { return; }
+                if (field.IsEnum) {
+                    CustomTypes.Add(field.CustomEnum);
+                } else {
+                    CustomTypes.Add(field.CustomType);
+                    AddCustomType(field.CustomType);
+                }
+            });
         }
         public byte[] CreateBytes(string writerType) {
             var l10nDatas = new List<L10NData>();

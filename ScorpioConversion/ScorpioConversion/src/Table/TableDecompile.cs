@@ -74,8 +74,14 @@ namespace Scorpio.Conversion {
                     builder.Append($@"table_{pair.Key} = {{");
                     for (var i = 0; i < pair.Value.Fields.Count; ++i) {
                         var field = pair.Value.Fields[i];
-                        builder.Append($@"
+                        if (field.fieldType == TableClass.FieldType.ENUM || field.fieldType == TableClass.FieldType.CLASS) {
+                            builder.Append($@"
     {field.name} = `{i},{field.type},{field.array.ToString().ToLower()}`,");
+                        } else {
+                            var type = BasicUtil.GetType((BasicEnum)field.fieldType).Name;
+                            builder.Append($@"
+    {field.name} = `{i},{type},{field.array.ToString().ToLower()}`,");
+                        }
                     }
                     builder.Append(@"
 }
