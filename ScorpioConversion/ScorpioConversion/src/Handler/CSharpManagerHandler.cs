@@ -23,6 +23,28 @@ namespace {languageInfo.package} {{
             return this._table{table.Name};
         }}");
             });
+            foreach (var pair in successSpawns) {
+                pair.Value.ForEach((table) => {
+                    builder.Append($@"
+        private Table{table.Name} _table{table.FileName} = null;
+        public Table{table.Name} get{table.Name}{table.FileName}() {{
+            if (this._table{table.FileName} == null) {{
+                using var reader = GetReader(""{table.FileName}"");
+                this._table{table.FileName} = new Table{table.Name}().Initialize(""{table.FileName}"", reader);
+            }}
+            return this._table{table.FileName};
+        }}");
+                });
+                builder.Append($@"
+        public Table{pair.Key} get{pair.Key}(string name) {{");
+                pair.Value.ForEach((table) => {
+                    builder.Append($@"
+            if (name == ""{table.FileName}"") return get{table.Name}{table.FileName}();");
+                });
+                builder.Append(@"
+            return null;
+        }");
+            }
             builder.Append(@"
     }
 }");

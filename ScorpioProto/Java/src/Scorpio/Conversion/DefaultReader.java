@@ -5,14 +5,16 @@ import java.io.InputStream;
 import java.util.Date;
 public class DefaultReader implements IReader {
 	private byte readBuffer[] = new byte[8];
-	private InputStream in;
-	public DefaultReader(InputStream stream) {
-		this.in = stream;
+	private InputStream stream;
+	private boolean closeStream;
+	public DefaultReader(InputStream stream, boolean closeStream) {
+		this.stream = stream;
+		this.closeStream = closeStream;
 	}
 	private final void readFully(byte b[], int off, int len) throws IOException {
 		int n = 0;
         while (n < len) {
-            int count = in.read(b, n, len - n);
+            int count = stream.read(b, n, len - n);
             if (count < 0)
                 throw new EOFException();
             n += count;
@@ -22,24 +24,24 @@ public class DefaultReader implements IReader {
 		return ReadInt8() == (byte) 1;
 	}
 	public byte ReadInt8() throws Exception {
-		return (byte) in.read();
+		return (byte) stream.read();
 	}
 	public int ReadUInt8() throws Exception {
-		return in.read();
+		return stream.read();
 	}
 	public short ReadInt16() throws Exception {
 		return (short)ReadUInt16();
 	}
 	public int ReadUInt16() throws Exception {
-		int ch1 = in.read();
-        int ch2 = in.read();
+		int ch1 = stream.read();
+        int ch2 = stream.read();
         return (ch2 << 8) + (ch1 << 0);
 	}
 	public int ReadInt32() throws Exception {
-		int ch1 = in.read();
-        int ch2 = in.read();
-        int ch3 = in.read();
-        int ch4 = in.read();
+		int ch1 = stream.read();
+        int ch2 = stream.read();
+        int ch3 = stream.read();
+        int ch4 = stream.read();
 		return ((ch4 << 24) + (ch3 << 16) + (ch2 << 8) + (ch1 << 0));
 	}
 	public int ReadUInt32() throws Exception {
@@ -80,5 +82,10 @@ public class DefaultReader implements IReader {
 		byte[] bytes = new byte[length];
 		readFully(bytes, 0, length);
 		return bytes;
+	}
+	public void Close() throws Exception {
+		if (closeStream) {
+			this.stream.close();
+		}
 	}
 }

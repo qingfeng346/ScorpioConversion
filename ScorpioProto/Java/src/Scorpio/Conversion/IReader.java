@@ -17,4 +17,5 @@ public interface IReader {
 	String ReadString() throws Exception;
 	Date ReadDateTime() throws Exception;
 	byte[] ReadBytes() throws Exception;
+	void Close() throws Exception;
 }
