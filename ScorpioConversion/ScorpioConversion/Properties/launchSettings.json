@@ -7,7 +7,7 @@
     },
     "build": {
       "commandName": "Project",
-      "commandLineArgs": "build -package Datas -config ./Config -paths ./Excel -lang language.json",
+      "commandLineArgs": "build -package Datas -name file -config ./Config -paths ./Excel -info info.json",
       "workingDirectory": "../Sample"
     }
   }

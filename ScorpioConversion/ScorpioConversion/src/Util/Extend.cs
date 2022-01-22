@@ -3,6 +3,8 @@ using System.Data;
 using NPOI.SS.UserModel;
 using Scorpio.Commons;
 using System.Collections.Generic;
+using Scorpio.Conversion;
+
 public static class Extend {
     private readonly static DateTime BaseTime = new DateTime(1970, 1, 1, 0, 0, 0, 0);
     private const string ArrayString = "array";

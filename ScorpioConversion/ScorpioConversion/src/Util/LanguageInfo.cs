@@ -1,4 +1,5 @@
 ﻿using Scorpio.Commons;
+using Scorpio.Conversion;
 using System.Collections.Generic;
 public class LanguageInfo {
     public string language;         //语言名字
@@ -9,7 +10,7 @@ public class LanguageInfo {
     public string package;          //命名空间
     public string writer;           //写入流
 }
-public class LanguageConfig {
+public class BuildInfo {
     public string codeSuffix = "code";      //默认代码文件后缀名
     public string codeOutput = "";          //默认代码导出目录
     public string dataSuffix = "data";      //默认数据文件后缀名

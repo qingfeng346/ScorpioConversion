@@ -1,5 +1,5 @@
 import { IScorpioReader } from './IScorpioReader';
-import { Buffer } from 'buffer'; 
+// import { Buffer } from 'buffer'; 
 import Long from 'long'
 export class ScorpioReader implements IScorpioReader {
     offset:number = 0;

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Reflection;
 using Scorpio.Commons;
+using Scorpio.Conversion;
 
 //基础类型列表
 public enum BasicEnum {

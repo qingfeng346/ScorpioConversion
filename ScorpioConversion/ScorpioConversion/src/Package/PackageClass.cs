@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using Scorpio;
+using Scorpio.Conversion;
 
 public class ClassField {
     private PackageParser mParser;

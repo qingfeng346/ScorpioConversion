@@ -12,8 +12,9 @@ using ExcelDataReader;
 using System.Data;
 using System.Diagnostics;
 using System.Resources;
+using Scorpio.Conversion;
 
-namespace ScorpioConversion {
+namespace Scorpio.Conversion {
     class Program {
         const int READ_LENGTH = 8192;
         private static string HelpRegister = @"
@@ -49,10 +50,10 @@ namespace ScorpioConversion {
         private static string HelpBuild = $@"
 转换excel文件
     --config|-confg     sco(https://github.com/qingfeng346/Scorpio-CSharp)配置文件
-    --files|-files      Excel文件路径(仅支持 xls|xlsx 文件)
-    --paths|-paths      Excel文件夹(仅扫描 xls|xlsx 文件)
+    --files|-files      Excel文件路径(仅支持 xls|xlsx|xlsb|csv 文件)
+    --paths|-paths      Excel文件夹(仅扫描 xls|xlsx|xlsb|csv 文件)
     --tags|-tags        需要过滤的tags
-    --lang|-lang        Language配置文件
+    --info|-info        Build信息
 ";
         static string HelpLanguages {
             get {
@@ -70,8 +71,8 @@ namespace ScorpioConversion {
         private readonly static string[] ParameterFiles = new[] { "--files", "-files" };        //所有的excel文件
         private readonly static string[] ParameterPaths = new[] { "--paths", "-paths" };        //所有的excel文件目录,会
         private readonly static string[] ParameterTags = new[] { "--tags", "-tags" };           //需要过滤的文件tags 多tag[{Util.Separator}]隔开
-        private readonly static string[] ParameterName = new[] { "--name", "-name" };           //
-        private readonly static string[] ParameterLang = new[] { "--lang", "-lang" };           //
+        private readonly static string[] ParameterName = new[] { "--name", "-name" };           //导出名字使用文件名还是sheet名
+        private readonly static string[] ParameterInfo = new[] { "--info", "-info" };           //Build信息
         static void Main(string[] args) {
             Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
             var perform = new Perform();
@@ -79,8 +80,8 @@ namespace ScorpioConversion {
             //perform.AddExecute("install", HelpInstall, Install);
             //perform.AddExecute("reset", HelpReset, Reset);
             //perform.AddExecute("format", HelpReset, Format);
-            perform.AddExecute("decompile", HelpReset, Decompile);
             perform.AddExecute("build", HelpBuild, Build);
+            perform.AddExecute("export", HelpReset, Decompile);
             perform.Start(args, null, null);
         }
         //static void Register(Perform perform, CommandLine command, string[] args) {
@@ -200,7 +201,7 @@ namespace ScorpioConversion {
                     File.Copy(file, tempFile, true);
                     //new TableDecompile().Decompile(tempFile, Path.GetFileNameWithoutExtension(file), output);
                     Logger.info($"反编译 {file} 完成");
-                } catch (Exception e) {
+                } catch (System.Exception e) {
                     Logger.error($"文件 [{file}] 反编译出错 : " + e.ToString());
                 } finally {
                     File.Delete(tempFile);
@@ -212,14 +213,14 @@ namespace ScorpioConversion {
                               command.GetValues(ParameterFiles), 
                               command.GetValues(ParameterPaths), 
                               command.GetValues(ParameterTags), 
-                              command.GetValue(ParameterLang),
-                              command.GetValueDefault(ParameterName, "file"));
+                              command.GetValue(ParameterInfo));
+            var useFileName = command.GetValueDefault(ParameterName, "sheet").ToLower() == "file";
             var assembly = typeof(Program).Assembly;
             GeneratorManager.Instance.Add(assembly);
             ReaderManager.Instance.Add(assembly);
             WriterManager.Instance.Add(assembly);
             var fileList = Config.FileList; //所有要生成的excel文件
-            if (fileList.Count == 0) throw new Exception("至少选择一个excel文件");
+            if (fileList.Count == 0) throw new System.Exception("至少选择一个excel文件");
             var successTables = new List<TableBuilder>();
             var successSpawns = new SortedDictionary<string, List<TableBuilder>>();
             foreach (var file in fileList) {
@@ -234,7 +235,7 @@ namespace ScorpioConversion {
                                 try {
                                     var stopwatch = Stopwatch.StartNew();
                                     var builder = new TableBuilder();
-                                    builder.SetFileName(Config.IsFileName ? file.fileNameWithoutExtension : sheetName.Trim());
+                                    builder.SetFileName(useFileName ? file.fileNameWithoutExtension : sheetName.Trim());
                                     builder.SetSource($"{file.file} - {sheetName}");
                                     if (!builder.Parse(dataTable)) {
                                         continue;
@@ -250,19 +251,19 @@ namespace ScorpioConversion {
                                     } else {
                                         successTables.Add(builder);
                                     }
-                                } catch (Exception e) {
+                                } catch (System.Exception e) {
                                     Logger.error($"文件:[{file.fileName}] Sheet:[{sheetName}] 解析出错 : {e}");
                                 }
                             }
                         }
                     }
-                } catch (Exception e) {
+                } catch (System.Exception e) {
                     Logger.error($"文件 [{file.fileName}] 执行出错 : {e}");
                 } finally {
                     File.Delete(tempFile);
                 }
             }
-            Config.LanguageConfig.GenerateCustom(Config.Parser);
+            Config.BuildInfo.GenerateCustom(Config.Parser);
             successTables.Sort((a, b) => { return a.Name.CompareTo(b.Name); });
             foreach (var pair in successSpawns) {
                 pair.Value.Sort((a, b) => { return a.FileName.CompareTo(b.FileName); });
