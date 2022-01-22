@@ -5,7 +5,7 @@ $name="scov"
 $today = Get-Date
 $date=$today.ToString('yyyy-MM-dd')
 $fileData=@"
-namespace ScorpioConversion {
+namespace Scorpio.Conversion {
     public static class Version {
         public const string version = "$version";
         public const string date = "$date";

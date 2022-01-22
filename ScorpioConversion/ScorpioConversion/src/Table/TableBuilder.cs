@@ -73,7 +73,7 @@ namespace Scorpio.Conversion {
                     case KEYWORD_SPAWN: Spawn = valueCell; break;
                     case KEYWORD_GROUP: Group = valueCell; break;
                     case KEYWORD_GROUP_SORT: GroupSort = valueCell; break;
-                    case KEYWORD_TAGS: Tags = new List<string>(Util.Split(valueCell)); break;
+                    case KEYWORD_TAGS: Tags = new List<string>(valueCell.Split()); break;
                     default: ParseHead(keyCell, row); break;
                 }
             }

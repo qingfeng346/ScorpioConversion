@@ -5,166 +5,157 @@ using System.IO;
 using System.Linq;
 using Scorpio;
 using System.Text;
-
-public interface IValue {
-    string Value { get; } 
-}
-public class ValueString : IValue {
-    public string value;
-    public ValueString(string value) {
-        this.value = value;
+namespace Scorpio.Conversion {
+    public interface IValue {
+        string Value { get; }
     }
-    public override string ToString() {
-        return "\"" + value.Replace("[", "\\[").Replace(";", "\\;") + "\"";
+    public class ValueString : IValue {
+        public string value;
+        public ValueString(string value) {
+            this.value = value;
+        }
+        public override string ToString() {
+            return "\"" + value.Replace("[", "\\[").Replace(";", "\\;") + "\"";
+        }
+        public string Value { get { return value; } }
     }
-    public string Value { get { return value; } }
-}
-public class ValueList : IValue {
-    public List<IValue> values = new List<IValue>();
-    public string Value { get { return ToString(); } }
-    public int Count { get { return values.Count; } }
-    public IValue this[int i] {
-        get { return values[i]; }
-    }
-    public override string ToString() {
-        return "[" + string.Join<IValue>(';', values) + "]";
-    }
-}
-public class ValueParser {
-    private string buffer;
-    private int index;
-    private int length;
-    public ValueParser(string buffer) {
-        this.buffer = buffer;
-        this.length = buffer.Length;
-        this.index = 0;
-    }
-    char ReadChar() {
-        if (index == length) {
-            return (char)0;
-        } else {
-            return buffer[index++];
+    public class ValueList : IValue {
+        public List<IValue> values = new List<IValue>();
+        public string Value { get { return ToString(); } }
+        public int Count { get { return values.Count; } }
+        public IValue this[int i] {
+            get { return values[i]; }
+        }
+        public override string ToString() {
+            return "[" + string.Join<IValue>(';', values) + "]";
         }
     }
-    void UndoChar() {
-        --index;
-    }
-    public IValue GetObject() {
-        var start = ReadChar();
-        if (start == '[') {
-            var ret = new ValueList();
-            while (true) {
-                var val = GetObject();
-                if (val == null) {
-                    break;
-                }
-                ret.values.Add(val);
+    public class ValueParser {
+        private string buffer;
+        private int index;
+        private int length;
+        public ValueParser(string buffer) {
+            this.buffer = buffer;
+            this.length = buffer.Length;
+            this.index = 0;
+        }
+        char ReadChar() {
+            if (index == length) {
+                return (char)0;
+            } else {
+                return buffer[index++];
             }
-            return ret;
-        } else if (start == (char)0 || start == ']') {
-            return null;
-        } else if (start == ';' || start == ',' || start == '|' || start == ' ' || start == '\n' || start == '\r') {
-            return GetObject();
-        } else {
-            var builder = new StringBuilder().Append(start);
-            while (true) {
-                var ch = ReadChar();
-                if (ch == '\\') {
-                    var c = ReadChar();
-                    if (c == '[' || c == ';' || ch == ',') {
-                        builder.Append(c);
-                    } else {
-                        builder.Append(ch).Append(c);
+        }
+        void UndoChar() {
+            --index;
+        }
+        public IValue GetObject() {
+            var start = ReadChar();
+            if (start == '[') {
+                var ret = new ValueList();
+                while (true) {
+                    var val = GetObject();
+                    if (val == null) {
+                        break;
                     }
-                } else if (ch == ']') {
-                    UndoChar();
-                    break;
-                } else if (ch == ';' || ch == ',' || ch == '|') {
-                    break;
-                } else {
-                    builder.Append(ch);
+                    ret.values.Add(val);
                 }
+                return ret;
+            } else if (start == (char)0 || start == ']') {
+                return null;
+            } else if (start == ';' || start == ',' || start == '|' || start == ' ' || start == '\n' || start == '\r') {
+                return GetObject();
+            } else {
+                var builder = new StringBuilder().Append(start);
+                while (true) {
+                    var ch = ReadChar();
+                    if (ch == '\\') {
+                        var c = ReadChar();
+                        if (c == '[' || c == ';' || ch == ',') {
+                            builder.Append(c);
+                        } else {
+                            builder.Append(ch).Append(c);
+                        }
+                    } else if (ch == ']') {
+                        UndoChar();
+                        break;
+                    } else if (ch == ';' || ch == ',' || ch == '|') {
+                        break;
+                    } else {
+                        builder.Append(ch);
+                    }
+                }
+                return new ValueString(builder.ToString());
             }
-            return new ValueString(builder.ToString());
         }
-    }
 
-    public IValue GetObject_Backup()
-    {
-        var buf = buffer.AsSpan();
+        public IValue GetObject_Backup() {
+            var buf = buffer.AsSpan();
 
-        var i = 0;
-        
-        switch (buf[0])
-        {
-            case '#':
-                return ReadListObj(buf.Slice(1), ref i);
-            default:
-                return ReadStringObj(buf.Slice(0), ref i);
-        }
-    }
+            var i = 0;
 
-    private static IValue ReadListObj(ReadOnlySpan<char> buf, ref int i)
-    {
-        if(i<0) throw new ArgumentOutOfRangeException(nameof(i));
-
-        var start = i;
-        var result = new ValueList();
-        
-        for (; i < buf.Length;)
-        {
-            switch (buf[i])
-            {
+            switch (buf[0]) {
                 case '#':
-                {
-                    var subStart = 0;
-                    result.values.Add(ReadStringObj(buf.Slice(start, i-start), ref subStart));
-                    i++;
-                    return result;
-                }
-                case '|':
-                {
-                    var subStart = 0;
-                    result.values.Add(ReadStringObj(buf.Slice(start, i-start), ref subStart));
-                    i++;
-                    start = i;
-                }
-                    break;
+                    return ReadListObj(buf.Slice(1), ref i);
                 default:
-                    i++;
-                    break;
+                    return ReadStringObj(buf.Slice(0), ref i);
             }
         }
-        
-        throw new InvalidDataException("Can not find # for end");
-    }
 
-    private static IValue ReadStringObj(ReadOnlySpan<char> buf, ref int i)
-    {
-        if (i < 0) throw new ArgumentOutOfRangeException(nameof(i));
-        
-        var start = i;
-        
-        for (; i < buf.Length; i++)
-        {
-            if (buf[i] != '|' && buf[i] != '#') continue;
+        private static IValue ReadListObj(ReadOnlySpan<char> buf, ref int i) {
+            if (i < 0) throw new ArgumentOutOfRangeException(nameof(i));
 
-            var value = new string(buf.Slice(start, i));
-
-            if (!value.Contains(';')) return new ValueString(value);
-                
+            var start = i;
             var result = new ValueList();
-            result.values.AddRange(value.Split(';').Select(_=> new ValueString(_)));
-            return result;
+
+            for (; i < buf.Length;) {
+                switch (buf[i]) {
+                    case '#': {
+                        var subStart = 0;
+                        result.values.Add(ReadStringObj(buf.Slice(start, i - start), ref subStart));
+                        i++;
+                        return result;
+                    }
+                    case '|': {
+                        var subStart = 0;
+                        result.values.Add(ReadStringObj(buf.Slice(start, i - start), ref subStart));
+                        i++;
+                        start = i;
+                    }
+                    break;
+                    default:
+                        i++;
+                        break;
+                }
+            }
+
+            throw new InvalidDataException("Can not find # for end");
         }
 
-        var r = new string(buf);
-        if (!r.Contains(';')) return new ValueString(r);
-        {
-            var result = new ValueList();
-            result.values.AddRange(r.Split(';').Select(_=> new ValueString(_)));
-            return result;
+        private static IValue ReadStringObj(ReadOnlySpan<char> buf, ref int i) {
+            if (i < 0) throw new ArgumentOutOfRangeException(nameof(i));
+
+            var start = i;
+
+            for (; i < buf.Length; i++) {
+                if (buf[i] != '|' && buf[i] != '#') continue;
+
+                var value = new string(buf.Slice(start, i));
+
+                if (!value.Contains(';')) return new ValueString(value);
+
+                var result = new ValueList();
+                result.values.AddRange(value.Split(';').Select(_ => new ValueString(_)));
+                return result;
+            }
+
+            var r = new string(buf);
+            if (!r.Contains(';')) return new ValueString(r);
+            {
+                var result = new ValueList();
+                result.values.AddRange(r.Split(';').Select(_ => new ValueString(_)));
+                return result;
+            }
         }
     }
 }
-
