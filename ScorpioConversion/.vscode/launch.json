@@ -16,9 +16,15 @@
             "stopAtEntry": false
         },
         {
-            "name": ".NET Core Attach",
+            "name": "decompile",
             "type": "coreclr",
-            "request": "attach"
+            "request": "launch",
+            "preLaunchTask": "build",
+            "program": "${workspaceFolder}/ScorpioConversion/bin/Debug/net6.0/scov.dll",
+            "args": ["decompile", "-files", "Test.data"],
+            "cwd": "${workspaceFolder}/../ScorpioProto",
+            "console": "internalConsole",
+            "stopAtEntry": false
         }
     ]
 }

@@ -20,8 +20,8 @@ namespace Scorpio.Conversion {
             ret = ScriptValue.Null;
             return false;
         }
-        public void Handle(List<TableBuilder> successTables, SortedDictionary<string, List<TableBuilder>> successSpawns, List<L10NData> l10NDatas, CommandLine command) {
-            Call("Handle", out _, successTables, successSpawns, l10NDatas, command);
+        public void Handle(LanguageInfo languageInfo, List<TableBuilder> successTables, SortedDictionary<string, List<TableBuilder>> successSpawns, List<L10NData> l10NDatas, CommandLine command) {
+            Call("Handle", out _, languageInfo, successTables, successSpawns, l10NDatas, command);
         }
         public void Dispose() { }
     }

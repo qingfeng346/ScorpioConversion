@@ -11,11 +11,11 @@ namespace Scorpio.Conversion {
         private Dictionary<string, TableEnum> customEnums = new Dictionary<string, TableEnum>();
         private Dictionary<string, TableClass> customClasses = new Dictionary<string, TableClass>();
         private TableClass tableClass = null;
-        public void Decompile(string file, string name, string output) {
+        public void Decompile(string file, string name, string output, string readerName) {
             customEnums.Clear();
             customClasses.Clear();
             using var stream = File.OpenRead(file);
-            var reader = new TableReader();
+            var reader = ReaderManager.Instance.Get(readerName);
             reader.Initialize(stream);
             var rowNumber = reader.ReadInt32();
             reader.ReadString();        //MD5

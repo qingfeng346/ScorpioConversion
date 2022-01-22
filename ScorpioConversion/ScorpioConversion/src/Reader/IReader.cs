@@ -1,7 +1,9 @@
 ﻿using System;
-
+using System.IO;
 namespace Scorpio.Conversion {
     public interface IReader : IDisposable {
+        void Initialize(byte[] buffer);
+        void Initialize(Stream stream);
         bool ReadBool();
         sbyte ReadInt8();
         byte ReadUInt8();
@@ -14,7 +16,7 @@ namespace Scorpio.Conversion {
         float ReadFloat();
         double ReadDouble();
         string ReadString();
-        string ReadL10N();
+        string ReadL10N(string key);
         DateTime ReadDateTime();
         byte[] ReadBytes();
     }

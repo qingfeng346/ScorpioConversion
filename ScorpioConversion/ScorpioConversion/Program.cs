@@ -58,7 +58,8 @@ namespace Scorpio.Conversion {
         private static readonly string HelpDecompile = $@"
 反编译文件
     --files|-files      需要反编译的文件,多文件空格隔开
-    --output|-output    导出目录
+    --output|-output    导出目录,默认当前目录
+    --reader|-reader    反序列化Reader,默认DefaultReader
 ";
     //    static string HelpLanguages {
     //        get {
@@ -79,6 +80,7 @@ namespace Scorpio.Conversion {
         private readonly static string[] ParameterName = new[] { "--name", "-name" };           //导出名字使用文件名还是sheet名
         private readonly static string[] ParameterInfo = new[] { "--info", "-info" };           //Build信息
         private readonly static string[] ParameterOutput = new[] { "--output", "-output" };     //输出目录
+        private readonly static string[] ParameterReader = new[] { "--reader", "-reader" };     //反编译的Reader
         static void Main(string[] args) {
             Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
             var assembly = typeof(Program).Assembly;
@@ -200,11 +202,12 @@ namespace Scorpio.Conversion {
             files.AddRange(command.GetValues(ParameterFiles));
             var output = perform.GetPath(ParameterOutput);
             if (!Directory.Exists(output)) { Directory.CreateDirectory(output); }
+            var reader = command.GetValueDefault(ParameterReader, "default");
             foreach (var file in files) {
                 var tempFile = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, Guid.NewGuid().ToString("N"));
                 try {
                     File.Copy(file, tempFile, true);
-                    new TableDecompile().Decompile(tempFile, Path.GetFileNameWithoutExtension(file), output);
+                    new TableDecompile().Decompile(tempFile, Path.GetFileNameWithoutExtension(file), output, reader);
                     Logger.info($"反编译 {file} 完成");
                 } catch (System.Exception e) {
                     Logger.error($"文件 [{file}] 反编译出错 : " + e.ToString());

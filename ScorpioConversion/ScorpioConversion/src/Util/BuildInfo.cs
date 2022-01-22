@@ -69,7 +69,7 @@ namespace Scorpio.Conversion {
                 var languageInfo = GetLanguageInfo(language);
                 if (languageInfo.handler == null) { continue; }
                 foreach (var handler in languageInfo.handler) {
-                    HandlerManager.Instance.Get(handler).Handle(successTables, successSpawns, Config.L10NDatas, command);
+                    HandlerManager.Instance.Get(handler).Handle(languageInfo, successTables, successSpawns, Config.L10NDatas, command);
                 }
             }
         }

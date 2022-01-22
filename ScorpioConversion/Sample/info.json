@@ -6,7 +6,8 @@
         {
             "language": "c#",
             "codeOutput": "../../ScorpioProto/CSharp/Example/src",
-            "codeSuffix": "cs"
+            "codeSuffix": "cs",
+            "handler": [ "C#Manager" ]
         },
         {
             "language": "sco",
