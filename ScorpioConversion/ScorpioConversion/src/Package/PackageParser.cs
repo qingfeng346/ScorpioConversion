@@ -9,12 +9,10 @@ namespace Scorpio.Conversion {
     public class PackageParser {
         private const string ENUM_KEYWORD = "enum_";            //枚举类型关键字
         private const string CONST_KEYWORD = "const_";          //常量类型关键字
-        private const string MESSAGE_KEYWORD = "message_";      //消息格式关键字
         private const string TABLE_KEYWORD = "table_";          //Table格式关键字
 
         public SortedDictionary<string, PackageEnum> Enums { get; set; } = new SortedDictionary<string, PackageEnum>();
         public SortedDictionary<string, PackageConst> Consts { get; set; } = new SortedDictionary<string, PackageConst>();
-        public SortedDictionary<string, PackageClass> Messages { get; set; } = new SortedDictionary<string, PackageClass>();
         public SortedDictionary<string, PackageClass> Tables { get; set; } = new SortedDictionary<string, PackageClass>();
         public SortedDictionary<string, PackageClass> Classes { get; set; } = new SortedDictionary<string, PackageClass>();
         public Script Script { get; private set; } = new Script();
@@ -81,7 +79,6 @@ namespace Scorpio.Conversion {
                 if (!packageField.IsBasic) {
                     if (!Script.HasGlobal(packageField.Type) &&                             //判断网络协议自定义类
                         !Script.HasGlobal(ENUM_KEYWORD + packageField.Type) &&              //判断是否是枚举
-                        !Script.HasGlobal(MESSAGE_KEYWORD + packageField.Type) &&           //判断网络协议自定义类
                         !Script.HasGlobal(TABLE_KEYWORD + packageField.Type)                //判断Table内嵌类
                                ) {
                         throw new System.Exception($"Class:{name} Field:{fieldName} 未知类型:{packageField.Type}");
@@ -90,10 +87,7 @@ namespace Scorpio.Conversion {
                 classes.Fields.Add(packageField);
             }
             classes.Fields.Sort((m1, m2) => { return m1.Index.CompareTo(m2.Index); });
-            if (name.StartsWith(MESSAGE_KEYWORD)) {         //协议结构
-                name = name.Substring(MESSAGE_KEYWORD.Length);
-                Messages[name] = classes;
-            } else if (name.StartsWith(TABLE_KEYWORD)) {    //table结构
+            if (name.StartsWith(TABLE_KEYWORD)) {    //table结构
                 name = name.Substring(TABLE_KEYWORD.Length);
                 Tables[name] = classes;
             } else {
@@ -122,9 +116,7 @@ namespace Scorpio.Conversion {
             throw new System.Exception($"找不到枚举 : {name}");
         }
         public PackageClass GetClasses(string name) {
-            if (Messages.ContainsKey(name))
-                return Messages[name];
-            else if (Tables.ContainsKey(name))
+            if (Tables.ContainsKey(name))
                 return Tables[name];
             else if (Classes.ContainsKey(name))
                 return Classes[name];
@@ -134,7 +126,6 @@ namespace Scorpio.Conversion {
             if (clear) {
                 Enums.Clear();
                 Consts.Clear();
-                Messages.Clear();
                 Tables.Clear();
                 Classes.Clear();
             }
