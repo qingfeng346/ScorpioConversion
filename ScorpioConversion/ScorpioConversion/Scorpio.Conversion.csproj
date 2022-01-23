@@ -14,11 +14,11 @@
   <ItemGroup>
     <PackageReference Include="ExcelDataReader" Version="3.6.0" />
     <PackageReference Include="ExcelDataReader.DataSet" Version="3.6.0" />
-    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
-    <PackageReference Include="NPOI" Version="2.5.5" />
-    <PackageReference Include="Scorpio-CSharp" Version="2.3.5" />
     <PackageReference Include="Scorpio.Commons" Version="1.1.12" />
-    <PackageReference Include="System.Text.Encoding.CodePages" Version="6.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Scorpio.Conversion.Engine\Scorpio.Conversion.Engine.csproj" />
   </ItemGroup>
 
 </Project>
