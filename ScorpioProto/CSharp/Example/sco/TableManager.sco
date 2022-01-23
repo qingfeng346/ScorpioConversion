@@ -11,7 +11,7 @@ TableManager = {
         if (this._tableTest == null) {
             var reader = GetReader("Test");
             this._tableTest = new TableTest().Initialize("Test", reader);
-            reader.Dispose()
+            reader.Close()
         }
         return ID == null ? this._tableTest : this._tableTest(ID);
     }
@@ -19,7 +19,7 @@ TableManager = {
         if (this._tableTest1 == null) {
             var reader = GetReader("Test1");
             this._tableTest1 = new TableSpawn().Initialize("Test1", reader);
-            reader.Dispose()
+            reader.Close()
         }
         return ID == null ? this._tableSpawn : this._tableSpawn(ID);
     }
@@ -27,7 +27,7 @@ TableManager = {
         if (this._tableTest2 == null) {
             var reader = GetReader("Test2");
             this._tableTest2 = new TableSpawn().Initialize("Test2", reader);
-            reader.Dispose()
+            reader.Close()
         }
         return ID == null ? this._tableSpawn : this._tableSpawn(ID);
     }

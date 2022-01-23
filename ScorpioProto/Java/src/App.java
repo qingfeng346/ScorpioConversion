@@ -1,13 +1,7 @@
-import java.io.File;
-import java.io.FileInputStream;
-import Datas.TableTest;
-import Scorpio.Conversion.DefaultReader;
-
+import Datas.TableManager;
 public class App {
     public static void main(String[] args) throws Exception {
-        TableTest table = new TableTest();
-        table.Initialize("Test", new DefaultReader(new FileInputStream(new File("../Test.data"))));
-        for (var pair : table.Datas().entrySet()) {
+        for (var pair : TableManager.GetInstance().getTest().Datas().entrySet()) {
             System.out.println(pair.getValue().toString());
         }
     }

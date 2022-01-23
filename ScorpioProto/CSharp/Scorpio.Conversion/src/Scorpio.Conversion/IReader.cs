@@ -15,5 +15,6 @@ namespace Scorpio.Conversion {
         string ReadString();
         DateTime ReadDateTime();
         byte[] ReadBytes();
+        void Close();
     }
 }

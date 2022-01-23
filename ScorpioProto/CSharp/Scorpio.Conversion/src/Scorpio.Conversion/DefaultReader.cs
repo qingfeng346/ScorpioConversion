@@ -58,11 +58,14 @@ namespace Scorpio.Conversion {
             var length = ReadInt32();
             return reader.ReadBytes(length);
         }
-        public void Dispose() {
+        public void Close() {
             reader.Dispose();
             if (closeStream) {
                 stream.Dispose();
             }
+        }
+        public void Dispose() {
+            Close();
         }
     }
 }

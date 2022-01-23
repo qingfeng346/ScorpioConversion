@@ -35,7 +35,7 @@ TableManager = {{");
         if (this._table{table.Name} == null) {{
             var reader = GetReader(""{table.Name}"");
             this._table{table.Name} = new Table{table.Name}().Initialize(""{table.Name}"", reader);
-            reader.Dispose()
+            reader.Close()
         }}
         return ID == null ? this._table{table.Name} : this._table{table.Name}(ID);
     }}");
@@ -47,7 +47,7 @@ TableManager = {{");
         if (this._table{table.FileName} == null) {{
             var reader = GetReader(""{table.FileName}"");
             this._table{table.FileName} = new Table{table.Name}().Initialize(""{table.FileName}"", reader);
-            reader.Dispose()
+            reader.Close()
         }}
         return ID == null ? this._table{table.Name} : this._table{table.Name}(ID);
     }}");

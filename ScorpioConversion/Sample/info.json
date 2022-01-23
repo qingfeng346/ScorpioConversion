@@ -19,7 +19,8 @@
         {
             "language": "java",
             "codeOutput": "../../ScorpioProto/Java/src",
-            "codeSuffix": "java"
+            "codeSuffix": "java",
+            "handler": [ "JavaManager" ]
         },
         {
             "language": "javascript",
