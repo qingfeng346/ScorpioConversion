@@ -18,8 +18,9 @@ namespace {languageInfo.package} {{
         public Table{table.Name} {table.Name} {{
             get {{
                 if (this._table{table.Name} == null) {{
-                    using var reader = GetReader(""{table.Name}"");
-                    this._table{table.Name} = new Table{table.Name}().Initialize(""{table.Name}"", reader);
+                    using (var reader = GetReader(""{table.Name}"")) {{
+                        this._table{table.Name} = new Table{table.Name}().Initialize(""{table.Name}"", reader);
+                    }}
                 }}
                 return this._table{table.Name};
             }}
@@ -32,8 +33,9 @@ namespace {languageInfo.package} {{
         public Table{table.Name} {table.Name}{table.FileName} {{
             get {{
                 if (this._table{table.FileName} == null) {{
-                    using var reader = GetReader(""{table.FileName}"");
-                    this._table{table.FileName} = new Table{table.Name}().Initialize(""{table.FileName}"", reader);
+                    using (var reader = GetReader(""{table.FileName}"")) {{
+                        this._table{table.FileName} = new Table{table.Name}().Initialize(""{table.FileName}"", reader);
+                    }}
                 }}
                 return this._table{table.FileName};
             }}

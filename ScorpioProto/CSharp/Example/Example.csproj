@@ -10,7 +10,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Scorpio.Conversion\Scorpio.Conversion.csproj" />
+    <ProjectReference Include="..\Scorpio.Conversion.Runtime\Scorpio.Conversion.Runtime.csproj" />
   </ItemGroup>
 
 </Project>

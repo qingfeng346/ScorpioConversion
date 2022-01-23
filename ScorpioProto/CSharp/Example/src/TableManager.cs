@@ -5,8 +5,9 @@ namespace Datas {
         public TableTest Test {
             get {
                 if (this._tableTest == null) {
-                    using var reader = GetReader("Test");
-                    this._tableTest = new TableTest().Initialize("Test", reader);
+                    using (var reader = GetReader("Test")) {
+                        this._tableTest = new TableTest().Initialize("Test", reader);
+                    }
                 }
                 return this._tableTest;
             }
@@ -15,8 +16,9 @@ namespace Datas {
         public TableSpawn SpawnTest1 {
             get {
                 if (this._tableTest1 == null) {
-                    using var reader = GetReader("Test1");
-                    this._tableTest1 = new TableSpawn().Initialize("Test1", reader);
+                    using (var reader = GetReader("Test1")) {
+                        this._tableTest1 = new TableSpawn().Initialize("Test1", reader);
+                    }
                 }
                 return this._tableTest1;
             }
@@ -25,8 +27,9 @@ namespace Datas {
         public TableSpawn SpawnTest2 {
             get {
                 if (this._tableTest2 == null) {
-                    using var reader = GetReader("Test2");
-                    this._tableTest2 = new TableSpawn().Initialize("Test2", reader);
+                    using (var reader = GetReader("Test2")) {
+                        this._tableTest2 = new TableSpawn().Initialize("Test2", reader);
+                    }
                 }
                 return this._tableTest2;
             }
