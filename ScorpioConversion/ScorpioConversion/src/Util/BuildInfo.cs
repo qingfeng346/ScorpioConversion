@@ -18,6 +18,7 @@ namespace Scorpio.Conversion {
         public string dataOutput = "";          //默认数据文件导出目录
         public string package = "scov";         //默认命名空间
         public string writer = "default";       //默认写入流
+        public string[] handler;                //全局后续处理,只执行一次
         public List<LanguageInfo> languages = new List<LanguageInfo>();
         private LanguageInfo GetLanguageInfo(LanguageInfo languageInfo) {
             if (string.IsNullOrWhiteSpace(languageInfo.codeOutput)) {
@@ -65,6 +66,11 @@ namespace Scorpio.Conversion {
             }
         }
         public void Handle(List<TableBuilder> successTables, SortedDictionary<string, List<TableBuilder>> successSpawns, CommandLine command) {
+            if (handler != null) {
+                foreach (var h in handler) {
+                    HandlerManager.Instance.Get(h).Handle(null, successTables, successSpawns, Config.L10NDatas, command);
+                }
+            }
             foreach (var language in languages) {
                 var languageInfo = GetLanguageInfo(language);
                 if (languageInfo.handler == null) { continue; }

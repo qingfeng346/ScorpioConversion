@@ -6,23 +6,22 @@ using Scorpio;
 using Scorpio.Userdata;
 
 public class Program {
+    private class GetReader : ScorpioHandle {
+        public ScriptValue Call(ScriptValue obj, ScriptValue[] Parameters, int length) {
+            return ScriptValue.CreateValue(new DefaultReader(File.OpenRead($"../../{Parameters[0].ToString()}.data"), true));
+        }
+    }
     public static void Main(string[] args) {
         try {
-
-            // var table = new TableTest();
-            // using (var file = File.OpenRead("../../Test.data")) {
-            //     table.Initialize("Test", new DefaultReader(file));
-            // }
             foreach (var pair in TableManager.Instance.getTest().Datas()) {
                 Console.WriteLine(pair.Value.ToString());
             }
-            // TypeManager.PushAssembly(typeof(IData).Assembly);
-            // var script = new Script();
-            // script.LoadLibraryV1();
-            // script.LoadFile("./sco/Main.sco");
-            // using (var file = File.OpenRead("../..//Test.data")) {
-            //     script.call("Main", new DefaultReader(file));
-            // }
+            TypeManager.PushAssembly(typeof(IData).Assembly);
+            var script = new Script();
+            script.LoadLibraryV1();
+            script.PushSearchPath("./sco");
+            script.SetGlobal("GetReader", script.CreateFunction(new GetReader()));
+            script.LoadFile("./sco/Main.sco");
         } catch (Exception ex) {
             Console.WriteLine(ex);
         }

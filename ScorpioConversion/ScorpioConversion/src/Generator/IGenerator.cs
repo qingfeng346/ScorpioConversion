@@ -5,10 +5,10 @@ using System;
 namespace Scorpio.Conversion {
     public abstract class IGenerator : IDisposable {
         public virtual string GetDataPath(LanguageInfo languageInfo, string name) {
-            return Path.Combine(ScorpioUtil.CurrentDirectory, languageInfo.dataOutput, $"{name}.{languageInfo.dataSuffix}");
+            return languageInfo.GetDataPath(name);
         }
         public virtual string GetCodePath(LanguageInfo languageInfo, string name) {
-            return Path.Combine(ScorpioUtil.CurrentDirectory, languageInfo.codeOutput, $"{name}.{languageInfo.codeSuffix}");
+            return languageInfo.GetCodePath(name);
         }
         public abstract string GenerateTableClass(string packageName, string tableClassName, string dataClassName, string fileMD5, PackageClass packageClass);
         public abstract string GenerateDataClass(string packageName, string className, PackageClass packageClass, bool createID = false);

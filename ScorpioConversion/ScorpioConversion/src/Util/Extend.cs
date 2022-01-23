@@ -2,6 +2,7 @@
 using System.Data;
 using NPOI.SS.UserModel;
 using Scorpio.Commons;
+using System.IO;
 using System.Collections.Generic;
 namespace Scorpio.Conversion {
     public static class Extend {
@@ -253,6 +254,12 @@ namespace Scorpio.Conversion {
                 workbook.RemoveSheetAt(index);
             }
         }
+        public static string GetCodePath(this LanguageInfo languageInfo, string name) {
+            return Path.Combine(ScorpioUtil.CurrentDirectory, languageInfo.codeOutput, $"{name}.{languageInfo.codeSuffix}");
+        }
+        public static string GetDataPath(this LanguageInfo languageInfo, string name) {
+            return Path.Combine(ScorpioUtil.CurrentDirectory, languageInfo.dataOutput, $"{name}.{languageInfo.dataSuffix}");
+        }
         public static void WriteHead(this IWriter writer, PackageClass packageClass, HashSet<IPackage> customTypes) {
             writer.WriteClass(packageClass.Fields);     //表结构
             writer.WriteInt32(customTypes.Count);       //自定义类数量
@@ -373,24 +380,6 @@ namespace Scorpio.Conversion {
             } else {
                 return BasicUtil.GetType((BasicEnum)field.fieldType).ReadValue(reader).ToString();
             }
-            //if (field is TableFieldBasic) {
-            //    return (field as TableFieldBasic).basicType.ReadValue(reader).ToString();
-            //} else if (field is TableFieldEnum) {
-            //    return customEnums[field.type].Get(reader.ReadInt32());
-            //} else if (field is TableFieldClass) {
-            //    var values = new List<string>();
-            //    var customClass = customClasses[field.type];
-            //    foreach (var cField in customClass.Fields) {
-            //        var value = ReadField(reader, cField);
-            //        if (cField is TableFieldClass) {
-            //            values.Add($"[{value}]");
-            //        } else {
-            //            values.Add(value);
-            //        }
-            //    }
-            //    return string.Join(';', values);
-            //}
-            //throw new System.Exception("不支持的字段类型 : " + field);
         }
     }
 }

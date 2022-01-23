@@ -10,10 +10,12 @@ namespace Scorpio.Conversion {
         protected Dictionary<string, BaseType> values = new();
         protected abstract string Name { get; }
         public void Add(string name, Type value, params object[] args) {
+            name = name.ToLowerInvariant();
             Logger.info($"添加[{Name}] {name} - {value}");
             values[name] = new BaseType() { type = value, args = args };
         }
         public T Get(string name, params object[] args) {
+            name = name.ToLowerInvariant();
             if (values.TryGetValue(name, out var baseType)) {
                 var arg = new List<object>(baseType.args);
                 arg.AddRange(args);

@@ -31,6 +31,9 @@ class {tableClassName} {{
     GetValue(ID) {{
         return this.m_dataArray[ID]
     }}
+    ""()""(ID) {{
+        return this.m_dataArray[ID]
+    }}
     Contains(ID) {{
         return this.m_dataArray.containsKey(ID)
     }}

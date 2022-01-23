@@ -48,7 +48,7 @@ namespace {languageInfo.package} {{
             builder.Append(@"
     }
 }");
-            FileUtil.CreateFile(Path.Combine(ScorpioUtil.CurrentDirectory, languageInfo.codeOutput, $"TableManager.{languageInfo.codeSuffix}"), builder.ToString());
+            FileUtil.CreateFile(languageInfo.GetCodePath("TableManager"), builder.ToString());
         }
         public void Dispose() { }
     }
