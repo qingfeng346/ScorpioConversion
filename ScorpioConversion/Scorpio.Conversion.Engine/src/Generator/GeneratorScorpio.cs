@@ -16,7 +16,7 @@ class {tableClassName} {{
         if (""{fileMD5}"" != reader.ReadString()) {{
             throw ""File schemas do not match [{tableClassName}] : ${{fileName}}"";
         }}
-        ConversionUtil.ReadHead(reader);
+        reader.ReadHead();
         for (var i = 0, row - 1) {{
             var pData = new {dataClassName}(fileName, reader);
             if (this.m_dataArray.containsKey(pData.ID)) {{

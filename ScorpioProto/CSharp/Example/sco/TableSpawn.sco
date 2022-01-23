@@ -10,7 +10,7 @@ class TableSpawn {
         if ("484cdae7d179982f1c7868078204d81d" != reader.ReadString()) {
             throw "File schemas do not match [TableSpawn] : ${fileName}";
         }
-        ConversionUtil.ReadHead(reader);
+        reader.ReadHead();
         for (var i = 0, row - 1) {
             var pData = new DataSpawn(fileName, reader);
             if (this.m_dataArray.containsKey(pData.ID)) {

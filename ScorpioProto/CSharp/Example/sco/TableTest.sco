@@ -10,7 +10,7 @@ class TableTest {
         if ("f07d3fff17de6b37025a951b272f6c4c" != reader.ReadString()) {
             throw "File schemas do not match [TableTest] : ${fileName}";
         }
-        ConversionUtil.ReadHead(reader);
+        reader.ReadHead();
         for (var i = 0, row - 1) {
             var pData = new DataTest(fileName, reader);
             if (this.m_dataArray.containsKey(pData.ID)) {

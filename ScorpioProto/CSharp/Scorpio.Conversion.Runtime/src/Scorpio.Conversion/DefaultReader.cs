@@ -12,6 +12,9 @@ namespace Scorpio.Conversion {
             this.reader = new BinaryReader(stream);
             this.closeStream = closeStream;
         }
+        public void ReadHead() {
+            ConversionUtil.ReadHead(this);
+        }
         public bool ReadBool() {
             return ReadInt8() == 1;
         }
