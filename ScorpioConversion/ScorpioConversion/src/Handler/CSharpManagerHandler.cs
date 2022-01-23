@@ -15,31 +15,35 @@ namespace {languageInfo.package} {{
             successTables.ForEach(table => {
                 builder.Append($@"
         private Table{table.Name} _table{table.Name} = null;
-        public Table{table.Name} get{table.Name}() {{
-            if (this._table{table.Name} == null) {{
-                using var reader = GetReader(""{table.Name}"");
-                this._table{table.Name} = new Table{table.Name}().Initialize(""{table.Name}"", reader);
+        public Table{table.Name} {table.Name} {{
+            get {{
+                if (this._table{table.Name} == null) {{
+                    using var reader = GetReader(""{table.Name}"");
+                    this._table{table.Name} = new Table{table.Name}().Initialize(""{table.Name}"", reader);
+                }}
+                return this._table{table.Name};
             }}
-            return this._table{table.Name};
         }}");
             });
             foreach (var pair in successSpawns) {
                 pair.Value.ForEach((table) => {
                     builder.Append($@"
         private Table{table.Name} _table{table.FileName} = null;
-        public Table{table.Name} get{table.Name}{table.FileName}() {{
-            if (this._table{table.FileName} == null) {{
-                using var reader = GetReader(""{table.FileName}"");
-                this._table{table.FileName} = new Table{table.Name}().Initialize(""{table.FileName}"", reader);
+        public Table{table.Name} {table.Name}{table.FileName} {{
+            get {{
+                if (this._table{table.FileName} == null) {{
+                    using var reader = GetReader(""{table.FileName}"");
+                    this._table{table.FileName} = new Table{table.Name}().Initialize(""{table.FileName}"", reader);
+                }}
+                return this._table{table.FileName};
             }}
-            return this._table{table.FileName};
         }}");
                 });
                 builder.Append($@"
-        public Table{pair.Key} get{pair.Key}(string name) {{");
+        public Table{pair.Key} Get{pair.Key}(string name) {{");
                 pair.Value.ForEach((table) => {
                     builder.Append($@"
-            if (name == ""{table.FileName}"") return get{table.Name}{table.FileName}();");
+            if (name == ""{table.FileName}"") return {table.Name}{table.FileName};");
                 });
                 builder.Append(@"
             return null;

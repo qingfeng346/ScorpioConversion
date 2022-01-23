@@ -13,7 +13,10 @@ public class Program {
     }
     public static void Main(string[] args) {
         try {
-            foreach (var pair in TableManager.Instance.getTest().Datas()) {
+            foreach (var pair in TableManager.Instance.Test.Datas()) {
+                Console.WriteLine(pair.Value.ToString());
+            }
+            foreach (var pair in TableManager.Instance.SpawnTest1.Datas()) {
                 Console.WriteLine(pair.Value.ToString());
             }
             TypeManager.PushAssembly(typeof(IData).Assembly);

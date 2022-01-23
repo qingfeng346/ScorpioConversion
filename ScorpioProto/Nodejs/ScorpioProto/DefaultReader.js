@@ -107,5 +107,6 @@ class ScorpioReader {
         let time = this.ReadInt64()
         return new Date(time.toNumber())
     }
+    Close() { }
 }
 module.exports = ScorpioReader

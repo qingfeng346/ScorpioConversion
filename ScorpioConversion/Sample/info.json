@@ -25,7 +25,8 @@
         {
             "language": "javascript",
             "codeOutput": "../../ScorpioProto/Nodejs/src",
-            "codeSuffix": "js"
+            "codeSuffix": "js",
+            "handler": ["JavascriptManager"]
         }
     ]
 }
