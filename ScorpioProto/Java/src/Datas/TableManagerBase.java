@@ -12,6 +12,15 @@ public abstract class TableManagerBase {
         }
         return this._tableTest;
     }
+    private TableTestCsv _tableTestCsv = null;
+    public TableTestCsv getTestCsv() throws Exception {
+        if (this._tableTestCsv == null) {
+            IReader reader = GetReader("TestCsv");
+            this._tableTestCsv = new TableTestCsv().Initialize("TestCsv", reader);
+            reader.Close();
+        }
+        return this._tableTestCsv;
+    }
     private TableSpawn _tableTest1 = null;
     public TableSpawn getSpawnTest1() throws Exception {
         if (this._tableTest1 == null) {

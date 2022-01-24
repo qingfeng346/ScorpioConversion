@@ -14,7 +14,7 @@ namespace Scorpio.Conversion {
 转换excel文件
     --config|-confg     sco(https://github.com/qingfeng346/Scorpio-CSharp)配置文件
     --files|-files      Excel文件路径,多文件空格隔开
-    --paths|-paths      Excel文件夹(仅扫描 xls|xlsx|xlsb|csv 文件),多路径空格隔开
+    --paths|-paths      Excel文件夹(仅扫描 xls|xlsx|csv 文件),多路径空格隔开
     --name|-name        输出文件使用文件名或者sheet名字,默认file, 选项 [file,sheet]
     --tags|-tags        需要过滤的tags,多tag空格隔开
     --info|-info        Build信息
@@ -27,7 +27,7 @@ namespace Scorpio.Conversion {
 ";
         private readonly static string[] ParameterConfig = new[] { "--config", "-config" };     //配置文件
         private readonly static string[] ParameterFiles = new[] { "--files", "-files" };        //所有的excel文件
-        private readonly static string[] ParameterPaths = new[] { "--paths", "-paths" };        //所有的excel文件目录,会
+        private readonly static string[] ParameterPaths = new[] { "--paths", "-paths" };        //所有的excel文件目录
         private readonly static string[] ParameterTags = new[] { "--tags", "-tags" };           //需要过滤的文件tags
         private readonly static string[] ParameterName = new[] { "--name", "-name" };           //导出名字使用文件名还是sheet名
         private readonly static string[] ParameterInfo = new[] { "--info", "-info" };           //Build信息
@@ -85,7 +85,7 @@ namespace Scorpio.Conversion {
                 try {
                     File.Copy(file, tempFile, true);
                     using var fileStream = new FileStream(tempFile, FileMode.Open, FileAccess.Read);
-                    using var excelReader = ExcelReaderFactory.CreateReader(fileStream);
+                    using var excelReader = file.IsCsv() ? ExcelReaderFactory.CreateCsvReader(fileStream) : ExcelReaderFactory.CreateReader(fileStream);
                     foreach (DataTable dataTable in excelReader.AsDataSet().Tables) {
                         var sheetName = dataTable.TableName;
                         if (sheetName.IsInvalid()) { continue; }

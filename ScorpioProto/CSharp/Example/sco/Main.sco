@@ -6,5 +6,8 @@ function Main() {
     TableManager.getSpawnTest1().Datas().forEach((key, value) => {
         print(value.toString())
     })
+    TableManager.getTestCsv().Datas().forEach((key, value) => {
+        print(value.toString())
+    })
 }
 Main()

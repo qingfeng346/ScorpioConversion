@@ -4,6 +4,8 @@
 #import "TestEnum.sco"
 #import "TableTest.sco"
 #import "DataTest.sco"
+#import "TableTestCsv.sco"
+#import "DataTestCsv.sco"
 #import "TableSpawn.sco"
 #import "DataSpawn.sco"
 TableManager = {
@@ -14,6 +16,14 @@ TableManager = {
             reader.Close()
         }
         return ID == null ? this._tableTest : this._tableTest(ID);
+    }
+    getTestCsv(ID) {
+        if (this._tableTestCsv == null) {
+            var reader = GetReader("TestCsv");
+            this._tableTestCsv = new TableTestCsv().Initialize("TestCsv", reader);
+            reader.Close()
+        }
+        return ID == null ? this._tableTestCsv : this._tableTestCsv(ID);
     }
     getSpawnTest1(ID) {
         if (this._tableTest1 == null) {

@@ -1,5 +1,6 @@
 
 const TableTest = require("./TableTest")
+const TableTestCsv = require("./TableTestCsv")
 const TableSpawn = require("./TableSpawn")
 class TableManager {
     getTest() {
@@ -9,6 +10,14 @@ class TableManager {
             reader.Close()
         }
         return this._tableTest;
+    }
+    getTestCsv() {
+        if (this._tableTestCsv == null) {
+            var reader = GetReader("TestCsv");
+            this._tableTestCsv = new TableTestCsv().Initialize("TestCsv", reader);
+            reader.Close()
+        }
+        return this._tableTestCsv;
     }
     getSpawnTest1() {
         if (this._tableTest1 == null) {

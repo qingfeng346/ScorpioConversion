@@ -12,6 +12,17 @@ namespace Datas {
                 return this._tableTest;
             }
         }
+        private TableTestCsv _tableTestCsv = null;
+        public TableTestCsv TestCsv {
+            get {
+                if (this._tableTestCsv == null) {
+                    using (var reader = GetReader("TestCsv")) {
+                        this._tableTestCsv = new TableTestCsv().Initialize("TestCsv", reader);
+                    }
+                }
+                return this._tableTestCsv;
+            }
+        }
         private TableSpawn _tableTest1 = null;
         public TableSpawn SpawnTest1 {
             get {

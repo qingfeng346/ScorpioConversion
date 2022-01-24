@@ -1,0 +1,9 @@
+/Package,PackageName,,,,,
+/Comment,×¢ÊÍ,,,,,
+/Name,TestID,testEnum,TestDate,!TestArrayString,TestDateTime,TestInt
+/Type,int,TestEnum,arrayInt3,arrayint,datetime,int
+/Default,,,,,,999
+/Begin,1000000,value1,"[[[100;100]];100];
+[[[200;200]];201]",100;200;300;400,2010/10/20 10:20,
+/End,1000001,value2,"[[[100;100]];100];
+[[[200;200]];201]",100;200;300;401,2010/10/20 10:21,

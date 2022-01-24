@@ -19,6 +19,9 @@ public class Program {
             foreach (var pair in TableManager.Instance.SpawnTest1.Datas()) {
                 Console.WriteLine(pair.Value.ToString());
             }
+            foreach (var pair in TableManager.Instance.TestCsv.Datas()) {
+                Console.WriteLine(pair.Value.ToString());
+            }
             TypeManager.PushAssembly(typeof(IData).Assembly);
             var script = new Script();
             script.LoadLibraryV1();
