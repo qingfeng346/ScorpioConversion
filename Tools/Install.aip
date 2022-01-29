@@ -10,12 +10,12 @@
     <ROW Property="ARPURLINFOABOUT" Value="https://github.com/qingfeng346/ScorpioConversion"/>
     <ROW Property="ARPURLUPDATEINFO" Value="https://github.com/qingfeng346/ScorpioConversion"/>
     <ROW Property="Manufacturer" Value="Scorpio"/>
-    <ROW Property="ProductCode" Value="2052:{C279506C-A57C-41D9-BECC-A13082A7A09D} " Type="16"/>
+    <ROW Property="ProductCode" Value="2052:{927E42C2-82D8-4F72-9E40-FC93321B0880} " Type="16"/>
     <ROW Property="ProductLanguage" Value="1033"/>
     <ROW Property="ProductName" Value="scov"/>
     <ROW Property="ProductVersion" Value="1.0.0" Type="32"/>
     <ROW Property="SecureCustomProperties" Value="OLDPRODUCTS;AI_NEWERPRODUCTFOUND"/>
-    <ROW Property="UpgradeCode" Value="{A76ADAB7-C6ED-4C0B-A9AD-573D1319AA35}"/>
+    <ROW Property="UpgradeCode" Value="{41198D62-5038-4708-9B3C-4FB4022AB331}"/>
     <ROW Property="WindowsType9X" MultiBuildValue="DefaultBuild:Windows 9x/ME" ValueLocId="-"/>
     <ROW Property="WindowsType9XDisplay" MultiBuildValue="DefaultBuild:Windows 9x/ME" ValueLocId="-"/>
     <ROW Property="WindowsTypeNT40" MultiBuildValue="DefaultBuild:Windows NT 4.0" ValueLocId="-"/>
