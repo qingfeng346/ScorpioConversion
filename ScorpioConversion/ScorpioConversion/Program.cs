@@ -15,14 +15,17 @@ namespace Scorpio.Conversion {
     --config|-confg     sco(https://github.com/qingfeng346/Scorpio-CSharp)配置文件
     --files|-files      Excel文件路径,多文件空格隔开
     --paths|-paths      Excel文件夹(仅扫描 xls|xlsx|csv 文件),多路径空格隔开
-    --name|-name        输出文件使用文件名或者sheet名字,默认file, 选项 [file,sheet]
     --tags|-tags        需要过滤的tags,多tag空格隔开
+    --branch|-branch    分支列表 /BeginBranch 使用
+    --library|-library  额外处理程序
+    --name|-name        输出文件使用文件名或者sheet名字,默认file, 选项 [file,sheet]
     --info|-info        Build信息
 ";
         private static readonly string HelpDecompile = $@"
 反编译文件
     --files|-files      需要反编译的文件,多文件空格隔开
     --output|-output    导出目录,默认当前目录
+    --library|-library  额外处理程序
     --reader|-reader    反序列化Reader,默认DefaultReader
 ";
         private readonly static string[] ParameterConfig = new[] { "--config", "-config" };     //配置文件
@@ -33,14 +36,9 @@ namespace Scorpio.Conversion {
         private readonly static string[] ParameterInfo = new[] { "--info", "-info" };           //Build信息
         private readonly static string[] ParameterOutput = new[] { "--output", "-output" };     //输出目录
         private readonly static string[] ParameterReader = new[] { "--reader", "-reader" };     //反编译的Reader
+        private readonly static string[] ParameterBranch = new[] { "--branch", "-branch" };     //分支列表 /BeginBranch 使用
+        private readonly static string[] ParameterLibrary = new[] { "--library", "-library" };  //额外处理程序
         static void Main(string[] args) {
-            foreach (var assemblyName in typeof(Program).Assembly.GetReferencedAssemblies()) {
-                var assembly = Assembly.Load(assemblyName);
-                GeneratorManager.Instance.Add(assembly);
-                ReaderManager.Instance.Add(assembly);
-                WriterManager.Instance.Add(assembly);
-                HandlerManager.Instance.Add(assembly);
-            }
             Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
             var perform = new Perform();
             perform.AddExecute("build", HelpBuild, Build);
@@ -51,7 +49,26 @@ namespace Scorpio.Conversion {
                 Console.Error.WriteLine(e);
             }
         }
+        static void LoadAssembly(CommandLine command) {
+            foreach (var path in command.GetValues(ParameterLibrary)) {
+                foreach (var file in Directory.GetFiles(path, "*.dll", SearchOption.TopDirectoryOnly)) {
+                    var assembly = Assembly.LoadFile(file);
+                    GeneratorManager.Instance.Add(assembly);
+                    ReaderManager.Instance.Add(assembly);
+                    WriterManager.Instance.Add(assembly);
+                    HandlerManager.Instance.Add(assembly);
+                }
+            }
+            foreach (var assemblyName in typeof(Program).Assembly.GetReferencedAssemblies()) {
+                var assembly = Assembly.Load(assemblyName);
+                GeneratorManager.Instance.Add(assembly);
+                ReaderManager.Instance.Add(assembly);
+                WriterManager.Instance.Add(assembly);
+                HandlerManager.Instance.Add(assembly);
+            }
+        }
         static void Decompile(Perform perform, CommandLine command, string[] args) {
+            LoadAssembly(command);
             var files = new List<string>();
             files.AddRange(command.GetValues(ParameterFiles));
             var output = perform.GetPath(ParameterOutput);
@@ -71,10 +88,12 @@ namespace Scorpio.Conversion {
             }
         }
         static void Build(Perform perform, CommandLine command, string[] args) {
+            LoadAssembly(command);
             Config.Initialize(command.GetValues(ParameterConfig), 
                               command.GetValues(ParameterFiles), 
                               command.GetValues(ParameterPaths), 
-                              command.GetValues(ParameterTags), 
+                              command.GetValues(ParameterTags),
+                              command.GetValues(ParameterBranch),
                               command.GetValue(ParameterInfo));
             var useFileName = command.GetValueDefault(ParameterName, "sheet").ToLower() == "file";
             if (Config.Files.Count == 0) throw new System.Exception("至少选择一个excel文件");

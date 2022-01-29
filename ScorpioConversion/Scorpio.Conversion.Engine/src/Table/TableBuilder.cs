@@ -25,13 +25,17 @@ namespace Scorpio.Conversion {
         private const string KEYWORD_BEGIN = "/Begin";              //数据开始
         private const string KEYWORD_END = "/End";                  //数据结束
 
+        private const string KEYWORD_BEGINBRANCH = "/BeginBranch";  //分支数据开始
+        private const string KEYWORD_ENDBRANCH = "/EndBranch";      //分支数据结束
+
         private PackageParser mParser = null;                       //自定义类
         private List<RowData> mDatas = new List<RowData>();         //Excel内容
 
         public string Name { get; private set; }
 
         public string FileName { get; private set; }                                    //文件名字
-        public List<string> Tags { get; private set; } = new List<string>();            //标签列表
+        public string[] Tags { get; private set; }                                      //标签列表
+        
         public bool AutoInc { get; private set; } = false;                              //是否是自增长的表
         public string PackageName { get; private set; }                                 //命名空间
         public string Spawn { get; private set; }                                       //派生类名字
@@ -49,7 +53,8 @@ namespace Scorpio.Conversion {
         public bool Parse(DataTable dataTable) {
             mParser = Config.Parser;
             LoadLayout(dataTable);
-            if (!CheckTags()) { return false; }
+            //检测所有 Tags
+            if (!Config.ContainsTags(Tags)) { return false; }
             LoadData(dataTable);
             CheckData();
             Generate();
@@ -63,7 +68,11 @@ namespace Scorpio.Conversion {
             for (var i = 0; i < rows.Count; ++i) {
                 var row = rows[i];
                 var keyCell = row[0].GetDataString().Trim();
-                if (keyCell.IsEmptyString() || keyCell == KEYWORD_BEGIN || keyCell == KEYWORD_END) { continue; }
+                if (keyCell.IsEmptyString() || 
+                    keyCell == KEYWORD_BEGIN || 
+                    keyCell == KEYWORD_END || 
+                    keyCell == KEYWORD_BEGINBRANCH ||
+                    keyCell == KEYWORD_ENDBRANCH) { continue; }
                 var valueCell = row[1].GetDataString().Trim();
                 switch (keyCell) {
                     case KEYWORD_FILENAME: FileName = valueCell; break;
@@ -72,7 +81,7 @@ namespace Scorpio.Conversion {
                     case KEYWORD_SPAWN: Spawn = valueCell; break;
                     case KEYWORD_GROUP: Group = valueCell; break;
                     case KEYWORD_GROUP_SORT: GroupSort = valueCell; break;
-                    case KEYWORD_TAGS: Tags = new List<string>(valueCell.SplitArray()); break;
+                    case KEYWORD_TAGS: Tags = valueCell.SplitArray(); break;
                     default: ParseHead(keyCell, row); break;
                 }
             }
@@ -126,23 +135,28 @@ namespace Scorpio.Conversion {
                 }
             }
         }
-        //检测所有 Tags
-        bool CheckTags() {
-            return Config.ContainsTags(Tags);
-        }
         //解析文件数据
         void LoadData(DataTable dataTable) {
             mDatas.Clear();
-            var begin = false;
+            var begin = 0;      //0等待Begin 1在Begin范围内 2在BeginBranch范围内 3在BeginBranch范围内并且条件不满足
             var rows = dataTable.Rows;
             for (var i = 0; i < rows.Count; ++i) {
                 var row = rows[i];
                 var keyCell = row[0].GetDataString().Trim();
-                if (keyCell == KEYWORD_BEGIN || keyCell == KEYWORD_END) {
-                    begin = keyCell == KEYWORD_BEGIN;
+                if (begin == 1) {
                     ParseRow(i, row);
-                } else if (begin) {
+                    if (keyCell == KEYWORD_END) { begin = 0; }
+                } else if (begin == 2) {
                     ParseRow(i, row);
+                    if (keyCell == KEYWORD_ENDBRANCH) { begin = 0; }
+                } else if (begin == 3) {
+                    if (keyCell == KEYWORD_ENDBRANCH) { begin = 0; }
+                } else if (keyCell == KEYWORD_BEGIN) {
+                    begin = 1;
+                    ParseRow(i, row);
+                } else if (keyCell == KEYWORD_BEGINBRANCH) {
+                    var branches = row[1].GetDataString().SplitArray();
+                    begin = Config.ContainsBranches(branches) ? 2 : 3;
                 }
             }
         }
