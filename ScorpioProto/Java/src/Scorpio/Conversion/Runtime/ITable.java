@@ -1,4 +1,4 @@
-package Scorpio.Conversion;
+package Scorpio.Conversion.Runtime;
 
 public interface ITable {
     IData GetValueObject(Object ID) throws Exception;

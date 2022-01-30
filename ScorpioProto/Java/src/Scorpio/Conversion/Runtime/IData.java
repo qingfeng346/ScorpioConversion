@@ -1,4 +1,4 @@
-package Scorpio.Conversion;
+package Scorpio.Conversion.Runtime;
 public interface IData {
     Object GetData(String key);
 }

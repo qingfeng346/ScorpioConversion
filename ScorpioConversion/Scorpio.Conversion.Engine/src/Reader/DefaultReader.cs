@@ -2,7 +2,7 @@
 using System.Text;
 using System.IO;
 
-namespace Scorpio.Conversion {
+namespace Scorpio.Conversion.Engine {
     [AutoReader("default")]
     public class DefaultReader : IReader, IDisposable {
         private readonly static DateTime BaseTime = new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc);

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Scorpio.Conversion {
+namespace Scorpio.Conversion.Engine {
     public class AutoReader : Attribute {
         public string Name { get; private set; }
         public object[] Args { get; private set; }

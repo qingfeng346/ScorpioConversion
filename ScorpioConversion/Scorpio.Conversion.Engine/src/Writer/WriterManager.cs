@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Reflection;
 
-namespace Scorpio.Conversion {
+namespace Scorpio.Conversion.Engine {
     public class WriterManager : BaseManager<IWriter> {
         public static WriterManager Instance { get; } = new WriterManager();
         private static readonly Type TypeBase = typeof(IWriter);

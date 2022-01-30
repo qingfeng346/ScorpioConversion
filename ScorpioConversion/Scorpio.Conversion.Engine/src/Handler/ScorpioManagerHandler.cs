@@ -3,8 +3,9 @@ using Scorpio.Commons;
 using System.Collections.Generic;
 using System.Text;
 using System.IO;
+using Scorpio.Conversion.Engine;
 
-namespace Scorpio.Conversion {
+namespace Scorpio.Conversion.Engine {
     [AutoHandler("ScorpioManager")]
     public class ScorpioManagerHandler : IHandler {
         public void Handle(LanguageInfo languageInfo, List<TableBuilder> successTables, SortedDictionary<string, List<TableBuilder>> successSpawns, List<L10NData> l10NDatas, CommandLine command) {

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Text;
-namespace Scorpio.Conversion {
+namespace Scorpio.Conversion.Runtime {
     public class DefaultReader : IReader {
         private readonly static DateTime BaseTime = new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc);
         BinaryReader reader;

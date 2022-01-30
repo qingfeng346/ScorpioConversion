@@ -1,6 +1,6 @@
 
 package Datas;
-import Scorpio.Conversion.IReader;
+import Scorpio.Conversion.Runtime.*;
 public abstract class TableManagerBase {
     public abstract IReader GetReader(String name) throws Exception;
     private TableTest _tableTest = null;

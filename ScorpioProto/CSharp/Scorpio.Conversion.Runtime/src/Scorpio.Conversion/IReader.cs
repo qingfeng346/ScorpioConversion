@@ -1,5 +1,5 @@
 using System;
-namespace Scorpio.Conversion {
+namespace Scorpio.Conversion.Runtime {
     public interface IReader : IDisposable {
         bool ReadBool();
         sbyte ReadInt8();

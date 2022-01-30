@@ -2,7 +2,7 @@
 using System.IO;
 using System.Text;
 
-namespace Scorpio.Conversion {
+namespace Scorpio.Conversion.Engine {
     [AutoWriter("default")]
     public class DefaultWriter : IWriter, IDisposable {
         MemoryStream stream;

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Scorpio.Conversion {
+namespace Scorpio.Conversion.Engine {
     public class TableWriter : IDisposable {
         IWriter writer = null;
         public TableWriter(IWriter writer) {

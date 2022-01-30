@@ -4,7 +4,7 @@ using System.Data;
 using System.Text;
 using Scorpio.Commons;
 
-namespace Scorpio.Conversion {
+namespace Scorpio.Conversion.Engine {
     public partial class TableBuilder {
         private const string KEYWORD_FILENAME = "/FileName";        //名字,不填默认文件或者sheet名字
         private const string KEYWORD_TAGS = "/Tags";                //标签,有标签时需要比较传入的标签是否导出
@@ -35,7 +35,7 @@ namespace Scorpio.Conversion {
 
         public string FileName { get; private set; }                                    //文件名字
         public string[] Tags { get; private set; }                                      //标签列表
-        
+
         public bool AutoInc { get; private set; } = false;                              //是否是自增长的表
         public string PackageName { get; private set; }                                 //命名空间
         public string Spawn { get; private set; }                                       //派生类名字
@@ -68,9 +68,9 @@ namespace Scorpio.Conversion {
             for (var i = 0; i < rows.Count; ++i) {
                 var row = rows[i];
                 var keyCell = row[0].GetDataString().Trim();
-                if (keyCell.IsEmptyString() || 
-                    keyCell == KEYWORD_BEGIN || 
-                    keyCell == KEYWORD_END || 
+                if (keyCell.IsEmptyString() ||
+                    keyCell == KEYWORD_BEGIN ||
+                    keyCell == KEYWORD_END ||
                     keyCell == KEYWORD_BEGINBRANCH ||
                     keyCell == KEYWORD_ENDBRANCH) { continue; }
                 var valueCell = row[1].GetDataString().Trim();
@@ -103,24 +103,24 @@ namespace Scorpio.Conversion {
                     case KEYWORD_COMMENT: field.Comment = value; break;
                     case KEYWORD_DEFAULT: field.Default = value; break;
                     case KEYWORD_NAME: {
-                        field.Name = value.ParseFlag(out var invalid, out var l10n);
-                        field.IsInvalid |= invalid;
-                        field.IsL10N |= l10n;
-                        break;
-                    }
-                    case KEYWORD_TYPE: {
-                        var type = value.ParseFlag(out var invalid, out var l10n);
-                        field.IsInvalid |= invalid;
-                        field.IsL10N |= l10n;
-                        if (type.IsArrayType()) {
-                            field.IsArray = true;
-                            field.Type = type.GetFinalType();
-                        } else {
-                            field.IsArray = false;
-                            field.Type = type;
+                            field.Name = value.ParseFlag(out var invalid, out var l10n);
+                            field.IsInvalid |= invalid;
+                            field.IsL10N |= l10n;
+                            break;
                         }
-                        break;
-                    }
+                    case KEYWORD_TYPE: {
+                            var type = value.ParseFlag(out var invalid, out var l10n);
+                            field.IsInvalid |= invalid;
+                            field.IsL10N |= l10n;
+                            if (type.IsArrayType()) {
+                                field.IsArray = true;
+                                field.Type = type.GetFinalType();
+                            } else {
+                                field.IsArray = false;
+                                field.Type = type;
+                            }
+                            break;
+                        }
                     case KEYWORD_ATTRIBUTE:
                         //Script script = new Script();
                         //script.LoadLibrary();
@@ -235,7 +235,7 @@ namespace Scorpio.Conversion {
             packageClass.Fields.ForEach((field) => {
                 if (field.IsEnum) {
                     CustomTypes.Add(field.CustomEnum);
-                } else if (field.IsClass){
+                } else if (field.IsClass) {
                     CustomTypes.Add(field.CustomType);
                     AddCustomType(field.CustomType);
                 }

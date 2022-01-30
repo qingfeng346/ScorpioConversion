@@ -1,4 +1,4 @@
-﻿namespace Scorpio.Conversion {
+﻿namespace Scorpio.Conversion.Runtime {
     public static class ConversionUtil {
         public static void ReadHead(IReader reader) {
             {

@@ -1,5 +1,5 @@
 ﻿using System.Text;
-namespace Scorpio.Conversion {
+namespace Scorpio.Conversion.Engine {
     [AutoGenerator("sco")]
     public class GeneratorScorpio : IGenerator {
         public const string Head = @"//本文件为自动生成，请不要手动修改

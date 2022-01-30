@@ -1,4 +1,4 @@
-using Scorpio.Conversion;
+using Scorpio.Conversion.Runtime;
 using System.IO;
 namespace Datas {
     public partial class TableManager {

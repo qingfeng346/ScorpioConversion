@@ -1,4 +1,4 @@
-namespace Scorpio.Conversion {
+namespace Scorpio.Conversion.Engine {
     public class L10NData {
         public string Key { get; set; }
         public string Hint { get; set; }

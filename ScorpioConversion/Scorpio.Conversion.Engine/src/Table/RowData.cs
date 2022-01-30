@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-namespace Scorpio.Conversion {
+namespace Scorpio.Conversion.Engine {
     public class RowValue {
         public string value;
         public static implicit operator RowValue(string value) {

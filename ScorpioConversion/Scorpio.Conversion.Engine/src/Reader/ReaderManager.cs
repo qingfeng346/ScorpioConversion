@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Reflection;
 
-namespace Scorpio.Conversion {
+namespace Scorpio.Conversion.Engine {
     public class ReaderManager : BaseManager<IReader> {
         public static ReaderManager Instance { get; } = new ReaderManager();
         private static readonly Type TypeBase = typeof(IReader);

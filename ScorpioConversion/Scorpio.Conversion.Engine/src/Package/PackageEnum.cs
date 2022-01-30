@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-namespace Scorpio.Conversion {
+namespace Scorpio.Conversion.Engine {
     public class EnumField {
         public int Index;       //枚举值
         public string Name;     //枚举名字

@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-namespace Scorpio.Conversion {
+namespace Scorpio.Conversion.Engine {
     public class ConstField {
         public string Name;     //常量名字
         public BasicEnum Type;  //常量类型 目前只有 int32 int64 string

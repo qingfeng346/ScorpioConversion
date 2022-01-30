@@ -5,7 +5,7 @@ using System.IO;
 using System.Linq;
 using Scorpio;
 using System.Text;
-namespace Scorpio.Conversion {
+namespace Scorpio.Conversion.Engine {
     public interface IValue {
         string Value { get; }
     }

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Reflection;
 
-namespace Scorpio.Conversion {
+namespace Scorpio.Conversion.Engine {
     public class HandlerManager : BaseManager<IHandler> {
         public static HandlerManager Instance { get; } = new HandlerManager();
         private static readonly Type TypeBase = typeof(IHandler);

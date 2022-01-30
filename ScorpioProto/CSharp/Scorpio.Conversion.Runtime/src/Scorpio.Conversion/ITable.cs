@@ -1,5 +1,5 @@
 ﻿using System.Collections;
-namespace Scorpio.Conversion {
+namespace Scorpio.Conversion.Runtime {
     public interface ITable {
         IData GetValueObject(object key);
         bool ContainsObject(object ID);

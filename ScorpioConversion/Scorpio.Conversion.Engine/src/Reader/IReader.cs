@@ -1,6 +1,6 @@
 ﻿using System;
 using System.IO;
-namespace Scorpio.Conversion {
+namespace Scorpio.Conversion.Engine {
     public interface IReader : IDisposable {
         void Initialize(byte[] buffer);
         void Initialize(Stream stream, bool closeStream = false);

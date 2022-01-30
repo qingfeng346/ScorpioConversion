@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Scorpio.Conversion {
+namespace Scorpio.Conversion.Engine {
     public interface IWriter : IDisposable {
         void WriteBool(bool value);
         void WriteInt8(sbyte value);

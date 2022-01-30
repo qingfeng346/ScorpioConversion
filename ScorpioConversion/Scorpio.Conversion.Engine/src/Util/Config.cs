@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Scorpio.Commons;
 using Newtonsoft.Json;
 using System.Linq;
-namespace Scorpio.Conversion {
+namespace Scorpio.Conversion.Engine {
     public class Config {
         public static HashSet<string> Tags { get; private set; }                    //标签列表
         public static HashSet<string> Branches { get; private set; }

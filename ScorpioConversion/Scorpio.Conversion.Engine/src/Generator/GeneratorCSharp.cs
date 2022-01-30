@@ -1,5 +1,5 @@
 ﻿using System.Text;
-namespace Scorpio.Conversion {
+namespace Scorpio.Conversion.Engine {
     [AutoGenerator("c#")]
     public class GeneratorCSharp : IGenerator {
         public const string Head = @"//本文件为自动生成，请不要手动修改
@@ -8,7 +8,7 @@ using System.IO;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using Scorpio.Conversion;
+using Scorpio.Conversion.Runtime;
 ";
         static string GetLanguageType(ClassField field) {
             if (field.IsBasic) {

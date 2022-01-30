@@ -1,4 +1,4 @@
-﻿namespace Scorpio.Conversion {
+﻿namespace Scorpio.Conversion.Engine {
     public class ScriptGenerator : IGenerator {
         public ScriptValue Value { get; private set; }
         public ScriptGenerator(ScriptValue value) {

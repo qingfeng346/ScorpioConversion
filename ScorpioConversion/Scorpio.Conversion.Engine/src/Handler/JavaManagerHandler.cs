@@ -3,15 +3,16 @@ using Scorpio.Commons;
 using System.Collections.Generic;
 using System.Text;
 using System.IO;
+using Scorpio.Conversion.Engine;
 
-namespace Scorpio.Conversion {
+namespace Scorpio.Conversion.Engine {
     [AutoHandler("JavaManager")]
     public class JavaManagerHandler : IHandler {
         public void Handle(LanguageInfo languageInfo, List<TableBuilder> successTables, SortedDictionary<string, List<TableBuilder>> successSpawns, List<L10NData> l10NDatas, CommandLine command) {
             var builder = new StringBuilder();
             builder.Append($@"
 package {languageInfo.package};
-import Scorpio.Conversion.IReader;
+import Scorpio.Conversion.Runtime.*;
 public abstract class TableManagerBase {{
     public abstract IReader GetReader(String name) throws Exception;");
             successTables.ForEach(table => {

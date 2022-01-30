@@ -2,7 +2,7 @@
 using System.IO;
 using System.Text;
 using Scorpio.Userdata;
-namespace Scorpio.Conversion {
+namespace Scorpio.Conversion.Engine {
     public interface IPackage {
 
     }

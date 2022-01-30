@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using Scorpio.Commons;
 
-namespace Scorpio.Conversion {
+namespace Scorpio.Conversion.Engine {
     //基础类型列表
     public enum BasicEnum {
         BOOL,           //bool类型

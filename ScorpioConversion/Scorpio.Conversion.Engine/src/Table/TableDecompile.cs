@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using NPOI.SS.UserModel;
 using NPOI.XSSF.UserModel;
 
-namespace Scorpio.Conversion {
+namespace Scorpio.Conversion.Engine {
     using TableClass = Extend.TableClass;
     using TableEnum = Extend.TableEnum;
     public class TableDecompile {

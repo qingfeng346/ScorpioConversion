@@ -1,4 +1,4 @@
-package Scorpio.Conversion;
+package Scorpio.Conversion.Runtime;
 
 public class ConversionUtil {
     public static void ReadHead(IReader reader) throws Exception {

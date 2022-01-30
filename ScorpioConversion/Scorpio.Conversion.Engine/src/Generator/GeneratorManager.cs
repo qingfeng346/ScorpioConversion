@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Reflection;
 
-namespace Scorpio.Conversion {
+namespace Scorpio.Conversion.Engine {
     public class GeneratorManager : BaseManager<IGenerator> {
         public static GeneratorManager Instance { get; } = new GeneratorManager();
         private static readonly Type TypeBase = typeof(IGenerator);

@@ -1,7 +1,7 @@
 package Datas;
 //本文件为自动生成，请不要手动修改
 import java.util.*;
-import Scorpio.Conversion.*;
+import Scorpio.Conversion.Runtime.*;
 
 public class TableSpawn implements ITable {
     final String FILE_MD5_CODE = "484cdae7d179982f1c7868078204d81d";

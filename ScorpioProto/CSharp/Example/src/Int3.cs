@@ -4,7 +4,7 @@ using System.IO;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using Scorpio.Conversion;
+using Scorpio.Conversion.Runtime;
 
 namespace Datas {
 public partial class Int3 : IData {

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Scorpio.Commons;
-namespace Scorpio.Conversion {
+namespace Scorpio.Conversion.Engine {
     public abstract class BaseManager<T> where T : IDisposable {
         public class BaseType {
             public Type type;       //类型

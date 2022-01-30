@@ -1,6 +1,7 @@
 ﻿using Scorpio.Commons;
+using Scorpio.Conversion.Engine;
 using System.Collections.Generic;
-namespace Scorpio.Conversion {
+namespace Scorpio.Conversion.Engine {
     public class LanguageInfo {
         public string language;         //语言名字
         public string codeOutput;       //代码导出目录

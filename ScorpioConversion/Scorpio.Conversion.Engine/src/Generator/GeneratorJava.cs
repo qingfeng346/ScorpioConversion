@@ -2,12 +2,12 @@
 using System.Text;
 using Scorpio.Commons;
 
-namespace Scorpio.Conversion {
+namespace Scorpio.Conversion.Engine {
     [AutoGenerator("java")]
     public class GeneratorJava : IGenerator {
         public const string Head = @"//本文件为自动生成，请不要手动修改
 import java.util.*;
-import Scorpio.Conversion.*;
+import Scorpio.Conversion.Runtime.*;
 ";
         string GetLanguageType(ClassField field) {
             if (field.IsBasic) {

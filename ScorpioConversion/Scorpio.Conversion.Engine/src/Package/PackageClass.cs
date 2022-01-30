@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-namespace Scorpio.Conversion {
+namespace Scorpio.Conversion.Engine {
     public class ClassField {
         private PackageParser mParser;
         public ClassField(PackageParser parser) { mParser = parser; }

@@ -2,7 +2,7 @@
 package Datas;
 import java.io.File;
 import java.io.FileInputStream;
-import Scorpio.Conversion.*;
+import Scorpio.Conversion.Runtime.*;
 public class TableManager extends TableManagerBase {
     private static TableManager instance = null;
     public static TableManager GetInstance() {
