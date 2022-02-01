@@ -12,16 +12,25 @@ plugins {
 }
 jar {
     archivesBaseName = 'Scorpio.Conversion.Runtime'
+    archiveVersion = VERSION
     manifest {
         attributes(
-            "Manifest-Version": "1.0"
+            "Manifest-Version": VERSION,
+            "Version": VERSION,
+            "Created-By": "while",
+            "Repository": "https://github.com/qingfeng346/ScorpioConversion"
         )
     }
 }
 task clear(type:Delete) {
     delete "build", "bin"
+    file("../../Example/lib").list().each{
+        f ->
+            if (f.startsWith("Scorpio.Conversion"))
+                delete "../../Example/lib/$f"
+    }
 }
 task release(type: Copy, dependsOn: [clear, jar]) {
     from 'build/libs/'
-    into '../../Example/libs'
+    into '../../Example/lib'
 }
