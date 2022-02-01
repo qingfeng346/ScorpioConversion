@@ -12,6 +12,6 @@ public class TableManager extends TableManagerBase {
         return instance;
     }
     public IReader GetReader(String name) throws Exception {
-        return new DefaultReader(new FileInputStream(new File("../" + name + ".data")), true);
+        return new DefaultReader(new FileInputStream(new File("../../" + name + ".data")), true);
     }
 }
