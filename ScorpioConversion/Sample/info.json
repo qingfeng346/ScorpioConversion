@@ -18,13 +18,13 @@
         },
         {
             "language": "java",
-            "codeOutput": "../../ScorpioProto/Java/src",
+            "codeOutput": "../../ScorpioProto/Java/Example/src",
             "codeSuffix": "java",
             "handler": [ "JavaManager" ]
         },
         {
             "language": "javascript",
-            "codeOutput": "../../ScorpioProto/Nodejs/src",
+            "codeOutput": "../../ScorpioProto/Javascript/Example/src",
             "codeSuffix": "js",
             "handler": ["JavascriptManager"]
         }
