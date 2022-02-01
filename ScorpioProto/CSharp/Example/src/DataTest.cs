@@ -20,6 +20,8 @@ public partial class DataTest : IData {
     public DateTime TestDateTime { get; private set; }
     /* <summary>   默认值(999) </summary> */
     public int TestInt { get; private set; }
+    /* <summary>   默认值(base64://MTIzNDU2Nzg5MA==) </summary> */
+    public byte[] TestBytes { get; private set; }
     
     public DataTest(string fileName, IReader reader) {
         this.TestID = reader.ReadInt32();
@@ -32,6 +34,7 @@ public partial class DataTest : IData {
         }
         this.TestDateTime = reader.ReadDateTime();
         this.TestInt = reader.ReadInt32();
+        this.TestBytes = reader.ReadBytes();
     }
     
     public object GetData(string key) {
@@ -40,6 +43,7 @@ public partial class DataTest : IData {
         if ("TestDate".Equals(key)) return TestDate;
         if ("TestDateTime".Equals(key)) return TestDateTime;
         if ("TestInt".Equals(key)) return TestInt;
+        if ("TestBytes".Equals(key)) return TestBytes;
         return null;
     }
     
@@ -49,10 +53,11 @@ public partial class DataTest : IData {
         this.TestDate = value.TestDate;
         this.TestDateTime = value.TestDateTime;
         this.TestInt = value.TestInt;
+        this.TestBytes = value.TestBytes;
     }
     
     public override string ToString() {
-        return $"TestID:{TestID}, testEnum:{testEnum}, TestDate:{TestDate}, TestDateTime:{TestDateTime}, TestInt:{TestInt}, ";
+        return $"TestID:{TestID}, testEnum:{testEnum}, TestDate:{TestDate}, TestDateTime:{TestDateTime}, TestInt:{TestInt}, TestBytes:{TestBytes}, ";
     }
 }
 }

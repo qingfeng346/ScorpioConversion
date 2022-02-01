@@ -21,6 +21,9 @@ public class DataTest implements IData {
     private Integer _TestInt;
     /**   默认值(999) */
     public Integer getTestInt() { return _TestInt; }
+    private byte[] _TestBytes;
+    /**   默认值(base64://MTIzNDU2Nzg5MA==) */
+    public byte[] getTestBytes() { return _TestBytes; }
     
     public DataTest(String fileName, IReader reader) throws Exception {
         this._TestID = reader.ReadInt32();
@@ -33,6 +36,7 @@ public class DataTest implements IData {
         }
         this._TestDateTime = reader.ReadDateTime();
         this._TestInt = reader.ReadInt32();
+        this._TestBytes = reader.ReadBytes();
     }
     
     public Object GetData(String key) {
@@ -41,6 +45,7 @@ public class DataTest implements IData {
         if ("TestDate".equals(key)) return _TestDate;
         if ("TestDateTime".equals(key)) return _TestDateTime;
         if ("TestInt".equals(key)) return _TestInt;
+        if ("TestBytes".equals(key)) return _TestBytes;
         return null;
     }
     
@@ -50,10 +55,11 @@ public class DataTest implements IData {
         this._TestDate = value._TestDate;
         this._TestDateTime = value._TestDateTime;
         this._TestInt = value._TestInt;
+        this._TestBytes = value._TestBytes;
     }
     
     @Override
     public String toString() {
-        return "TestID:" + _TestID + "," + "testEnum:" + _testEnum + "," + "TestDate:" + _TestDate + "," + "TestDateTime:" + _TestDateTime + "," + "TestInt:" + _TestInt;
+        return "TestID:" + _TestID + "," + "testEnum:" + _testEnum + "," + "TestDate:" + _TestDate + "," + "TestDateTime:" + _TestDateTime + "," + "TestInt:" + _TestInt + "," + "TestBytes:" + _TestBytes;
     }
 }

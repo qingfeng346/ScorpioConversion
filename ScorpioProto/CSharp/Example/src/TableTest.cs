@@ -8,7 +8,7 @@ using Scorpio.Conversion.Runtime;
 
 namespace Datas {
     public partial class TableTest : ITable {
-        const string FILE_MD5_CODE = "f07d3fff17de6b37025a951b272f6c4c";
+        const string FILE_MD5_CODE = "5c86f5006b60d711c1ca95a5ea69b8db";
         private int m_count = 0;
         private Dictionary<int, DataTest> m_dataArray = new Dictionary<int, DataTest>();
         public TableTest Initialize(string fileName, IReader reader) {

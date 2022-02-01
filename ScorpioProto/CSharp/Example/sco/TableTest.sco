@@ -7,7 +7,7 @@ class TableTest {
     }
     Initialize(fileName, reader) {
         var row = reader.ReadInt32();
-        if ("f07d3fff17de6b37025a951b272f6c4c" != reader.ReadString()) {
+        if ("5c86f5006b60d711c1ca95a5ea69b8db" != reader.ReadString()) {
             throw "File schemas do not match [TableTest] : ${fileName}";
         }
         reader.ReadHead();

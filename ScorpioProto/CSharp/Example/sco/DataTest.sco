@@ -14,6 +14,7 @@ class DataTest {
         this.TestDate = list
         this.TestDateTime = reader.ReadDateTime()
         this.TestInt = reader.ReadInt32()
+        this.TestBytes = reader.ReadBytes()
     }
     
     GetData(key) {
@@ -22,6 +23,7 @@ class DataTest {
         if ("TestDate" == key) { return this.TestDate }
         if ("TestDateTime" == key) { return this.TestDateTime }
         if ("TestInt" == key) { return this.TestInt }
+        if ("TestBytes" == key) { return this.TestBytes }
         return null;
     }
     
@@ -31,9 +33,10 @@ class DataTest {
         this.TestDate = value.TestDate
         this.TestDateTime = value.TestDateTime
         this.TestInt = value.TestInt
+        this.TestBytes = value.TestBytes
     }
     
     toString() {
-        return "TestID:" + this.TestID + "," + "testEnum:" + this.testEnum + "," + "TestDate:" + this.TestDate + "," + "TestDateTime:" + this.TestDateTime + "," + "TestInt:" + this.TestInt
+        return "TestID:" + this.TestID + "," + "testEnum:" + this.testEnum + "," + "TestDate:" + this.TestDate + "," + "TestDateTime:" + this.TestDateTime + "," + "TestInt:" + this.TestInt + "," + "TestBytes:" + this.TestBytes
     }
 }
