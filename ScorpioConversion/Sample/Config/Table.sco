@@ -7,10 +7,6 @@ enum_TestEnum =
     value1 = 4,
     value2 = 5,
 }
-const_TestConst = {
-    ValueNumber = 11111,
-    ValueString = "22222"
-}
 //Excel表自定义类型 关键字开头为 table_
 table_Int2 = [
     {
