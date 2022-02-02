@@ -26,6 +26,8 @@ c#      | [GeneratorCSharp](https://github.com/qingfeng346/ScorpioConversion/blo
 Java      | [GeneratorJava](https://github.com/qingfeng346/ScorpioConversion/blob/master/ScorpioConversion/Scorpio.Conversion.Engine/src/Generator/GeneratorJava.cs)   | [Scorpio.Conversion.Runtime.jar](https://github.com/qingfeng346/ScorpioConversion/releases)
 Javascript      | [GeneratorJavascript](https://github.com/qingfeng346/ScorpioConversion/blob/master/ScorpioConversion/Scorpio.Conversion.Engine/src/Generator/GeneratorJavascript.cs)   | [Scorpio.Conversion.Runtime](https://www.npmjs.com/package/scorpio.conversion.runtime)
 
+* 更多语言可以自行实现生成器
+
 #### 支持的数据类型
 类型    | 类型名1  | 类型名2    | 备注
 -----   | ----     | ----       | ----
