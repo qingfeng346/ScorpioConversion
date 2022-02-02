@@ -22,7 +22,7 @@ public class DataTest implements IData {
     /**   默认值(999) */
     public Integer getTestInt() { return _TestInt; }
     private byte[] _TestBytes;
-    /**   默认值(base64://MTIzNDU2Nzg5MA==) */
+    /** 内容为1234567890的base64数据  默认值(base64://MTIzNDU2Nzg5MA==) */
     public byte[] getTestBytes() { return _TestBytes; }
     
     public DataTest(String fileName, IReader reader) throws Exception {

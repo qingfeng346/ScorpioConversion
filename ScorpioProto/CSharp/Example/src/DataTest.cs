@@ -20,7 +20,7 @@ public partial class DataTest : IData {
     public DateTime TestDateTime { get; private set; }
     /* <summary>   默认值(999) </summary> */
     public int TestInt { get; private set; }
-    /* <summary>   默认值(base64://MTIzNDU2Nzg5MA==) </summary> */
+    /* <summary> 内容为1234567890的base64数据  默认值(base64://MTIzNDU2Nzg5MA==) </summary> */
     public byte[] TestBytes { get; private set; }
     
     public DataTest(string fileName, IReader reader) {

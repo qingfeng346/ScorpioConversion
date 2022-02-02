@@ -7,6 +7,9 @@
 * 配置文件全部使用 sco 脚本配置 Scorpio-CSharp 源码地址 https://github.com/qingfeng346/Scorpio-CSharp
 * 示例Excel [Excel](https://github.com/qingfeng346/ScorpioConversion/tree/master/ScorpioConversion/Sample/Excel)
 * 示例扩展配置 [Config](https://github.com/qingfeng346/ScorpioConversion/tree/master/ScorpioConversion/Sample/Config)
+* 示例info配置 
+    * [示例](https://github.com/qingfeng346/ScorpioConversion/blob/master/ScorpioConversion/Sample/info.json)
+    * [所有支持的Info配置](https://github.com/qingfeng346/ScorpioConversion/blob/master/ScorpioConversion/Scorpio.Conversion.Engine/src/Util/BuildInfo.cs)
 * 执行方式为 命令行执行
 * 具体命令行参数可以使用 scov -h 查看
 
@@ -16,14 +19,15 @@
 - Linux
 
 #### 支持的语言
-- c#
-- Java
-- Javascript
-- [sco脚本](https://github.com/qingfeng346/Scorpio-CSharp)
+语言    | 生成器            | 需要安装库   
+-----   | ----              | ----
+c#      | [GeneratorCSharp](https://github.com/qingfeng346/ScorpioConversion/blob/master/ScorpioConversion/Scorpio.Conversion.Engine/src/Generator/GeneratorCSharp.cs)   | [Scorpio.Conversion.Runtime](https://www.nuget.org/packages/Scorpio.Conversion.Runtime)
+[sco脚本](https://github.com/qingfeng346/Scorpio-CSharp)      | [GeneratorScorpio](https://github.com/qingfeng346/ScorpioConversion/blob/master/ScorpioConversion/Scorpio.Conversion.Engine/src/Generator/GeneratorScorpio.cs)   | [Scorpio.Conversion.Runtime](https://www.nuget.org/packages/Scorpio.Conversion.Runtime)
+Java      | [GeneratorJava](https://github.com/qingfeng346/ScorpioConversion/blob/master/ScorpioConversion/Scorpio.Conversion.Engine/src/Generator/GeneratorJava.cs)   | [Scorpio.Conversion.Runtime.jar](https://github.com/qingfeng346/ScorpioConversion/releases)
+Javascript      | [GeneratorJavascript](https://github.com/qingfeng346/ScorpioConversion/blob/master/ScorpioConversion/Scorpio.Conversion.Engine/src/Generator/GeneratorJavascript.cs)   | [Scorpio.Conversion.Runtime](https://www.npmjs.com/package/scorpio.conversion.runtime)
 
 #### 支持的数据类型
----
-类型    | 类型名1   | 类型名2     | 备注
+类型    | 类型名1  | 类型名2    | 备注
 -----   | ----     | ----       | ----
 bool    | bool     | boolean    | 1字节
 int8    | int8     | sbyte      | 1字节
@@ -36,8 +40,8 @@ int64   | int64    | long       | 8字节
 uint64  | uint64   | ulong      | 8字节
 float   | float    | float32    | 4字节
 double  | double   | float64    | 8字节
-string  | string   | string     | 字符串
-datetime| datetime | datetime   | 时间戳
+string  | string   | string     | urf-8字符串
+datetime| datetime | datetime   | 时间戳,8字节
 bytes   | bytes    | bytes      | 二进制数据,支持 base64:// file://
 
 * 自定义结构,定义方式参考[示例](https://github.com/qingfeng346/ScorpioConversion/blob/master/Sample/Config/Table.sco)

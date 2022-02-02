@@ -15,8 +15,8 @@ namespace Scorpio.Conversion {
 $fileData | Out-File -Encoding utf8 ../ScorpioConversion/Scorpio.Conversion.Engine/src/Version.cs
 
 Remove-Item ../bin/* -Force -Recurse
-Write-Host "正在生成Scorpio.Conversion.Engine.nupkg..."
-dotnet pack ../ScorpioConversion/Scorpio.Conversion.Engine/Scorpio.Conversion.Engine.csproj -p:PackageVersion=$version -o ../bin/ /p:AssemblyVersion=$version | Out-Null
+# Write-Host "正在生成Scorpio.Conversion.Engine.nupkg..."
+# dotnet pack ../ScorpioConversion/Scorpio.Conversion.Engine/Scorpio.Conversion.Engine.csproj -p:PackageVersion=$version -o ../bin/ /p:AssemblyVersion=$version | Out-Null
 
 $platforms = @("win-x86", "win-x64", "win-arm", "win-arm64", "linux-x64", "linux-musl-x64", "linux-arm", "linux-arm64", "osx-x64", "osx-arm64")
 # $platforms = @()
