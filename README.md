@@ -46,7 +46,7 @@ string  | string   | string     | urf-8字符串
 datetime| datetime | datetime   | 时间戳,8字节
 bytes   | bytes    | bytes      | 二进制数据,支持 base64:// file://
 
-* 自定义结构,定义方式参考[示例](https://github.com/qingfeng346/ScorpioConversion/blob/master/Sample/Config/Table.sco)
+* 自定义结构,定义方式参考[示例](https://github.com/qingfeng346/ScorpioConversion/tree/master/ScorpioConversion/Sample/Config/Table.sco)
 * 所有数据类型前加上**array**关键字可以定义数组结构,例如 arrayint32
 
 #### Excel表填写示例
