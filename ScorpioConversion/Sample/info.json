@@ -5,25 +5,25 @@
     "handler": [],
     "languages": [
         {
-            "language": "c#",
+            "generator": "c#",
             "codeOutput": "../../ScorpioProto/CSharp/Example/src",
             "codeSuffix": "cs",
             "handler": [ "C#Manager" ]
         },
         {
-            "language": "sco",
+            "generator": "sco",
             "codeOutput": "../../ScorpioProto/CSharp/Example/sco",
             "codeSuffix": "sco",
             "handler": [ "ScorpioManager" ]
         },
         {
-            "language": "java",
+            "generator": "java",
             "codeOutput": "../../ScorpioProto/Java/Example/src",
             "codeSuffix": "java",
             "handler": [ "JavaManager" ]
         },
         {
-            "language": "javascript",
+            "generator": "javascript",
             "codeOutput": "../../ScorpioProto/Javascript/Example/src",
             "codeSuffix": "js",
             "handler": ["JavascriptManager"]

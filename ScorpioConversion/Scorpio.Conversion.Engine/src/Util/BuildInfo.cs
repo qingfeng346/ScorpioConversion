@@ -3,13 +3,13 @@ using Scorpio.Conversion.Engine;
 using System.Collections.Generic;
 namespace Scorpio.Conversion.Engine {
     public class LanguageInfo {
-        public string language;         //语言名字
         public string codeOutput;       //代码导出目录
         public string codeSuffix;       //代码文件后缀名
         public string dataOutput;       //数据导出目录
         public string dataSuffix;       //数据文件后缀名
         public string package;          //命名空间
         public string writer;           //写入流
+        public string generator;        //生成器
         public string[] handler;        //后续处理
     }
     public class BuildInfo {
@@ -48,7 +48,7 @@ namespace Scorpio.Conversion.Engine {
             var packageClass = tableBuilder.PackageClass;
             foreach (var language in languages) {
                 var languageInfo = GetLanguageInfo(language);
-                var generator = GeneratorManager.Instance.Get(languageInfo.language);
+                var generator = GeneratorManager.Instance.Get(languageInfo.generator);
                 FileUtil.CreateFile(generator.GetDataPath(languageInfo, tableBuilder.FileName), tableBuilder.CreateBytes(languageInfo.writer));
                 FileUtil.CreateFile(generator.GetCodePath(languageInfo, tableName), generator.GenerateTableClass(languageInfo.package, tableName, dataName, tableBuilder.LayoutMD5, packageClass));
                 FileUtil.CreateFile(generator.GetCodePath(languageInfo, dataName), generator.GenerateDataClass(languageInfo.package, dataName, packageClass, true));
@@ -57,7 +57,7 @@ namespace Scorpio.Conversion.Engine {
         public void GenerateCustom(PackageParser parser) {
             foreach (var language in languages) {
                 var languageInfo = GetLanguageInfo(language);
-                var generator = GeneratorManager.Instance.Get(language.language);
+                var generator = GeneratorManager.Instance.Get(language.generator);
                 foreach (var pair in parser.Classes) {
                     FileUtil.CreateFile(generator.GetCodePath(languageInfo, pair.Value.Name), generator.GenerateDataClass(languageInfo.package, pair.Value.Name, pair.Value));
                 }
