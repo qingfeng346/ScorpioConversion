@@ -2,8 +2,6 @@
 using Scorpio.Commons;
 using System.Collections.Generic;
 using System.Text;
-using System.IO;
-using Scorpio.Conversion.Engine;
 
 namespace Scorpio.Conversion.Engine {
     [AutoHandler("ScorpioManager")]

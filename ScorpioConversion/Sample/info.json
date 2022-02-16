@@ -27,6 +27,12 @@
             "codeOutput": "../../ScorpioProto/Javascript/Example/src",
             "codeSuffix": "js",
             "handler": ["JavascriptManager"]
+        },
+        {
+            "generator": "python",
+            "codeOutput": "../../ScorpioProto/Python/Example/src",
+            "codeSuffix": "py",
+            "handler": ["PythonManager"]
         }
     ]
 }
