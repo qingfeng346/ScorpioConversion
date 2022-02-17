@@ -1,6 +1,6 @@
 import sys
 sys.path.append('Example/src')
-sys.path.append('Scorpio.Conversion.Runtime')
+sys.path.append('Scorpio.Conversion.Runtime/ScorpioConversionRuntime')
 from TableManager import *
 from DefaultReader import *
 def GetReader(this, fileName):
