@@ -63,7 +63,8 @@ $packageData.version = $version
 $packageData | ConvertTo-Json | Set-Content -Path $packageJson
 
 Set-Location ../ScorpioProto/Python/Scorpio.Conversion.Runtime
-$version | Out-File -Encoding utf8 ./version
+Remove-Item dist/* -Force -Recurse
+$version | Set-Content ./version -NoNewline -Encoding utf8
 python setup.py sdist
 Set-Location $cur
 
