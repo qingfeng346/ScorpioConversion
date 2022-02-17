@@ -18,8 +18,8 @@ Remove-Item ../bin/* -Force -Recurse
 # Write-Host "正在生成Scorpio.Conversion.Engine.nupkg..."
 # dotnet pack ../ScorpioConversion/Scorpio.Conversion.Engine/Scorpio.Conversion.Engine.csproj -p:PackageVersion=$version -o ../bin/ /p:AssemblyVersion=$version | Out-Null
 
-# $platforms = @("win-x86", "win-x64", "win-arm", "win-arm64", "linux-x64", "linux-musl-x64", "linux-arm", "linux-arm64", "osx-x64", "osx-arm64")
-$platforms = @()
+$platforms = @("win-x86", "win-x64", "win-arm", "win-arm64", "linux-x64", "linux-musl-x64", "linux-arm", "linux-arm64", "osx-x64", "osx-arm64")
+# $platforms = @()
 $aipPath = ".\Install.aip"
 foreach ($platform in $platforms) {
     Write-Host "正在打包 $platform 版本..."
