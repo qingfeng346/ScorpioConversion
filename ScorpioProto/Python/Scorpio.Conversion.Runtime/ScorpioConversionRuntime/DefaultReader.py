@@ -1,11 +1,12 @@
 from struct import pack, unpack
 import time
 class DefaultReader:
-    def __init__(self, base_stream):
-        self.base_stream = base_stream
+    def __init__(self, stream, closeStream = False):
+        self.stream = stream
+        self.closeStream = closeStream
         
     def readBytes(self, length):
-        return self.base_stream.read(length)
+        return self.stream.read(length)
 
     def unpack(self, fmt, length = 1):
         return unpack(fmt, self.readBytes(length))[0]
@@ -48,8 +49,6 @@ class DefaultReader:
         return self.readBytes(length).decode("utf-8")
 
     def ReadDateTime(self):
-        # return datetime.fromtimestamp(int(self.ReadInt64()))
-        # return self.ReadInt64()
         return time.localtime(self.ReadInt64() / 1000)
         
     def ReadBytes(self):
@@ -85,4 +84,5 @@ class DefaultReader:
                     this.ReadString()
 
     def Close(self):
-        pass
+        if self.closeStream:
+            self.stream.close()

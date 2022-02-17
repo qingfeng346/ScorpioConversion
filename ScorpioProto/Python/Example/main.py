@@ -4,7 +4,7 @@ sys.path.append('Scorpio.Conversion.Runtime/')
 from TableManager import *
 from ScorpioConversionRuntime import *
 def GetReader(this, fileName):
-    return DefaultReader(open("../" + fileName + ".data", "rb"))
+    return DefaultReader(open("../" + fileName + ".data", "rb"), True)
 TableManager.GetReader = GetReader
 def main():
     tttt = TableManager()
