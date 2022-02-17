@@ -1,8 +1,8 @@
 const fs = require('fs')
 const DefaultReader = require("../Scorpio.Conversion.Runtime/index").DefaultReader
 const TableManager = require('./src/TableManager')
-global.GetReader = function(name) {
-    return new DefaultReader(fs.readFileSync(`../../${name}.data`))
+TableManager.GetReader = function(name) {
+    return new DefaultReader(fs.readFileSync(`../${name}.data`))
 }
 function main() {
     TableManager.getTest().Datas().forEach((value) => {

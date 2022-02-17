@@ -107,6 +107,13 @@ class ScorpioReader {
         let time = this.ReadInt64()
         return new Date(time.toNumber())
     }
+    ReadBytes() {
+        let length = this.ReadInt32()
+        let ret = Buffer.alloc(length);
+        this.buffer.copy(ret, 0, this.offset, this.offset + length)
+        this.offset += length
+        return ret
+    }
     Close() { }
 }
 module.exports = ScorpioReader

@@ -5,7 +5,7 @@ const TableSpawn = require("./TableSpawn")
 class TableManager {
     getTest() {
         if (this._tableTest == null) {
-            var reader = GetReader("Test");
+            var reader = this.GetReader("Test");
             this._tableTest = new TableTest().Initialize("Test", reader);
             reader.Close()
         }
@@ -13,7 +13,7 @@ class TableManager {
     }
     getTestCsv() {
         if (this._tableTestCsv == null) {
-            var reader = GetReader("TestCsv");
+            var reader = this.GetReader("TestCsv");
             this._tableTestCsv = new TableTestCsv().Initialize("TestCsv", reader);
             reader.Close()
         }
@@ -21,7 +21,7 @@ class TableManager {
     }
     getSpawnTest1() {
         if (this._tableTest1 == null) {
-            var reader = GetReader("Test1");
+            var reader = this.GetReader("Test1");
             this._tableTest1 = new TableSpawn().Initialize("Test1", reader);
             reader.Close()
         }
@@ -29,7 +29,7 @@ class TableManager {
     }
     getSpawnTest2() {
         if (this._tableTest2 == null) {
-            var reader = GetReader("Test2");
+            var reader = this.GetReader("Test2");
             this._tableTest2 = new TableSpawn().Initialize("Test2", reader);
             reader.Close()
         }

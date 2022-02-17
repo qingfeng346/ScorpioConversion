@@ -11,7 +11,7 @@
 TableManager = {
     getTest(ID) {
         if (this._tableTest == null) {
-            var reader = GetReader("Test");
+            var reader = this.GetReader("Test");
             this._tableTest = new TableTest().Initialize("Test", reader);
             reader.Close()
         }
@@ -19,7 +19,7 @@ TableManager = {
     }
     getTestCsv(ID) {
         if (this._tableTestCsv == null) {
-            var reader = GetReader("TestCsv");
+            var reader = this.GetReader("TestCsv");
             this._tableTestCsv = new TableTestCsv().Initialize("TestCsv", reader);
             reader.Close()
         }
@@ -27,7 +27,7 @@ TableManager = {
     }
     getSpawnTest1(ID) {
         if (this._tableTest1 == null) {
-            var reader = GetReader("Test1");
+            var reader = this.GetReader("Test1");
             this._tableTest1 = new TableSpawn().Initialize("Test1", reader);
             reader.Close()
         }
@@ -35,7 +35,7 @@ TableManager = {
     }
     getSpawnTest2(ID) {
         if (this._tableTest2 == null) {
-            var reader = GetReader("Test2");
+            var reader = this.GetReader("Test2");
             this._tableTest2 = new TableSpawn().Initialize("Test2", reader);
             reader.Close()
         }

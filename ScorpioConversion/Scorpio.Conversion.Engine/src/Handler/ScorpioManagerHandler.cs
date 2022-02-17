@@ -32,7 +32,7 @@ TableManager = {{");
                 builder.Append($@"
     get{table.Name}(ID) {{
         if (this._table{table.Name} == null) {{
-            var reader = GetReader(""{table.Name}"");
+            var reader = this.GetReader(""{table.Name}"");
             this._table{table.Name} = new Table{table.Name}().Initialize(""{table.Name}"", reader);
             reader.Close()
         }}
@@ -44,7 +44,7 @@ TableManager = {{");
                     builder.Append($@"
     get{table.Name}{table.FileName}(ID) {{
         if (this._table{table.FileName} == null) {{
-            var reader = GetReader(""{table.FileName}"");
+            var reader = this.GetReader(""{table.FileName}"");
             this._table{table.FileName} = new Table{table.Name}().Initialize(""{table.FileName}"", reader);
             reader.Close()
         }}
