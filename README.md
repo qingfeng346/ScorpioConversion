@@ -25,6 +25,7 @@ c#      | [GeneratorCSharp](https://github.com/qingfeng346/ScorpioConversion/blo
 [sco脚本](https://github.com/qingfeng346/Scorpio-CSharp)      | [GeneratorScorpio](https://github.com/qingfeng346/ScorpioConversion/blob/master/ScorpioConversion/Scorpio.Conversion.Engine/src/Generator/GeneratorScorpio.cs)   | [Scorpio.Conversion.Runtime](https://www.nuget.org/packages/Scorpio.Conversion.Runtime)
 Java      | [GeneratorJava](https://github.com/qingfeng346/ScorpioConversion/blob/master/ScorpioConversion/Scorpio.Conversion.Engine/src/Generator/GeneratorJava.cs)   | [Scorpio.Conversion.Runtime.jar](https://github.com/qingfeng346/ScorpioConversion/releases)
 Javascript      | [GeneratorJavascript](https://github.com/qingfeng346/ScorpioConversion/blob/master/ScorpioConversion/Scorpio.Conversion.Engine/src/Generator/GeneratorJavascript.cs)   | [Scorpio.Conversion.Runtime](https://www.npmjs.com/package/scorpio.conversion.runtime)
+Python      | [GeneratorPython](https://github.com/qingfeng346/ScorpioConversion/blob/master/ScorpioConversion/Scorpio.Conversion.Engine/src/Generator/GeneratorPython.cs)   | [Scorpio.Conversion.Runtime](https://pypi.org/project/ScorpioConversionRuntime/)
 
 * 更多语言可以自行实现生成器
 
