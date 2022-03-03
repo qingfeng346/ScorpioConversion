@@ -16,5 +16,6 @@ type IReader interface {
 	ReadDouble() float64
 	ReadString() string
 	ReadDateTime() time.Time
+	ReadBytes() []byte
 	Close()
 }

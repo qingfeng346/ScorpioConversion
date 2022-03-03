@@ -98,6 +98,12 @@ func (reader *DefaultReader) ReadDateTime() time.Time {
 	return time.Unix(reader.ReadInt64()/1000, 0)
 }
 
+func (reader *DefaultReader) ReadBytes() []byte {
+	var length = reader.ReadInt32()
+	var bs = make([]byte, length)
+	io.ReadFull(reader.Buffer, bs)
+	return bs
+}
 func (reader *DefaultReader) Close() {
 
 }
