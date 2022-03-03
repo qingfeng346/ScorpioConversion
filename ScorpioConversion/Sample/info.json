@@ -1,38 +1,50 @@
 {
-    "dataOutput": "../../ScorpioProto",
+    "dataOutput": "../../Scorpio.Conversion.Runtime",
     "dataSuffix": "data",
     "package": "Datas",
     "handler": [],
     "languages": [
         {
             "generator": "c#",
-            "codeOutput": "../../ScorpioProto/CSharp/Example/src",
+            "codeOutput": "../../Scorpio.Conversion.Runtime/CSharp/Example/src",
             "codeSuffix": "cs",
             "handler": [ "C#Manager" ]
         },
         {
             "generator": "sco",
-            "codeOutput": "../../ScorpioProto/CSharp/Example/sco",
+            "codeOutput": "../../Scorpio.Conversion.Runtime/CSharp/Example/sco",
             "codeSuffix": "sco",
             "handler": [ "ScorpioManager" ]
         },
         {
             "generator": "java",
-            "codeOutput": "../../ScorpioProto/Java/Example/src",
+            "codeOutput": "../../Scorpio.Conversion.Runtime/Java/Example/src",
             "codeSuffix": "java",
             "handler": [ "JavaManager" ]
         },
         {
             "generator": "javascript",
-            "codeOutput": "../../ScorpioProto/Javascript/Example/src",
+            "codeOutput": "../../Scorpio.Conversion.Runtime/Javascript/Example/src",
             "codeSuffix": "js",
             "handler": ["JavascriptManager"]
         },
         {
             "generator": "python",
-            "codeOutput": "../../ScorpioProto/Python/Example/src",
+            "codeOutput": "../../Scorpio.Conversion.Runtime/Python/Example/src",
             "codeSuffix": "py",
             "handler": ["PythonManager"]
+        },
+        {
+            "generator": "go",
+            "codeOutput": "../../Scorpio.Conversion.Runtime/Go/Example",
+            "codeSuffix": "go",
+            "handler": []
+        },
+        {
+            "generator": "c++",
+            "codeOutput": "../../Scorpio.Conversion.Runtime/CPP/Example",
+            "codeSuffix": "h",
+            "handler": []
         }
     ]
 }
