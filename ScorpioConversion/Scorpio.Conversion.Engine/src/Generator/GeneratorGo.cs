@@ -3,8 +3,7 @@ namespace Scorpio.Conversion.Engine {
     [AutoGenerator("go")]
     public class GeneratorGo : IGenerator {
         public const string Head = @"//本文件为自动生成，请不要手动修改
-import ""github.com/qingfeng346/ScorpioConversion/Scorpio.Conversion.Runtime/Go/ScorpioConversionRuntime""
-";
+import ""github.com/qingfeng346/ScorpioConversion/Scorpio.Conversion.Runtime/Go/ScorpioConversionRuntime""";
         static string GetLanguageType(ClassField field) {
             if (field.IsBasic) {
                 switch (field.BasicType.Index) {
@@ -32,54 +31,61 @@ import ""github.com/qingfeng346/ScorpioConversion/Scorpio.Conversion.Runtime/Go/
             var keyType = GetLanguageType(packageClass.Fields[0]);
             return $@"package {packageName}
 {Head}
+import ""errors""
 type {tableClassName} struct {{
-    const string FILE_MD5_CODE = ""{fileMD5}"";
-    private int m_count = 0;
-    private Dictionary<{keyType}, {dataClassName}> m_dataArray = new Dictionary<{keyType}, {dataClassName}>();
-    public {tableClassName} Initialize(string fileName, IReader reader) {{
-        var row = reader.ReadInt32();
-        var layoutMD5 = reader.ReadString();
-        if (layoutMD5 != FILE_MD5_CODE) {{
-            throw new Exception(""File schemas do not match [{tableClassName}] : "" + fileName);
+    count int
+    dataArray map[{keyType}]*{dataClassName}
+}}
+func (table *{tableClassName}) Initialize(fileName string, reader ScorpioConversionRuntime.IReader) {{
+    if table.dataArray == nil {{
+		table.dataArray = map[{keyType}]*{dataClassName}{{}}
+	}}
+    var row = reader.ReadInt32();
+    var layoutMD5 = reader.ReadString();
+    if (layoutMD5 != ""{fileMD5}"") {{
+        return errors.New(""File schemas do not match [{tableClassName}] : "" + fileName)
+    }}
+    ScorpioConversionRuntime.ReadHead(reader);
+    for i := 0; i < row; i++ {{
+        var pData = New{dataClassName}(fileName, reader);
+        if table.Contains(pData.ID()) {{
+            table.dataArray[pData.ID()].Set(pData)
+        }} else {{
+            table.dataArray[pData.ID()] = pData;
         }}
-        ConversionUtil.ReadHead(reader);
-        for (var i = 0; i < row; ++i) {{
-            var pData = new {dataClassName}(fileName, reader);
-            if (m_dataArray.TryGetValue(pData.ID, out var value))
-                value.Set(pData);
-            else
-                m_dataArray[pData.ID] = pData;
-        }}
-        m_count = m_dataArray.Count;
-        return this;
     }}
-    public {dataClassName} GetValue({keyType} ID) {{
-        if (m_dataArray.TryGetValue(ID, out var value))
-            return value;
-        throw new Exception($""{tableClassName} not found data : {{ID}}"");
+    table.count = len(table.dataArray)
+}}
+// Contains 是否包含数据
+func (table *{tableClassName}) Contains(ID {keyType}) bool {{
+    if _, ok := table.dataArray[ID]; ok {{
+        return true
     }}
-    public bool Contains({keyType} ID) {{
-        return m_dataArray.ContainsKey(ID);
+    return false
+}}
+// GetValue 获取数据
+func (table *{tableClassName}) GetValue(ID {keyType}) *{dataClassName} {{
+    if table.Contains(ID) {{
+        return table.dataArray[ID];
     }}
-    public Dictionary<{keyType}, {dataClassName}> Datas() {{
-        return m_dataArray;
-    }}
-    public IData GetValueObject(object ID) {{
-        return GetValue(({keyType})ID);
-    }}
-    public bool ContainsObject(object ID) {{
-        return Contains(({keyType})ID);
-    }}
-    public IDictionary GetDatas() {{
-        return Datas();
-    }}
-    public int Count() {{
-        return m_count;
-    }}
+    return nil;
+}}
+func (table *{tableClassName}) GetValueObject(ID interface{{}}) IData {{
+    return table.GetValue(({keyType})ID)
+}}
+func (table *{tableClassName}) ContainsObject(ID interface{{}}) bool {{
+   if _, ok := table.dataArray[ID]; ok {{
+       return true
+   }}
+   return false
+}}
+func (table *{tableClassName}) Count() int {{
+    return table.count;
 }}";
         }
         public override string GenerateDataClass(string packageName, string className, PackageClass packageClass, bool createID) {
-            return $@"{Head}
+            return $@"package {packageName}
+{Head}
 namespace {packageName} {{
 public partial class {className} : IData {{
     {AllFields(packageClass, createID)}
