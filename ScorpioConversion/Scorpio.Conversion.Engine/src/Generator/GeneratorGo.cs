@@ -23,8 +23,10 @@ import ""github.com/qingfeng346/ScorpioConversion/Scorpio.Conversion.Runtime/Go/
                     case BasicEnum.BYTES: return "[]byte";
                     default: throw new System.Exception("未知的基础类型");
                 }
+            } else if (field.IsEnum) {
+                return "int32";
             } else {
-                return field.Type;
+                return "*" + field.Type;
             }
         }
         public override string GenerateTableClass(string packageName, string tableClassName, string dataClassName, string fileMD5, PackageClass packageClass) {
@@ -36,25 +38,26 @@ type {tableClassName} struct {{
     count int
     dataArray map[{keyType}]*{dataClassName}
 }}
-func (table *{tableClassName}) Initialize(fileName string, reader ScorpioConversionRuntime.IReader) {{
+func (table *{tableClassName}) Initialize(fileName string, reader ScorpioConversionRuntime.IReader) error {{
     if table.dataArray == nil {{
 		table.dataArray = map[{keyType}]*{dataClassName}{{}}
 	}}
-    var row = reader.ReadInt32();
-    var layoutMD5 = reader.ReadString();
+    row := int(reader.ReadInt32());
+    layoutMD5 := reader.ReadString();
     if (layoutMD5 != ""{fileMD5}"") {{
         return errors.New(""File schemas do not match [{tableClassName}] : "" + fileName)
     }}
     ScorpioConversionRuntime.ReadHead(reader);
     for i := 0; i < row; i++ {{
         var pData = New{dataClassName}(fileName, reader);
-        if table.Contains(pData.ID()) {{
-            table.dataArray[pData.ID()].Set(pData)
+        if table.Contains(pData.GetID()) {{
+            table.dataArray[pData.GetID()].Set(pData)
         }} else {{
-            table.dataArray[pData.ID()] = pData;
+            table.dataArray[pData.GetID()] = pData;
         }}
     }}
     table.count = len(table.dataArray)
+    return nil
 }}
 // Contains 是否包含数据
 func (table *{tableClassName}) Contains(ID {keyType}) bool {{
@@ -70,14 +73,11 @@ func (table *{tableClassName}) GetValue(ID {keyType}) *{dataClassName} {{
     }}
     return nil;
 }}
-func (table *{tableClassName}) GetValueObject(ID interface{{}}) IData {{
-    return table.GetValue(({keyType})ID)
+func (table *{tableClassName}) GetValueObject(ID interface{{}}) ScorpioConversionRuntime.IData {{
+    return table.GetValue(ID.({keyType}))
 }}
 func (table *{tableClassName}) ContainsObject(ID interface{{}}) bool {{
-   if _, ok := table.dataArray[ID]; ok {{
-       return true
-   }}
-   return false
+   return table.Contains(ID.({keyType}))
 }}
 func (table *{tableClassName}) Count() int {{
     return table.count;
@@ -86,41 +86,74 @@ func (table *{tableClassName}) Count() int {{
         public override string GenerateDataClass(string packageName, string className, PackageClass packageClass, bool createID) {
             return $@"package {packageName}
 {Head}
-namespace {packageName} {{
-public partial class {className} : IData {{
-    {AllFields(packageClass, createID)}
-    {FunctionConstructor(packageClass, className)}
-    {FunctionGetData(packageClass)}
-    {FunctionSet(packageClass, className)}
-    {FunctionToString(packageClass)}
+{GetHead(packageClass)}
+type {className} struct {{
+   {AllFields(packageClass)}
 }}
-}}
+{AllGetFields(className, packageClass, createID)}
+{FunctionNew(className, packageClass)}
+{FunctionGetData(className, packageClass)}
+{FunctionSet(className, packageClass)}
+{FunctionToString(className, packageClass)}
 ";
         }
-        string AllFields(PackageClass packageClass, bool createID) {
+        string GetHead(PackageClass packageClass) {
             var builder = new StringBuilder();
-            var first = true;
             foreach (var field in packageClass.Fields) {
-                var languageType = GetLanguageType(field);
-                if (field.IsArray) { languageType = $"ReadOnlyCollection<{languageType}>"; }
-                if (first) {
-                    first = false;
-                    if (createID && field.Name != "ID") {
-                        builder.Append($@"
-    public {languageType} ID => {field.Name};");
-                    }
+                if (field.IsArray) {
+                    builder.Append(@"
+import ""container/list""");
+                    break;
                 }
-                builder.Append($@"
-    /* <summary> {field.Comment}  默认值({field.Default}) </summary> */
-    public {languageType} {field.Name} {{ get; private set; }}");
-
+            }
+            foreach (var field in packageClass.Fields) {
+                if (field.IsDateTime) {
+                    builder.Append(@"
+import ""time""");
+                    break;
+                }
             }
             return builder.ToString();
         }
-        string FunctionConstructor(PackageClass packageClass, string dataClassName) {
+        string AllFields(PackageClass packageClass) {
+            var builder = new StringBuilder();
+            foreach (var field in packageClass.Fields) {
+                var languageType = GetLanguageType(field);
+                if (field.IsArray) { languageType = "*list.List"; }
+                builder.Append($@"
+    {field.Name} {languageType}");
+            }
+            return builder.ToString();
+        }
+        string AllGetFields(string className, PackageClass packageClass, bool createID) {
+            var builder = new StringBuilder();
+            {
+                var field = packageClass.Fields[0];
+                if (createID && field.Name != "ID") {
+                var languageType = GetLanguageType(field);
+                builder.Append($@"
+// ID {field.Comment}  默认值({field.Default})
+func (data *{className}) GetID() {languageType} {{ 
+    return data.{field.Name};
+}}");
+                }
+            }
+            foreach (var field in packageClass.Fields) {
+                var languageType = GetLanguageType(field);
+                if (field.IsArray) { languageType = $"*list.List"; }
+                builder.Append($@"
+// Get{field.Name} {field.Comment}  默认值({field.Default})
+func (data *{className}) Get{field.Name}() {languageType} {{ 
+    return data.{field.Name};
+}}");
+            }
+            return builder.ToString();
+        }
+        string FunctionNew(string className, PackageClass packageClass) {
             var builder = new StringBuilder();
             builder.Append($@"
-    public {dataClassName}(string fileName, IReader reader) {{");
+func New{className}(fileName string, reader ScorpioConversionRuntime.IReader) *{className} {{
+    data := &{className}{{}}");
             foreach (var field in packageClass.Fields) {
                 var languageType = GetLanguageType(field);
                 string fieldRead;
@@ -129,76 +162,95 @@ public partial class {className} : IData {{
                 } else if (field.IsBasic) {
                     fieldRead = $"reader.Read{field.BasicType.Name}()";
                 } else if (field.IsEnum) {
-                    fieldRead = $"({languageType})reader.ReadInt32()";
+                    fieldRead = $"reader.ReadInt32()";
                 } else {
-                    fieldRead = $"new {languageType}(fileName, reader)";
+                    fieldRead = $"New{languageType.Substring(1)}(fileName, reader)";
                 }
                 if (field.IsArray) {
                     builder.Append($@"
-        {{
-            var list = new List<{languageType}>();
-            var number = reader.ReadInt32();
-            for (int i = 0; i < number; ++i) {{ list.Add({fieldRead}); }}
-            this.{field.Name} = list.AsReadOnly();
-        }}");
+    {{
+        data.{field.Name} = list.New();
+        number := int(reader.ReadInt32());
+        for i := 0; i < number; i++ {{ 
+            data.{field.Name}.PushBack({fieldRead});
+        }}
+    }}");
                 } else {
                     builder.Append($@"
-        this.{field.Name} = {fieldRead};");
+    data.{field.Name} = {fieldRead};");
                 }
             }
             builder.Append(@"
-    }");
+    return data
+}");
             return builder.ToString();
         }
-        string FunctionGetData(PackageClass packageClass) {
-            var builder = new StringBuilder();
-            builder.Append(@"
-    public object GetData(string key) {");
-            foreach (var field in packageClass.Fields) {
-                builder.Append($@"
-        if (""{field.Name}"".Equals(key)) return {field.Name};");
-            }
-            builder.Append(@"
-        return null;
-    }");
-            return builder.ToString();
-        }
-        string FunctionSet(PackageClass packageClass, string dataClassName) {
+        string FunctionGetData(string className, PackageClass packageClass) {
             var builder = new StringBuilder();
             builder.Append($@"
-    public void Set({dataClassName} value) {{");
-            foreach (var field in packageClass.Fields) {
-                builder.Append($@"
-        this.{field.Name} = value.{field.Name};");
-            }
+func (data *{className}) GetData(key string) interface{{}} {{");
+        foreach (var field in packageClass.Fields) {
+            builder.Append($@"
+    if key == ""{field.Name}"" {{
+        return data.{field.Name};
+    }}");
+        }
             builder.Append(@"
-    }");
+    return nil;
+}");
             return builder.ToString();
         }
-        string FunctionToString(PackageClass packageClass) {
+        string FunctionSet(string className, PackageClass packageClass) {
             var builder = new StringBuilder();
+            builder.Append($@"
+func (data *{className}) Set(value *{className}) {{");
+        foreach (var field in packageClass.Fields) {
+            builder.Append($@"
+    data.{field.Name} = value.{field.Name};");
+        }
             builder.Append(@"
-    public override string ToString() {
-        return $""");
+}");
+            return builder.ToString();
+        }
+        string FunctionToString(string className, PackageClass packageClass) {
+            var builder = new StringBuilder();
+            builder.Append($@"
+func (data *{className}) String() string {{
+    return ");
+            var first = true;
             foreach (var field in packageClass.Fields) {
-                builder.AppendFormat("{0}:{1}, ", field.Name, $"{{{field.Name}}}");
+                if (first == false) {
+                    builder.Append(" + \",\" + ");
+                }
+                first = false;
+                if (field.IsArray) {
+                    builder.Append($"\"{field.Name}:<list>\"");
+                } else if (field.IsDateTime) {
+                    builder.Append($"\"{field.Name}:\" + data.{field.Name}.String()");
+                } else if (field.IsBool) {
+                    builder.Append($"\"{field.Name}:\" + (data.{field.Name} ? \"true\" :\"false\")");
+                } else if (field.IsClass) {
+                    builder.Append($"\"{field.Name}:\" + data.{field.Name}.String()");
+                } else {
+                    builder.Append($"\"{field.Name}:\" + string(data.{field.Name})");
+                }
             }
-            builder.Append(@""";
-    }");
+            builder.Append(@";
+}");
             return builder.ToString();
         }
         public override string GenerateEnumClass(string packageName, string className, PackageEnum packageEnum) {
             var builder = new StringBuilder();
-            builder.Append($@"//本文件为自动生成，请不要手动修改
-namespace {packageName} {{
-    public enum {className} {{");
+            builder.Append($@"package {packageName}
+//本文件为自动生成，请不要手动修改
+type {className} int32
+const (");
             foreach (var info in packageEnum.Fields) {
                 builder.Append($@"
-        {info.Name} = {info.Index},");
+    {className}_{info.Name} {className} = {info.Index}");
             }
             builder.Append(@"
-    }
-}");
+)");
             return builder.ToString();
         }
     }
