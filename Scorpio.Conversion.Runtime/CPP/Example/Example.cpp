@@ -3,9 +3,16 @@
 
 #include <iostream>
 #include <DefaultReader.h>
+using namespace std;
 int main()
 {
-    std::cout << "Hello World!\n";
+    //char* str = new char[10]{ 0 };
+    //strcpy_s(str, 10, "123456789");
+    //string s(str);
+    //delete[] str;
+    string s = "123123123123";
+    cout << s << endl;
+    /*std::cout << "Hello World!\n";*/
 }
 
 // 运行程序: Ctrl + F5 或调试 >“开始执行(不调试)”菜单

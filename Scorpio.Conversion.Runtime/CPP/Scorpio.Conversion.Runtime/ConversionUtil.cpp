@@ -1,25 +1,25 @@
 #include "ConversionUtil.h"
 namespace Scorpio {
-	namespace Conversion {
-		namespace Runtime {
-			void ConversionUtil::ReadHead(IReader* reader) {
+    namespace Conversion {
+        namespace Runtime {
+            void ConversionUtil::ReadHead(IReader* reader) {
                 {
-                    int number = reader->ReadInt32();    //±í½á¹¹×Ö¶ÎÊıÁ¿
+                    int number = reader->ReadInt32();    //è¡¨ç»“æ„å­—æ®µæ•°é‡
                     for (int i = 0; i < number; ++i) {
-                        if (reader->ReadInt8() == 0) {   //»ù´¡ÀàĞÍ
-                            reader->ReadInt8();          //»ù´¡ÀàĞÍË÷Òı
+                        if (reader->ReadInt8() == 0) {   //åŸºç¡€ç±»å‹
+                            reader->ReadInt8();          //åŸºç¡€ç±»å‹ç´¢å¼•
                         }
-                        else {                        //×Ô¶¨ÒåÀà
-                            reader->ReadString();        //×Ô¶¨ÒåÀàÃû³Æ
+                        else {                        //è‡ªå®šä¹‰ç±»
+                            reader->ReadString();        //è‡ªå®šä¹‰ç±»åç§°
                         }
-                        reader->ReadBool();              //ÊÇ·ñÊÇÊı×é
-                        reader->ReadString();            //×Ö¶ÎÃû³Æ
+                        reader->ReadBool();              //æ˜¯å¦æ˜¯æ•°ç»„
+                        reader->ReadString();            //å­—æ®µåç§°
                     }
                 }
                 {
-                    int customNumber = reader->ReadInt32();  //×Ô¶¨ÒåÀàÊıÁ¿
+                    int customNumber = reader->ReadInt32();  //è‡ªå®šä¹‰ç±»æ•°é‡
                     for (int i = 0; i < customNumber; ++i) {
-                        reader->ReadString();                //¶ÁÈ¡×Ô¶¨ÒåÀàÃû×Ö
+                        reader->ReadString();                //è¯»å–è‡ªå®šä¹‰ç±»åå­—
                         if (reader->ReadInt8() == 1) {
                             int number = reader->ReadInt32();
                             for (int j = 0; j < number; ++j) {
@@ -28,21 +28,21 @@ namespace Scorpio {
                             }
                         }
                         else {
-                            int number = reader->ReadInt32();    //×Ö¶ÎÊıÁ¿
+                            int number = reader->ReadInt32();    //å­—æ®µæ•°é‡
                             for (int j = 0; j < number; ++j) {
-                                if (reader->ReadInt8() == 0) {   //»ù´¡ÀàĞÍ
-                                    reader->ReadInt8();          //»ù´¡ÀàĞÍË÷Òı
+                                if (reader->ReadInt8() == 0) {   //åŸºç¡€ç±»å‹
+                                    reader->ReadInt8();          //åŸºç¡€ç±»å‹ç´¢å¼•
                                 }
-                                else {                        //×Ô¶¨ÒåÀà
-                                    reader->ReadString();        //×Ô¶¨ÒåÀàÃû³Æ
+                                else {                        //è‡ªå®šä¹‰ç±»
+                                    reader->ReadString();        //è‡ªå®šä¹‰ç±»åç§°
                                 }
-                                reader->ReadBool();              //ÊÇ·ñÊÇÊı×é
+                                reader->ReadBool();              //æ˜¯å¦æ˜¯æ•°ç»„
                                 reader->ReadString();
                             }
                         }
                     }
                 }
-			}
-		}
-	}
+            }
+        }
+    }
 }
