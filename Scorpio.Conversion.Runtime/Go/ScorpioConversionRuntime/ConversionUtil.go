@@ -38,3 +38,10 @@ func ReadHead(reader IReader) {
 		}
 	}
 }
+func BoolToString(value bool) string {
+	if value {
+		return "true"
+	} else {
+		return "false"
+	}
+}

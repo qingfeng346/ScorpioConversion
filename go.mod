@@ -1,1 +1,0 @@
-module github.com/qingfeng346/ScorpioConversion

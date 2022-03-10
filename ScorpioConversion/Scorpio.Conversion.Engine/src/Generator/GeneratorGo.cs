@@ -228,7 +228,7 @@ func (data *{className}) String() string {{
                 } else if (field.IsDateTime) {
                     builder.Append($"\"{field.Name}:\" + data.{field.Name}.String()");
                 } else if (field.IsBool) {
-                    builder.Append($"\"{field.Name}:\" + (data.{field.Name} ? \"true\" :\"false\")");
+                    builder.Append($"\"{field.Name}:\" + ScorpioConversionRuntime.BoolToString(data.{field.Name})");
                 } else if (field.IsClass) {
                     builder.Append($"\"{field.Name}:\" + data.{field.Name}.String()");
                 } else {
