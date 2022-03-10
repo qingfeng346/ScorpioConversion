@@ -73,6 +73,9 @@ func (table *{tableClassName}) GetValue(ID {keyType}) *{dataClassName} {{
     }}
     return nil;
 }}
+func (table *{tableClassName}) Datas() map[{keyType}]*{dataClassName} {{
+    return table.dataArray
+}}
 func (table *{tableClassName}) GetValueObject(ID interface{{}}) ScorpioConversionRuntime.IData {{
     return table.GetValue(ID.({keyType}))
 }}
@@ -86,6 +89,7 @@ func (table *{tableClassName}) Count() int {{
         public override string GenerateDataClass(string packageName, string className, PackageClass packageClass, bool createID) {
             return $@"package {packageName}
 {Head}
+import ""fmt""
 {GetHead(packageClass)}
 type {className} struct {{
    {AllFields(packageClass)}
@@ -132,7 +136,7 @@ import ""time""");
                 if (createID && field.Name != "ID") {
                 var languageType = GetLanguageType(field);
                 builder.Append($@"
-// ID {field.Comment}  默认值({field.Default})
+// GetID {field.Comment}  默认值({field.Default})
 func (data *{className}) GetID() {languageType} {{ 
     return data.{field.Name};
 }}");
@@ -216,26 +220,20 @@ func (data *{className}) Set(value *{className}) {{");
             var builder = new StringBuilder();
             builder.Append($@"
 func (data *{className}) String() string {{
-    return ");
+    return fmt.Sprintf(""");
             var first = true;
             foreach (var field in packageClass.Fields) {
                 if (first == false) {
-                    builder.Append(" + \",\" + ");
+                    builder.Append(" , ");
                 }
                 first = false;
-                if (field.IsArray) {
-                    builder.Append($"\"{field.Name}:<list>\"");
-                } else if (field.IsDateTime) {
-                    builder.Append($"\"{field.Name}:\" + data.{field.Name}.String()");
-                } else if (field.IsBool) {
-                    builder.Append($"\"{field.Name}:\" + ScorpioConversionRuntime.BoolToString(data.{field.Name})");
-                } else if (field.IsClass) {
-                    builder.Append($"\"{field.Name}:\" + data.{field.Name}.String()");
-                } else {
-                    builder.Append($"\"{field.Name}:\" + string(data.{field.Name})");
-                }
+                builder.Append($@"{field.Name} : %v");
             }
-            builder.Append(@";
+            builder.Append("\"");
+            foreach (var field in packageClass.Fields) {
+                builder.Append($", data.{field.Name}");
+            }
+            builder.Append(@");
 }");
             return builder.ToString();
         }

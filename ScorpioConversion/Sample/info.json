@@ -36,8 +36,9 @@
         },
         {
             "generator": "go",
-            "codeOutput": "../../Scorpio.Conversion.Runtime/Go/Example/Datas",
+            "codeOutput": "../../Scorpio.Conversion.Runtime/Go/Example/datas",
             "codeSuffix": "go",
+            "package": "datas",
             "handler": []
         },
         {
