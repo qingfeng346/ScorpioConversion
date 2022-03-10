@@ -44,7 +44,7 @@ class DataSpawn : public IData {
             this->ID = reader->ReadInt32();
             this->TestInt = reader->ReadInt32();
             this->TestString = reader->ReadString();
-            delete this->TestString.c_str();            this->TestLanguage = reader->ReadString();
+            this->TestLanguage = reader->ReadString();
             this->TestBool = reader->ReadBool();
             this->TestInt2 = new Int2(fileName, reader);
             this->TestEnumName = reader->ReadInt32();

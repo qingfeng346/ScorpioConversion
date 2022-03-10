@@ -41,5 +41,5 @@ func (data *Int2) Set(value *Int2) {
 }
 
 func (data *Int2) String() string {
-    return fmt.Sprintf("Value1 : %v , Value2 : %v", data.Value1, data.Value2);
+    return fmt.Sprintf("Value1 [%v] , Value2 [%v]", data.Value1, data.Value2);
 }

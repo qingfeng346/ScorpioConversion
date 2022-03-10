@@ -10,51 +10,57 @@ namespace Scorpio.Conversion.Engine {
     public class GoManagerHandler : IHandler {
         public void Handle(LanguageInfo languageInfo, List<TableBuilder> successTables, SortedDictionary<string, List<TableBuilder>> successSpawns, List<L10NData> l10NDatas, CommandLine command) {
             var builder = new StringBuilder();
-            builder.Append($@"
-namespace {languageInfo.package} {{
-    public partial class TableManager {{");
+            builder.Append($@"package {languageInfo.package}
+type TableManager struct {{");
             successTables.ForEach(table => {
                 builder.Append($@"
-        private Table{table.Name} _table{table.Name} = null;
-        public Table{table.Name} {table.Name} {{
-            get {{
-                if (this._table{table.Name} == null) {{
-                    using (var reader = GetReader(""{table.Name}"")) {{
-                        this._table{table.Name} = new Table{table.Name}().Initialize(""{table.Name}"", reader);
-                    }}
-                }}
-                return this._table{table.Name};
-            }}
-        }}");
+    _table{table.Name} *Table{table.Name}");
             });
             foreach (var pair in successSpawns) {
                 pair.Value.ForEach((table) => {
                     builder.Append($@"
-        private Table{table.Name} _table{table.FileName} = null;
-        public Table{table.Name} {table.Name}{table.FileName} {{
-            get {{
-                if (this._table{table.FileName} == null) {{
-                    using (var reader = GetReader(""{table.FileName}"")) {{
-                        this._table{table.FileName} = new Table{table.Name}().Initialize(""{table.FileName}"", reader);
-                    }}
-                }}
-                return this._table{table.FileName};
-            }}
-        }}");
+    _table{table.FileName} *Table{table.Name}");
                 });
-                builder.Append($@"
-        public Table{pair.Key} Get{pair.Key}(string name) {{");
-                pair.Value.ForEach((table) => {
-                    builder.Append($@"
-            if (name == ""{table.FileName}"") return {table.Name}{table.FileName};");
-                });
-                builder.Append(@"
-            return null;
-        }");
             }
             builder.Append(@"
-    }
 }");
+            successTables.ForEach(table => {
+                builder.Append($@"
+func (tableManager *TableManager) Get{table.Name}() *Table{table.Name} {{
+    if (tableManager._table{table.Name} == nil) {{
+        reader := GetReader(""{table.Name}"")
+        tableManager._table{table.Name} = new(Table{table.Name})
+        tableManager._table{table.Name}.Initialize(""{table.Name}"", reader)
+        reader.Close()
+    }}
+    return tableManager._table{table.Name}
+}}");
+            });
+            foreach (var pair in successSpawns) {
+                pair.Value.ForEach((table) => {
+                    builder.Append($@"
+func (tableManager *TableManager) Get{table.Name}{table.FileName}() *Table{table.Name} {{
+    if (tableManager._table{table.FileName} == nil) {{
+        reader := GetReader(""{table.FileName}"")
+        tableManager._table{table.FileName} = new(Table{table.Name})
+        tableManager._table{table.FileName}.Initialize(""{table.FileName}"", reader)
+        reader.Close()
+    }}
+    return tableManager._table{table.FileName}
+}}");
+                });
+                builder.Append($@"
+func (tableManager *TableManager) Get{pair.Key}(name string) *Table{pair.Key} {{");
+                pair.Value.ForEach((table) => {
+                    builder.Append($@"
+    if (name == ""{table.FileName}"") {{
+        return tableManager.Get{table.Name}{table.FileName}();
+    }}");
+                });
+                builder.Append(@"
+    return nil;
+}");
+            }
             FileUtil.CreateFile(languageInfo.GetCodePath("TableManager"), builder.ToString());
         }
         public void Dispose() { }

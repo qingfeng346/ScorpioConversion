@@ -39,7 +39,7 @@
             "codeOutput": "../../Scorpio.Conversion.Runtime/Go/Example/datas",
             "codeSuffix": "go",
             "package": "datas",
-            "handler": []
+            "handler": ["GoManager"]
         },
         {
             "generator": "c++",

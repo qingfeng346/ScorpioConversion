@@ -15,7 +15,7 @@ type DataTest struct {
     TestBytes []byte
 }
 
-// ID 注释  默认值()
+// GetID 注释  默认值()
 func (data *DataTest) GetID() int32 { 
     return data.TestID;
 }
@@ -93,5 +93,5 @@ func (data *DataTest) Set(value *DataTest) {
 }
 
 func (data *DataTest) String() string {
-    return fmt.Sprintf("TestID : %v , testEnum : %v , TestDate : %v , TestDateTime : %v , TestInt : %v , TestBytes : %v", data.TestID, data.testEnum, data.TestDate, data.TestDateTime, data.TestInt, data.TestBytes);
+    return fmt.Sprintf("TestID [%v] , testEnum [%v] , TestDate [%v] , TestDateTime [%v] , TestInt [%v] , TestBytes [%v]", data.TestID, data.testEnum, data.TestDate, data.TestDateTime, data.TestInt, data.TestBytes);
 }

@@ -227,7 +227,7 @@ func (data *{className}) String() string {{
                     builder.Append(" , ");
                 }
                 first = false;
-                builder.Append($@"{field.Name} : %v");
+                builder.Append($@"{field.Name} [%v]");
             }
             builder.Append("\"");
             foreach (var field in packageClass.Fields) {

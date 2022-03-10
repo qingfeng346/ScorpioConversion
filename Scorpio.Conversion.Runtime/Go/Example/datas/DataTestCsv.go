@@ -14,7 +14,7 @@ type DataTestCsv struct {
     TestInt int32
 }
 
-// ID ×¢ÊÍ  默认值()
+// GetID ×¢ÊÍ  默认值()
 func (data *DataTestCsv) GetID() int32 { 
     return data.TestID;
 }
@@ -83,5 +83,5 @@ func (data *DataTestCsv) Set(value *DataTestCsv) {
 }
 
 func (data *DataTestCsv) String() string {
-    return fmt.Sprintf("TestID : %v , testEnum : %v , TestDate : %v , TestDateTime : %v , TestInt : %v", data.TestID, data.testEnum, data.TestDate, data.TestDateTime, data.TestInt);
+    return fmt.Sprintf("TestID [%v] , testEnum [%v] , TestDate [%v] , TestDateTime [%v] , TestInt [%v]", data.TestID, data.testEnum, data.TestDate, data.TestDateTime, data.TestInt);
 }
