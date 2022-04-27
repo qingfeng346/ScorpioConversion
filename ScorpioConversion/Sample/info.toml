@@ -1,0 +1,47 @@
+
+dataOutput = "../../Scorpio.Conversion.Runtime"
+dataSuffix = "data"
+package = "Datas"
+handler = []
+
+[[languages]]
+generator = "c#"
+codeOutput = "../../Scorpio.Conversion.Runtime/CSharp/Example/src"
+codeSuffix = "cs"
+handler = [ "C#Manager" ]
+
+[[languages]]
+generator = "sco"
+codeOutput = "../../Scorpio.Conversion.Runtime/CSharp/Example/sco"
+codeSuffix = "sco"
+handler = [ "ScorpioManager" ]
+
+[[languages]]
+generator = "java"
+codeOutput = "../../Scorpio.Conversion.Runtime/Java/Example/src"
+codeSuffix = "java"
+handler = [ "JavaManager" ]
+
+[[languages]]
+generator = "javascript"
+codeOutput = "../../Scorpio.Conversion.Runtime/Javascript/Example/src"
+codeSuffix = "js"
+handler = [ "JavascriptManager" ]
+
+[[languages]]
+generator = "python"
+codeOutput = "../../Scorpio.Conversion.Runtime/Python/Example/src"
+codeSuffix = "py"
+handler = [ "PythonManager" ]
+
+[[languages]]
+generator = "go"
+codeOutput = "../../Scorpio.Conversion.Runtime/Go/Example/datas"
+codeSuffix = "go"
+package = "datas"
+handler = [ "GoManager" ]
+
+[[languages]]
+generator = "c++"
+codeOutput = "../../Scorpio.Conversion.Runtime/CPP/Example"
+codeSuffix = "h"

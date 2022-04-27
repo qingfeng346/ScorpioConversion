@@ -10,7 +10,7 @@
             "request": "launch",
             "preLaunchTask": "build",
             "program": "${workspaceFolder}/ScorpioConversion/bin/Debug/net6.0/scov.dll",
-            "args": ["build", "-package", "Datas", "-name", "file", "-config", "./Config", "-paths", "./Excel", "-branch", "branch1", "-info", "info.json"],
+            "args": ["build", "-package", "Datas", "-name", "file", "-config", "./Config", "-paths", "./Excel", "-branch", "branch1", "-info", "info.toml"],
             "cwd": "${workspaceFolder}/Sample",
             "console": "internalConsole",
             "stopAtEntry": false

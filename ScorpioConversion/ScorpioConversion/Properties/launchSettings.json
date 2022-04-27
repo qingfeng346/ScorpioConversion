@@ -2,7 +2,7 @@
   "profiles": {
     "build": {
       "commandName": "Project",
-      "commandLineArgs": "build -package Datas -name file -config ./Config -paths ./Excel -branch branch1 -info info.json",
+      "commandLineArgs": "build -package Datas -name file -config ./Config -paths ./Excel -branch branch1 -info info.toml",
       "workingDirectory": "../Sample"
     },
     "WSL": {

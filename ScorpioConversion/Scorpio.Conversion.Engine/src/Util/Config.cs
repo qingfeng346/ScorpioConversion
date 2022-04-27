@@ -1,8 +1,8 @@
 ﻿using System.IO;
 using System.Collections.Generic;
 using Scorpio.Commons;
-using Newtonsoft.Json;
 using System.Linq;
+using Tomlyn;
 namespace Scorpio.Conversion.Engine {
     public class Config {
         public static HashSet<string> Tags { get; private set; }                    //标签列表
@@ -25,7 +25,9 @@ namespace Scorpio.Conversion.Engine {
             foreach (var path in paths) {
                 Files.AddRange(Directory.GetFiles(path, "*", SearchOption.AllDirectories).Where(_ => _.IsExcel()));
             }
-            BuildInfo = JsonConvert.DeserializeObject<BuildInfo>(FileUtil.GetFileString(info));
+            var tomlOption = new TomlModelOptions();
+            tomlOption.ConvertPropertyName = name => name;
+            BuildInfo = Toml.ToModel<BuildInfo>(FileUtil.GetFileString(info), null, tomlOption);
         }
         public static bool ContainsTags(string[] tags) {
             if (tags == null || tags.Length == 0 || Tags.Count == 0) { return true; }

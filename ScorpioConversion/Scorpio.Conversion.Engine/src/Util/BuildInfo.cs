@@ -2,24 +2,24 @@
 using System.Collections.Generic;
 namespace Scorpio.Conversion.Engine {
     public class LanguageInfo {
-        public string codeOutput;       //代码导出目录
-        public string codeSuffix;       //代码文件后缀名
-        public string dataOutput;       //数据导出目录
-        public string dataSuffix;       //数据文件后缀名
-        public string package;          //命名空间
-        public string writer;           //写入流
-        public string generator;        //生成器
-        public string[] handler;        //后续处理
+        public string codeOutput { get; set; }                      //代码导出目录
+        public string codeSuffix { get; set; }                      //代码文件后缀名
+        public string dataOutput { get; set; }                      //数据导出目录
+        public string dataSuffix { get; set; }                      //数据文件后缀名
+        public string package { get; set; }                         //命名空间
+        public string writer { get; set; }                          //写入流
+        public string generator { get; set; }                       //生成器
+        public List<string> handler { get; set; } = new List<string>();      //后续处理
     }
     public class BuildInfo {
-        public string codeSuffix = "code";      //默认代码文件后缀名
-        public string codeOutput = "";          //默认代码导出目录
-        public string dataSuffix = "data";      //默认数据文件后缀名
-        public string dataOutput = "";          //默认数据文件导出目录
-        public string package = "scov";         //默认命名空间
-        public string writer = "default";       //默认写入流
-        public string[] handler;                //全局后续处理,只执行一次
-        public List<LanguageInfo> languages = new List<LanguageInfo>();
+        public string codeSuffix { get; set; } = "code";            //默认代码文件后缀名
+        public string codeOutput { get; set; } = "";                //默认代码导出目录
+        public string dataSuffix { get; set; } = "data";            //默认数据文件后缀名
+        public string dataOutput { get; set; } = "";                //默认数据文件导出目录
+        public string package { get; set; } = "scov";               //默认命名空间
+        public string writer { get; set; } = "default";             //默认写入流
+        public List<string> handler { get; set; } = new List<string>();                   //全局后续处理,只执行一次
+        public List<LanguageInfo> languages { get; set; } = new List<LanguageInfo>();     //所有语言
         private LanguageInfo GetLanguageInfo(LanguageInfo languageInfo) {
             if (string.IsNullOrWhiteSpace(languageInfo.codeOutput)) {
                 languageInfo.codeOutput = codeOutput;
@@ -66,17 +66,14 @@ namespace Scorpio.Conversion.Engine {
             }
         }
         public void Handle(List<TableBuilder> successTables, SortedDictionary<string, List<TableBuilder>> successSpawns, CommandLine command) {
-            if (handler != null) {
-                foreach (var h in handler) {
-                    HandlerManager.Instance.Get(h).Handle(null, successTables, successSpawns, Config.L10NDatas, command);
-                }
-            }
+            handler.ForEach(h => {
+                HandlerManager.Instance.Get(h).Handle(null, successTables, successSpawns, Config.L10NDatas, command);
+            });
             foreach (var language in languages) {
                 var languageInfo = GetLanguageInfo(language);
-                if (languageInfo.handler == null) { continue; }
-                foreach (var handler in languageInfo.handler) {
-                    HandlerManager.Instance.Get(handler).Handle(languageInfo, successTables, successSpawns, Config.L10NDatas, command);
-                }
+                languageInfo.handler.ForEach(h => {
+                    HandlerManager.Instance.Get(h).Handle(languageInfo, successTables, successSpawns, Config.L10NDatas, command);
+                });
             }
         }
     }

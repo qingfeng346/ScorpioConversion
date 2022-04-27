@@ -2,6 +2,7 @@
 using System.IO;
 using System.Text;
 using Scorpio.Userdata;
+using Scorpio;
 namespace Scorpio.Conversion.Engine {
     public interface IPackage {
 
@@ -120,8 +121,8 @@ namespace Scorpio.Conversion.Engine {
                 Consts.Clear();
                 Classes.Clear();
             }
-            TypeManager.PushAssembly(typeof(Scorpio.Commons.FileUtil).Assembly);
-            TypeManager.PushAssembly(GetType().Assembly);
+            Script.PushAssembly(typeof(Scorpio.Commons.FileUtil).Assembly);
+            Script.PushAssembly(GetType().Assembly);
             Script.LoadLibraryV1();
             var global = Script.Global;
             var globalKeys = new HashSet<string>(global.GetKeys());
