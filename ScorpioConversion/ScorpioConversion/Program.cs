@@ -33,7 +33,6 @@ namespace Scorpio.Conversion {
         private readonly static string[] ParameterFiles = new[] { "--files", "-files" };        //所有的excel文件
         private readonly static string[] ParameterPaths = new[] { "--paths", "-paths" };        //所有的excel文件目录
         private readonly static string[] ParameterTags = new[] { "--tags", "-tags" };           //需要过滤的文件tags
-        private readonly static string[] ParameterName = new[] { "--name", "-name" };           //导出名字使用文件名还是sheet名
         private readonly static string[] ParameterInfo = new[] { "--info", "-info" };           //Build信息
         private readonly static string[] ParameterOutput = new[] { "--output", "-output" };     //输出目录
         private readonly static string[] ParameterReader = new[] { "--reader", "-reader" };     //反编译的Reader
@@ -96,8 +95,8 @@ namespace Scorpio.Conversion {
                               command.GetValues(ParameterTags),
                               command.GetValues(ParameterBranch),
                               command.GetValue(ParameterInfo));
-            var useFileName = command.GetValueDefault(ParameterName, "sheet").ToLower() == "file";
             if (Config.Files.Count == 0) throw new System.Exception("至少选择一个excel文件");
+            //MiniExcelLibs.MiniExcel.Query()
             var successTables = new List<TableBuilder>();
             var successSpawns = new SortedDictionary<string, List<TableBuilder>>();
             foreach (var file in Config.Files) {
@@ -112,7 +111,7 @@ namespace Scorpio.Conversion {
                         try {
                             var stopwatch = Stopwatch.StartNew();
                             var builder = new TableBuilder();
-                            builder.SetFileName(useFileName ? Path.GetFileNameWithoutExtension(file) : sheetName.Trim());
+                            builder.SetFileName(sheetName.Trim());
                             builder.SetSource($"{file} - {sheetName}");
                             if (!builder.Parse(dataTable)) {
                                 continue;
