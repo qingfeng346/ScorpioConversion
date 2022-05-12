@@ -68,3 +68,6 @@ $version | Set-Content ./version -NoNewline -Encoding utf8
 python setup.py sdist
 Set-Location $cur
 
+Write-Host "生成完成"
+
+Write-Host "更新winget命令 wingetcreate update --urls https://github.com/qingfeng346/ScorpioConversion/releases/download/v$version/scov-$version-win-x64.msi --version $version Scorpio.scov"
