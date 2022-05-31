@@ -106,7 +106,7 @@ namespace Scorpio.Conversion {
                     using var fileStream = new FileStream(tempFile, FileMode.Open, FileAccess.Read);
                     using var excelReader = file.IsCsv() ? ExcelReaderFactory.CreateCsvReader(fileStream) : ExcelReaderFactory.CreateReader(fileStream);
                     foreach (DataTable dataTable in excelReader.AsDataSet().Tables) {
-                        var sheetName = dataTable.TableName;
+                        var sheetName = file.IsCsv() ? Path.GetFileNameWithoutExtension(file) : dataTable.TableName;
                         if (sheetName.IsInvalid()) { continue; }
                         try {
                             var stopwatch = Stopwatch.StartNew();
