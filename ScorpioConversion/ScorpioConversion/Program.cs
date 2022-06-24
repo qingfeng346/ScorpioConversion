@@ -47,6 +47,7 @@ namespace Scorpio.Conversion {
                 perform.Start(args, null, null);
             } catch (System.Exception e) {
                 Console.Error.WriteLine(e);
+                Environment.Exit(1);
             }
         }
         static void LoadAssembly(CommandLine command) {
