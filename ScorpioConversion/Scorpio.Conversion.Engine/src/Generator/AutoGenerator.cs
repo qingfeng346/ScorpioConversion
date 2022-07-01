@@ -2,10 +2,8 @@
 namespace Scorpio.Conversion.Engine {
     public class AutoGenerator : Attribute {
         public string Name { get; private set; }
-        public object[] Args { get; private set; }
-        public AutoGenerator(string name, params object[] args) {
+        public AutoGenerator(string name) {
             this.Name = name;
-            this.Args = args;
         }
     }
 }

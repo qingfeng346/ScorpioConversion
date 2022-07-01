@@ -97,7 +97,6 @@ namespace Scorpio.Conversion {
                               command.GetValues(ParameterBranch),
                               command.GetValue(ParameterInfo));
             if (Config.Files.Count == 0) throw new System.Exception("至少选择一个excel文件");
-            //MiniExcelLibs.MiniExcel.Query()
             var successTables = new List<TableBuilder>();
             var successSpawns = new SortedDictionary<string, List<TableBuilder>>();
             foreach (var file in Config.Files) {

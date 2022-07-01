@@ -1,8 +1,8 @@
 ﻿namespace Scorpio.Conversion.Engine {
     public class ScriptGenerator : IGenerator {
         public ScriptValue Value { get; private set; }
-        public ScriptGenerator(ScriptValue value) {
-            Value = value;
+        public ScriptGenerator(ScriptValue value, object[] args) {
+            Value = value.call(ScriptValue.Null, args);
         }
         public bool Call(string functionName, out ScriptValue ret, params object[] args) {
             var func = Value.GetValue(functionName);

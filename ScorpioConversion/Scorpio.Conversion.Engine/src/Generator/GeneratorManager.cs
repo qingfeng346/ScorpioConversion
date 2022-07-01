@@ -2,7 +2,7 @@
 using System.Reflection;
 
 namespace Scorpio.Conversion.Engine {
-    public class GeneratorManager : BaseManager<IGenerator> {
+    public class GeneratorManager : BaseManager<IGenerator, ScriptGenerator> {
         public static GeneratorManager Instance { get; } = new GeneratorManager();
         private static readonly Type TypeBase = typeof(IGenerator);
         protected override string Name { get; } = "Generator";
@@ -11,11 +11,8 @@ namespace Scorpio.Conversion.Engine {
                 if (type.IsInterface || type.IsAbstract || !TypeBase.IsAssignableFrom(type)) { continue; }
                 var auto = type.GetCustomAttribute<AutoGenerator>();
                 if (auto == null) { continue; }
-                Add(auto.Name, type, auto.Args);
+                Add(auto.Name, type);
             }
-        }
-        public void Add(string name, ScriptValue scriptValue) {
-            Add(name, typeof(ScriptGenerator), scriptValue);
         }
     }
 }

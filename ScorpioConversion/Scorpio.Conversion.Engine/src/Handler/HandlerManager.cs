@@ -2,7 +2,7 @@
 using System.Reflection;
 
 namespace Scorpio.Conversion.Engine {
-    public class HandlerManager : BaseManager<IHandler> {
+    public class HandlerManager : BaseManager<IHandler, ScriptHandler> {
         public static HandlerManager Instance { get; } = new HandlerManager();
         private static readonly Type TypeBase = typeof(IHandler);
         protected override string Name => "Handler";

@@ -29,3 +29,8 @@ table_Int3 = [
         type: "int32"
     }
 ]
+class TestHandler {
+    Handle() {
+        print("TestHandler.Handle")
+    }
+}

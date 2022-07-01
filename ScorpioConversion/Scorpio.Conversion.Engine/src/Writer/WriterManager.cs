@@ -2,7 +2,7 @@
 using System.Reflection;
 
 namespace Scorpio.Conversion.Engine {
-    public class WriterManager : BaseManager<IWriter> {
+    public class WriterManager : BaseManager<IWriter, ScriptWriter> {
         public static WriterManager Instance { get; } = new WriterManager();
         private static readonly Type TypeBase = typeof(IWriter);
         protected override string Name => "Writer";
@@ -11,7 +11,7 @@ namespace Scorpio.Conversion.Engine {
                 if (type.IsInterface || type.IsAbstract || !TypeBase.IsAssignableFrom(type)) { continue; }
                 var auto = type.GetCustomAttribute<AutoWriter>();
                 if (auto == null) { continue; }
-                Add(auto.Name, type, auto.Args);
+                Add(auto.Name, type);
             }
         }
     }

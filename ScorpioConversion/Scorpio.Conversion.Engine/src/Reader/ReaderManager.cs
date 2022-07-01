@@ -2,7 +2,7 @@
 using System.Reflection;
 
 namespace Scorpio.Conversion.Engine {
-    public class ReaderManager : BaseManager<IReader> {
+    public class ReaderManager : BaseManager<IReader, ScriptReader> {
         public static ReaderManager Instance { get; } = new ReaderManager();
         private static readonly Type TypeBase = typeof(IReader);
         protected override string Name => "Reader";
@@ -11,7 +11,7 @@ namespace Scorpio.Conversion.Engine {
                 if (type.IsInterface || type.IsAbstract || !TypeBase.IsAssignableFrom(type)) { continue; }
                 var auto = type.GetCustomAttribute<AutoReader>();
                 if (auto == null) { continue; }
-                Add(auto.Name, type, auto.Args);
+                Add(auto.Name, type);
             }
         }
     }

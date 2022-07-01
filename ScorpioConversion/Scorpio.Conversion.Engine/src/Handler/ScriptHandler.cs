@@ -5,8 +5,8 @@ using System.Collections.Generic;
 namespace Scorpio.Conversion.Engine {
     public class ScriptHandler : IHandler {
         public ScriptValue Value { get; private set; }
-        public ScriptHandler(ScriptValue value) {
-            Value = value;
+        public ScriptHandler(ScriptValue value, object[] args) {
+            Value = value.call(ScriptValue.Null, args);
         }
         public bool Call(string functionName, out ScriptValue ret, params object[] args) {
             var func = Value.GetValue(functionName);

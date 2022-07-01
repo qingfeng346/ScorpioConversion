@@ -121,7 +121,7 @@ namespace Scorpio.Conversion.Engine {
                 Consts.Clear();
                 Classes.Clear();
             }
-            Script.PushAssembly(typeof(Scorpio.Commons.FileUtil).Assembly);
+            Script.PushAssembly(typeof(Commons.FileUtil).Assembly);
             Script.PushAssembly(GetType().Assembly);
             Script.LoadLibraryV1();
             var global = Script.Global;
