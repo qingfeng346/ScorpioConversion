@@ -15,7 +15,20 @@ namespace Scorpio.Conversion.Engine {
         public SortedDictionary<string, PackageEnum> Enums { get; set; } = new SortedDictionary<string, PackageEnum>();
         public SortedDictionary<string, PackageConst> Consts { get; set; } = new SortedDictionary<string, PackageConst>();
         public SortedDictionary<string, PackageClass> Classes { get; set; } = new SortedDictionary<string, PackageClass>();
-        public Script Script { get; private set; } = new Script();
+        public Script Script { get; private set; }
+        public PackageParser() {
+            Enums.Clear();
+            Consts.Clear();
+            Classes.Clear();
+            Script = new Script();
+            Script.PushAssembly(typeof(Commons.FileUtil).Assembly);
+            Script.PushAssembly(GetType().Assembly);
+            Script.LoadLibraryV1();
+            Script.SetGlobal("HandlerManager", ScorpioTypeManager.GetUserdataType(typeof(HandlerManager)));
+            Script.SetGlobal("GeneratorManager", ScorpioTypeManager.GetUserdataType(typeof(GeneratorManager)));
+            Script.SetGlobal("ReaderManager", ScorpioTypeManager.GetUserdataType(typeof(ReaderManager)));
+            Script.SetGlobal("WriterManager", ScorpioTypeManager.GetUserdataType(typeof(WriterManager)));
+        }
         void ParseEnum(string name, ScriptMap table) {
             var enums = new PackageEnum();
             foreach (var pair in table) {
@@ -115,15 +128,7 @@ namespace Scorpio.Conversion.Engine {
             }
             throw new System.Exception($"找不到自定义类 : {name}");
         }
-        public void Parse(string dir, bool clear = false) {
-            if (clear) {
-                Enums.Clear();
-                Consts.Clear();
-                Classes.Clear();
-            }
-            Script.PushAssembly(typeof(Commons.FileUtil).Assembly);
-            Script.PushAssembly(GetType().Assembly);
-            Script.LoadLibraryV1();
+        public void Parse(string dir) {
             var global = Script.Global;
             var globalKeys = new HashSet<string>(global.GetKeys());
             var files = Directory.Exists(dir) ? Directory.GetFiles(dir, "*.sco", SearchOption.AllDirectories) : (File.Exists(dir) ? new string[] { dir } : System.Array.Empty<string>());

@@ -1,7 +1,4 @@
-﻿using Scorpio.Commons;
-using System.IO;
-using System;
-
+﻿using System;
 namespace Scorpio.Conversion.Engine {
     public abstract class IGenerator : IDisposable {
         public virtual string GetDataPath(LanguageInfo languageInfo, string name) {

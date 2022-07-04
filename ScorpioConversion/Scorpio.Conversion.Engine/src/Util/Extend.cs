@@ -3,6 +3,7 @@ using System.Data;
 using NPOI.SS.UserModel;
 using Scorpio.Commons;
 using System.IO;
+using System.Text;
 using System.Collections.Generic;
 namespace Scorpio.Conversion.Engine {
     public static class Extend {
@@ -260,6 +261,35 @@ namespace Scorpio.Conversion.Engine {
         }
         public static string GetDataPath(this LanguageInfo languageInfo, string name) {
             return Path.Combine(ScorpioUtil.CurrentDirectory, languageInfo.dataOutput, $"{name}.{languageInfo.dataSuffix}");
+        }
+        public static string GetStackInfoString(this Script script) {
+            var builder = new StringBuilder();
+            var stackInfo = script.GetStackInfo();
+            builder.Append($"{stackInfo.Breviary}:{stackInfo.Line} ");
+            var stackInfos = script.GetStackInfos();
+            for (var i = stackInfos.Length - 2; i >= 0; --i) {
+                builder.Append($@"
+    {stackInfos[i].Breviary}:{stackInfos[i].Line}");
+            }
+            return builder.ToString();
+        }
+        public static ScriptValue Call(this ScriptBase scriptBase, string functionName, params object[] args) {
+            scriptBase.Call(functionName, out var ret, args);
+            return ret;
+        }
+        public static bool Call(this ScriptBase scriptBase, string functionName, out ScriptValue ret, params object[] args) {
+            var value = scriptBase.Value;
+            var func = value.GetValue(functionName);
+            if (func.valueType == ScriptValue.scriptValueType) {
+                try {
+                    ret = func.call(value, args);
+                    return true;
+                } catch (System.Exception e) {
+                    throw new System.Exception($"Call is error Type:{scriptBase.GetType()}  Function:{functionName} at:{Config.Parser.Script.GetStackInfoString()} error:{e} ");
+                }
+            }
+            ret = ScriptValue.Null;
+            return false;
         }
         public static void WriteHead(this IWriter writer, PackageClass packageClass, HashSet<IPackage> customTypes) {
             writer.WriteClass(packageClass.Fields);     //表结构
