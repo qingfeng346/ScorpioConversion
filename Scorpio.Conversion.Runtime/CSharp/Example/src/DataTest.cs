@@ -12,11 +12,11 @@ public partial class DataTest : IData {
     public int ID => TestID;
     /* <summary> 注释  默认值() </summary> */
     public int TestID { get; private set; }
-    /* <summary>   默认值() </summary> */
+    /* <summary>   默认值(value1) </summary> */
     public TestEnum testEnum { get; private set; }
     /* <summary>   默认值() </summary> */
     public ReadOnlyCollection<Int3> TestDate { get; private set; }
-    /* <summary>   默认值() </summary> */
+    /* <summary>   默认值(2010/10/20 10:20) </summary> */
     public DateTime TestDateTime { get; private set; }
     /* <summary>   默认值(999) </summary> */
     public int TestInt { get; private set; }

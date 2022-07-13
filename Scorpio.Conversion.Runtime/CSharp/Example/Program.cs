@@ -8,12 +8,15 @@ using Scorpio.Userdata;
 public class Program {
     public static void Main(string[] args) {
         try {
+            Console.WriteLine("=======================Test=======================");
             foreach (var pair in TableManager.Instance.Test.Datas()) {
                 Console.WriteLine(pair.Value.ToString());
             }
+            Console.WriteLine("=======================SpawnTest1=======================");
             foreach (var pair in TableManager.Instance.SpawnTest1.Datas()) {
                 Console.WriteLine(pair.Value.ToString());
             }
+            Console.WriteLine("=======================TestCsv=======================");
             foreach (var pair in TableManager.Instance.TestCsv.Datas()) {
                 Console.WriteLine(pair.Value.ToString());
             }

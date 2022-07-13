@@ -23,7 +23,7 @@ func (data *DataTest) GetID() int32 {
 func (data *DataTest) GetTestID() int32 { 
     return data.TestID;
 }
-// GettestEnum   默认值()
+// GettestEnum   默认值(value1)
 func (data *DataTest) GettestEnum() int32 { 
     return data.testEnum;
 }
@@ -31,7 +31,7 @@ func (data *DataTest) GettestEnum() int32 {
 func (data *DataTest) GetTestDate() *list.List { 
     return data.TestDate;
 }
-// GetTestDateTime   默认值()
+// GetTestDateTime   默认值(2010/10/20 10:20)
 func (data *DataTest) GetTestDateTime() time.Time { 
     return data.TestDateTime;
 }

@@ -10,3 +10,9 @@ languages:
     handler:
       - C#Manager
       - TestHandler
+      
+  - generator: "sco"
+    codeOutput: "../../Scorpio.Conversion.Runtime/CSharp/Example/sco"
+    codeSuffix: "sco"
+    handler
+      - "ScorpioManager"

@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Data;
-using NPOI.SS.UserModel;
 using Scorpio.Commons;
 using System.IO;
 using System.Text;
@@ -77,7 +75,6 @@ namespace Scorpio.Conversion.Engine {
         public static bool IsInvalid(this string str) => string.IsNullOrWhiteSpace(str) || str.StartsWith("!") || str.IsMergeSheet();
         public static bool IsExcel(this string file) => !file.Contains("~$") && (file.EndsWith(".xls") || file.EndsWith(".xlsx") || file.EndsWith(".csv"));
         public static bool IsCsv(this string file) => file.EndsWith(".csv");
-        public static bool IsL10N(this string str) => !str.IsEmptyString() && str.Trim().StartsWith("$");
         public static bool IsMergeSheet(this string str) => str.ToLowerInvariant().StartsWith(MERGE_KEY);
         public static string GetMergeSheet(this string str) => str.Substring(MERGE_KEY.Length);
         public static string ParseFlag(this string str, out bool invalid, out bool l10n) {
@@ -193,71 +190,14 @@ namespace Scorpio.Conversion.Engine {
             }
             throw new System.Exception($"未知的二进制数据类型 : {value}");
         }
-        public static string GetCellString(this IRow row, int index) {
-            return GetCellString(row, index, "");
-        }
-        public static string GetCellString(this IRow row, int index, string def) {
-            return row.GetCell(index, MissingCellPolicy.CREATE_NULL_AS_BLANK).GetCellString(def);
-        }
-        public static string GetCellString(this ICell cell, string def) {
-            if (cell == null) return def;
-            if (cell.CellType == CellType.Numeric) {
-                return cell.NumericCellValue.ToString();
-            } else {
-                cell.SetCellType(CellType.String);
-                var value = cell.StringCellValue.Trim();
-                return value.IsEmptyString() ? def : value;
-            }
-        }
-        public static void SetCellString(this ICell cell, string value) {
-            if (cell == null) return;
-            cell.SetCellType(CellType.String);
-            cell.SetCellValue(value != null ? value.Trim() : value);
-        }
         public static string GetDataString(this object cell, string def = "") {
             if (cell == null || cell == DBNull.Value) { return def; }
-            return cell.ToString();
+            var str = cell.ToString();
+            return str.IsEmptyString() ? def : str;
         }
-        //public static void Split(this string str, Action<string> action) {
-        //    if (str.IsEmptyString()) { return; }
-        //    Array.ForEach(str.Split(Separator), action);
-        //}
         public static string[] SplitArray(this string str) {
             if (str.IsEmptyString()) { return new string[0]; }
             return str.Split(Separator);
-        }
-        public static DataTable AsDataSet(this ISheet sheet) {
-            int maxColumn = 0;
-            for (var i = sheet.FirstRowNum; i <= sheet.LastRowNum; ++i) {
-                var row = sheet.GetRow(i);
-                if (row == null) { continue; }
-                maxColumn = Math.Max(maxColumn, (int)row.LastCellNum);
-            }
-            var dataTable = new DataTable(sheet.SheetName);
-            for (var i = 0; i <= sheet.LastRowNum; ++i) {
-                dataTable.Rows.Add(dataTable.NewRow());
-            }
-            for (var i = 0; i <= maxColumn; ++i) {
-                dataTable.Columns.Add();
-            }
-            for (var i = sheet.FirstRowNum; i <= sheet.LastRowNum; ++i) {
-                var row = sheet.GetRow(i);
-                if (row == null) { continue; }
-                var dataRow = dataTable.Rows[i];
-                for (var j = row.FirstCellNum; j < row.LastCellNum; ++j) {
-                    dataRow[j] = row.GetCell(j).GetCellString("");
-                }
-            }
-            return dataTable;
-        }
-        public static long GetTimeSpan(this DateTime time) {
-            return Convert.ToInt64((time - BaseTime).TotalMilliseconds);
-        }
-        public static void RemoveSheet(this IWorkbook workbook, string name) {
-            var index = workbook.GetSheetIndex(name);
-            if (index >= 0) {
-                workbook.RemoveSheetAt(index);
-            }
         }
         public static string GetCodePath(this LanguageInfo languageInfo, string name) {
             return Path.Combine(ScorpioUtil.CurrentDirectory, languageInfo.codeOutput, $"{name}.{languageInfo.codeSuffix}");

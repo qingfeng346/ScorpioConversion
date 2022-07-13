@@ -27,11 +27,11 @@ class DataTest : public IData {
         __int32 GetID() { return TestID; }
         /* <summary> 注释  默认值() </summary> */
         __int32 GetTestID() { return TestID; }
-        /* <summary>   默认值() </summary> */
+        /* <summary>   默认值(value1) </summary> */
         __int32 GettestEnum() { return testEnum; }
         /* <summary>   默认值() </summary> */
         vector<Int3*>* GetTestDate() { return TestDate; }
-        /* <summary>   默认值() </summary> */
+        /* <summary>   默认值(2010/10/20 10:20) </summary> */
         __int64 GetTestDateTime() { return TestDateTime; }
         /* <summary>   默认值(999) </summary> */
         __int32 GetTestInt() { return TestInt; }

@@ -82,13 +82,13 @@ namespace Scorpio.Conversion.Engine {
             var rows = dataTable.Rows;
             for (var i = 0; i < rows.Count; ++i) {
                 var row = rows[i];
-                var keyCell = row[0].GetDataString().Trim();
+                var keyCell = row[0].GetDataString();
                 if (keyCell.IsEmptyString() ||
                     keyCell == KEYWORD_BEGIN ||
                     keyCell == KEYWORD_END ||
                     keyCell == KEYWORD_BEGINBRANCH ||
                     keyCell == KEYWORD_ENDBRANCH) { continue; }
-                var valueCell = row[1].GetDataString().Trim();
+                var valueCell = row[1].GetDataString();
                 switch (keyCell) {
                     case KEYWORD_FILENAME: FileName = valueCell; break;
                     case KEYWORD_AUTOINC: AutoInc = true; break;
@@ -114,7 +114,7 @@ namespace Scorpio.Conversion.Engine {
         //解析文件头
         void ParseHead(string key, DataRow row) {
             for (var i = 1; i < row.ItemArray.Length; ++i) {
-                var value = row.ItemArray[i].GetDataString().Trim();
+                var value = row.ItemArray[i].GetDataString();
                 var field = GetField(i - 1);
                 switch (key) {
                     case KEYWORD_MAX: if (!value.IsEmptyString()) field.MaxValue = value; break;
@@ -162,7 +162,7 @@ namespace Scorpio.Conversion.Engine {
             var rows = dataTable.Rows;
             for (var i = 0; i < rows.Count; ++i) {
                 var row = rows[i];
-                var keyCell = row[0].GetDataString().Trim();
+                var keyCell = row[0].GetDataString();
                 if (begin == 1) {
                     ParseRow(i, row);
                     if (keyCell == KEYWORD_END) { begin = 0; }
@@ -243,7 +243,7 @@ namespace Scorpio.Conversion.Engine {
                 Config.SpawnsList[Spawn] = LayoutMD5;
                 Name = Spawn;
             }
-            CustomTypes.Clear();
+            CustomTypes = new HashSet<IPackage>();
             AddCustomType(PackageClass);
             if (string.IsNullOrEmpty(FileName)) {
                 throw new System.Exception($"FileName 为空");
@@ -266,11 +266,11 @@ namespace Scorpio.Conversion.Engine {
             var rows = mergeDataTable.Rows;
             for (var i = 0; i < rows.Count; ++i) {
                 var row = rows[i];
-                var keyCell = row[0].GetDataString().Trim();
+                var keyCell = row[0].GetDataString();
                 switch (keyCell) {
                     case KEYWORD_NAME:
                         for (var j = 1; j < row.ItemArray.Length; ++j) {
-                            var name = row.ItemArray[j].GetDataString().Trim().ParseFlag(out var invalid, out _);
+                            var name = row.ItemArray[j].GetDataString().ParseFlag(out var invalid, out _);
                             var field = GetField(j - 1);
                             field.Name = name;
                             field.IsInvalid = invalid;
@@ -278,7 +278,7 @@ namespace Scorpio.Conversion.Engine {
                         break;
                     case KEYWORD_DEFAULT:
                         for (var j = 1; j < row.ItemArray.Length; ++j) {
-                            GetField(j - 1).DefaultValue = row.ItemArray[j].GetDataString().Trim();
+                            GetField(j - 1).DefaultValue = row.ItemArray[j].GetDataString();
                         }
                         break;
                 }
@@ -298,8 +298,7 @@ namespace Scorpio.Conversion.Engine {
                     for (var i = 0; i < fields.Count; ++i) {
                         var field = fields[i];
                         if (field.IsInvalid) { continue; }
-                        var value = row[i + 1].GetDataString();
-                        values.Add(field.Name, value.IsEmptyString() ? field.DefaultValue : value);
+                        values.Add(field.Name, row[i + 1].GetDataString(field.DefaultValue));
                     }
                     if (type == 1) {
                         addValues.Add(firstValue, values);
@@ -310,7 +309,7 @@ namespace Scorpio.Conversion.Engine {
             };
             for (var i = 0; i < rows.Count; ++i) {
                 var row = rows[i];
-                var keyCell = row[0].GetDataString().Trim();
+                var keyCell = row[0].GetDataString();
                 if (type == 0) {
                     switch (keyCell) {
                         case KEYWORD_BEGINADD:

@@ -10,13 +10,13 @@ public class DataTest implements IData {
     public Integer getTestID() { return _TestID; }
     public Integer ID() { return _TestID; }
     private TestEnum _testEnum;
-    /**   默认值() */
+    /**   默认值(value1) */
     public TestEnum gettestEnum() { return _testEnum; }
     private List<Int3> _TestDate;
     /**   默认值() */
     public List<Int3> getTestDate() { return _TestDate; }
     private Date _TestDateTime;
-    /**   默认值() */
+    /**   默认值(2010/10/20 10:20) */
     public Date getTestDateTime() { return _TestDateTime; }
     private Integer _TestInt;
     /**   默认值(999) */
