@@ -27,6 +27,7 @@ namespace Scorpio.Conversion.Engine {
         public const string BYTES_PROTO_FILE = "file://";
         public const string BYTES_PROTO_HTTP = "http://";
         public const string BYTES_PROTO_HTTPS = "https://";
+        public const string MERGE_KEY = "merge@";
 
         //枚举
         public class TableEnum {
@@ -73,10 +74,12 @@ namespace Scorpio.Conversion.Engine {
         public static string GetLineName(this int line) => ScorpioUtil.GetExcelColumn(line);
         public static bool IsEmptyString(this string str) => string.IsNullOrWhiteSpace(str);
         public static bool IsEmptyValue(this ValueList value) => value == null || value.values.Count == 0;
-        public static bool IsInvalid(this string str) => string.IsNullOrWhiteSpace(str) || str.Trim().StartsWith("!");
+        public static bool IsInvalid(this string str) => string.IsNullOrWhiteSpace(str) || str.StartsWith("!") || str.IsMergeSheet();
         public static bool IsExcel(this string file) => !file.Contains("~$") && (file.EndsWith(".xls") || file.EndsWith(".xlsx") || file.EndsWith(".csv"));
         public static bool IsCsv(this string file) => file.EndsWith(".csv");
         public static bool IsL10N(this string str) => !str.IsEmptyString() && str.Trim().StartsWith("$");
+        public static bool IsMergeSheet(this string str) => str.ToLowerInvariant().StartsWith(MERGE_KEY);
+        public static string GetMergeSheet(this string str) => str.Substring(MERGE_KEY.Length);
         public static string ParseFlag(this string str, out bool invalid, out bool l10n) {
             invalid = false;
             l10n = false;

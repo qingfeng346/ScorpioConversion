@@ -14,7 +14,7 @@
   <ItemGroup>
     <PackageReference Include="ExcelDataReader" Version="3.6.0" />
     <PackageReference Include="ExcelDataReader.DataSet" Version="3.6.0" />
-    <PackageReference Include="MiniExcel" Version="1.26.2" />
+    <PackageReference Include="MiniExcel" Version="1.26.5" />
   </ItemGroup>
 
   <ItemGroup>

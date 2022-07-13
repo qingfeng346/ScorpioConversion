@@ -29,12 +29,12 @@ table_Int3 = [
         type: "int32"
     }
 ]
-// class TestHandler {
-//     constructor() {
-//         print("TestHandler.constructor")
-//     }
-//     Handle() {
-//         print("TestHandler.Handle")
-//     }
-// }
-// HandlerManager.Instance.Add("TestHandler", TestHandler)
+class TestHandler {
+    constructor() {
+        print("TestHandler.constructor")
+    }
+    Handle() {
+        print("TestHandler.Handle")
+    }
+}
+HandlerManager.Instance.Add("TestHandler", TestHandler)

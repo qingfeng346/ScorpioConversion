@@ -8,7 +8,7 @@ handler = []
 generator = "c#"
 codeOutput = "../../Scorpio.Conversion.Runtime/CSharp/Example/src"
 codeSuffix = "cs"
-handler = [ "C#Manager", "TestHandler" ]
+handler = [ "C#Manager" ]
 
 [[languages]]
 generator = "sco"

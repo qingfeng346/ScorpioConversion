@@ -1,0 +1,12 @@
+
+dataOutput: '../../Scorpio.Conversion.Runtime'
+dataSuffix: "data"
+package: "Datas"
+
+languages:
+  - generator: "c#"
+    codeOutput: "../../Scorpio.Conversion.Runtime/CSharp/Example/src"
+    codeSuffix: "cs"
+    handler:
+      - C#Manager
+      - TestHandler
