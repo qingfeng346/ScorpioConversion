@@ -74,6 +74,10 @@ public class DefaultReader implements IReader {
 		readFully(bytes, 0, length);
 		return new String(bytes, "utf-8");
 	}
+	public String ReadL10n(String key) throws Exception {
+		ReadString();
+		return key;
+	}
 	public Date ReadDateTime() throws Exception {
 		return new Date(ReadInt64());
 	}

@@ -1,0 +1,9 @@
+{
+    "tasks": [
+        {
+            "label": "build",
+            "command": "pwsh",
+            "args": ["build.ps1"]
+        }
+    ]
+}

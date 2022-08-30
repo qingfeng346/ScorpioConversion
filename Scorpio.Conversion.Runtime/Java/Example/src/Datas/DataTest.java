@@ -24,6 +24,9 @@ public class DataTest implements IData {
     private byte[] _TestBytes;
     /** 内容为1234567890的base64数据  默认值(base64://MTIzNDU2Nzg5MA==) */
     public byte[] getTestBytes() { return _TestBytes; }
+    private String _TestLanguage;
+    /**   默认值() */
+    public String getTestLanguage() { return _TestLanguage; }
     
     public DataTest(String fileName, IReader reader) throws Exception {
         this._TestID = reader.ReadInt32();
@@ -37,6 +40,7 @@ public class DataTest implements IData {
         this._TestDateTime = reader.ReadDateTime();
         this._TestInt = reader.ReadInt32();
         this._TestBytes = reader.ReadBytes();
+        this._TestLanguage = reader.ReadL10n(fileName + ".TestLanguage." + this.ID());
     }
     
     public Object GetData(String key) {
@@ -46,6 +50,7 @@ public class DataTest implements IData {
         if ("TestDateTime".equals(key)) return _TestDateTime;
         if ("TestInt".equals(key)) return _TestInt;
         if ("TestBytes".equals(key)) return _TestBytes;
+        if ("TestLanguage".equals(key)) return _TestLanguage;
         return null;
     }
     
@@ -56,10 +61,11 @@ public class DataTest implements IData {
         this._TestDateTime = value._TestDateTime;
         this._TestInt = value._TestInt;
         this._TestBytes = value._TestBytes;
+        this._TestLanguage = value._TestLanguage;
     }
     
     @Override
     public String toString() {
-        return "TestID:" + _TestID + "," + "testEnum:" + _testEnum + "," + "TestDate:" + _TestDate + "," + "TestDateTime:" + _TestDateTime + "," + "TestInt:" + _TestInt + "," + "TestBytes:" + _TestBytes;
+        return "TestID:" + _TestID + "," + "testEnum:" + _testEnum + "," + "TestDate:" + _TestDate + "," + "TestDateTime:" + _TestDateTime + "," + "TestInt:" + _TestInt + "," + "TestBytes:" + _TestBytes + "," + "TestLanguage:" + _TestLanguage;
     }
 }

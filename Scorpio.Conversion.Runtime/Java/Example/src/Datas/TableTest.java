@@ -4,7 +4,7 @@ import java.util.*;
 import Scorpio.Conversion.Runtime.*;
 
 public class TableTest implements ITable {
-    final String FILE_MD5_CODE = "5c86f5006b60d711c1ca95a5ea69b8db";
+    final String FILE_MD5_CODE = "09fce78ed0fbcdd2f1806a9c3567245d";
     private int m_count = 0;
     private HashMap<Integer, DataTest> m_dataArray = new HashMap<Integer, DataTest>();
     public TableTest Initialize(String fileName, IReader reader) throws Exception {

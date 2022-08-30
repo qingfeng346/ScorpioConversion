@@ -15,6 +15,7 @@ public interface IReader {
 	float ReadFloat() throws Exception;
 	double ReadDouble() throws Exception;
 	String ReadString() throws Exception;
+	String ReadL10n(String key) throws Exception;
 	Date ReadDateTime() throws Exception;
 	byte[] ReadBytes() throws Exception;
 	void Close() throws Exception;
