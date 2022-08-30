@@ -7,6 +7,8 @@ namespace Scorpio.Conversion.Runtime {
         BinaryReader reader;
         Stream stream;
         bool closeStream;
+        public DefaultReader(string file) : this(File.OpenRead(file), true) { }
+        public DefaultReader(byte[] buffer) : this(new MemoryStream(buffer), true) { }
         public DefaultReader(Stream stream, bool closeStream = false) {
             this.stream = stream;
             this.reader = new BinaryReader(stream);
@@ -53,9 +55,12 @@ namespace Scorpio.Conversion.Runtime {
             if (length == 0) return "";
             return Encoding.UTF8.GetString(reader.ReadBytes(length));
         }
+        public virtual string ReadL10n(string key) {
+            ReadString();
+            return key;
+        }
         public virtual DateTime ReadDateTime() {
-            DateTime startTime = BaseTime;
-            return startTime.AddMilliseconds(reader.ReadInt64());
+            return BaseTime.AddMilliseconds(reader.ReadInt64());
         }
         public virtual byte[] ReadBytes() {
             var length = ReadInt32();

@@ -19,6 +19,7 @@ class DataTest {
         this.TestDateTime = reader.ReadDateTime()
         this.TestInt = reader.ReadInt32()
         this.TestBytes = reader.ReadBytes()
+        this.TestLanguage = reader.ReadL10n(fileName + ".TestLanguage." + this.ID)
     }
     
     GetData(key) {
@@ -28,6 +29,7 @@ class DataTest {
         if ("TestDateTime" == key) { return this.TestDateTime }
         if ("TestInt" == key) { return this.TestInt }
         if ("TestBytes" == key) { return this.TestBytes }
+        if ("TestLanguage" == key) { return this.TestLanguage }
         return null;
     }
     
@@ -38,10 +40,11 @@ class DataTest {
         this.TestDateTime = value.TestDateTime
         this.TestInt = value.TestInt
         this.TestBytes = value.TestBytes
+        this.TestLanguage = value.TestLanguage
     }
     
     toString() {
-        return "TestID:" + this.TestID + "," + "testEnum:" + this.testEnum + "," + "TestDate:" + this.TestDate + "," + "TestDateTime:" + this.TestDateTime + "," + "TestInt:" + this.TestInt + "," + "TestBytes:" + this.TestBytes
+        return "TestID:" + this.TestID + "," + "testEnum:" + this.testEnum + "," + "TestDate:" + this.TestDate + "," + "TestDateTime:" + this.TestDateTime + "," + "TestInt:" + this.TestInt + "," + "TestBytes:" + this.TestBytes + "," + "TestLanguage:" + this.TestLanguage
     }
 }
 module.exports = DataTest;

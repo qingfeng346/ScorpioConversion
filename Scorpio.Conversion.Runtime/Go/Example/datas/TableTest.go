@@ -12,7 +12,7 @@ func (table *TableTest) Initialize(fileName string, reader ScorpioConversionRunt
 	}
     row := int(reader.ReadInt32());
     layoutMD5 := reader.ReadString();
-    if (layoutMD5 != "5c86f5006b60d711c1ca95a5ea69b8db") {
+    if (layoutMD5 != "09fce78ed0fbcdd2f1806a9c3567245d") {
         return errors.New("File schemas do not match [TableTest] : " + fileName)
     }
     ScorpioConversionRuntime.ReadHead(reader);

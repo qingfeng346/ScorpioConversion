@@ -13,6 +13,7 @@ type DataTest struct {
     TestDateTime time.Time
     TestInt int32
     TestBytes []byte
+    TestLanguage string
 }
 
 // GetID 注释  默认值()
@@ -43,6 +44,10 @@ func (data *DataTest) GetTestInt() int32 {
 func (data *DataTest) GetTestBytes() []byte { 
     return data.TestBytes;
 }
+// GetTestLanguage   默认值()
+func (data *DataTest) GetTestLanguage() string { 
+    return data.TestLanguage;
+}
 
 func NewDataTest(fileName string, reader ScorpioConversionRuntime.IReader) *DataTest {
     data := &DataTest{}
@@ -58,6 +63,7 @@ func NewDataTest(fileName string, reader ScorpioConversionRuntime.IReader) *Data
     data.TestDateTime = reader.ReadDateTime();
     data.TestInt = reader.ReadInt32();
     data.TestBytes = reader.ReadBytes();
+    data.TestLanguage = reader.ReadL10n(fmt.Sprintf("%v.TestLanguage.%v", fileName, this.ID));
     return data
 }
 
@@ -80,6 +86,9 @@ func (data *DataTest) GetData(key string) interface{} {
     if key == "TestBytes" {
         return data.TestBytes;
     }
+    if key == "TestLanguage" {
+        return data.TestLanguage;
+    }
     return nil;
 }
 
@@ -90,8 +99,9 @@ func (data *DataTest) Set(value *DataTest) {
     data.TestDateTime = value.TestDateTime;
     data.TestInt = value.TestInt;
     data.TestBytes = value.TestBytes;
+    data.TestLanguage = value.TestLanguage;
 }
 
 func (data *DataTest) String() string {
-    return fmt.Sprintf("TestID [%v] , testEnum [%v] , TestDate [%v] , TestDateTime [%v] , TestInt [%v] , TestBytes [%v]", data.TestID, data.testEnum, data.TestDate, data.TestDateTime, data.TestInt, data.TestBytes);
+    return fmt.Sprintf("TestID [%v] , testEnum [%v] , TestDate [%v] , TestDateTime [%v] , TestInt [%v] , TestBytes [%v] , TestLanguage [%v]", data.TestID, data.testEnum, data.TestDate, data.TestDateTime, data.TestInt, data.TestBytes, data.TestLanguage);
 }

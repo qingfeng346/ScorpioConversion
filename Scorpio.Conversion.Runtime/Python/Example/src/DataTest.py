@@ -18,6 +18,7 @@ class DataTest:
         this.TestDateTime = reader.ReadDateTime()
         this.TestInt = reader.ReadInt32()
         this.TestBytes = reader.ReadBytes()
+        this.TestLanguage = reader.ReadL10n(fileName + ".TestLanguage." + str(this.ID))
     
     def GetData(this, key):
         if "TestID" == key:
@@ -32,6 +33,8 @@ class DataTest:
             return this.TestInt
         if "TestBytes" == key:
             return this.TestBytes
+        if "TestLanguage" == key:
+            return this.TestLanguage
         return None
 
     
@@ -42,7 +45,8 @@ class DataTest:
         this.TestDateTime = value.TestDateTime
         this.TestInt = value.TestInt
         this.TestBytes = value.TestBytes
+        this.TestLanguage = value.TestLanguage
     
     def __str__(this):
-        return "TestID:" + str(this.TestID) + "," + "testEnum:" + str(this.testEnum) + "," + "TestDate:" + str(this.TestDate) + "," + "TestDateTime:" + str(this.TestDateTime) + "," + "TestInt:" + str(this.TestInt) + "," + "TestBytes:" + str(this.TestBytes)
+        return "TestID:" + str(this.TestID) + "," + "testEnum:" + str(this.testEnum) + "," + "TestDate:" + str(this.TestDate) + "," + "TestDateTime:" + str(this.TestDateTime) + "," + "TestInt:" + str(this.TestInt) + "," + "TestBytes:" + str(this.TestBytes) + "," + "TestLanguage:" + str(this.TestLanguage)
 

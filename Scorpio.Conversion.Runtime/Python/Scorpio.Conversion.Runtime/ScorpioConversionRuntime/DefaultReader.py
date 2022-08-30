@@ -48,6 +48,10 @@ class DefaultReader:
         length = self.ReadUInt16()
         return self.readBytes(length).decode("utf-8")
 
+    def ReadL10n(self, key):
+        self.ReadString()
+        return key
+        
     def ReadDateTime(self):
         return time.localtime(self.ReadInt64() / 1000)
         

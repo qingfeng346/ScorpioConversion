@@ -8,7 +8,7 @@ namespace Scorpio.Conversion.Engine {
         public string Type { get; set; }                 //字段类型
         public string Default { get; set; }              //字段默认值
         public string Comment { get; set; }              //字段注释
-        public bool IsL10N { get; set; } = false;        //需要翻译的字段 
+        public bool IsL10n { get; set; } = false;        //需要翻译的字段 
         public ScriptMap Attribute { get; set; }         //字段属性,字段配置
         public string MaxValue { get; set; }             //最大值（用于校验数据）
         public string MinValue { get; set; }             //最小值（用于校验数据）

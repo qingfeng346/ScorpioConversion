@@ -103,6 +103,10 @@ class ScorpioReader {
         this.offset += length
         return ret
     }
+    ReadL10n(key) {
+        this.ReadString()
+        return key
+    }
     ReadDateTime() {
         let time = this.ReadInt64()
         return new Date(time.toNumber())

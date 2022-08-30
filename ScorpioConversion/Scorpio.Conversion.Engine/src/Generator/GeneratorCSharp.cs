@@ -124,8 +124,8 @@ public partial class {className} : IData {{
             foreach (var field in packageClass.Fields) {
                 var languageType = GetLanguageType(field);
                 string fieldRead;
-                if (field.Attribute != null && field.Attribute.GetValue("Language").IsTrue) {
-                    fieldRead = $@"reader.ReadL10N(fileName + "".{field.Name}."" + this.ID)";
+                if (field.IsL10n) {
+                    fieldRead = $@"reader.ReadL10n($""{{fileName}}.{field.Name}.{{ID}}"")";
                 } else if (field.IsBasic) {
                     fieldRead = $"reader.Read{field.BasicType.Name}()";
                 } else if (field.IsEnum) {

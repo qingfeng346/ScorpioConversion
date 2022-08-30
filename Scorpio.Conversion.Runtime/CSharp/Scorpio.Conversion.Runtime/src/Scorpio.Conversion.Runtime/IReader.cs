@@ -13,6 +13,7 @@ namespace Scorpio.Conversion.Runtime {
         float ReadFloat();
         double ReadDouble();
         string ReadString();
+        string ReadL10n(string key);
         DateTime ReadDateTime();
         byte[] ReadBytes();
         void Close();

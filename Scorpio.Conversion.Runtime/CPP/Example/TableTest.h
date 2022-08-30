@@ -13,7 +13,7 @@ using namespace Scorpio::Conversion::Runtime;
 #include "DataTest.h"
 namespace Datas {
     class TableTest : public ITable {
-        const char * FILE_MD5_CODE = "5c86f5006b60d711c1ca95a5ea69b8db";
+        const char * FILE_MD5_CODE = "09fce78ed0fbcdd2f1806a9c3567245d";
     private:
         int m_count = 0;
         map<__int32, DataTest*>* m_dataArray = new map<__int32, DataTest*>();

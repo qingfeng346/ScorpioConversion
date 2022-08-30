@@ -124,13 +124,13 @@ namespace Scorpio.Conversion.Engine {
                     case KEYWORD_NAME: {
                         field.Name = value.ParseFlag(out var invalid, out var l10n);
                         field.IsInvalid |= invalid;
-                        field.IsL10N |= l10n;
+                        field.IsL10n |= l10n;
                         break;
                     }
                     case KEYWORD_TYPE: {
                         var type = value.ParseFlag(out var invalid, out var l10n);
                         field.IsInvalid |= invalid;
-                        field.IsL10N |= l10n;
+                        field.IsL10n |= l10n;
                         if (type.IsArrayType()) {
                             field.IsArray = true;
                             field.Type = type.GetFinalType();
@@ -217,7 +217,7 @@ namespace Scorpio.Conversion.Engine {
             var fieldNames = new HashSet<string>();
             for (var i = 0; i < PackageClass.Fields.Count; ++i) {
                 var field = PackageClass.Fields[i];
-                if (field.IsL10N && (!field.IsString || field.IsArray)) {
+                if (field.IsL10n && (!field.IsString || field.IsArray)) {
                     throw new System.Exception($"字段({field.Name}) L10N字段只支持string类型");
                 } else if (fieldNames.Contains(field.Name)) {
                     throw new System.Exception($"字段({field.Name}) 有重复的字段名");
@@ -386,7 +386,7 @@ namespace Scorpio.Conversion.Engine {
                 foreach (var data in mDatas) {
                     for (var i = 0; i < PackageClass.Fields.Count; ++i) {
                         var field = PackageClass.Fields[i];
-                        if (field.IsL10N) {
+                        if (field.IsL10n) {
                             l10nDatas.Add(new L10NData {
                                 Key = $"{Name}.{data.Key}.{field.Name}", // skip the signature of '$'
                                 Hint = data.Values[i].value
@@ -399,7 +399,7 @@ namespace Scorpio.Conversion.Engine {
                             if (!field.MinValue.IsEmptyString() && Convert.ToDouble(field.MinValue) > Convert.ToDouble(data.Values[i])) {
                                 throw new DataException($"行:{data.RowNumber} {field.Name} 值低于限定最小值");
                             }
-                            if (field.IsL10N) {
+                            if (field.IsL10n) {
                                 field.Write(writer, "" );
                             } else {
                                 field.Write(writer, data.Values[i].value);

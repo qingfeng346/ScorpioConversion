@@ -260,7 +260,7 @@ namespace Scorpio.Conversion.Engine {
                     writer.WriteString(field.Type);
                 }
                 writer.WriteBool(field.IsArray);
-                writer.WriteString((field.IsL10N ? "$" : "") + field.Name);
+                writer.WriteString((field.IsL10n ? "$" : "") + field.Name);
             }
         }
         static void WriteEnum(this IWriter writer, List<EnumField> fields) {

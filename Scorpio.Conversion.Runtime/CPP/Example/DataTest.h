@@ -23,6 +23,7 @@ class DataTest : public IData {
         __int64 TestDateTime;
         __int32 TestInt;
         char* TestBytes;
+        string TestLanguage;
     public:
         __int32 GetID() { return TestID; }
         /* <summary> 注释  默认值() </summary> */
@@ -37,6 +38,8 @@ class DataTest : public IData {
         __int32 GetTestInt() { return TestInt; }
         /* <summary> 内容为1234567890的base64数据  默认值(base64://MTIzNDU2Nzg5MA==) </summary> */
         char* GetTestBytes() { return TestBytes; }
+        /* <summary>   默认值() </summary> */
+        string GetTestLanguage() { return TestLanguage; }
     
         DataTest(string fileName, IReader * reader) {
             this->TestID = reader->ReadInt32();
@@ -52,6 +55,7 @@ class DataTest : public IData {
             this->TestDateTime = reader->ReadDateTime();
             this->TestInt = reader->ReadInt32();
             this->TestBytes = reader->ReadBytes();
+            this->TestLanguage = reader->ReadL10n(fileName + ".TestLanguage." + this.ID);
         }
     
         void * GetData(string key) {
@@ -61,6 +65,7 @@ class DataTest : public IData {
             if (key == "TestDateTime") return &TestDateTime;
             if (key == "TestInt") return &TestInt;
             if (key == "TestBytes") return &TestBytes;
+            if (key == "TestLanguage") return &TestLanguage;
             return nullptr;
         }
     
@@ -71,6 +76,7 @@ class DataTest : public IData {
             this->TestDateTime = value->TestDateTime;
             this->TestInt = value->TestInt;
             this->TestBytes = value->TestBytes;
+            this->TestLanguage = value->TestLanguage;
         }
     
         string ToString() {

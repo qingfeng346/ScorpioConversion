@@ -93,6 +93,12 @@ func (reader *DefaultReader) ReadString() string {
 	return string(bs)
 }
 
+// ReadString 读取一个 string
+func (reader *DefaultReader) ReadL10n(key string) string {
+	reader.ReadString()
+	return key
+}
+
 // ReadDateTime 读取一个 time
 func (reader *DefaultReader) ReadDateTime() time.Time {
 	return time.Unix(reader.ReadInt64()/1000, 0)

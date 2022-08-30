@@ -78,8 +78,8 @@ module.exports = {className};
     constructor(fileName, reader) {{");
             foreach (var field in packageClass.Fields) {
                 string fieldRead;
-                if (field.Attribute != null && field.Attribute.GetValue("Language").IsTrue) {
-                    fieldRead = $@"reader.ReadL10n(fileName + "".{field.Name}."" + this.ID())";
+                if (field.IsL10n) {
+                    fieldRead = $@"reader.ReadL10n(fileName + "".{field.Name}."" + this.ID)";
                 } else if (field.IsBasic) {
                     fieldRead = $"reader.Read{field.BasicType.Name}()";
                 } else if (field.IsEnum) {

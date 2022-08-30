@@ -1,4 +1,4 @@
-$version="1.0.1"
+$version="1.0.2"
 $name="scov"
 
 
@@ -50,8 +50,8 @@ foreach ($platform in $platforms) {
 $cur = Get-Location
 Write-Host "正在生成Scorpio.Conversion.Runtime.nupkg..."
 dotnet pack ../ScorpioProto/CSharp/Scorpio.Conversion.Runtime/Scorpio.Conversion.Runtime.csproj -p:PackageVersion=$version -o ../bin/ /p:AssemblyVersion=$version | Out-Null
-Write-Host "正在生成Scorpio.Conversion.Runtime.jar..."
 
+Write-Host "正在生成Scorpio.Conversion.Runtime.jar..."
 Set-Location ../ScorpioProto/Java/Scorpio.Conversion.Runtime
 ./gradlew release "-PVERSION=$version"
 Copy-Item -Path app/build/libs/*.jar -Destination ../../../bin/

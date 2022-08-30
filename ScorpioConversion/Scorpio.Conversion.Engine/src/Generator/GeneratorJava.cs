@@ -118,7 +118,7 @@ public class {className} implements IData {{
             foreach (var field in packageClass.Fields) {
                 var languageType = GetLanguageType(field);
                 string fieldRead;
-                if (field.Attribute != null && field.Attribute.GetValue("Language").IsTrue) {
+                if (field.IsL10n) {
                     fieldRead = $@"reader.ReadL10n(fileName + "".{field.Name}."" + this.ID())";
                 } else if (field.IsBasic) {
                     fieldRead = $"reader.Read{field.BasicType.Name}()";

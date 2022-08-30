@@ -22,6 +22,8 @@ public partial class DataTest : IData {
     public int TestInt { get; private set; }
     /* <summary> 内容为1234567890的base64数据  默认值(base64://MTIzNDU2Nzg5MA==) </summary> */
     public byte[] TestBytes { get; private set; }
+    /* <summary>   默认值() </summary> */
+    public string TestLanguage { get; private set; }
     
     public DataTest(string fileName, IReader reader) {
         this.TestID = reader.ReadInt32();
@@ -35,6 +37,7 @@ public partial class DataTest : IData {
         this.TestDateTime = reader.ReadDateTime();
         this.TestInt = reader.ReadInt32();
         this.TestBytes = reader.ReadBytes();
+        this.TestLanguage = reader.ReadL10n($"{fileName}.TestLanguage.{ID}");
     }
     
     public object GetData(string key) {
@@ -44,6 +47,7 @@ public partial class DataTest : IData {
         if ("TestDateTime".Equals(key)) return TestDateTime;
         if ("TestInt".Equals(key)) return TestInt;
         if ("TestBytes".Equals(key)) return TestBytes;
+        if ("TestLanguage".Equals(key)) return TestLanguage;
         return null;
     }
     
@@ -54,10 +58,11 @@ public partial class DataTest : IData {
         this.TestDateTime = value.TestDateTime;
         this.TestInt = value.TestInt;
         this.TestBytes = value.TestBytes;
+        this.TestLanguage = value.TestLanguage;
     }
     
     public override string ToString() {
-        return $"TestID:{TestID}, testEnum:{testEnum}, TestDate:{TestDate}, TestDateTime:{TestDateTime}, TestInt:{TestInt}, TestBytes:{TestBytes}, ";
+        return $"TestID:{TestID}, testEnum:{testEnum}, TestDate:{TestDate}, TestDateTime:{TestDateTime}, TestInt:{TestInt}, TestBytes:{TestBytes}, TestLanguage:{TestLanguage}, ";
     }
 }
 }

@@ -8,7 +8,7 @@ class TableTest:
 
     def Initialize(this, fileName, reader):
         row = reader.ReadInt32()
-        if "5c86f5006b60d711c1ca95a5ea69b8db" != reader.ReadString():
+        if "09fce78ed0fbcdd2f1806a9c3567245d" != reader.ReadString():
             raise Exception("File schemas do not match [TableTest] : " + fileName)
         reader.ReadHead()
         for i in range(0, row):
