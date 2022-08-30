@@ -12,52 +12,52 @@ namespace Scorpio.Conversion.Runtime {
             this.reader = new BinaryReader(stream);
             this.closeStream = closeStream;
         }
-        public void ReadHead() {
+        public virtual void ReadHead() {
             ConversionUtil.ReadHead(this);
         }
-        public bool ReadBool() {
+        public virtual bool ReadBool() {
             return ReadInt8() == 1;
         }
-        public sbyte ReadInt8() {
+        public virtual sbyte ReadInt8() {
             return reader.ReadSByte();
         }
-        public byte ReadUInt8() {
+        public virtual byte ReadUInt8() {
             return reader.ReadByte();
         }
-        public short ReadInt16() {
+        public virtual short ReadInt16() {
             return reader.ReadInt16();
         }
-        public ushort ReadUInt16() {
+        public virtual ushort ReadUInt16() {
             return reader.ReadUInt16();
         }
-        public int ReadInt32() {
+        public virtual int ReadInt32() {
             return reader.ReadInt32();
         }
-        public uint ReadUInt32() {
+        public virtual uint ReadUInt32() {
             return reader.ReadUInt32();
         }
-        public long ReadInt64() {
+        public virtual long ReadInt64() {
             return reader.ReadInt64();
         }
-        public ulong ReadUInt64() {
+        public virtual ulong ReadUInt64() {
             return reader.ReadUInt64();
         }
-        public float ReadFloat() {
+        public virtual float ReadFloat() {
             return reader.ReadSingle();
         }
-        public double ReadDouble() {
+        public virtual double ReadDouble() {
             return reader.ReadDouble();
         }
-        public string ReadString() {
+        public virtual string ReadString() {
             var length = ReadUInt16();
             if (length == 0) return "";
             return Encoding.UTF8.GetString(reader.ReadBytes(length));
         }
-        public DateTime ReadDateTime() {
+        public virtual DateTime ReadDateTime() {
             DateTime startTime = BaseTime;
             return startTime.AddMilliseconds(reader.ReadInt64());
         }
-        public byte[] ReadBytes() {
+        public virtual byte[] ReadBytes() {
             var length = ReadInt32();
             return reader.ReadBytes(length);
         }

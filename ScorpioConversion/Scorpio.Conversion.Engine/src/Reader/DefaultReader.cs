@@ -59,8 +59,7 @@ namespace Scorpio.Conversion.Engine {
             return ReadString();
         }
         public DateTime ReadDateTime() {
-            DateTime startTime = BaseTime;
-            return startTime.AddMilliseconds(reader.ReadInt64());
+            return BaseTime.AddMilliseconds(reader.ReadInt64());
         }
         public byte[] ReadBytes() {
             var length = reader.ReadInt32();
