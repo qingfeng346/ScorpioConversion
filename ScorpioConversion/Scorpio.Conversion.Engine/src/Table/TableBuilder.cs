@@ -8,7 +8,6 @@ namespace Scorpio.Conversion.Engine {
     public partial class TableBuilder {
         private const string KEYWORD_FILENAME = "/FileName";        //名字,不填默认文件或者sheet名字
         private const string KEYWORD_TAGS = "/Tags";                //标签,有标签时需要比较传入的标签是否导出
-        private const string KEYWORD_AUTOINC = "/AutoInc";          //ID自动递增生成
         private const string KEYWORD_PACKAGE = "/Package";          //命名空间,不填默认使用Language配置
         private const string KEYWORD_SPAWN = "/Spawn";              //是否是派生类
         private const string KEYWORD_GROUP = "/Group";              //Group类型的表,值为Group的字段名

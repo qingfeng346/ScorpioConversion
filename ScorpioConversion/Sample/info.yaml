@@ -14,5 +14,11 @@ languages:
   - generator: "sco"
     codeOutput: "../../Scorpio.Conversion.Runtime/CSharp/Example/sco"
     codeSuffix: "sco"
-    handler
+    handler:
       - "ScorpioManager"
+
+  - generator: "java"
+    codeOutput: ".././Scorpio.Conversion.Runtime/Java/Example/src"
+    codeSuffix: "java"
+    handler:
+      - "JavaManager"

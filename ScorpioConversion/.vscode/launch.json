@@ -5,12 +5,23 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "build",
+            "name": "buildtoml",
             "type": "coreclr",
             "request": "launch",
             "preLaunchTask": "build",
             "program": "${workspaceFolder}/ScorpioConversion/bin/Debug/net6.0/scov.dll",
             "args": ["build", "-package", "Datas", "-name", "file", "-config", "./Config", "-paths", "./Excel", "-branch", "branch1", "-info", "info.toml"],
+            "cwd": "${workspaceFolder}/Sample",
+            "console": "internalConsole",
+            "stopAtEntry": false
+        },
+        {
+            "name": "buildyaml",
+            "type": "coreclr",
+            "request": "launch",
+            "preLaunchTask": "build",
+            "program": "${workspaceFolder}/ScorpioConversion/bin/Debug/net6.0/scov.dll",
+            "args": ["build", "-package", "Datas", "-name", "file", "-config", "./Config", "-paths", "./Excel", "-branch", "branch1", "-info", "info.yaml"],
             "cwd": "${workspaceFolder}/Sample",
             "console": "internalConsole",
             "stopAtEntry": false
