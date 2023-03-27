@@ -13,12 +13,12 @@ namespace Scorpio.Conversion.Engine {
         protected abstract string Name { get; }
         public void Add(string name, Type value) {
             name = name.ToLowerInvariant();
-            Logger.info($"添加[{Name}] {name} - {value}");
+            logger.info($"添加[{Name}] {name} - {value}");
             values[name] = new BaseType() { type = value, scriptValue = ScriptValue.Null };
         }
         public void Add(string name, ScriptValue scriptValue) {
             name = name.ToLowerInvariant();
-            Logger.info($"添加[{Name}] {name} - {scriptValue}");
+            logger.info($"添加[{Name}] {name} - {scriptValue}");
             values[name] = new BaseType() { type = typeof(ST), scriptValue = scriptValue };
         }
         public T Get(string name, params object[] args) {

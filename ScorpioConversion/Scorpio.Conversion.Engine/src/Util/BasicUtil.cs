@@ -39,8 +39,8 @@ namespace Scorpio.Conversion.Engine {
             this.Key = name;
             this.Name = name;
             this.Index = index;
-            this.WriteMethod = typeof(TableWriter).GetMethod("Write" + ScorpioUtil.ToOneUpper(name), new Type[] { typeof(string) });
-            this.ReadMethod = typeof(IReader).GetMethod("Read" + ScorpioUtil.ToOneUpper(name));
+            this.WriteMethod = typeof(TableWriter).GetMethod("Write" + FileUtil.ToOneUpper(name), new Type[] { typeof(string) });
+            this.ReadMethod = typeof(IReader).GetMethod("Read" + FileUtil.ToOneUpper(name));
         }
         public BasicType SetKey(string key) {
             this.Key = key;
