@@ -5,7 +5,7 @@ VisualStudioVersion = 17.0.32014.148
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Scorpio.Conversion", "ScorpioConversion\Scorpio.Conversion.csproj", "{9F0A9745-C923-498C-849F-55DB4733CB66}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Scorpio.Conversion.Engine", "Scorpio.Conversion.Engine\Scorpio.Conversion.Engine.csproj", "{3BFA5474-271D-4BB7-8017-FBCDF69E051A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Scorpio.Conversion.Engine", "Scorpio.Conversion.Engine\Scorpio.Conversion.Engine.csproj", "{3BFA5474-271D-4BB7-8017-FBCDF69E051A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

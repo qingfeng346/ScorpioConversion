@@ -12,6 +12,7 @@ namespace Scorpio.Conversion.Engine {
         private const string KEYWORD_SPAWN = "/Spawn";              //是否是派生类
         private const string KEYWORD_GROUP = "/Group";              //Group类型的表,值为Group的字段名
         private const string KEYWORD_GROUP_SORT = "/GroupSort";     //Group类型的排序字段
+        private const string KEYWORD_AUTOINC = "/AutoInc";          //Key自增长
 
         private const string KEYWORD_COMMENT = "/Comment";          //注释
         private const string KEYWORD_NAME = "/Name";                //字段名
@@ -231,7 +232,7 @@ namespace Scorpio.Conversion.Engine {
                 builder.Append(PackageClass.Fields[i].Type).Append(':');
                 builder.Append(PackageClass.Fields[i].IsArray ? '1' : '0').Append(':');
             }
-            LayoutMD5 = ScorpioUtil.GetMD5FromString(builder.ToString());
+            LayoutMD5 = FileUtil.GetMD5FromString(builder.ToString());
             if (PackageClass.Fields.Count == 0) throw new System.Exception($"有效字段数量为0");
             if (Spawn.IsEmptyString()) {
                 Name = FileName;

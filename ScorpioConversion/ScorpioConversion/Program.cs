@@ -49,7 +49,7 @@ namespace Scorpio.Conversion {
             perform.AddExecute("build", HelpBuild, Build);
             perform.AddExecute("decompile", HelpDecompile, Decompile);
             try {
-                perform.Start(args, null, null);
+                perform.Start(args);
             } catch (System.Exception e) {
                 Console.Error.WriteLine(e);
                 Environment.Exit(1);
@@ -85,9 +85,9 @@ namespace Scorpio.Conversion {
                 try {
                     File.Copy(file, tempFile, true);
                     new TableDecompile().Decompile(tempFile, Path.GetFileNameWithoutExtension(file), output, reader);
-                    Logger.info($"反编译 {file} 完成");
+                    logger.info($"反编译 {file} 完成");
                 } catch (System.Exception e) {
-                    Logger.error($"文件 [{file}] 反编译出错 : " + e.ToString());
+                    logger.error($"文件 [{file}] 反编译出错 : " + e.ToString());
                 } finally {
                     File.Delete(tempFile);
                 }
@@ -107,7 +107,7 @@ namespace Scorpio.Conversion {
             var successTables = new List<TableBuilder>();
             var successSpawns = new SortedDictionary<string, List<TableBuilder>>();
             var mergeFiles = new Dictionary<string, List<Tuple<string, string>>>();
-            Logger.info("开始计算MergeFile");
+            logger.info("开始计算MergeFile");
             foreach (var file in Config.MergeFiles) {
                 var tempFile = Path.GetTempFileName();
                 try {
@@ -120,7 +120,7 @@ namespace Scorpio.Conversion {
                             if (!mergeFiles.TryGetValue(name, out var mergeFile)) {
                                 mergeFiles.Add(name, mergeFile = new List<Tuple<string, string>>());
                             }
-                            Logger.info($"检测到Merge数据 {file} - {sheetName} ==> {name}");
+                            logger.info($"检测到Merge数据 {file} - {sheetName} ==> {name}");
                             mergeFile.Add(new Tuple<string, string>(file, sheetNames[i]));
                         }
                     }
@@ -164,7 +164,7 @@ namespace Scorpio.Conversion {
                                 continue;
                             }
                             var elapsedMilliseconds = stopwatch.ElapsedMilliseconds;
-                            Logger.info(string.Format("File:{0,-20} Sheet:{1,-20} 解析完成  有效列:{2,-5}  有效行:{3,-5}  耗时:{4,-5}", Path.GetFileName(file).Breviary(18), sheetName.Breviary(18), builder.PackageClass.Fields.Count, builder.DataCount, elapsedMilliseconds > 10000 ? $"{elapsedMilliseconds / 1000}秒" : $"{elapsedMilliseconds}毫秒"));
+                            logger.info(string.Format("File:{0,-20} Sheet:{1,-20} 解析完成  有效列:{2,-5}  有效行:{3,-5}  耗时:{4,-5}", Path.GetFileName(file).Breviary(18), sheetName.Breviary(18), builder.PackageClass.Fields.Count, builder.DataCount, elapsedMilliseconds > 10000 ? $"{elapsedMilliseconds / 1000}秒" : $"{elapsedMilliseconds}毫秒"));
                             if (builder.IsSpawn) {
                                 if (successSpawns.TryGetValue(builder.Spawn, out var array)) {
                                     array.Add(builder);
